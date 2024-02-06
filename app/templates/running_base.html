@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+        
+        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+        
+        <TITLE>GUIDANCE Run - {{form['JOB_TITLE']}} Number: {{var['run_number']}}</TITLE>
+             
+        <style type="text/css">
+            #menu {
+
+                text-decoration: none;
+                    color: white;
+            font-size: 12px;
+            font-weight: 700;
+            }
+
+            ul.in_progress {
+                list-style-image: url('{{url_for('static',filename='images/inprogress.gif')}}');
+                
+                padding-bottom: 0 em;
+            }
+
+            ul.finished {
+                list-style-image: url('{{url_for('static',filename='images/finished.gif')}}');
+            }
+        </style>
+        
+        <!--<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/guidance.css')}}">
+
+        <script src="{{url_for('static',filename='js/jquery-1.7.2.min.js')}}"></script> -->
+        
+{% endblock %}
+
+
+{% block body %} 
+
+    <h1 align=center>GUIDANCE2 Job Status - <FONT color='red'>{{job_state}}</FONT></h1>
+    <blockquote>
+
+    <p><font face=Verdana size=2>
+    GUIDANCE is now processing your request.<br>
+
+    <br>This page will be automatically updated every 30 seconds. You can also reload it manually.<br>
+    Once the job has finished, several links to the output files will appear below.
+    <br><br>
+    If you wish to view these results at a later time without recalculating
+    them, please bookmark this page. The results will be kept in the server for one month.
+
+    </font></p>
+
+    <h4><font face=Verdana><u>Running Parameters:</u></h4>
+    <p><font face=Verdana size=2>
+    Job title:<b>{{form['JOB_TITLE']}}<br></b>
+    {{var['sequences_link']|safe}}
+    Number of sequences analyzed: {{var['NumOfSeq']}}<br>
+    MSA Algorithm: {{form['MSA_Program']}}<br>
+    {% if var['align_param'] != '' %}
+        Advanced Alignment Parameters: {{var['align_param']}}<br>
+    {% endif %}
+    
+    {% if form['PROGRAM'] == 'GUIDANCE' %}
+        Number of bootstrap repeats: {{form['Bootstraps']}}<br>
+    {% endif %}
+    
+    {% if form['PROGRAM'] == 'GUIDANCE2' %}
+        Number of alternative guide-trees: {{form['Bootstraps']}}<br>
+    {% endif %}
+    
+    Method: {{form['PROGRAM']}}<br>
+    </p></font>
+        
+    {% if var['warning_messages'] != '' %}
+        {{var['warning_messages']|safe}}
+    {% endif %}
+    
+    {% if runtime_warnings != '' %}
+        {{runtime_warnings|safe}}
+    {% endif %}
+    
+    <h4><font face=Verdana><u>Running Progress:</u></h4></font>
+    <div id='includedContent'>{{ progress_report|safe }}</div>
+    
+    {% block body_running %} {% endblock %}
+    
+    <h4 class=footer><p align='center'>Questions and comments are welcome! Please <span class="admin_link"><a href="mailto:evolseq@tauex.tau.ac.il?subject=Guidance%20Run%20Number%20{{var['run_number']}}">contact us</a></span></p></h4><div id="bottom_links"> 
+    <span class="bottom_link">
+    <a href="/" target="_blank">Home</a>
+    &nbsp;|&nbsp
+    <a href="/overview" target="_blank">Overview</a>
+    &nbsp;|&nbsp;
+    <a href="/gallery" target="_blank">Gallery</a>
+    &nbsp;|&nbsp;
+    <a href="/credits" target="_blank">Credits</a>
+    </span>
+    <br />
+    </div>
+        
+{% endblock %} 

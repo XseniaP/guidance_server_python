@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block body %} 
+
+    
+    Finished Jobs: {{count_finished}} <br>
+    
+    Crashed Jobs: {{count_crashed}} <br>
+    
+    Init jobs: {{count_init}} <br>
+    
+    Waiting jobs: {{waiting_jobs_list|length}} <br>
+    
+    Running jobs: {{running_jobs_list|length}} <br>
+    
+    <br><br>
+    
+    {% if waiting_jobs_list|length %}
+    
+        Waiting list:<br>
+        
+        {% for job in waiting_jobs_list %}
+            
+            {{job}}<br>
+            
+        {% endfor %}
+        
+    {% endif %}
+    
+    <br>
+    
+    {% if running_jobs_list|length %}
+    
+        Running jobs:<br>
+        
+        {% for job in running_jobs_list %}
+            
+            {{job}}<br>
+            
+        {% endfor %}
+        
+    {% endif %}
+    
+    <script>
+        
+        setInterval(function(){
+            window.location.reload();
+        }, 30000)
+        
+        //to listen for process updates
+        /*const eventSource = new EventSource("/stream/")
+        eventSource.onmessage = function(e) {
+            alert("called");
+            window.location.reload();
+        }*/
+        
+    </script> 
+    
+{% endblock %}
+

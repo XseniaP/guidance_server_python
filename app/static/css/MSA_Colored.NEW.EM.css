@@ -1,0 +1,90 @@
+table { 
+	/*	table-layout: auto; */
+		table-layout: fixed;
+        margin-left: 0em;
+        margin-right: 0em;
+        padding:1em 1em 1em 1em;
+	    margin:1em 1em 1em 1em; 
+        border-collapse: collapse;
+      }
+td {
+        font-family: "Courier New", Courier, monospace;
+        font-size:1em;
+        font-weight: bold;
+        text-align: center;
+        overflow:hidden;
+     /*   white-space:nowrap; */
+		 white-space:pre;
+/*	 	padding:0.1em 0.1em 0.1em 0.1em; */
+/*	 	margin:0.5em 0.5em 0.5em 0.5em;*/
+		width: 1em;
+      }
+td.Seq_Name{
+        text-align: left;
+        width: 15em;
+        padding-right:1em;
+      }
+td.Score9{
+        color: #FFFFFF;
+        background: #A02560;
+  	}
+td.Score8{
+        background: #F07DAB;
+        }
+td.Score7{
+        background: #FAC9DE;
+        }
+td.Score6{
+        background: #FCEDF4;
+        }
+td.Score5{
+        background: #FFFFFF;
+        }
+td.Score4{
+        background: #EAFFFF;
+	}
+td.Score3{
+        background: #D7FFFF;
+	}
+td.Score2{
+        background: #8CFFFF;
+        }
+td.Score1{
+        background: #10C8D1;
+        }
+td.ScoreNaN{
+	    background: #C0C0C0;
+	}	
+
+/* GRAPH STYLING */
+
+.barGraph {
+/*	background: url(images/horizontal_grid_line_50_pixel.png) bottom left;*/
+/*	border-bottom: 3px solid #333;*/
+/*	font: 9px Helvetica, Geneva, sans-serif; */
+	height: 20em;
+	margin: 0em 0em;
+	padding: 0em;
+	position: relative;
+	}
+
+.barGraph p {
+	font-size:1em;
+	}	
+	
+.barGraph li {
+/*	background: #666 url(images/bar_50_percent_highlight.png) repeat-y top right;*/
+/*	border: 0.2em solid #555;*/
+	border-bottom: none;
+	bottom: 0em; 
+	color: #FFF;
+	margin: 0em; 
+	padding: 0em 0em 0em 0em;
+	position: absolute;
+	list-style: none;
+	text-align: center;
+	width: 1em;
+	}
+
+.barGraph li.p1{ background-color:#666666; }
+.barGraph li:hover {font-weight:bold;}

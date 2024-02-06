@@ -1,0 +1,65 @@
+<STYLE TYPE='text/css' MEDIA=screen>
+
+#notes  {
+        color: "red"; 
+        font-weight : 600;
+        font-size : 24px;
+        text-align : center; 
+        } 
+#form  { font-weight : 600; font-size : 16px;} 
+
+#table_form {
+	font-weight : 600; 
+	font-size : 16px;
+	} 
+
+
+#title {
+	font-family : Times New Roman;
+	font-weight : extra-bold;
+	font-size : 16px;
+	font-variant : normal;
+	line-height : normal;
+	text-decoration : none;
+	color: white;
+	text-align : left;
+}
+
+#table_form {
+
+	border-right: solid;				
+	border-width:	5;				
+	border-left: none;  			
+	border-right-width: thick; 				
+	border-color: #400080;		
+}
+
+#PRANK_OPTION,#CodonsTable,#GUIDANCE_WARN,#MSA_PROGRAM_GUIDANCE{display: none;}
+
+
+.side_bar_links	a:link {text-decoration: none; color: white;}
+.side_bar_links a:visited {text-decoration: none; color: white;}
+.side_bar_links a:active {text-decoration: none}
+.side_bar_links a:hover {text-decoration: none; color: white;}
+
+.title_menu a:link {text-decoration: none;font-weight:600;color:#0033FF;}
+.title_menu a:visited {text-decoration: none;font-weight:600;color:#0033FF;}
+.title_menu A:active {text-decoration: none;font-weight:600;color:#0033FF;}
+.title_menu A:hover {text-decoration: underline;font-weight:bold;color:#0033FF;}
+
+#bottom_links{ 	    
+    width: 100%;
+    margin-left: 1%;
+	color: rgb(156,80,103); 
+	background-color: white; 
+	text-align: center; 
+	font-size: 90%;
+	}
+/* bottom links */
+
+.bottom_link a:link {text-decoration: none; color: rgb(156,80,103); }
+.bottom_link a:visited {text-decoration: none; color: rgb(156,80,103); }
+.bottom_link A:active {text-decoration: none}
+.bottom_link A:hover {text-decoration: underline overline; color: rgb(156,80,103); }
+
+</STYLE>

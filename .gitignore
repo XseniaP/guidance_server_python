@@ -1,0 +1,11 @@
+.venv
+results/Guidance/*
+logs/Guidance/*
+*.log
+script/SIMULATED_SEQ
+script/SIMULATED_SEQ_42
+test_MAFFT_server_MSA_input2_nucleotides.txt
+test_MAFFT_server_MSA_input3_nucleotides.txt
+test_MAFFT_server_MSA_input_nucleotides.txt
+test_MAFFT_server_MSA_input4_redirectedFromMafft.txt
+app/__init__.py

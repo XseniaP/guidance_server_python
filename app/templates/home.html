@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+    <script language="javascript" type="text/javascript">
+    
+        $(document).ready( function () {
+            const ids = ['PROGRAM','email_add', 'JOB_TITLE', 'MSA_Program', 'MSA_Program_GUIDANCE', 'FASTA_txt', 'usrSeq_File', 'Seq_Type_aa', 'Seq_Type_nuc', 'Seq_Type_codons'];
+            ids.forEach(function (item, index) {
+                const element = document.getElementById(item);
+                element.addEventListener('change', (event) => {
+                    grecaptcha.reset();
+                }); 
+            });
+        });
+
+        function LoadExample(){
+           form = document.Guidance_form
+           form.reset();
+           form.FASTA_txt.value = ">NC_001802.HXB2\nMQPIPIVAIVALVVAIIIAIVVWSIVIIEYRKILRQRKIDRLIDRLIERAEDSGNESEGEISALVEMGVEMGHHAPWDVDDL\n>EF637049.B\nMQSLQIVAIVALVVTAIIAIVVWSIVLIEYRKLLRQRKIDRLIDRIRERAEDSGNESEGDQEELAGLVERGHLAPWDVDDL\n>EF514700.B\nMQPLEILAIVALVVAIILAIVVWTIVFIEYKKILRQRKIDRLIDRIAERAEDSGNESEGDQEELSALVDMGHDAPWVVVDQ\n>DQ056417.C\nMLESIDYRLGVAALLLALIIAIIVWIIAYLEYRKLLRQRRIDKLIKRIRERAEDSGNESEGDIEELSTMVDVEHLRLLDVNNL\n>AY463217.C\nMVDLLAGVDYRVGVGALIIALIIAIIVWIWVYIEYRKLLRQRKIDWLIKRLREREEDSGNESEGDTEELATMVDMGHLRLLDDNNV\n>DQ011165.C\nMLNFLAGVDYRIGVGALIVGLIIAIVVWIIVYLEYRKLVKQRKIDWLIERIRERAEDSGNESEGDTEELATMVDMGHLRLLDAYDL\n>AB254142.C\nMINFAARVDYRVGVAAFTIALIIAIVVWIIVYLELVRQRKIDQLIIRIREREEDSGNESEGDIEELSTMVDMGQLRLLDGNGL\n>AY901969.C\nMVNLLEKVNLFEKVDYRLGVGALLIALVIAIIVWTIAYIEYRKLVRQRKIDWLVKRIRERAEDSGNESDGDTEELSTMVDLGHLRLLDVAEL\n>EU110088.A1\nMNQLQILAIXGLVVALILAIVVWTIVGIEYRKLLRQRRIDRLIKRISERAEDSGNESDGDTEELSQLVEMGNYNLGFDDNL\n>AB253428.A1\nMQLLEICAVVGLVVALIIAIVVWTIVGIEYKKLLKQRKIDRLVDRIRERAEDSGNESDGDREELSLLVDMGDYDLGDDNNL\n>AF457052.A1\nMLSALEICAIAGLVIALIIAIVVWTIVGIEYRRLLKQRKIDRLIERIRERAEDSGNESDGDTEELAALIEMGNYDLGDANDL\n>AF077336.F1\nMSYLLAIGIAALIVALIIAIVVWTIVYIEYKKLVRQRKINKLYKRIRERAEDSGNESEGDAEELAALGEMGPFIPGDINNL\n>DQ168575.G\nMKSLEISAIVGLIVAFIAAIVVWTIVLIEYRKIRKQKRIDKILDRIRERAEDSGNESEGDTEELATLVDMVDFEPWVGDNL\n>AY795907.D\nMQTLEILSIVALVIAAIIAIIVWTIVYIEYRKIRRQRKIDQLIDRIRERAEDSGNESEGDEEELSTLMEMGHAAPWNVADDL\n";
+           form.Seq_Type[0].checked=true;
+           form.PROGRAM[0].checked=true;
+           form.PROGRAM.selectedIndex = 0;
+           toggle_Algorithm_Options();
+           form.MSA_Program.value = "MAFFT";
+               form.MSA_Program.selectedIndex = 0;
+           toggle_MSA_Options();
+           grecaptcha.reset();
+           return true;
+        }
+
+    </script>
+    
+    {% if message is defined %}
+
+        <script> $(function(){ window.location.hash = "recaptcha"; }); </script>
+     
+    {% endif %}
+
+{% endblock %}
+
+
+{% block body %} 
+
+        <!-- GOOGLE ANALYTICS START -->
+		<script type="text/javascript">
+			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+		<script type="text/javascript">
+			try {
+				var pageTracker = _gat._getTracker("UA-12265767-1");
+				pageTracker._setDomainName(".tau.ac.il");
+				pageTracker._trackPageview();
+			} catch(err) {}
+		</script>
+        
+		<!-- GOOGLE ANALYTICS END -->
+		<form name="Guidance_form"
+			  id = "Guidance_form"
+		      action="/guidance"
+		      method="post"
+		      ENCTYPE="multipart/form-data"
+		      onsubmit="return validateform()">
+			<P align="center"><font size=+2>Select Algorithm</font>
+ 		   		<select name="PROGRAM" id="PROGRAM" style="font-size: 15px;" onchange="javascript:toggle_Algorithm_Options()">
+                    <option value="GUIDANCE2">GUIDANCE2</option>
+			        <option value="GUIDANCE">GUIDANCE</option>
+                    <option value="HoT">HoT</option>
+				</select><br></p>
+                <div id="GUIDANCE_WARN">
+			    <p align="center"><b><font size="-1" color="red">Warning:</font><font size="-1"color="black"> GUIDANCE is not suitable for alignments of very few sequences.<br>As a rule of thumb, use GUIDANCE2 or HoT for less than 8 sequences.</font></b></p>
+			</div>    
+            <p><b>Type your sequences </b><A href="http://en.wikipedia.org/wiki/FASTA_format"><font size=-1>(FASTA format only)</A> * large strings should be uploaded as files </font><br>
+			<textarea name="FASTA_txt" rows=8 cols=70 id="FASTA_txt">{{FASTA_txt}}</textarea><br>
+            {% if back_from_mafft is not defined %}
+                OR<br>
+                <b>Upload your sequences file <A href="http://en.wikipedia.org/wiki/FASTA_format"><font size=-1>(FASTA format only)</font></A></b>&nbsp;&nbsp;&nbsp;&nbsp;<input type="file" name="usrSeq_File" id="usrSeq_File">
+                <br><br>
+                {% if daily_test is defined %}
+                    {% set aa_checked = 'checked' %}
+                {% else %}
+                    {% set aa_checked = '' %}
+                {% endif %}
+                <B>Sequences Type: </B><input type="radio" name="Seq_Type" id="Seq_Type_aa"  value="AminoAcids" onclick="javascript:hide_div_name('CodonsTable')" {{aa_checked}}> Amino Acids &nbsp;&nbsp; <input type="radio" name="Seq_Type" id="Seq_Type_nuc" value="Nucleotides" onclick="javascript:hide_div_name('CodonsTable')">Nucleotides  &nbsp;&nbsp;<input type="radio" name="Seq_Type" id="Seq_Type_codons" value="Codons" onclick="javascript:show_div_name('CodonsTable')">Codons <BR><BR>
+                <div id="MSA_PROGRAM_GUIDANCE">
+                <b>Select the MSA algorithm</b>&nbsp;&nbsp;&nbsp;&nbsp;<select
+                    name="MSA_Program_GUIDANCE" id="MSA_Program_GUIDANCE" onchange="javascript:toggle_MSA_Options()">
+                    <option value="MAFFT">MAFFT (default)
+    <!--				<option value="MAFFT_LINSI">MAFFT-LINSI  -->
+                    <option value="PRANK">PRANK
+                    <option value="CLUSTALW">ClustalW
+                    <option value="MUSCLE">MUSCLE
+                    <option value="PAGAN">PAGAN 
+                </select>
+                <br><b><font size="-1" color="red">Warning:</font><font size="-1"color="black">  PRANK is significantly more time consuming.  MAFFT is the fastest.</font></b>
+                <br><br>
+                </div>
+                <div id="MSA_PROGRAM">
+                <b>Select the MSA algorithm</b>&nbsp;&nbsp;&nbsp;&nbsp;<select
+                    name="MSA_Program" id="MSA_Program" onchange="javascript:toggle_MSA_Options()">
+                    <option value="MAFFT">MAFFT (default)
+                    <option value="PRANK">PRANK
+                    <option value="CLUSTALW">ClustalW
+                </select>
+                <br><b><font size="-1" color="red">Warning:</font><font size="-1"color="black">  PRANK is significantly more time consuming.  MAFFT is the fastest.</font></b>
+                <br><br>
+                </div>
+            {% endif %} 
+     		<P align=left><font size=+1><br>Please enter your email address
+<!--			<font size=+1><a href="/defaultEmailExplanation.html">-->(Optional)<!--</a></font> -->
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<INPUT TYPE="TEXT" NAME="email_add" id="email_add" value="" SIZE=50 bgcolor="yellow"><br>
+			<font size=2>Your email address will be used to update you the moment the results are ready. </font>
+			<br><br>
+			<P align=left><font size=+1><br>Job title (Optional)
+			<INPUT TYPE="TEXT" NAME="JOB_TITLE" id="JOB_TITLE" SIZE=50 bgcolor="yellow"><br>
+			<font size=2>Enter a descriptive job title for your GUIDANCE query</font>
+			<br><br>
+
+            {% if back_from_mafft is defined %}
+                <!-- SPECIFIC MAFFT RERUN_PARAM -->
+
+                <br>
+                <FONT size=+2 color='red'><B><U>Advanced Options</FONT></B></U></p>
+                <div id="BOOTSTRAP">
+                    <B>Number of bootstrap repeats</B>&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE="TEXT" NAME="Bootstraps" VALUE="100" SIZE=4></br>
+                </div>
+                
+                <INPUT TYPE="hidden" NAME="MAFFT_OUT_RUN_NEMBER" SIZE=4 VALUE="{{calling_run}}>">
+                <INPUT TYPE="hidden" NAME="BACK_FROM_MAFFT" SIZE=4 VALUE="1">
+                <b>MAFFT Command-line arguments:</b><INPUT TYPE="hidden" NAME="MAFFT_PARAM" value="{{calling_args}}"><font size="-1">{{calling_args}}</font>
+                <INPUT TYPE="hidden" NAME="MSA_Program" value="MAFFT"><br><br><br>
+                
+            {% endif %}
+        
+            {% if daily_test is defined %}
+                <input type="hidden" name="no_captcha" value="no_captcha">
+            {% else %}
+                <a name="recaptcha"></a>
+                {{ recaptcha }} <!-- Refer to 'recaptcha' variable in main.py -->
+                <font size="-1" color="red"><p>{{ message }}</p></font> <!-- Message to tell user whether or not they have filled out ReCaptcha -->
+            {% endif %}
+            
+            <script type="text/javascript" src="js/validation-rules.js"></script>
+            <input type="hidden" id="solved" name="solved" value="false"/>		
+            <input type=submit value="Submit" id="SubmitButton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value="Clear" id="buttons">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <button type="button" onclick="LoadExample()">Load  an  example</button><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="-1"><A href="Gallery/output.php">Show Example Results</A></font>
+
+        <INPUT TYPE="hidden" NAME="SP_SEQ_CUTOFF" SIZE=4 VALUE="0.6">
+        <INPUT TYPE="hidden" NAME="SP_COL_CUTOFF" SIZE=4 VALUE="0.93">
+            
+        {% if back_from_mafft is not defined %}
+        
+            <br><br><br>
+            <FONT size=+2 color='red'><B><U>Advanced Options</FONT></B></U></p>
+            <div id="BOOTSTRAP">
+                <B>Number of bootstrap repeats</B>&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE="TEXT" NAME="Bootstraps" VALUE="100" SIZE=4></br>
+            </div>
+
+            <br><br>
+            <div id="Output_Order">
+            <b>Output order</b>:
+                    <br>&nbsp;<input type="radio" name="outorder" value="as_input">&nbsp;Same as input
+                    <br>&nbsp;<input type="radio" name="outorder" value="aligned" checked>&nbsp;Aligned<br><br>
+            </div>
+            <div id="CodonsTable">
+                <b>Genetic Code:</b>&nbsp;&nbsp;&nbsp;
+                            <select name="GENCODE"> <!-- Options values are according to BioPerl -->
+                                <option value=1>Nuclear Standard
+                                <option value=15>Nuclear Blepharisma
+                                <option value=6>Nuclear Ciliate
+                                <option value=10>Nuclear Euplotid
+                                <option value=2>Mitochondria Vertebrate
+                                <option value=5>Mitochondria Invertebrate
+                                <option value=3>Mitochondria Yeast
+                                <option value=13>Mitochondria Ascidian
+                                <option value=9>Mitochondria Echinoderm
+                                <option value=14>Mitochondria Flatworm
+                                <option value=4>Mitochondria Protozoan
+                                </select><br><br>
+            </div>
+
+            <br><br>
+            <div id="MAFFT_OPTION">
+            <b>Advanced MAFFT Options:</b><br>Max-Iterate
+            <select name="maxiterate"> 
+            <option value="0" selected="selected">0</option> 
+            <option value="1">1</option> 
+            <option value="2">2</option> 
+            <option value="5">5</option> 
+            <option value="10">10</option> 
+            <option value="20">20</option> 
+            <option value="50">50</option> 
+            <option value="80">80</option> 
+            <option value="100">100</option> 
+            <option value="1000">1000(long run)</option>
+            </select><br>
+            Pairwise alignment method <select name="pair"> 
+            <option value="" selected="selected">6mer</option> 
+            <option value="localpair">localpair</option> 
+            <option value="genafpair">genafpair</option> 
+            <option value="globalpair">globalpair</option> 
+            </select> 
+            </div>
+            <br>
+            <div id="PRANK_OPTION">
+            <b>Advanced PRANK Options:</b><br>
+            
+            <input type="checkbox" name="F" value="+F" checked> Trust insertions (+F)
+            </div>
+
+            </div>
+            <br> 
+            <input type=submit value="Submit" id="SubmitButton1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value="Clear" id="buttons">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <button type="button" onclick="LoadExample()">Load  an  example</button><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="-1"><A href="Gallery/output.php">Show Example Results</A></font>
+        {% endif %}
+     
+<!-- removed captcha code
+<script language="javascript" type="text/javascript">
+		$("#SubmitButton1").mouseover(function(){
+			$("#CaptchaCode").blur();
+		});
+</script>
+-->			
+			<br>
+			<br>
+			<br><br>
+	</td></table>
+	</form>
+
+    {% if rerun_params is defined %}
+    
+        <script language="javascript" type="text/javascript"> 
+            
+            form = document.Guidance_form;
+            
+            //form.FASTA_txt.value = `{{rerun_params['FASTA_txt'] | safe}}`
+            //$('#FASTA_txt').val(`{{rerun_params['FASTA_txt'] | safe}}`)
+            
+            form.PROGRAM.selectedIndex = '{{rerun_params['PROGRAM']}}';
+            toggle_Algorithm_Options();
+            var program=form.PROGRAM.selectedIndex;
+            if (program=='0') //GUIDANCE
+            {
+                form.Bootstraps.value = '{{rerun_params['Bootstraps']}}';
+                form.outorder[{{rerun_params['Align_Order']}}].checked=true;
+                form.MSA_Program.selectedIndex = '{{rerun_params['MSA_Prog']}}';
+            }
+            if (program=='1') //HoT
+            {
+                form.MSA_Program.selectedIndex = '{{rerun_params['MSA_Prog']}}';
+            }
+            var MSA_Program=form.MSA_Program.selectedIndex;
+            
+            
+            if (MSA_Program=='0') //MAFFT
+            {
+                form.maxiterate.selectedIndex = '{{rerun_params['MAFFT_MAX_ITERATES']}}';
+                form.pair.selectedIndex = '{{rerun_params['MAFFT_REFINE']}}';
+            }
+            if (MSA_Program=='1') //PRNAK
+            {
+                form.F.selectedIndex = '{{rerun_params['PRANK_INSERTION']}}';
+            }
+            form.SP_COL_CUTOFF.value='{{rerun_params['SP_COL_CUTOFF']}}'; //check
+            form.SP_SEQ_CUTOFF.value='{{rerun_params['SP_SEQ_CUTOFF']}}'; //check
+            form.Seq_Type[{{rerun_params['Seq_Type']}}].checked=true;
+            if (form.Seq_Type[2].checked==true)//CODONS
+            {
+                form.GENCODE.selectedIndex = '{{rerun_params['CodonTable']}}';
+            }
+            toggle_MSA_Options();
+            
+
+            
+        </script>
+        
+    {% endif %}
+    
+{% endblock %} 

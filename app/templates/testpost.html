@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block body %} 
+
+    <form name="Guidance_form"
+			  id = "Guidance_form"
+		      action="/guidance/testpost"
+		      method="post"
+		      ENCTYPE="multipart/form-data"
+		      onsubmit="return validateform()">
+	<input type=submit value="Submit" id="SubmitButton">
+
+    </form>
+    
+    <br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <h4 class=footer><p align='center'>Questions and comments are welcome! Please <span class="admin_link"><a href="mailto:evolseq@tauex.tau.ac.il?subject=Guidance%20Support%20Request">contact us</a></span></p></h4><div id="bottom_links"> 
+    <span class="bottom_link">
+    <a href="/" target="_blank">Home</a>
+    &nbsp;|&nbsp
+    <a href="/overview" target="_blank">Overview</a>
+    &nbsp;|&nbsp;
+    <a href="/gallery" target="_blank">Gallery</a>
+    &nbsp;|&nbsp;
+    <a href="/credits" target="_blank">Credits</a>
+    </span>
+    <br>
+    
+{% endblock %}
+

@@ -1,0 +1,3889 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phyloxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phyloxml.org" xsi:schemaLocation="http://www.phyloxml.org http://www.phyloxml.org/1.10/phyloxml.xsd">
+  <phylogeny rooted="false">
+<labels>
+                                <label type="text">
+                                  <data tag="chrom"/>
+                                </label>
+                                <label type="text">
+                                  <data tag="ploidy"/>
+                                </label>
+                                <label type="color">
+                                  <data tag="colortag"/>
+                                </label>
+                             </labels>    <clade>
+      <clade>
+        <branch_length>2.31787</branch_length>
+        <confidence type="unknown">1</confidence>
+        <clade>
+          <branch_length>0.069888</branch_length>
+          <confidence type="unknown">1</confidence>
+          <clade>
+            <branch_length>7.44523</branch_length>
+            <confidence type="unknown">1</confidence>
+            <clade>
+              <branch_length>2.7819</branch_length>
+              <confidence type="unknown">1</confidence>
+              <clade>
+                <branch_length>2.25607</branch_length>
+                <confidence type="unknown">1</confidence>
+                <clade>
+                  <branch_length>1.52394</branch_length>
+                  <confidence type="unknown">1</confidence>
+                  <clade>
+                    <branch_length>1.23036</branch_length>
+                    <confidence type="unknown">1</confidence>
+                    <clade>
+                      <branch_length>0.942192</branch_length>
+                      <confidence type="unknown">1</confidence>
+                      <clade>
+                        <branch_length>6.7502</branch_length>
+                        <confidence type="unknown">1</confidence>
+                        <clade>
+                          <branch_length>0.294482</branch_length>
+                          <confidence type="unknown">1</confidence>
+                          <clade>
+                            <branch_length>0.002452</branch_length>
+                            <confidence type="unknown">1</confidence>
+                            <clade>
+                              <branch_length>1.29271</branch_length>
+                              <confidence type="unknown">1</confidence>
+                              <clade>
+                                <branch_length>0.206564</branch_length>
+                                <confidence type="unknown">1</confidence>
+                                <clade>
+                                  <branch_length>0.596348</branch_length>
+                                  <confidence type="unknown">1</confidence>
+                                  <clade>
+                                    <branch_length>0.001519</branch_length>
+                                    <confidence type="unknown">1</confidence>
+                                    <clade>
+                                      <branch_length>1.49779</branch_length>
+                                      <confidence type="unknown">1</confidence>
+                                      <clade>
+                                        <branch_length>0.741129</branch_length>
+                                        <confidence type="unknown">1</confidence>
+                                        <clade>
+                                          <name>ruellia amoena</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                          <branch_length>4.7872</branch_length>
+                                        </clade>
+                                        <clade>
+                                          <name>ruellia tubiflora</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                          <branch_length>4.7872</branch_length>
+                                        </clade>
+                                      </clade>
+                                      <clade>
+                                        <branch_length>3.77151</branch_length>
+                                        <confidence type="unknown">1</confidence>
+                                        <clade>
+                                          <branch_length>0.637263</branch_length>
+                                          <confidence type="unknown">1</confidence>
+                                          <clade>
+                                            <name>ruellia hookeriana</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                            <branch_length>1.11956</branch_length>
+                                          </clade>
+                                          <clade>
+                                            <name>ruellia leucantha</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                            <branch_length>1.11956</branch_length>
+                                          </clade>
+                                        </clade>
+                                        <clade>
+                                          <name>ruellia bulbifera</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                          <branch_length>1.75682</branch_length>
+                                        </clade>
+                                      </clade>
+                                    </clade>
+                                    <clade>
+                                      <name>ruellia patula</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                      <branch_length>7.02612</branch_length>
+                                    </clade>
+                                  </clade>
+                                  <clade>
+                                    <name>ruellia elegans</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>7.02764</branch_length>
+                                  </clade>
+                                </clade>
+                                <clade>
+                                  <name>ruellia pringlei</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>7.62399</branch_length>
+                                </clade>
+                              </clade>
+                              <clade>
+                                <name>ruellia devosiana</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                <branch_length>7.83055</branch_length>
+                              </clade>
+                            </clade>
+                            <clade>
+                              <branch_length>1.92177</branch_length>
+                              <confidence type="unknown">1</confidence>
+                              <clade>
+                                <branch_length>1.89116</branch_length>
+                                <confidence type="unknown">1</confidence>
+                                <clade>
+                                  <branch_length>3.87919</branch_length>
+                                  <confidence type="unknown">1</confidence>
+                                  <clade>
+                                    <name>ruellia inundata</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>1.43113</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>ruellia asperula</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>1.43113</branch_length>
+                                  </clade>
+                                </clade>
+                                <clade>
+                                  <name>ruellia standleyi</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>5.31032</branch_length>
+                                </clade>
+                              </clade>
+                              <clade>
+                                <branch_length>4.39751</branch_length>
+                                <confidence type="unknown">1</confidence>
+                                <clade>
+                                  <branch_length>0.674495</branch_length>
+                                  <confidence type="unknown">1</confidence>
+                                  <clade>
+                                    <name>ruellia macrophylla</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.12947</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>ruellia stemonacanthoides</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.12947</branch_length>
+                                  </clade>
+                                </clade>
+                                <clade>
+                                  <branch_length>1.68579</branch_length>
+                                  <confidence type="unknown">1</confidence>
+                                  <clade>
+                                    <branch_length>0.006245</branch_length>
+                                    <confidence type="unknown">1</confidence>
+                                    <clade>
+                                      <name>ruellia eumorphantha</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                      <branch_length>1.11193</branch_length>
+                                    </clade>
+                                    <clade>
+                                      <branch_length>0.315469</branch_length>
+                                      <confidence type="unknown">1</confidence>
+                                      <clade>
+                                        <name>ruellia jussieuoides</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                        <branch_length>0.796465</branch_length>
+                                      </clade>
+                                      <clade>
+                                        <name>ruellia longipedunculata</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                        <branch_length>0.796465</branch_length>
+                                      </clade>
+                                    </clade>
+                                  </clade>
+                                  <clade>
+                                    <name>ruellia brevifolia</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>1.11818</branch_length>
+                                  </clade>
+                                </clade>
+                              </clade>
+                            </clade>
+                          </clade>
+                          <clade>
+                            <name>ruellia californica</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>9.12571</branch_length>
+                          </clade>
+                        </clade>
+                        <clade>
+                          <name>ruellia ciliosa</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia geminiflora</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia cordata</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia macrantha</name>
+<chrom>24</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia fruticosa</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia tweediana</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia matagalpae</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia humilis</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia pedunculata</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia repens</name>
+<chrom>12</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia anthracina</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia ciliata</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia makoyana</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia primuloides</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia rosea</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <branch_length>5.37907</branch_length>
+                          <confidence type="unknown">1</confidence>
+                          <clade>
+                            <branch_length>0.604749</branch_length>
+                            <confidence type="unknown">1</confidence>
+                            <clade>
+                              <branch_length>1.26181</branch_length>
+                              <confidence type="unknown">1</confidence>
+                              <clade>
+                                <branch_length>0.634601</branch_length>
+                                <confidence type="unknown">1</confidence>
+                                <clade>
+                                  <branch_length>0.593123</branch_length>
+                                  <confidence type="unknown">1</confidence>
+                                  <clade>
+                                    <name>ruellia ciliatiflora</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>0.946833</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>ruellia macrosolen</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>0.946833</branch_length>
+                                  </clade>
+                                </clade>
+                                <clade>
+                                  <name>ruellia nudiflora</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.53996</branch_length>
+                                </clade>
+                              </clade>
+                              <clade>
+                                <branch_length>0.002501</branch_length>
+                                <confidence type="unknown">1</confidence>
+                                <clade>
+                                  <name>ruellia intermedia</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>2.17206</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>ruellia tuberosa</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>2.17206</branch_length>
+                                </clade>
+                              </clade>
+                            </clade>
+                            <clade>
+                              <name>ruellia simplex</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.43637</branch_length>
+                            </clade>
+                          </clade>
+                          <clade>
+                            <branch_length>2.19925</branch_length>
+                            <confidence type="unknown">1</confidence>
+                            <clade>
+                              <name>ruellia caroliniensis</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>1.84187</branch_length>
+                            </clade>
+                            <clade>
+                              <name>ruellia strepens</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>1.84187</branch_length>
+                            </clade>
+                          </clade>
+                        </clade>
+                        <clade>
+                          <name>ruellia spicata</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia squarrosa</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia prostrata</name>
+<chrom>22</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia occidentalis</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia runyonii</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia bahiensis</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia petiolaris</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia albiflora</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia humilis var. longiflora</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia metziae</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia corzoi</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia succulenta</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia peninsularis</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia longituba</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                        <clade>
+                          <name>ruellia caroliniensis var. heteromorpha</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>9.42019</branch_length>
+                        </clade>
+                      </clade>
+                      <clade>
+                        <branch_length>8.20218</branch_length>
+                        <confidence type="unknown">1</confidence>
+                        <clade>
+                          <name>sanchezia nobilis</name>
+<chrom>68</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>7.96821</branch_length>
+                        </clade>
+                        <clade>
+                          <name>sanchezia parvibracteata</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>7.96821</branch_length>
+                        </clade>
+                      </clade>
+                    </clade>
+                    <clade>
+                      <name>petalidium barlerioides</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>17.1126</branch_length>
+                    </clade>
+                  </clade>
+                  <clade>
+                    <branch_length>0.853257</branch_length>
+                    <confidence type="unknown">1</confidence>
+                    <clade>
+                      <branch_length>0.746304</branch_length>
+                      <confidence type="unknown">1</confidence>
+                      <clade>
+                        <branch_length>11.3086</branch_length>
+                        <confidence type="unknown">1</confidence>
+                        <clade>
+                          <branch_length>0.00228</branch_length>
+                          <confidence type="unknown">1</confidence>
+                          <clade>
+                            <branch_length>0.794039</branch_length>
+                            <confidence type="unknown">1</confidence>
+                            <clade>
+                              <name>hemigraphis urens</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>4.63844</branch_length>
+                            </clade>
+                            <clade>
+                              <branch_length>2.59017</branch_length>
+                              <confidence type="unknown">1</confidence>
+                              <clade>
+                                <name>hemigraphis hirta</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                <branch_length>2.04827</branch_length>
+                              </clade>
+                              <clade>
+                                <branch_length>0.879897</branch_length>
+                                <confidence type="unknown">1</confidence>
+                                <clade>
+                                  <branch_length>0.001607</branch_length>
+                                  <confidence type="unknown">1</confidence>
+                                  <clade>
+                                    <name>hemigraphis repanda</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>1.16676</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>hemigraphis alternata</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>1.16677</branch_length>
+                                  </clade>
+                                </clade>
+                                <clade>
+                                  <name>hemigraphis latebrosa</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.16837</branch_length>
+                                </clade>
+                              </clade>
+                            </clade>
+                            <clade>
+                              <name>hemigraphis ebracteolata</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>4.63844</branch_length>
+                            </clade>
+                          </clade>
+                          <clade>
+                            <branch_length>2.13098</branch_length>
+                            <confidence type="unknown">1</confidence>
+                            <clade>
+                              <branch_length>2.59115</branch_length>
+                              <confidence type="unknown">1</confidence>
+                              <clade>
+                                <name>strobilanthes tashiroi</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                <branch_length>0.710346</branch_length>
+                              </clade>
+                              <clade>
+                                <name>strobilanthes flexicaulis</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                <branch_length>0.710346</branch_length>
+                              </clade>
+                            </clade>
+                            <clade>
+                              <branch_length>0.300206</branch_length>
+                              <confidence type="unknown">1</confidence>
+                              <clade>
+                                <branch_length>2.79263</branch_length>
+                                <confidence type="unknown">1</confidence>
+                                <clade>
+                                  <name>strobilanthes dyeriana</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>0.208654</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>strobilanthes penstemonoides</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>0.208654</branch_length>
+                                </clade>
+                              </clade>
+                              <clade>
+                                <branch_length>1.7297</branch_length>
+                                <confidence type="unknown">1</confidence>
+                                <clade>
+                                  <name>strobilanthes wakasana</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.27159</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>strobilanthes japonica</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.27159</branch_length>
+                                </clade>
+                              </clade>
+                            </clade>
+                          </clade>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes lurida</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes glutinosus</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes persicifolia</name>
+<chrom>10</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes barbatus</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes callosa</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes consanguineus</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes discolor</name>
+<chrom>11</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes flexa</name>
+<chrom>8</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes heteromallus</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes heyneanus</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes kunthianus</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes lanatus</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes wallichii</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <branch_length>3.71463</branch_length>
+                          <confidence type="unknown">1</confidence>
+                          <clade>
+                            <name>strobilanthes pulneyensis</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>1.72012</branch_length>
+                          </clade>
+                          <clade>
+                            <name>strobilanthes zenkeriana</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>1.72012</branch_length>
+                          </clade>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes cusia</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes tomentosa</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes papillosa</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes oliganthus</name>
+<chrom>30</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes quadrangularis</name>
+<chrom>11</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes lupulinus</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes urticifolia</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes dalhousieanus</name>
+<chrom>9</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes asperrimus</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes adnatus</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes callosus</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes atropurpureus var. atropurpurea</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes atropurpureus</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes scaber</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes inflata</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes lawsoni</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                        <clade>
+                          <name>strobilanthes homotropa</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.43475</branch_length>
+                        </clade>
+                      </clade>
+                      <clade>
+                        <branch_length>0.589501</branch_length>
+                        <confidence type="unknown">1</confidence>
+                        <clade>
+                          <branch_length>2.66405</branch_length>
+                          <confidence type="unknown">1</confidence>
+                          <clade>
+                            <branch_length>9.93303</branch_length>
+                            <confidence type="unknown">1</confidence>
+                            <clade>
+                              <name>dyschoriste erecta</name>
+<chrom>30</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.5568</branch_length>
+                            </clade>
+                            <clade>
+                              <name>dyschoriste hirsutissima</name>
+<chrom>30</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.5568</branch_length>
+                            </clade>
+                            <clade>
+                              <name>dyschoriste saltuensis</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.5568</branch_length>
+                            </clade>
+                            <clade>
+                              <name>dyschoriste vagans</name>
+<chrom>28</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.5568</branch_length>
+                            </clade>
+                            <clade>
+                              <branch_length>2.02901</branch_length>
+                              <confidence type="unknown">1</confidence>
+                              <clade>
+                                <name>dyschoriste angusta</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                <branch_length>1.52779</branch_length>
+                              </clade>
+                              <clade>
+                                <branch_length>0.196495</branch_length>
+                                <confidence type="unknown">1</confidence>
+                                <clade>
+                                  <name>dyschoriste oblongifolia</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.3313</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>dyschoriste humilis</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.3313</branch_length>
+                                </clade>
+                              </clade>
+                            </clade>
+                            <clade>
+                              <name>dyschoriste procumbens</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.5568</branch_length>
+                            </clade>
+                            <clade>
+                              <name>dyschoriste novogaliciana</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.5568</branch_length>
+                            </clade>
+                          </clade>
+                          <clade>
+                            <branch_length>9.97608</branch_length>
+                            <confidence type="unknown">1</confidence>
+                            <clade>
+                              <name>phaulopsis imbricata</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.51375</branch_length>
+                            </clade>
+                            <clade>
+                              <name>phaulopsis pulchella</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.51375</branch_length>
+                            </clade>
+                            <clade>
+                              <name>phaulopsis talbotii</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.51375</branch_length>
+                            </clade>
+                            <clade>
+                              <name>phaulopsis rupestris</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.51375</branch_length>
+                            </clade>
+                            <clade>
+                              <name>phaulopsis dorsiflora</name>
+<chrom>28</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.51375</branch_length>
+                            </clade>
+                            <clade>
+                              <name>phaulopsis barteri</name>
+<chrom>32</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.51375</branch_length>
+                            </clade>
+                            <clade>
+                              <name>phaulopsis ciliata</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.51375</branch_length>
+                            </clade>
+                            <clade>
+                              <name>phaulopsis gediensis</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.51375</branch_length>
+                            </clade>
+                            <clade>
+                              <name>phaulopsis sangana</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.51375</branch_length>
+                            </clade>
+                            <clade>
+                              <name>phaulopsis angolana</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.51374</branch_length>
+                            </clade>
+                            <clade>
+                              <name>phaulopsis imbricata subsp. poggei</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.51375</branch_length>
+                            </clade>
+                            <clade>
+                              <name>phaulopsis imbricata subsp. madagascariensis</name>
+<chrom>32</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>3.51375</branch_length>
+                            </clade>
+                          </clade>
+                        </clade>
+                        <clade>
+                          <branch_length>12.3875</branch_length>
+                          <confidence type="unknown">1</confidence>
+                          <clade>
+                            <name>hygrophila costata</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>3.76642</branch_length>
+                          </clade>
+                          <clade>
+                            <name>hygrophila serpyllum</name>
+<chrom>6</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+                            <branch_length>3.76642</branch_length>
+                          </clade>
+                          <clade>
+                            <name>hygrophila polysperma</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>3.76642</branch_length>
+                          </clade>
+                          <clade>
+                            <name>hygrophila paraibana</name>
+<chrom>30</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>3.76642</branch_length>
+                          </clade>
+                          <clade>
+                            <name>hygrophila auriculata</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>3.76642</branch_length>
+                          </clade>
+                          <clade>
+                            <name>hygrophila ringens var. ringens</name>
+<chrom>22</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>3.76642</branch_length>
+                          </clade>
+                          <clade>
+                            <name>hygrophila senegalensis</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>3.76642</branch_length>
+                          </clade>
+                        </clade>
+                      </clade>
+                    </clade>
+                    <clade>
+                      <name>lepidagathis cuspidata</name>
+<chrom>11</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+                      <branch_length>17.4897</branch_length>
+                    </clade>
+                  </clade>
+                </clade>
+                <clade>
+                  <branch_length>16.5264</branch_length>
+                  <confidence type="unknown">1</confidence>
+                  <clade>
+                    <name>eranthemum pulchellum</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                    <branch_length>3.34045</branch_length>
+                  </clade>
+                  <clade>
+                    <name>eranthemum capense</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                    <branch_length>3.34045</branch_length>
+                  </clade>
+                  <clade>
+                    <name>eranthemum roseum</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                    <branch_length>3.34045</branch_length>
+                  </clade>
+                  <clade>
+                    <name>eranthemum splendens</name>
+<chrom>12</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                    <branch_length>3.34045</branch_length>
+                  </clade>
+                  <clade>
+                    <name>eranthemum variegatum</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                    <branch_length>3.34045</branch_length>
+                  </clade>
+                  <clade>
+                    <name>eranthemum purpurascens</name>
+<chrom>42</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                    <branch_length>3.34045</branch_length>
+                  </clade>
+                </clade>
+              </clade>
+              <clade>
+                <name>pararuellia delavayana</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>22.123</branch_length>
+              </clade>
+            </clade>
+            <clade>
+              <name>eremomastax speciosa</name>
+<chrom>28</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+              <branch_length>24.9048</branch_length>
+            </clade>
+            <clade>
+              <name>dipteracanthus prostratus</name>
+<chrom>22</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+              <branch_length>24.9043</branch_length>
+            </clade>
+            <clade>
+              <name>brillantaisia lamium</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+              <branch_length>24.9043</branch_length>
+            </clade>
+          </clade>
+          <clade>
+            <branch_length>0.00708</branch_length>
+            <confidence type="unknown">1</confidence>
+            <clade>
+              <branch_length>2.4031</branch_length>
+              <confidence type="unknown">1</confidence>
+              <clade>
+                <branch_length>3.72571</branch_length>
+                <confidence type="unknown">1</confidence>
+                <clade>
+                  <branch_length>2.76899</branch_length>
+                  <confidence type="unknown">1</confidence>
+                  <clade>
+                    <branch_length>3.42984</branch_length>
+                    <confidence type="unknown">1</confidence>
+                    <clade>
+                      <branch_length>2.12768</branch_length>
+                      <confidence type="unknown">1</confidence>
+                      <clade>
+                        <branch_length>12.3918</branch_length>
+                        <confidence type="unknown">1</confidence>
+                        <clade>
+                          <branch_length>0.63959</branch_length>
+                          <confidence type="unknown">1</confidence>
+                          <clade>
+                            <branch_length>0.688</branch_length>
+                            <confidence type="unknown">1</confidence>
+                            <clade>
+                              <branch_length>2.48558</branch_length>
+                              <confidence type="unknown">1</confidence>
+                              <clade>
+                                <name>barleria lupulina</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                <branch_length>1.68268</branch_length>
+                              </clade>
+                              <clade>
+                                <name>barleria prionitis</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                <branch_length>1.68268</branch_length>
+                              </clade>
+                            </clade>
+                            <clade>
+                              <name>barleria oenotheroides</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>4.16827</branch_length>
+                            </clade>
+                          </clade>
+                          <clade>
+                            <name>barleria repens</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>4.85627</branch_length>
+                          </clade>
+                        </clade>
+                        <clade>
+                          <name>barleria cristata</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria prattensis</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria acuminata</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria longiflora</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria strigosa</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria candida</name>
+<chrom>19</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria courtallica</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria gibsonii</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria involucrata</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria senensis</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria acanthoides</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria tomentosa</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria involucrata var. elata</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria buxifolia</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria mysorensis</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria cuspidata</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                        <clade>
+                          <name>barleria noctiflora</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>5.49586</branch_length>
+                        </clade>
+                      </clade>
+                      <clade>
+                        <branch_length>11.7416</branch_length>
+                        <confidence type="unknown">1</confidence>
+                        <clade>
+                          <name>crabbea velutina</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>6.14606</branch_length>
+                        </clade>
+                        <clade>
+                          <name>crabbea angustifolia</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>6.14607</branch_length>
+                        </clade>
+                      </clade>
+                    </clade>
+                    <clade>
+                      <name>lepidagathis alopecuroidea</name>
+<chrom>9</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+                      <branch_length>20.0154</branch_length>
+                    </clade>
+                  </clade>
+                  <clade>
+                    <branch_length>5.48599</branch_length>
+                    <confidence type="unknown">1</confidence>
+                    <clade>
+                      <branch_length>4.5893</branch_length>
+                      <confidence type="unknown">1</confidence>
+                      <clade>
+                        <name>phlogacanthus thyrsiflorus</name>
+<chrom>25</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>13.3699</branch_length>
+                      </clade>
+                      <clade>
+                        <name>gymnostachyum ceylanicum</name>
+<chrom>28</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>13.3699</branch_length>
+                      </clade>
+                    </clade>
+                    <clade>
+                      <branch_length>10.5024</branch_length>
+                      <confidence type="unknown">1</confidence>
+                      <clade>
+                        <name>andrographis echioides</name>
+<chrom>24</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>7.4568</branch_length>
+                      </clade>
+                      <clade>
+                        <name>andrographis paniculata</name>
+<chrom>25</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>7.4568</branch_length>
+                      </clade>
+                      <clade>
+                        <name>andrographis elongata</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>7.4568</branch_length>
+                      </clade>
+                      <clade>
+                        <name>andrographis lobelioides</name>
+<chrom>24</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>7.4568</branch_length>
+                      </clade>
+                      <clade>
+                        <name>andrographis neesiana</name>
+<chrom>25</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>7.4568</branch_length>
+                      </clade>
+                    </clade>
+                  </clade>
+                </clade>
+                <clade>
+                  <branch_length>4.80222</branch_length>
+                  <confidence type="unknown">1</confidence>
+                  <clade>
+                    <name>whitfieldia elongata</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                    <branch_length>21.412</branch_length>
+                  </clade>
+                  <clade>
+                    <name>lankesteria elegans</name>
+<chrom>25</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                    <branch_length>21.412</branch_length>
+                  </clade>
+                </clade>
+              </clade>
+              <clade>
+                <name>neuracanthus umbraticus</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>29.9399</branch_length>
+              </clade>
+            </clade>
+            <clade>
+              <branch_length>15.88</branch_length>
+              <confidence type="unknown">1</confidence>
+              <clade>
+                <branch_length>5.91613</branch_length>
+                <confidence type="unknown">1</confidence>
+                <clade>
+                  <branch_length>0.294731</branch_length>
+                  <confidence type="unknown">1</confidence>
+                  <clade>
+                    <branch_length>4.19464</branch_length>
+                    <confidence type="unknown">1</confidence>
+                    <clade>
+                      <name>aphelandra scabra</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra sinclairiana</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra golfodulcensis</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra aurantiaca</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra chamissoniana</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra darienensis</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra gracilis</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra hartwegiana</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra hieronymi</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra lineariloba</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra lingua-bovis</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra madrensis</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra panamensis</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra storkii</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra terryae</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <branch_length>0.248305</branch_length>
+                      <confidence type="unknown">1</confidence>
+                      <clade>
+                        <branch_length>2.92409</branch_length>
+                        <confidence type="unknown">1</confidence>
+                        <clade>
+                          <name>aphelandra campanensis</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>2.88507</branch_length>
+                        </clade>
+                        <clade>
+                          <name>aphelandra leonardii</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>2.88507</branch_length>
+                        </clade>
+                      </clade>
+                      <clade>
+                        <branch_length>1.60661</branch_length>
+                        <confidence type="unknown">1</confidence>
+                        <clade>
+                          <name>aphelandra gigantiflora</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>4.20255</branch_length>
+                        </clade>
+                        <clade>
+                          <name>aphelandra guerrerensis</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>4.20255</branch_length>
+                        </clade>
+                      </clade>
+                    </clade>
+                    <clade>
+                      <name>aphelandra tonduzii</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05747</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra arborea</name>
+<chrom>28</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                    <clade>
+                      <name>aphelandra cristata</name>
+<chrom>34</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>6.05748</branch_length>
+                    </clade>
+                  </clade>
+                  <clade>
+                    <branch_length>7.15282</branch_length>
+                    <confidence type="unknown">1</confidence>
+                    <clade>
+                      <name>holographis pallida</name>
+<chrom>26</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>3.09928</branch_length>
+                    </clade>
+                    <clade>
+                      <name>holographis ehrenbergiana</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>3.09929</branch_length>
+                    </clade>
+                    <clade>
+                      <name>holographis parayana</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>3.09929</branch_length>
+                    </clade>
+                    <clade>
+                      <name>holographis leticiana</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>3.09928</branch_length>
+                    </clade>
+                    <clade>
+                      <name>holographis virgata</name>
+<chrom>26</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>3.09928</branch_length>
+                    </clade>
+                    <clade>
+                      <name>holographis caput-medusae</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>3.09928</branch_length>
+                    </clade>
+                    <clade>
+                      <name>holographis argyrea</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>3.09928</branch_length>
+                    </clade>
+                  </clade>
+                </clade>
+                <clade>
+                  <name>stenandrium barbatum</name>
+<chrom>26</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                  <branch_length>10.5468</branch_length>
+                </clade>
+                <clade>
+                  <name>stenandrium dulce</name>
+<chrom>26</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                  <branch_length>10.5468</branch_length>
+                </clade>
+                <clade>
+                  <name>stenandrium diphyllum</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                  <branch_length>10.5468</branch_length>
+                </clade>
+                <clade>
+                  <name>stenandrium pilosulum</name>
+<chrom>26</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                  <branch_length>10.5468</branch_length>
+                </clade>
+              </clade>
+              <clade>
+                <branch_length>1.12371</branch_length>
+                <confidence type="unknown">1</confidence>
+                <clade>
+                  <branch_length>3.93613</branch_length>
+                  <confidence type="unknown">1</confidence>
+                  <clade>
+                    <branch_length>0.553085</branch_length>
+                    <confidence type="unknown">1</confidence>
+                    <clade>
+                      <name>blepharis integrifolia</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>10.85</branch_length>
+                    </clade>
+                    <clade>
+                      <name>blepharis maderaspatensis</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>10.85</branch_length>
+                    </clade>
+                    <clade>
+                      <name>blepharis linariifolia</name>
+<chrom>12</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>10.85</branch_length>
+                    </clade>
+                    <clade>
+                      <name>blepharis scindica</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>10.85</branch_length>
+                    </clade>
+                  </clade>
+                  <clade>
+                    <branch_length>3.20377</branch_length>
+                    <confidence type="unknown">1</confidence>
+                    <clade>
+                      <branch_length>4.13505</branch_length>
+                      <confidence type="unknown">1</confidence>
+                      <clade>
+                        <branch_length>0.214807</branch_length>
+                        <confidence type="unknown">1</confidence>
+                        <clade>
+                          <name>acanthus ebracteatus</name>
+<chrom>22</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>3.84951</branch_length>
+                        </clade>
+                        <clade>
+                          <name>acanthus ilicifolius</name>
+<chrom>22</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>3.84951</branch_length>
+                        </clade>
+                      </clade>
+                      <clade>
+                        <name>acanthus volubilis</name>
+<chrom>22</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>4.06431</branch_length>
+                      </clade>
+                    </clade>
+                    <clade>
+                      <branch_length>2.7623</branch_length>
+                      <confidence type="unknown">1</confidence>
+                      <clade>
+                        <branch_length>3.63304</branch_length>
+                        <confidence type="unknown">1</confidence>
+                        <clade>
+                          <name>acanthus spinosus</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>1.80403</branch_length>
+                        </clade>
+                        <clade>
+                          <name>acanthus mollis</name>
+<chrom>28</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>1.80403</branch_length>
+                        </clade>
+                      </clade>
+                      <clade>
+                        <name>acanthus pubescens</name>
+<chrom>28</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>5.43706</branch_length>
+                      </clade>
+                    </clade>
+                  </clade>
+                </clade>
+                <clade>
+                  <branch_length>0.808287</branch_length>
+                  <confidence type="unknown">1</confidence>
+                  <clade>
+                    <branch_length>9.21934</branch_length>
+                    <confidence type="unknown">1</confidence>
+                    <clade>
+                      <branch_length>1.24357</branch_length>
+                      <confidence type="unknown">1</confidence>
+                      <clade>
+                        <name>crossandra pungens</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>4.06806</branch_length>
+                      </clade>
+                      <clade>
+                        <name>crossandra infundibuliformis</name>
+<chrom>19</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>4.06806</branch_length>
+                      </clade>
+                    </clade>
+                    <clade>
+                      <name>crossandra nilotica</name>
+<chrom>30</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>5.31163</branch_length>
+                    </clade>
+                    <clade>
+                      <name>crossandra flava</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>5.31163</branch_length>
+                    </clade>
+                  </clade>
+                  <clade>
+                    <name>sclerochiton vogelii</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                    <branch_length>14.531</branch_length>
+                  </clade>
+                </clade>
+              </clade>
+            </clade>
+          </clade>
+          <clade>
+            <name>lepidagathis formosensis</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>32.3501</branch_length>
+          </clade>
+          <clade>
+            <name>lepidagathis cristata</name>
+<chrom>11</chrom>
+<colortag>0x000000</colortag>
+<ploidy></ploidy>
+            <branch_length>32.3501</branch_length>
+          </clade>
+          <clade>
+            <name>lepidagathis incurva</name>
+<chrom>22</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>32.3501</branch_length>
+          </clade>
+          <clade>
+            <name>lepidagathis anobrya</name>
+<chrom>10</chrom>
+<colortag>0x000000</colortag>
+<ploidy></ploidy>
+            <branch_length>32.3501</branch_length>
+          </clade>
+          <clade>
+            <name>lepidagathis fasciculata</name>
+<chrom>10</chrom>
+<colortag>0x000000</colortag>
+<ploidy></ploidy>
+            <branch_length>32.3501</branch_length>
+          </clade>
+          <clade>
+            <name>lepidagathis felicis</name>
+<chrom>10</chrom>
+<colortag>0x000000</colortag>
+<ploidy></ploidy>
+            <branch_length>32.3501</branch_length>
+          </clade>
+          <clade>
+            <name>lepidagathis purpuricaulis</name>
+<chrom>12</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>32.3501</branch_length>
+          </clade>
+        </clade>
+        <clade>
+          <name>pseuderanthemum tunicatum</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+          <branch_length>32.42</branch_length>
+        </clade>
+        <clade>
+          <name>pseuderanthemum carruthersii</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+          <branch_length>32.42</branch_length>
+        </clade>
+        <clade>
+          <name>pseuderanthemum hildebrandtii</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+          <branch_length>32.42</branch_length>
+        </clade>
+        <clade>
+          <name>pseuderanthemum malabaricum</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+          <branch_length>32.42</branch_length>
+        </clade>
+        <clade>
+          <branch_length>16.2096</branch_length>
+          <confidence type="unknown">1</confidence>
+          <clade>
+            <name>yeatesia viridiflora</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>16.2096</branch_length>
+          </clade>
+          <clade>
+            <name>yeatesia mabryi</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>16.2096</branch_length>
+          </clade>
+        </clade>
+        <clade>
+          <name>calycacanthus magnusianus</name>
+<chrom>8</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+          <branch_length>32.42</branch_length>
+        </clade>
+        <clade>
+          <name>gypsacanthus nelsonii</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+          <branch_length>32.42</branch_length>
+        </clade>
+        <clade>
+          <branch_length>11.7605</branch_length>
+          <confidence type="unknown">1</confidence>
+          <clade>
+            <branch_length>2.0352</branch_length>
+            <confidence type="unknown">1</confidence>
+            <clade>
+              <branch_length>1.8562</branch_length>
+              <confidence type="unknown">1</confidence>
+              <clade>
+                <branch_length>1.32993</branch_length>
+                <confidence type="unknown">1</confidence>
+                <clade>
+                  <branch_length>3.17717</branch_length>
+                  <confidence type="unknown">1</confidence>
+                  <clade>
+                    <name>anisacanthus quadrifidus var. wrightii</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                    <branch_length>12.261</branch_length>
+                  </clade>
+                  <clade>
+                    <branch_length>6.24267</branch_length>
+                    <confidence type="unknown">1</confidence>
+                    <clade>
+                      <branch_length>3.00914</branch_length>
+                      <confidence type="unknown">1</confidence>
+                      <clade>
+                        <name>ecbolium syringifolium</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>3.00914</branch_length>
+                      </clade>
+                      <clade>
+                        <name>ecbolium viride</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>3.00914</branch_length>
+                      </clade>
+                      <clade>
+                        <name>ecbolium ligustrinum</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>3.00914</branch_length>
+                      </clade>
+                    </clade>
+                    <clade>
+                      <branch_length>1.11379</branch_length>
+                      <confidence type="unknown">1</confidence>
+                      <clade>
+                        <branch_length>0.598872</branch_length>
+                        <confidence type="unknown">1</confidence>
+                        <clade>
+                          <name>fittonia albivenis</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>4.30563</branch_length>
+                        </clade>
+                        <clade>
+                          <branch_length>0.415794</branch_length>
+                          <confidence type="unknown">1</confidence>
+                          <clade>
+                            <branch_length>2.93659</branch_length>
+                            <confidence type="unknown">1</confidence>
+                            <clade>
+                              <branch_length>0.167755</branch_length>
+                              <confidence type="unknown">1</confidence>
+                              <clade>
+                                <name>pachystachys lutea</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                <branch_length>0.785489</branch_length>
+                              </clade>
+                              <clade>
+                                <name>pachystachys spicata</name>
+<chrom>27</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                <branch_length>0.785488</branch_length>
+                              </clade>
+                            </clade>
+                            <clade>
+                              <name>pachystachys coccinea</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>0.953244</branch_length>
+                            </clade>
+                          </clade>
+                          <clade>
+                            <name>justicia gonzalezii</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>3.88983</branch_length>
+                          </clade>
+                        </clade>
+                      </clade>
+                      <clade>
+                        <branch_length>0.193993</branch_length>
+                        <confidence type="unknown">1</confidence>
+                        <clade>
+                          <branch_length>0.328634</branch_length>
+                          <confidence type="unknown">1</confidence>
+                          <clade>
+                            <branch_length>1.2149</branch_length>
+                            <confidence type="unknown">1</confidence>
+                            <clade>
+                              <branch_length>0.229246</branch_length>
+                              <confidence type="unknown">1</confidence>
+                              <clade>
+                                <branch_length>1.53063</branch_length>
+                                <confidence type="unknown">1</confidence>
+                                <clade>
+                                  <name>tetramerium glandulosum</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.40709</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium tenuissimum</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.4071</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium diffusum</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.4071</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium glutinosum</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.4071</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium langlassei</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.4071</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium rubrum</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.4071</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium nervosum</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.40709</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium fruticosum</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.40709</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium emilyanum</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.40709</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium mcvaughii</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.40709</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium yaquianum</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.40709</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium abditum</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.40709</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium oaxacanum</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.40709</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium rzedowskii</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.40709</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium sagasteguianum</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.40709</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium platystegium</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.40709</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>tetramerium guerrerense</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>1.40709</branch_length>
+                                </clade>
+                              </clade>
+                              <clade>
+                                <name>carlowrightia arizonica</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                <branch_length>2.93772</branch_length>
+                              </clade>
+                            </clade>
+                            <clade>
+                              <branch_length>2.55837</branch_length>
+                              <confidence type="unknown">1</confidence>
+                              <clade>
+                                <name>anisacanthus linearis</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                <branch_length>0.608596</branch_length>
+                              </clade>
+                              <clade>
+                                <name>anisacanthus thurberi</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                <branch_length>0.608596</branch_length>
+                              </clade>
+                            </clade>
+                          </clade>
+                          <clade>
+                            <name>carlowrightia linearifolia</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>4.38188</branch_length>
+                          </clade>
+                          <clade>
+                            <name>carlowrightia parviflora</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>4.38188</branch_length>
+                          </clade>
+                          <clade>
+                            <name>carlowrightia serpyllifolia</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>4.38188</branch_length>
+                          </clade>
+                          <clade>
+                            <name>carlowrightia myriantha</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>4.38188</branch_length>
+                          </clade>
+                          <clade>
+                            <name>carlowrightia sulcata</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>4.38188</branch_length>
+                          </clade>
+                          <clade>
+                            <name>carlowrightia hepalocarpa</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>4.38188</branch_length>
+                          </clade>
+                          <clade>
+                            <name>carlowrightia pectinata</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>4.38188</branch_length>
+                          </clade>
+                          <clade>
+                            <name>carlowrightia pringlei</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>4.38188</branch_length>
+                          </clade>
+                          <clade>
+                            <name>carlowrightia texana</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>4.38187</branch_length>
+                          </clade>
+                          <clade>
+                            <name>carlowrightia mcvaughii</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>4.38187</branch_length>
+                          </clade>
+                          <clade>
+                            <name>carlowrightia mexicana</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>4.38187</branch_length>
+                          </clade>
+                        </clade>
+                        <clade>
+                          <branch_length>1.66753</branch_length>
+                          <confidence type="unknown">1</confidence>
+                          <clade>
+                            <name>chalarothyrsus amplexicaulis</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>3.04298</branch_length>
+                          </clade>
+                          <clade>
+                            <name>henrya insularis</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>3.04298</branch_length>
+                          </clade>
+                        </clade>
+                      </clade>
+                    </clade>
+                  </clade>
+                  <clade>
+                    <name>anisacanthus quadrifidus</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                    <branch_length>12.261</branch_length>
+                  </clade>
+                  <clade>
+                    <name>anisacanthus andersonii</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                    <branch_length>12.261</branch_length>
+                  </clade>
+                </clade>
+                <clade>
+                  <branch_length>1.12538</branch_length>
+                  <confidence type="unknown">1</confidence>
+                  <clade>
+                    <branch_length>0.981374</branch_length>
+                    <confidence type="unknown">1</confidence>
+                    <clade>
+                      <branch_length>0.631039</branch_length>
+                      <confidence type="unknown">1</confidence>
+                      <clade>
+                        <branch_length>2.69361</branch_length>
+                        <confidence type="unknown">1</confidence>
+                        <clade>
+                          <branch_length>0.962133</branch_length>
+                          <confidence type="unknown">1</confidence>
+                          <clade>
+                            <branch_length>0.944703</branch_length>
+                            <confidence type="unknown">1</confidence>
+                            <clade>
+                              <branch_length>3.15728</branch_length>
+                              <confidence type="unknown">1</confidence>
+                              <clade>
+                                <branch_length>0.616265</branch_length>
+                                <confidence type="unknown">1</confidence>
+                                <clade>
+                                  <branch_length>1.96097</branch_length>
+                                  <confidence type="unknown">1</confidence>
+                                  <clade>
+                                    <branch_length>0.005027</branch_length>
+                                    <confidence type="unknown">1</confidence>
+                                    <clade>
+                                      <name>dicliptera magaliesbergensis</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                      <branch_length>2.36035</branch_length>
+                                    </clade>
+                                    <clade>
+                                      <name>dicliptera chinensis</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                      <branch_length>2.36035</branch_length>
+                                    </clade>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera resupinata</name>
+<chrom>20</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36537</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera sexangularis</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera scutellata</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera bupleuroides</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera clinopodia</name>
+<chrom>12</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera cuneata</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera elegans</name>
+<chrom>10</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera haenkeana</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera heterostegia</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera inaequalis</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera iopus</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera leonotis</name>
+<chrom>24</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera madagascariensis</name>
+<chrom>30</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera mucronifolia</name>
+<chrom>30</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera nervata</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera parvibracteata</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera peduncularis</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera sciadephora</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera skutchii</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera unguiculata</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera verticillata</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36538</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera sericea</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36537</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera niederleiniana</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36537</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera brachiata</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36537</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera tweedieana</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36537</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera paniculata</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36537</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>dicliptera xipotensis</name>
+<chrom>28</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>2.36537</branch_length>
+                                  </clade>
+                                </clade>
+                                <clade>
+                                  <branch_length>0.391236</branch_length>
+                                  <confidence type="unknown">1</confidence>
+                                  <clade>
+                                    <name>hypoestes aristata</name>
+<chrom>30</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>3.93511</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>hypoestes phyllostachya</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>3.93511</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>hypoestes floribunda</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>3.93511</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>hypoestes triflora</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>3.93511</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>hypoestes forsskaolii</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>3.93511</branch_length>
+                                  </clade>
+                                  <clade>
+                                    <name>hypoestes sanguinolenta</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                    <branch_length>3.93511</branch_length>
+                                  </clade>
+                                </clade>
+                              </clade>
+                              <clade>
+                                <branch_length>2.02051</branch_length>
+                                <confidence type="unknown">1</confidence>
+                                <clade>
+                                  <name>peristrophe japonica</name>
+<chrom>24</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>2.9221</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>peristrophe speciosa</name>
+<chrom>30</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>2.92211</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>peristrophe salicifolia</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>2.9221</branch_length>
+                                </clade>
+                                <clade>
+                                  <name>peristrophe bicalyculata</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                  <branch_length>2.9221</branch_length>
+                                </clade>
+                              </clade>
+                            </clade>
+                            <clade>
+                              <branch_length>3.79564</branch_length>
+                              <confidence type="unknown">1</confidence>
+                              <clade>
+                                <name>rhinacanthus gracilis</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                <branch_length>4.30425</branch_length>
+                              </clade>
+                              <clade>
+                                <name>rhinacanthus nasutus</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                                <branch_length>4.30425</branch_length>
+                              </clade>
+                            </clade>
+                          </clade>
+                          <clade>
+                            <name>justicia procumbens</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>9.04459</branch_length>
+                          </clade>
+                        </clade>
+                        <clade>
+                          <branch_length>4.7274</branch_length>
+                          <confidence type="unknown">1</confidence>
+                          <clade>
+                            <branch_length>0.247404</branch_length>
+                            <confidence type="unknown">1</confidence>
+                            <clade>
+                              <name>justicia americana</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>5.03193</branch_length>
+                            </clade>
+                            <clade>
+                              <name>justicia caudata</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                              <branch_length>5.03193</branch_length>
+                            </clade>
+                          </clade>
+                          <clade>
+                            <name>poikilacanthus macranthus</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                            <branch_length>5.27933</branch_length>
+                          </clade>
+                        </clade>
+                      </clade>
+                      <clade>
+                        <name>justicia extensa</name>
+<chrom>34</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>12.7003</branch_length>
+                      </clade>
+                    </clade>
+                    <clade>
+                      <name>justicia betonica</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>13.3314</branch_length>
+                    </clade>
+                  </clade>
+                  <clade>
+                    <branch_length>2.19205</branch_length>
+                    <confidence type="unknown">1</confidence>
+                    <clade>
+                      <branch_length>0.107552</branch_length>
+                      <confidence type="unknown">1</confidence>
+                      <clade>
+                        <branch_length>7.8077</branch_length>
+                        <confidence type="unknown">1</confidence>
+                        <clade>
+                          <name>justicia gendarussa</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>4.20544</branch_length>
+                        </clade>
+                        <clade>
+                          <name>justicia ventricosa</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                          <branch_length>4.20544</branch_length>
+                        </clade>
+                      </clade>
+                      <clade>
+                        <name>rungia pectinata</name>
+<chrom>15</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>12.0132</branch_length>
+                      </clade>
+                    </clade>
+                    <clade>
+                      <name>metarungia longistrobus</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>12.1207</branch_length>
+                    </clade>
+                  </clade>
+                </clade>
+              </clade>
+              <clade>
+                <branch_length>7.24267</branch_length>
+                <confidence type="unknown">1</confidence>
+                <clade>
+                  <name>justicia adhatoda</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                  <branch_length>9.52538</branch_length>
+                </clade>
+                <clade>
+                  <name>anisotes madagascariensis</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                  <branch_length>9.52538</branch_length>
+                </clade>
+              </clade>
+            </clade>
+            <clade>
+              <branch_length>11.5254</branch_length>
+              <confidence type="unknown">1</confidence>
+              <clade>
+                <name>isoglossa grandiflora</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>7.09885</branch_length>
+              </clade>
+              <clade>
+                <name>isoglossa ovata</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>7.09886</branch_length>
+              </clade>
+              <clade>
+                <name>isoglossa hypoestiflora</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>7.09886</branch_length>
+              </clade>
+            </clade>
+          </clade>
+          <clade>
+            <branch_length>5.25781</branch_length>
+            <confidence type="unknown">1</confidence>
+            <clade>
+              <branch_length>5.88845</branch_length>
+              <confidence type="unknown">1</confidence>
+              <clade>
+                <branch_length>6.49717</branch_length>
+                <confidence type="unknown">1</confidence>
+                <clade>
+                  <branch_length>0.003607</branch_length>
+                  <confidence type="unknown">1</confidence>
+                  <clade>
+                    <branch_length>0.004939</branch_length>
+                    <confidence type="unknown">1</confidence>
+                    <clade>
+                      <branch_length>1.50374</branch_length>
+                      <confidence type="unknown">1</confidence>
+                      <clade>
+                        <name>ruspolia seticalyx</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>1.50374</branch_length>
+                      </clade>
+                      <clade>
+                        <name>ruspolia hypocrateriformis</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                        <branch_length>1.50375</branch_length>
+                      </clade>
+                    </clade>
+                    <clade>
+                      <name>ruttya fruticosa</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>3.00747</branch_length>
+                    </clade>
+                  </clade>
+                  <clade>
+                    <name>oplonia microphylla</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                    <branch_length>3.01241</branch_length>
+                  </clade>
+                </clade>
+                <clade>
+                  <branch_length>0.705856</branch_length>
+                  <confidence type="unknown">1</confidence>
+                  <clade>
+                    <name>pseuderanthemum alatum</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                    <branch_length>2.31016</branch_length>
+                  </clade>
+                  <clade>
+                    <branch_length>1.15508</branch_length>
+                    <confidence type="unknown">1</confidence>
+                    <clade>
+                      <name>odontonema microphyllus</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>1.15509</branch_length>
+                    </clade>
+                    <clade>
+                      <name>odontonema rutilans</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>1.15509</branch_length>
+                    </clade>
+                    <clade>
+                      <name>odontonema schomburgkianum</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>1.15509</branch_length>
+                    </clade>
+                    <clade>
+                      <name>odontonema tubaeforme</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>1.15509</branch_length>
+                    </clade>
+                    <clade>
+                      <name>odontonema nitidum</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>1.15509</branch_length>
+                    </clade>
+                  </clade>
+                </clade>
+              </clade>
+              <clade>
+                <name>mackaya bella</name>
+<chrom>42</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>9.51319</branch_length>
+              </clade>
+            </clade>
+            <clade>
+              <branch_length>11.8726</branch_length>
+              <confidence type="unknown">1</confidence>
+              <clade>
+                <name>asystasia gangetica</name>
+<chrom>24</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>3.529</branch_length>
+              </clade>
+              <clade>
+                <name>asystasia travancorica</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>3.52901</branch_length>
+              </clade>
+              <clade>
+                <name>asystasia buettneri</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>3.52901</branch_length>
+              </clade>
+              <clade>
+                <name>asystasia chelonoides</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>3.52901</branch_length>
+              </clade>
+              <clade>
+                <name>asystasia crispata</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>3.52901</branch_length>
+              </clade>
+              <clade>
+                <name>asystasia dalzelliana</name>
+<chrom>26</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>3.52901</branch_length>
+              </clade>
+              <clade>
+                <name>asystasia mysorensis</name>
+<chrom>26</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>3.52901</branch_length>
+              </clade>
+              <clade>
+                <name>asystasia gangetica subsp. micrantha</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>3.529</branch_length>
+              </clade>
+            </clade>
+          </clade>
+          <clade>
+            <name>justicia comata</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia odora</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia carnea</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia aurea</name>
+<chrom>11</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia secunda</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia californica</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia candicans</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia sonorae</name>
+<chrom>11</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia brandegeeana</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia martinsoniana</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia sessilis</name>
+<chrom>22</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia wynaadensis</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia diffusa</name>
+<chrom>9</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia vahlii</name>
+<chrom>9</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia brasiliana</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia plumbaginifolia</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia anagalloides</name>
+<chrom>9</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia heterocarpa</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia insolita</name>
+<chrom>12</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia protracta</name>
+<chrom>9</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia ladanoides</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia petiolaris</name>
+<chrom>26</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia furcata</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia angustibracteata</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia brevipila</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia candelariae</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia costaricana</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia cufodontii</name>
+<chrom>11</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia exigua</name>
+<chrom>7</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia flava</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia fulvicoma</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia galapagana</name>
+<chrom>24</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia gilliesii</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia glauca</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia herpetacanthoides</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia hyssopifolia</name>
+<chrom>35</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia latispica</name>
+<chrom>9</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia leonardii</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia linearis</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia linifolia</name>
+<chrom>40</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia matammensis</name>
+<chrom>7</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia micrantha</name>
+<chrom>9</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia nuttii</name>
+<chrom>11</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia oerstedii</name>
+<chrom>11</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia oranensis</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia ornatopila</name>
+<chrom>11</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia palmeri</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia prostrata</name>
+<chrom>9</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia pubigera</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia purpusii</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia quinqueangularis</name>
+<chrom>9</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia rhodoptera</name>
+<chrom>30</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia salviiflora</name>
+<chrom>12</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia schoensis</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia squarrosa</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia striolata</name>
+<chrom>25</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia tenella</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia tinctoriella</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia tranquebariensis</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia whytei</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia serpyllifolia</name>
+<chrom>9</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia glabra</name>
+<chrom>27</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia glamea</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia ramosa</name>
+<chrom>11</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia isthmensis</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia mollissima</name>
+<chrom>9</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia masiaca</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia austrocapensis</name>
+<chrom>11</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia aconitiflora</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia pectoralis</name>
+<chrom>11</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia adenothyrsa</name>
+<chrom>28</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia fortunensis</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia tweediana</name>
+<chrom>28</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia japonica</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia reflexiflora</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia insolita subsp. tastensis</name>
+<chrom>12</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia lanceolata</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia alopecuroidea</name>
+<chrom>28</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia calyculata</name>
+<chrom>9</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+          <clade>
+            <name>justicia unyorensis var. keniensis</name>
+<chrom>13</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>20.6595</branch_length>
+          </clade>
+        </clade>
+        <clade>
+          <name>mirandea grisea</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+          <branch_length>32.4192</branch_length>
+        </clade>
+        <clade>
+          <name>razisea spicata</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+          <branch_length>32.4192</branch_length>
+        </clade>
+        <clade>
+          <name>pseuderanthemum cinnabarinum</name>
+<chrom>17</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+          <branch_length>32.42</branch_length>
+        </clade>
+        <clade>
+          <name>pseuderanthemum cordatum</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+          <branch_length>32.42</branch_length>
+        </clade>
+        <clade>
+          <name>pseuderanthemum laxiflorum</name>
+<chrom>30</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+          <branch_length>32.42</branch_length>
+        </clade>
+        <clade>
+          <name>pseuderanthemum floribundum</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+          <branch_length>32.42</branch_length>
+        </clade>
+        <clade>
+          <name>pseuderanthemum seticalyx</name>
+<chrom>21</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+          <branch_length>32.42</branch_length>
+        </clade>
+      </clade>
+      <clade>
+        <branch_length>1.36928</branch_length>
+        <confidence type="unknown">1</confidence>
+        <clade>
+          <branch_length>2.97876</branch_length>
+          <confidence type="unknown">1</confidence>
+          <clade>
+            <branch_length>8.74173</branch_length>
+            <confidence type="unknown">1</confidence>
+            <clade>
+              <branch_length>10.1925</branch_length>
+              <confidence type="unknown">1</confidence>
+              <clade>
+                <branch_length>2.40938</branch_length>
+                <confidence type="unknown">1</confidence>
+                <clade>
+                  <branch_length>7.70899</branch_length>
+                  <confidence type="unknown">1</confidence>
+                  <clade>
+                    <branch_length>0.463189</branch_length>
+                    <confidence type="unknown">1</confidence>
+                    <clade>
+                      <name>thunbergia laurifolia</name>
+<chrom>28</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>0.874061</branch_length>
+                    </clade>
+                    <clade>
+                      <name>thunbergia grandiflora</name>
+<chrom>28</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                      <branch_length>0.874061</branch_length>
+                    </clade>
+                  </clade>
+                  <clade>
+                    <name>thunbergia coccinea</name>
+<chrom>10</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+                    <branch_length>1.33725</branch_length>
+                  </clade>
+                </clade>
+                <clade>
+                  <name>thunbergia alata</name>
+<chrom>9</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+                  <branch_length>9.04624</branch_length>
+                </clade>
+              </clade>
+              <clade>
+                <name>thunbergia erecta</name>
+<chrom>28</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>11.4556</branch_length>
+              </clade>
+              <clade>
+                <name>thunbergia mysorensis</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>11.4556</branch_length>
+              </clade>
+              <clade>
+                <name>thunbergia togoensis</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>11.4556</branch_length>
+              </clade>
+              <clade>
+                <name>thunbergia battiscombei</name>
+<chrom>16</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>11.4556</branch_length>
+              </clade>
+              <clade>
+                <name>thunbergia laevis</name>
+<chrom>24</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>11.4556</branch_length>
+              </clade>
+              <clade>
+                <name>thunbergia reticulata</name>
+<chrom>9</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+                <branch_length>11.4556</branch_length>
+              </clade>
+              <clade>
+                <name>thunbergia gregorii</name>
+<chrom>14</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+                <branch_length>11.4556</branch_length>
+              </clade>
+            </clade>
+            <clade>
+              <name>mendoncia flagellaris</name>
+<chrom>19</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+              <branch_length>21.6481</branch_length>
+            </clade>
+          </clade>
+          <clade>
+            <branch_length>19.0562</branch_length>
+            <confidence type="unknown">1</confidence>
+            <clade>
+              <name>elytraria marginata</name>
+<chrom>22</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+              <branch_length>11.3336</branch_length>
+            </clade>
+            <clade>
+              <name>elytraria bromoides</name>
+<chrom>12</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+              <branch_length>11.3336</branch_length>
+            </clade>
+            <clade>
+              <name>elytraria imbricata</name>
+<chrom>12</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+              <branch_length>11.3336</branch_length>
+            </clade>
+            <clade>
+              <name>elytraria acaulis</name>
+<chrom>22</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+              <branch_length>11.3336</branch_length>
+            </clade>
+            <clade>
+              <name>elytraria mexicana</name>
+<chrom>12</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+              <branch_length>11.3336</branch_length>
+            </clade>
+            <clade>
+              <name>elytraria virgata</name>
+<chrom>25</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+              <branch_length>11.3336</branch_length>
+            </clade>
+          </clade>
+        </clade>
+        <clade>
+          <branch_length>31.1497</branch_length>
+          <confidence type="unknown">1</confidence>
+          <clade>
+            <name>avicennia marina</name>
+<chrom>33</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>2.21887</branch_length>
+          </clade>
+          <clade>
+            <name>avicennia marina subsp. australasica</name>
+<chrom>32</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+            <branch_length>2.21887</branch_length>
+          </clade>
+        </clade>
+      </clade>
+      <clade>
+        <name>hansteinia blepharorhachis</name>
+<chrom>18</chrom>
+<colortag>#ff0000</colortag>
+<ploidy>Polyploid</ploidy>
+        <branch_length>34.7374</branch_length>
+      </clade>
+      <clade>
+        <name>jadunia biroi</name>
+<chrom>8</chrom>
+<colortag>#0000ff</colortag>
+<ploidy>Diploid</ploidy>
+        <branch_length>34.7374</branch_length>
+      </clade>
+    </clade>
+  </phylogeny>
+</phyloxml>

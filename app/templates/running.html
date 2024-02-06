@@ -1,0 +1,32 @@
+{% extends 'running_base.html' %}
+
+{% block body_running %}
+
+        <script>
+        
+        //to listen for process updates
+        const process_id = '{{var['run_number']}}';
+        
+        setInterval(() => {
+            /*
+            var myRequest = new Request('/process_page_update/' + process_id);
+           
+            fetch(myRequest).then((response) => {
+                response.text().then((text) => {
+                    if (text == 'update') {
+                        location.reload();
+                    }
+                    else { // refresh only progress report
+                        $( "#includedContent" ).load(window.location.href + " #includedContent" );
+                    }
+                });
+            });
+	    */
+	    
+	    location.reload();
+	    
+        } ,parseInt('30')*1000)
+        
+        </script> 
+    
+{% endblock %} 

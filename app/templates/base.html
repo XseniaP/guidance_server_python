@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+<html>
+    <head>
+    
+        <title>GUIDANCE Server - a web server for assessing alignment confidence score</title>
+        <link rel="stylesheet" href="{{url_for('static',filename='css/guidance.css')}}" />
+        <script type="text/javascript"
+                src="{{url_for('static',filename='js/javascript_functions.js')}}"></script>
+        <!-- google fonts -->
+        <link rel="stylesheet" type="text/css"
+              href="http://fonts.googleapis.com/css?family=Abril+Fatface">
+        <link rel="stylesheet" type="text/css"
+              href="http://fonts.googleapis.com/css?family=Playfair+Display">
+        <!-- google fonts -->
+
+
+        <META NAME="date" CONTENT="2014-03-20"> 
+        <META NAME="author" CONTENT="Itamar Sela, Haim Ashkenazy, Osnat Penn, Eyal Privman, Giddy Landan, Dan Graur, Tal Pupko"> 
+        <META NAME="keywords" CONTENT="Multiple sequence alignment, guide tree, alignment confidence,Guidance server"> 
+        <META NAME="description" CONTENT="GUIDANCE: a web server for assessing alignment confidence score">
+        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+
+        <!-- Analytics Start -->
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-54580028-1', 'auto');
+          ga('send', 'pageview');
+        </script>
+        <!-- Analytics End -->
+        
+        <!-- GOOGLE ANALYTICS START -->
+		<script type="text/javascript">
+			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+		<script type="text/javascript">
+			try {
+				var pageTracker = _gat._getTracker("UA-12265767-1");
+				pageTracker._setDomainName(".tau.ac.il");
+				pageTracker._trackPageview();
+			} catch(err) {}
+		</script>
+		<!-- GOOGLE ANALYTICS END -->
+        
+        <font face="verdana">
+
+        <!-- guidance2_server_logo_table -->
+        <br>
+        <table width="100%" height=10% border="0"> 
+        <tr>
+            <td width=20% rowspan=3 align=left>
+                <a href="/"><img src="{{url_for('static',filename='images/guidance.gif')}}" width="216" height="108"  valign=top BORDER></a></td>
+                <td width=80% valign=right align=left>
+                <div style="font: 400 60px/1.3 'Abril Fatface', Georgia; color: #003399;">The GUIDANCE2 Server</div>
+                <font color=#725A5A face="arial" size=5>Server for alignment confidence score<br></font></td>	
+
+
+        </tr>
+
+        <tr></tr><tr>
+            <td colspan=3 valign=bottom align=left><span class="title_menu">
+            <a href="/guidance">HOME</a>
+            &nbsp;&nbsp;&nbsp;<a href="/guidance/overview">OVERVIEW</a>
+            &nbsp;&nbsp;&nbsp;<a href="/guidance/gallery">GALLERY</a>
+            &nbsp;&nbsp;&nbsp;<a href="/guidance/source">SOURCE CODE</a>
+            &nbsp;&nbsp;&nbsp;<a href="/guidance/credits">CITING & CREDITS</a>
+            &nbsp;&nbsp;&nbsp;<a href="mailto:evloseq@tauex.tau.ac.il?subject=GUIDANCE2%20web-server" target="_blank">CONTACT US</a>		
+            </span></td> 
+
+        </tr>
+
+        </table>
+        <hr>
+        <br>
+
+        <!-- end of guidance2_server_logo_table -->
+
+        <!-- end of header.tpl -->
+
+        <link rel="stylesheet" href="{{url_for('static',filename='css/guidance.css')}}" />
+        <link rel="stylesheet" href="{{url_for('static',filename='css/stylesheet.css')}}" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <script type="text/javascript" src="{{url_for('static',filename='js/javascript_functions.js')}}"></script>
+        <script type="text/javascript" src="{{url_for('static',filename='js/validate-form.js')}}"></script>
+        <script type="text/javascript" src="{{url_for('static',filename='js/jquery-1.7.2.min.js')}}"></script>
+        <script type="text/javascript" src="{{url_for('static',filename='js/jquery.validate.min.js')}}"></script>
+        
+        {% block head %} {% endblock %}
+    </head>
+    <body>
+        <blockquote>
+        {% block body %} {% endblock %}
+        
+    </body>
+</html>
