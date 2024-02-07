@@ -74,9 +74,14 @@ class GuidanceState:
                 
                 if dict_key_defined_not_empty('BACK_FROM_MAFFT', form):
                     self.form['Redirect_From_MAFFT'] = form['BACK_FROM_MAFFT']
+                    # KSENIA DELETE
+                    # self.form['Redirect_From_MAFFT'] = 1
+
                     del self.form['BACK_FROM_MAFFT']
                 else:
                     self.form['Redirect_From_MAFFT'] = '0'
+                    # KSENIA DELETE
+                    # self.form['Redirect_From_MAFFT'] = '1'
                 
                 self.files = files
                 self.var = var
@@ -139,6 +144,9 @@ class GuidanceState:
             form['user_mail'] = cgi_form['email_add']
             form['PROGRAM'] = cgi_form['PROGRAM']
             form['Redirect_From_MAFFT'] = cgi_form['Redirect_From_MAFFT']
+            # KSENIA DELETE
+            # form['Redirect_From_MAFFT'] = 1
+
             form['Seq_Type'] = cgi_form['Seq_Type']
             
             if form['Redirect_From_MAFFT'] == '0':
@@ -430,6 +438,10 @@ class GuidanceState:
                         error = f"GuidanceState.update_state(Init): failed to write to file {var['Alignment_File']}"
                         raise Exception ( error, "system")
                     
+                # KSENIA !!! DELETE THIS LINE
+                # shutil.copy('/Users/kpolonsky/PycharmProjects/guidance_server_python/test_MAFFT_server_MSA_input4_redirectedFromMafft.txt', os.path.join(var['WorkingDir'],'ALIGNMENT_FROM_MAFFT'))
+                # form['userMSA_File'] = 'ALIGNMENT_FROM_MAFFT'
+
                 form['userMSA_File'] = 'Alignment from MAFFT'
                 
                 if 'qinsi' in var['align_param']:

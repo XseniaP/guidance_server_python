@@ -399,10 +399,10 @@ def Bootstrap_Trees(args_library):
     elif args_library.Seq_Type == "Nucleotides":
         if msa_depth > 150:  # use JC for distance estimation
             cmd = (
-                f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m JC -bo {args_library.Bootstraps} -nt {args_library.proc_num} -st AA -n 0 -fast")
+                f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m JC -bo {args_library.Bootstraps} -nt {args_library.proc_num} -st DNA -n 0 -fast")
         else:  # use HKY for distance estimation
             cmd = (
-                f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m HKY -bo {args_library.Bootstraps} -nt {args_library.proc_num} -st AA -n 0 -fast")
+                f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m HKY -bo {args_library.Bootstraps} -nt {args_library.proc_num} -st DNA -n 0 -fast")
 
     with open(f'{args_library.OutLogFile}', "a") as log_file:
         log_file.write(f"Bootstrap_Trees: {cmd}\n")
