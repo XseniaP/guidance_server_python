@@ -305,7 +305,7 @@ def print_remove_seq_selection_box (sp_res_file, msa_depth):
                         Cutoff_Removed_Pos_Hash[score] = 1
         
     f.close()
-    
+
     return_str = '<select name="Seq_Cutoff" id="Seq_Cutoff">'
     for cutoff in sorted(Cutoff_Removed_Pos_Hash.keys()): 
         seq_bellow_Cutoof=0

@@ -40,6 +40,12 @@ def calculate_msa_depth(inMSA, args_library):
     except Exception as e:
         exit_on_error("sys_error", f"MSA_Depth: Can't read MSA: '{inMSA}' - {e}\n", args_library)
 
+
+    # JS ? - print for flask version
+    msa_depth_file = os.path.join(args_library.WorkingDir, 'MSA_DEPTH')
+    with open(msa_depth_file, "w") as length_file:
+        length_file.write(f"{msa_depth}\n")
+
     return msa_depth
 
 

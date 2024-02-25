@@ -6,6 +6,8 @@ from shutil import copy
 import guidance_CONSTANTS
 from guidance_sequence_functions import *
 from guidance_tree_functions import *
+Bin = os.path.dirname(sys.argv[0])
+BIN_DIR = os.path.dirname(Bin)
 
 class Library:
     def __init__(self):
@@ -15,17 +17,21 @@ class Library:
         self.stored_data_file = ""
         self.stored_form_data = ""
         # self.semphy_prog = os.path.join(os.getcwd(), 'programs/semphy/semphy')
-        self.semphy_prog = '/Users/kpolonsky/PycharmProjects/guidance_server_python/script/programs/semphy/semphy'
+        # self.semphy_prog = '/Users/kpolonsky/PycharmProjects/guidance_server_python/script/programs/semphy/semphy'
+        self.semphy_prog = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
         # self.iqtree_prog = os.path.join(os.getcwd(), 'programs/iqtree-2.2.2.6-MacOSX/bin/iqtree2')
-        self.iqtree_prog = os.path.join('/Users/kpolonsky/PycharmProjects/guidance_server_python/script/programs/iqtree-2.2.2.6-MacOSX/bin/iqtree2')
+        # self.iqtree_prog = os.path.join('/Users/kpolonsky/PycharmProjects/guidance_server_python/script/programs/iqtree-2.2.2.6-MacOSX/bin/iqtree2')
+        self.iqtree_prog = os.path.join(BIN_DIR, 'script/programs/iqtree-2.2.2.6-MacOSX/bin/iqtree2')
         self.mafft_prog = "mafft"
         self.prank_prog = "prank"
         self.clustalw_prog = "clustalw"
         self.ruby_prog = "ruby"
         self.muscle_prog = "muscle"
-        self.msa_set_score_prog = os.path.join(os.getcwd(), 'programs/msa_set_score/msa_set_score')
+        # self.msa_set_score_prog = os.path.join(os.getcwd(), 'programs/msa_set_score/msa_set_score')
+        self.msa_set_score_prog = os.path.join(BIN_DIR, 'script/programs/msa_set_score/msa_set_score')
         self.pagan_prog = "pagan"
-        self.remove_taxa_prog = os.path.join(os.getcwd(), 'programs/removeTaxa/removeTaxa')
+        # self.remove_taxa_prog = os.path.join(os.getcwd(), 'programs/removeTaxa/removeTaxa')
+        self.remove_taxa_prog = os.path.join(BIN_DIR, 'script/programs/removeTaxa/removeTaxa')
         self.orig_argv = sys.argv[1:]  # Skip the script name itself
         self.overview_URL = ""
         self.gallery_URL = ""
@@ -402,15 +408,7 @@ class Library:
         self.stored_data_file = sys.argv[1]
         self.stored_form_data = sys.argv[2]
 
-        # Deserialize data from files
-        # with open(self.stored_data_file, 'r') as file:
-        #     vars_data = pickle.load(file)
-
-        # with open(self.stored_form_data, 'r') as file:
-        #     form_data = pickle.load(file)
-
-        # vars_data = json.load(self.stored_data_file)
-        # form_data = json.loads(self.stored_form_data)
+        # Data from files
         with open(self.stored_data_file, "r") as file:
             json_string = file.read()
             vars_data = json.loads(json_string)
@@ -419,17 +417,9 @@ class Library:
             json_string = file.read()
             form_data = json.loads(json_string)
 
-        # VARS = vars_data.copy()
-        # for key,value in VARS.items():
-        #     self.key = value
-        # for key, value in vars(vars_data).items():
         for key, value in vars_data.items():
             setattr(self, key, value)
 
-        # FORM = form_data.copy()
-        # for key, value in FORM.items():
-        #     self.key = value
-        # for key, value in vars(form_data).items():
         for key, value in form_data.items():
             setattr(self, key, value)
 
@@ -456,6 +446,8 @@ class Library:
         # Defaults (still not supported by the web server implementation, experimental feature)
         self.Z_Col_Cutoff ='NA'
         self.Z_Seq_Cutoff ='NA'
+        # Ksenia delete
+        # self.Seq_Cutoff = 'NA'
 
         if self.CALLING_SERVER == "GUIDANCE2":
             self.overview_URL = "http://guidance.tau.ac.il/ver2/overview.php"

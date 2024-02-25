@@ -24,7 +24,7 @@
 
         <!--<ul><li><form enctype="multipart/form-data" action="/mask.php" method="post">-->
         {% if var['mean_res_pair_score']|int < 1 %}
-            <ul><li><form enctype="multipart/form-data" action="/guidance/mask/{{var['run_number']}}" method="post">Mask specific residues below a certain cutoff: <input type="hidden" name="program" value="mask"/> <input type="hidden" name="run_num" value="{{var['run_number']}}"/> <input type="hidden" name="VARS" value="{{var['WorkingDir']}}input.data"/> {{var['select_remove_site_selection_mask']|safe}} <input type="hidden" name="type_a" value="{{var['type_a']}}"/> <input type="submit" value="Mask Residues"/> <font size ="-1">(see <a href="/guidance/overview#Mask_RES" target="_blank">help</a></font>)</form></li>
+            <ul><li><form enctype="multipart/form-data" action="/guidance/mask/{{var['run_number']}}" method="post">Mask specific residues below a certain cutoff: <input type="hidden" name="program" value="mask"/> <input type="hidden" name="run_num" value="{{var['run_number']}}"/> <input type="hidden" name="VARS" value="{{var['WorkingDir']}}input.data"/> <input type="hidden" name="VARS_json" value="{{var['WorkingDir']}}VARS.json"/> {{var['select_remove_site_selection_mask']|safe}} <input type="hidden" name="type_a" value="{{var['type_a']}}"/> <input type="submit" value="Mask Residues"/> <font size ="-1">(see <a href="/guidance/overview#Mask_RES" target="_blank">help</a></font>)</form></li>
             
             <a name="masks"></a>
             
@@ -37,7 +37,7 @@
             <!--<ul><li><form enctype="multipart/form-data" action="/remove_pos.php" method="post">-->
             <ul><li><form enctype="multipart/form-data" action="/guidance/remove_pos/{{var['run_number']}}" method="post">
              Remove unreliable columns below confidence score <input type="hidden" name="run_num" value="{{var['run_number']}}">
-            <input type="hidden" name="VARS" value="{{var['WorkingDir']}}input.data"/>
+            <input type="hidden" name="VARS" value="{{var['WorkingDir']}}input.data"/> <input type="hidden" name="VARS_json" value="{{var['WorkingDir']}}VARS.json"/>
             {{var['select_remove_site_selection_box']|safe}}</select>
             <input type="submit" value="Remove Columns"/>
             <font size ="-1">(see <a href="/guidance/overview#Remove_COL" target="_blank">help</a></font>)</form></li>
@@ -51,7 +51,7 @@
                 <ul>{{var['remove_columns_default_line']|safe}}</ul>
                 
                  {% for remove_column in remove_columns_list %}
-                    <ul><li><A HREF="{{var['run_number']}}/{{var['dataset']}}.{{form['MSA_Program']}}.Without_low_SP_Col.{{remove_column}}" TARGET=_blank>The MSA after masking unreliable residues (below {{remove_column}})</A>
+                    <ul><li><A HREF="{{var['run_number']}}/{{var['dataset']}}.{{form['MSA_Program']}}.Without_low_SP_Col.{{remove_column}}" TARGET=_blank>The MSA after the removal of unreliable columns (below {{remove_column}})</A>
                     <font size=-1> (see list of removed columns <A HREF="{{var['run_number']}}/Seqs.Orig.fas.FIXED.{{var['dataset']}}.{{form['MSA_Program']}}.Removed_Col.{{remove_column}}" TARGET=_blank>here</A>)</font>
                     </li></ul>
                 {% endfor %}
@@ -60,8 +60,8 @@
 
             <ul><li><form enctype="multipart/form-data" action="/guidance/remove_seq/{{var['run_number']}}" method="post">
              Remove unreliable sequences below confidence score <input type="hidden" name="run_num" value="{{var['run_number']}}">
-            <input type="hidden" name="VARS" value="{{var['WorkingDir']}}input.data"/>
-            <input type="hidden" name="FORM" value="{{var['WorkingDir']}}form.data"/>
+            <input type="hidden" name="VARS" value="{{var['WorkingDir']}}input.data"/> <input type="hidden" name="VARS_json" value="{{var['WorkingDir']}}VARS.json"/>
+            <input type="hidden" name="FORM" value="{{var['WorkingDir']}}form.data"/> <input type="hidden" name="FORM_json" value="{{var['WorkingDir']}}FORM.json"/>
             {{var['select_remove_seq_selection_box']|safe}}
             </select>
             <input type="submit" value="Remove Seqs"/>

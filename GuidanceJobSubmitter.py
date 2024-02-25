@@ -39,7 +39,7 @@ class GuidanceJobSubmitter:
             job_run_output = subprocess.run(submission_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             print(job_run_output.stdout)
                       
-            # check returncode and raise exception if failed
+            # check return code and raise exception if failed
             if job_run_output.returncode != 0:
                 error = f'submit job {job_id} failed:{job_run_output.returncode}'
                 logger.error(error)

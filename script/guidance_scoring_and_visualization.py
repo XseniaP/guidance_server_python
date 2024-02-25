@@ -421,6 +421,7 @@ def remove_low_sp_seq(msa_file, seq_sp_file, out_file, cutoff, removed_seq_file,
     # or by sequence name ($type=BySeqName)
     # when using ByRowNum - we use BioPerl object [default]
     # when using BySeqName - we use hash to represent MSA (currently without extensive MSA validation)
+    print(msa_file,"\n", seq_sp_file,"\n", out_file,"\n", cutoff,"\n", removed_seq_file,"\n", seq_type)
     msa_hash_ref = None
     msa_length = None
     msa_order_array_ref = None

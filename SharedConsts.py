@@ -20,8 +20,12 @@ OWNER_EMAIL = 'josefspr@gmail.com'
 
 # general variables
 # SERVERS_RESULTS_DIR = '/home/josefspr/results'
-SERVERS_RESULTS_DIR = '/Users/kpolonsky/PycharmProjects/guidance_server_python/results'
-SERVERS_LOGS_DIR = '/Users/kpolonsky/PycharmProjects/guidance_server_python/logs'
+Bin = os.path.dirname(sys.argv[0])
+BIN_DIR = os.path.dirname(Bin)
+SERVERS_RESULTS_DIR = os.path.join(BIN_DIR, 'results')
+# SERVERS_RESULTS_DIR = '/Users/kpolonsky/PycharmProjects/guidance_server_python/results'
+# SERVERS_LOGS_DIR = '/Users/kpolonsky/PycharmProjects/guidance_server_python/logs'
+SERVERS_LOGS_DIR = os.path.join(BIN_DIR, 'logs')
 
 RELOAD_INTERVAL = 30
 RELOAD_TAGS = f'<META HTTP-EQUIV="REFRESH" CONTENT={RELOAD_INTERVAL}>'
@@ -55,15 +59,26 @@ SOURCES = '/source.php'
 
 # SCRIPTS_DIR = '/home/josefspr/bioseq/guidance/guidance.v2.02/www/Guidance/'
 # SCRIPTS_DIR = '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/Guidance/'
-SCRIPTS_DIR = '/Users/kpolonsky/PycharmProjects/guidance_server_python/script/'
+# SCRIPTS_DIR = '/Users/kpolonsky/PycharmProjects/guidance_server_python/script/'
+SCRIPTS_DIR = os.path.join(BIN_DIR, 'script')
 
 # MAIN_SCRIPT = f'{SCRIPTS_DIR}guidance_flask.pl'
-MAIN_SCRIPT = f'{SCRIPTS_DIR}guidance_main.py'
+# MAIN_SCRIPT = f'{SCRIPTS_DIR}guidance_main.py'
+MAIN_SCRIPT = os.path.join(SCRIPTS_DIR, 'guidance_main.py')
 
-MASK_SCRIPT = f'{SCRIPTS_DIR}maskLowScoreResidues_WebServer.pl'
-REMOVE_POS_SCRIPT = f'{SCRIPTS_DIR}Remove_Pos_bellow_Cutoff.pl'
-REMOVE_SEQ_SCRIPT = f'{SCRIPTS_DIR}Remove_Seq_bellow_Cutoff.pl'
-CONCAT_SCRIPT = f'{SCRIPTS_DIR}Concat_ALN_Simple_FileList.Web.pl'
+# MASK_SCRIPT = f'{SCRIPTS_DIR}maskLowScoreResidues_WebServer.pl'
+# MASK_SCRIPT = f'{SCRIPTS_DIR}maskLowScoreResidues.pl'
+MASK_SCRIPT = os.path.join(SCRIPTS_DIR, 'mask_low_score_residues_webserver.py')
+# REMOVE_POS_SCRIPT = f'{SCRIPTS_DIR}Remove_Pos_bellow_Cutoff.pl'
+# REMOVE_POS_SCRIPT = os.path.join(SCRIPTS_DIR,'Remove_Pos_bellow_Cutoff.pl')
+REMOVE_POS_SCRIPT = os.path.join(SCRIPTS_DIR, 'remove_pos_below_cutoff.py')
+# REMOVE_SEQ_SCRIPT = f'{SCRIPTS_DIR}Remove_Seq_bellow_Cutoff.pl'
+# REMOVE_SEQ_SCRIPT = os.path.join(SCRIPTS_DIR,'Remove_Seq_bellow_Cutoff.pl')
+REMOVE_SEQ_SCRIPT = os.path.join(SCRIPTS_DIR, 'remove_seq_below_cutoff.py')
+# CONCAT_SCRIPT = f'{SCRIPTS_DIR}Concat_ALN_Simple_FileList.Web.pl'
+# CONCAT_SCRIPT = os.path.join(SCRIPTS_DIR,'Concat_ALN_Simple_FileList.Web.pl')
+CONCAT_SCRIPT = os.path.join(SCRIPTS_DIR,'concat_aln_filelist_web.py')
+# CONCAT_SCRIPT = f'{SCRIPTS_DIR}Concat_ALN_Simple_FileList.pl'
 REQUIRED_MODULES = ['miniconda/miniconda3-4.7.12','python/python-3.6.7']
 
 EXTERAL_SCRIPTS_PATH = '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/bioSequence_scripts_and_constants'
@@ -73,7 +88,8 @@ GUIDANCE_RUNNING_JOBS = f'{EXTERAL_SCRIPTS_PATH}/guidance_running_jobs.list'
 JOB_QUEUE_NAME =  'pupkowebr@power9' #'itaym'
 
 # SUBMISSIONS_LOG = f'/home/josefspr/logs/{WEBSERVER_NAME_CAPITAL}/guidance.logv2'
-SUBMISSIONS_LOG = f'/Users/kpolonsky/PycharmProjects/guidance_server_python/logs/{WEBSERVER_NAME_CAPITAL}/guidance.logv2'
+SUBMISSIONS_LOG = os.path.join(SERVERS_LOGS_DIR,WEBSERVER_NAME_CAPITAL, 'guidance.logv2')
+# SUBMISSIONS_LOG = f'/Users/kpolonsky/PycharmProjects/guidance_server_python/logs/{WEBSERVER_NAME_CAPITAL}/guidance.logv2'
 RESULT_WEBPAGE_NAME = 'output.html'
 EMAIL_FILE_NAME = 'email.txt'
 

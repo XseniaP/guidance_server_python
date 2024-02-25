@@ -17,12 +17,17 @@ import json
 from InputValidator import InputValidator
 from utils import *
 
-if os.path.exists('/home/josefspr/bioseq'):  # remote run
-    sys.path.insert(0, '/home/josefspr/bioseq/guidance/guidance.v2.02/www/Guidance')
-    sys.path.insert(1, '/home/josefspr/bioseq/bioSequence_scripts_and_constants')
-else:
-    sys.path.insert(0, '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/Guidance')
-    sys.path.insert(1, '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/bioSequence_scripts_and_constants')
+Bin = os.path.dirname(sys.argv[0])
+BIN_DIR = os.path.dirname(Bin)
+
+# if os.path.exists('/home/josefspr/bioseq'):  # remote run
+#     sys.path.insert(0, '/home/josefspr/bioseq/guidance/guidance.v2.02/www/Guidance')
+#     sys.path.insert(1, '/home/josefspr/bioseq/bioSequence_scripts_and_constants')
+# else:
+#     sys.path.insert(0, '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/Guidance')
+#     # sys.path.insert(0, sys.path.join(BIN_DIR, '')
+#     sys.path.insert(1, '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/bioSequence_scripts_and_constants')
+#     # sys.path.insert(1, '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/bioSequence_scripts_and_constants')
 
 import SharedConsts as CONSTS  
 
@@ -63,6 +68,7 @@ class GuidanceState:
                 var['run_url'] = results_url + '/'
                 var['output_page'] = CONSTS.RESULT_WEBPAGE_NAME
                 var['run_number'] = jobId
+                var['code_fileName'] = 'Seqs.Codes'
                 
                 # write paramters to log file
                 peek_form(form, files, job_logger) 
@@ -74,14 +80,10 @@ class GuidanceState:
                 
                 if dict_key_defined_not_empty('BACK_FROM_MAFFT', form):
                     self.form['Redirect_From_MAFFT'] = form['BACK_FROM_MAFFT']
-                    # KSENIA DELETE
-                    # self.form['Redirect_From_MAFFT'] = 1
-
                     del self.form['BACK_FROM_MAFFT']
                 else:
                     self.form['Redirect_From_MAFFT'] = '0'
-                    # KSENIA DELETE
-                    # self.form['Redirect_From_MAFFT'] = '1'
+
                 
                 self.files = files
                 self.var = var
@@ -144,8 +146,6 @@ class GuidanceState:
             form['user_mail'] = cgi_form['email_add']
             form['PROGRAM'] = cgi_form['PROGRAM']
             form['Redirect_From_MAFFT'] = cgi_form['Redirect_From_MAFFT']
-            # KSENIA DELETE
-            # form['Redirect_From_MAFFT'] = 1
 
             form['Seq_Type'] = cgi_form['Seq_Type']
             
@@ -261,7 +261,8 @@ class GuidanceState:
             
             # convert to perl hash files
             # convertScript = '/home/josefspr/bioseq/guidance/guidance.v2.02/www/Guidance/json2hash.pl'
-            convertScript = '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/Guidance/json2hash.pl'
+            # convertScript = '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/Guidance/json2hash.pl'
+            convertScript = os.path.join(BIN_DIR, "script", 'json2hash.pl')
             form_data_path = os.path.join( var['WorkingDir'], 'form.data')
             var_data_path = os.path.join( var['WorkingDir'], 'input.data')
             cmd = f'perl {convertScript} {form_path} {form_data_path}'
