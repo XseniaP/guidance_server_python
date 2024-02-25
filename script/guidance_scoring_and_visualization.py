@@ -421,7 +421,7 @@ def remove_low_sp_seq(msa_file, seq_sp_file, out_file, cutoff, removed_seq_file,
     # or by sequence name ($type=BySeqName)
     # when using ByRowNum - we use BioPerl object [default]
     # when using BySeqName - we use hash to represent MSA (currently without extensive MSA validation)
-    print(msa_file,"\n", seq_sp_file,"\n", out_file,"\n", cutoff,"\n", removed_seq_file,"\n", seq_type)
+    # print(msa_file,"\n", seq_sp_file,"\n", out_file,"\n", cutoff,"\n", removed_seq_file,"\n", seq_type)
     msa_hash_ref = None
     msa_length = None
     msa_order_array_ref = None
@@ -952,7 +952,7 @@ def remove_sequences_sp_score(args_library):
             log_file.write(
                 f"Guidance::removeLowSPseq(\"{args_library.WorkingDir}{args_library.Alignment_File}\",\"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_seq.scr\",\"{args_library.WorkingDir}{args_library.Seq_File_without_low_SP_SEQ}\",{args_library.SP_SEQ_CUTOFF},\"{args_library.WorkingDir}{args_library.removed_low_SP_SEQ}\")\n")
     except Exception as e:
-        sys.exit(f"Error occurred while runninh add_original_seq_names_to_the_MSA(): {e}\n")
+        sys.exit(f"Error occurred while running add_original_seq_names_to_the_MSA(): {e}\n")
 
     remove_low_sp_seq(f"{args_library.WorkingDir}{args_library.Alignment_File}",
                       f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_seq.scr",

@@ -75,7 +75,7 @@ if is_server == "NO":
 # server
 else:
     log_file = VARS["OutLogFile"]
-    with open(log_file, "a") as log:
+    with open(log_file, "a") as log_file:
         log_file.write(f"REMOVED_SITES:{VARS['REMOVED_SITES']}\n")
         log_file.write(f"MSA_LENGTH:{VARS['MSA_LENGTH']}\n")
 
