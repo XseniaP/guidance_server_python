@@ -667,11 +667,11 @@ def codes2name_scoresFile_NEW(Score_File, Codes_File, MSA_File, Out):
             for line in scores:
                 line = line.strip()
                 match = re.match(r'([0-9]+)\s+([0-9.]+)', line)
-                if match is not None:
+                if match is not None and "#END" not in line:
                     MSA_row_Num, score = match.group(1), match.group(2)
                     MSA_row_Num = int(MSA_row_Num)
-                if MSA_row_Num in MSA_row_Num_to_Seq_Name:
-                    output.write(f"{MSA_row_Num_to_Seq_Name[MSA_row_Num]}\t{score}\n")
+                    if MSA_row_Num in MSA_row_Num_to_Seq_Name:
+                        output.write(f"{MSA_row_Num_to_Seq_Name[MSA_row_Num]}\t{score}\n")
                 else:
                     output.write(line)
         return ["OK"]

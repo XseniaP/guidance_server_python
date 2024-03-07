@@ -1,3 +1,7 @@
+import math
+
+from matplotlib import pyplot as plt
+
 from guidance_sequence_functions import *
 import numpy as np
 
@@ -1043,3 +1047,77 @@ def make_jalview(args_library):
 
 def print_output_to_the_server(args_library):
     pass
+
+# def create_png_for_seqscores(prefix):
+def create_png_for_seqscores(args_library):
+    data_file = f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_seq.scr_with_Names"
+    # data_file = f"{prefix}_res_pair_seq.scr_with_Names"
+    scores = []
+    names = []
+    with open(data_file, "r") as in_file:
+        for line in in_file:
+            line = line.strip()
+            if line.startswith("SEQUENCE_NAME"):
+                continue
+            cols = line.split()
+            if len(cols) == 2:
+                name, score = cols[0], float(cols[1])
+                if score != float('nan') and math.isnan(score) != True:
+                    scores.append(score)
+                    names.append(name)
+    fig1 = plt.gcf()
+    n, bins, patches = plt.hist(scores)
+    plt.xlabel('Sequence score')
+    plt.ylabel('Number of sequences')
+    plt.title('Histogram with Sequence scores distribution')
+    # plt.show()
+    fig1.savefig(os.path.join(args_library.WorkingDir,'histogram_seq_scores_distribution.png'))
+    plt.close(fig1)
+    # fig1.savefig(f'{prefix}_histogram_seq_scores_distribution.png')
+
+    # Create a boxplot
+    plt.boxplot(scores)
+    # Calculate the first and third quartiles
+    q1 = np.percentile(scores, 25)
+    q3 = np.percentile(scores, 75)
+    # Calculate the interquartile range (IQR)
+    iqr = q3 - q1
+    # Define the outlier threshold (1.5 times the IQR)
+    outlier_threshold = 1.5 * iqr
+
+    # Identify the outliers
+    outliers = []
+    for i, value in enumerate(scores):
+        if value > q3 + outlier_threshold or value < q1 - outlier_threshold:
+            outliers.append((i, value))
+
+    sorted_outliers = sorted(outliers, key=lambda x: x[1])
+    index = 1
+    # Get y-axis tick marks
+    yticks = plt.yticks()[0]
+    # Find ticks distance
+    dist = yticks[1] - yticks[0]
+    # Annotate outliers with their names
+    for i, value in sorted_outliers:
+        # if value < 0.94:
+        #     plt.annotate(f'{names[i]}', xy=(float(f"1.0{index}"), value), xytext=(float(f"1.11{index}"), value + float(f"0.{index}")* dist),
+        #                  arrowprops=dict(facecolor='red', shrink=0.05), fontsize = 'small')
+        # else:
+        #     plt.annotate(f'{names[i]}', xy=(float(f"1.0{index}"), value),
+        #                  xytext=(float(f"1.11{index}"), value + float(f"0.{index}") * dist),
+        #                  arrowprops=dict(facecolor='red', shrink=0.05), fontsize='small')
+        plt.annotate(f'{names[i]}', xy=(float(f"1.0{index}"), value),
+                     xytext=(float(f"1.11{index}"), value + float(f"0.{index}") * 1.7 * dist),
+                     arrowprops=dict(facecolor='red', shrink=0.05), fontsize='small')
+        index += 1
+
+    fig2 = plt.gcf()
+    # plt.xlabel('Data')
+    plt.ylabel('Sequence score')
+    plt.title('Boxplot with Sequence scores and outlier names')
+    fig = plt.figure(figsize=(10, 7))
+    plt.tight_layout()
+    # plt.show()
+    fig2.savefig(os.path.join(args_library.WorkingDir,'boxplot_seq_scores_and_outliers.png'))
+    plt.close(fig2)
+    # fig2.savefig(f'{prefix}_boxplot_seq_scores_and_outliers.png')

@@ -33,3 +33,5 @@ if __name__ == "__main__":
     make_jalview(args_library)
     flag_that_finished_ok(args_library)
     create_tar_archives(args_library)
+    create_png_for_seqscores(args_library)
+    # create_png_for_seqscores("/Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/IQTREE_PYTHON_45_8_CPUs_N0_100_bootstraps/AGO1/MSA.MAFFT.Guidance2")
