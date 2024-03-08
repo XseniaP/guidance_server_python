@@ -1121,3 +1121,114 @@ def create_png_for_seqscores(args_library):
     fig2.savefig(os.path.join(args_library.WorkingDir,'boxplot_seq_scores_and_outliers.png'))
     plt.close(fig2)
     # fig2.savefig(f'{prefix}_boxplot_seq_scores_and_outliers.png')
+
+
+def calculate_sp_scores_convergence(args_library, countTrees):
+    if args_library.isServer == 1:
+        if args_library.PROGRAM == "GUIDANCE":
+            print_message_to_output(f"Calculating GUIDANCE scores for tree # {countTrees}", args_library)
+        elif args_library.PROGRAM == "HoT":
+            print_message_to_output(f"Calculating HoT scores for tree # {countTrees}", args_library)
+        elif args_library.PROGRAM == "GUIDANCE2":
+            print_message_to_output(f"Calculating GUIDANCE2 scores for tree # {countTrees}", args_library)
+        elif args_library.PROGRAM == "GUIDANCE3":
+            print_message_to_output(f"Calculating GUIDANCE3 scores for tree # {countTrees}", args_library)
+
+    if args_library.PROGRAM in ["GUIDANCE", "HoT"]:
+        args_library.Output_Prefix = f"{args_library.dataset}.{args_library.MSA_Program}.Guidance"
+    elif args_library.PROGRAM == "GUIDANCE2":
+        args_library.Output_Prefix = f"{args_library.dataset}.{args_library.MSA_Program}.Guidance2"
+
+    cmd = ""
+    if args_library.userMSA_File != "" and args_library.Seq_Type == "Codons":
+        args_library.Alignment_File_translated_from_user_codon_alignmet = f"{args_library.Alignment_File}.TranslatedProt"
+        with open(args_library.OutLogFile, "a") as log_file:
+            log_file.write(
+                f"Codon_Aln_to_AA_Aln({args_library.WorkingDir}{args_library.Alignment_File},{args_library.WorkingDir}{args_library.Alignment_File_translated_from_user_codon_alignmet},{args_library.CodonTable},XCodonsFromALN.html)\n")
+        ans = codon_alignment_to_aminoacids_alignment(
+            f"{args_library.WorkingDir}{args_library.Alignment_File}",
+            f"{args_library.WorkingDir}{args_library.Alignment_File_translated_from_user_codon_alignmet}",
+            args_library.CodonTable,
+            "XCodonsFromALN.html", args_library
+        )
+        if ans[0] != "OK":
+            exit_on_error("user_error", ans, args_library)  # error
+        elif ans[1] != "":  # warning
+            if args_library.is_server == 1:  # server
+                with open(args_library.output_page, "a") as output_file:
+                    output_file.write(
+                        f"<br><b><font color=\"red\" size4=>Warning:</b></font><font size=\"4\"> {ans[1]}</font>\n")
+                log_file.write(f"Warning: {ans[1]}\n")
+            else:
+                print(f"Warning: {ans[1]}\n")
+                with open(args_library.OutLogFile, "a") as log_file:
+                    log_file.write(f"Warning: {ans[1]}\n")
+        if os.path.getsize(
+                os.path.join(f"{args_library.WorkingDir}",
+                             f"{args_library.Alignment_File_translated_from_user_codon_alignmet}")) == 0 or not os.path.exists(
+            os.path.join(
+                f"{args_library.WorkingDir}", f"{args_library.Alignment_File_translated_from_user_codon_alignmet}")):
+            exit_on_error("sys_error",
+                          f"{args_library.WorkingDir}{args_library.Alignment_File_translated_from_user_codon_alignmet} does not exist/empty\n", args_library)
+        cmd = f"{args_library.msa_set_score_prog} {os.path.join(args_library.WorkingDir, args_library.Alignment_File_translated_from_user_codon_alignmet)} {os.path.join(args_library.WorkingDir, args_library.Output_Prefix) + f'_tree_{countTrees}'} -d  {args_library.Scoring_Alignments_Dir} > {args_library.WorkingDir}/{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+    else:
+        cmd = f"{args_library.msa_set_score_prog} {os.path.join(args_library.WorkingDir, args_library.Alignment_File)} {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f'_tree_{countTrees}')} -d  {args_library.Scoring_Alignments_Dir} > {args_library.WorkingDir}/{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+    with open(args_library.OutLogFile, "a") as log_file:
+        log_file.write(f"calculating SP scores for tree # {countTrees}: {cmd}/n")
+    subprocess.call(cmd, shell=True)
+    alt_msas = len(os.listdir(args_library.Scoring_Alignments_Dir))
+    if not os.path.exists(f"{args_library.WorkingDir}{args_library.Output_Prefix + f'_tree_{countTrees}'}_res_pair_res.scr") or os.path.getsize(
+            f"{args_library.WorkingDir}{args_library.Output_Prefix + f'_tree_{countTrees}'}_res_pair_res.scr") == 0:
+        exit_on_error("sys_error",
+                      f"{args_library.WorkingDir}{args_library.Output_Prefix + f'_tree_{countTrees}'}_res_pair_res.scr does not exist/empty\n",
+                      args_library)
+    if args_library.PROGRAM == "HoT":
+        with open(f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}", "r") as orig_align, open(
+                f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}.NEW", "w") as new_align:
+            for line in orig_align:
+                if ">seq" in line:
+                    if re.search(r">seq[0]+([1-9]+[0-9]*)$", line):
+                        new_align.write(f">{int(re.search(r'>seq[0]+([1-9]+[0-9]*)$', line).group(1)) + 1}\n")
+                    else:
+                        new_align.write(">1\n")
+                else:
+                    new_align.write(line)
+        os.rename(f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}",
+                  f"{args_library.WorkingDir}{args_library.Alignment_File}.ORIG")
+        os.rename(f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}.NEW",
+                  f"{args_library.WorkingDir}{args_library.Alignment_File}")
+
+    return alt_msas
+
+
+def add_scores_to_dict(args_library, epsilon, countTrees):
+    # score = 10*epsilon  #just random score not satisfying the condition of convergence
+    MSA_score_file = os.path.join(args_library.WorkingDir, f"{args_library.Output_Prefix + f'_tree_{countTrees}'}_msa.scr")
+
+    with open(MSA_score_file, 'r') as f:
+        for line in f:
+            if "#MEAN_RES_PAIR_SCORE" in line:
+                args_library.mean_res_pair_score.append(float(line.strip().split()[1]))
+                args_library.mean_col_score.append(float(line.strip().split()[3]))
+    f.close()
+    print(args_library.mean_res_pair_score)
+    print(args_library.mean_col_score)
+
+def check_convergence(args_library, epsilon):
+    # score = None
+    # while score is None:
+    score = 10 * epsilon
+    if len(args_library.mean_col_score)>1:
+        score = abs(args_library.mean_col_score[-1] - args_library.mean_col_score[-2])
+        # try:
+        #     connect
+            # score = abs(args_library.mean_col_score[countTrees] - args_library.mean_col_score[countTrees-bp_per_proc])
+        # except:
+        #     pass
+
+    # score = args_library.mean_col_score[countTrees] - args_library.mean_col_score[countTrees-1]
+
+    if score <= epsilon:
+        return 1
+    else:
+        return 0

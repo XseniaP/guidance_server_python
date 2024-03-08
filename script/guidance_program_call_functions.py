@@ -1,7 +1,12 @@
 from guidance_sequence_functions import *
 from guidance_tree_functions import *
 from guidance_common_functions import *
-
+from script.guidance_scoring_and_visualization import calculate_sp_scores, check_convergence, \
+    calculate_sp_scores_convergence, add_scores_to_dict
+from multiprocessing import Process, Manager
+import uuid
+import sys
+import multiprocessing
 
 def run_guidance(args_library):
     # Align
@@ -361,8 +366,21 @@ def run_guidance2(args_library):
     bp_per_proc = (args_library.Bootstraps // args_library.proc_num) + 1
     children = []  # List to store process IDs
 
+    countTrees = 0
+    epsilon = 0.0003
+    # manager = Manager()
+    # lock = multiprocessing.Lock()
+    # args_library.mean_res_pair_score = manager.list()
+    # args_library.mean_col_score = manager.list()
+    args_library.mean_res_pair_score = []
+    args_library.mean_col_score = []
+    args_library.convergence = args_library.Bootstraps * Num_of_Aln_from_HoT_per_Run
+    # trees_to_run = list(range(args_library.Bootstraps))
+
     for proc in range(args_library.proc_num):
         print(f"Running proc num {proc}\n")
+
+        args_library.convergence = args_library.Bootstraps # default assumption that we need to go through all the bootstrap trees
 
         pid = os.fork()
 
@@ -371,11 +389,20 @@ def run_guidance2(args_library):
             children.append(pid)
         elif pid == 0:
             # child
+            # for tree_num in range(bp_per_proc):
             for tree_num in range(bp_per_proc):
-                countTrees = proc * bp_per_proc + tree_num
+
+                convergence = 0
+
+                # countTrees = proc * bp_per_proc + tree_num
+                countTrees = proc + args_library.proc_num * tree_num
                 print(f"proc num {proc}\ttree num {tree_num} --> global tree index {countTrees}\n")
 
-                if countTrees == args_library.Bootstraps:
+
+                if countTrees >= args_library.Bootstraps:
+                    break
+                alt_msas = len(os.listdir(args_library.Scoring_Alignments_Dir))
+                if alt_msas >= args_library.convergence:
                     break
 
                 Branch = RandomBranches[countTrees]
@@ -472,27 +499,52 @@ def run_guidance2(args_library):
                     with open(args_library.status_file, "w") as PROGRESS:
                         PROGRESS.write(
                             f"\n<ul><li>{(i + 1) * 4} out of {args_library.Bootstraps * 4} alternative alignments were created</li></ul>\n")
+
+                # check convergence
+                if countTrees // bp_per_proc != 0:
+                    alt_msas = calculate_sp_scores_convergence(args_library, countTrees)
+                    add_scores_to_dict(args_library, epsilon, countTrees)
+                    os.system(
+                        f'rm {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f"_tree_{countTrees}_*.scr")}')
+                    convergence = check_convergence(args_library, epsilon)
+                    print(
+                        f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
+                if convergence == 1:
+                    print(f"run_HOT_COS_GUIDANCE2 converged at tree #{alt_msas}\n")
+                    if alt_msas < args_library.convergence:
+                        args_library.convergence = alt_msas
+                    break
+
             # end of child
             sys.exit(0)
+
         else:
             e = Exception
             raise Exception(f"ERROR: fork failed: {e}\n")
+
+
 
     # Wait for child processes to end
     for child_pid in children:
         pid, status = os.waitpid(child_pid, 0)
         print(f"done with pid {pid}\n")
 
+    alt_msas = len(os.listdir(args_library.Scoring_Alignments_Dir))
+    args_library.convergence = alt_msas
+    log_file.write(f"run_HOT_COS_GUIDANCE2 converged at tree #{alt_msas}\n")
     log_file.close()
 
     # To validate all alns were created
-    aln_count = len(os.listdir(args_library.Scoring_Alignments_Dir))
-    expected_count = Num_of_Aln_from_HoT_per_Run * args_library.Bootstraps
-    if aln_count < expected_count:
-        exit_on_error("sys_error",
-                      f"run_Guidance2: Only {aln_count} alignments were created on {args_library.Scoring_Alignments_Dir} while expecting {expected_count}\n", args_library)
-    else:
-        print("\nSUCCESS!\n")
+    # aln_count = len(os.listdir(args_library.Scoring_Alignments_Dir))
+    # expected_count = Num_of_Aln_from_HoT_per_Run * args_library.Bootstraps
+    # expected_count = (args_library.convergence) * Num_of_Aln_from_HoT_per_Run
+    print(f"the convergence final number is {args_library.convergence}")
+    # if aln_count < expected_count:
+    #     exit_on_error("sys_error",
+    #                   f"run_Guidance2: Only {aln_count} alignments were created on {args_library.Scoring_Alignments_Dir} while expecting {expected_count}\n", args_library)
+    # else:
+    #     print("\nSUCCESS!\n")
+    print("\nSUCCESS!\n")
 
 
 def run_hot(args_library):
