@@ -11,23 +11,15 @@ import multiprocessing as mp
 
 from multiprocessing.sharedctypes import Value, Array
 from multiprocessing import Process, Manager, Lock
-def run_hot_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_arr_ref, ep_vals_arr_ref, Num_of_Aln_from_HoT_per_Run):
+def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_arr_ref, ep_vals_arr_ref, Num_of_Aln_from_HoT_per_Run):
     try:
         log_file = open(args_library.OutLogFile, "a")
     except OSError:
         print("run_guidance() could not open log file\n")
         sys.exit()
-    # Running parallel processes using multiprocessing, each will run an equal share of the BP alignments (?)
-    bp_per_proc = (args_library.Bootstraps // args_library.proc_num) + 1
-    children = []  # List to store process IDs
-    # pid = os.fork()
 
-    # if pid != 0:
-    #     # parent
-    #     children.append(pid)
-    # elif pid == 0:
-        # child
-        # for tree_num in range(bp_per_proc):
+    bp_per_proc = (args_library.Bootstraps // args_library.proc_num) + 1
+
     for tree_num in range(bp_per_proc):
 
         convergence = 0
@@ -147,6 +139,7 @@ def run_hot_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_arr_ref,
             print(f"run_HOT_COS_GUIDANCE2 converged at tree #{alt_msas}\n")
             if alt_msas < args_library.convergence:
                 args_library.convergence = alt_msas
+            print(f'.done {proc}, generated {alt_msas}', flush=True)
             break
 
     # end of child
@@ -512,13 +505,14 @@ def run_guidance2(args_library):
 
     lock = Lock()
     countTrees = 0
-    epsilon = 0.0005
+    epsilon = 0.0009
     manager = Manager()
     args_library.mean_res_pair_score = manager.list()
     args_library.mean_col_score = manager.list()
     args_library.convergence = args_library.Bootstraps * Num_of_Aln_from_HoT_per_Run
 
-    processes = [Process(target=run_hot_on_tree, args=(args_library, epsilon, proc, RandomBranches,op_vals_arr_ref, ep_vals_arr_ref, Num_of_Aln_from_HoT_per_Run)) for proc in range(args_library.proc_num)]
+    # Running parallel processes using multiprocessing, each will run an equal share of the BP alignments (?)
+    processes = [Process(target=run_hot_process_on_tree, args=(args_library, epsilon, proc, RandomBranches,op_vals_arr_ref, ep_vals_arr_ref, Num_of_Aln_from_HoT_per_Run)) for proc in range(args_library.proc_num)]
     for process in processes:
         process.start()
     for process in processes:
