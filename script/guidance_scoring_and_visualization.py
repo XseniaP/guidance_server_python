@@ -1215,20 +1215,13 @@ def add_scores_to_dict(args_library, epsilon, countTrees):
     print(args_library.mean_col_score)
 
 def check_convergence(args_library, epsilon):
-    # score = None
-    # while score is None:
-    score = 10 * epsilon
-    if len(args_library.mean_col_score)>1:
-        score = abs(args_library.mean_col_score[-1] - args_library.mean_col_score[-2])
-        # try:
-        #     connect
-            # score = abs(args_library.mean_col_score[countTrees] - args_library.mean_col_score[countTrees-bp_per_proc])
-        # except:
-        #     pass
+    score1, score2 = 10 * epsilon, 10 * epsilon
+    if len(args_library.mean_col_score)>1 and len(args_library.mean_res_pair_score)>1:
+        score1 = abs(args_library.mean_col_score[-1] - args_library.mean_col_score[-2])
+        score2 = abs(args_library.mean_res_pair_score[-1] - args_library.mean_res_pair_score[-2])
 
-    # score = args_library.mean_col_score[countTrees] - args_library.mean_col_score[countTrees-1]
 
-    if score <= epsilon:
+    if score1 <= epsilon and score2 >= -epsilon:
         return 1
     else:
         return 0
