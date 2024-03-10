@@ -1,7 +1,7 @@
 from guidance_sequence_functions import *
 from guidance_tree_functions import *
 from guidance_common_functions import *
-from script.guidance_scoring_and_visualization import calculate_sp_scores, check_convergence, \
+from guidance_scoring_and_visualization import calculate_sp_scores, check_convergence, \
     calculate_sp_scores_convergence, add_scores_to_dict
 from multiprocessing import Process, Manager
 import uuid
@@ -11,7 +11,7 @@ import multiprocessing as mp
 
 from multiprocessing.sharedctypes import Value, Array
 from multiprocessing import Process, Manager, Lock
-def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_arr_ref, ep_vals_arr_ref, Num_of_Aln_from_HoT_per_Run):
+def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_arr_ref, ep_vals_arr_ref, Num_of_Aln_from_HoT_per_Run, lock):
     try:
         log_file = open(args_library.OutLogFile, "a")
     except OSError:
@@ -129,18 +129,32 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
         # check convergence
         if countTrees != 0:
             alt_msas = calculate_sp_scores_convergence(args_library, countTrees)
-            add_scores_to_dict(args_library, epsilon, countTrees)
+            add_scores_to_dict(args_library, epsilon, countTrees, lock)
+            # print(args_library.mean_res_pair_score)
+            # print(args_library.mean_col_score)
             os.system(
                 f'rm {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f"_tree_{countTrees}_*.scr")}')
             convergence = check_convergence(args_library, epsilon)
             print(
                 f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
         if convergence == 1:
-            print(f"run_HOT_COS_GUIDANCE2 converged at tree #{alt_msas}\n")
-            if alt_msas < args_library.convergence:
-                args_library.convergence = alt_msas
-            print(f'.done {proc}, generated {alt_msas}', flush=True)
-            break
+            # print(f"run_HOT_COS_GUIDANCE2 converged at tree #{alt_msas}\n")
+            # if alt_msas < args_library.convergence:
+            #     with lock:
+            #         args_library.convergence = alt_msas
+            #         args_library.count_convergence.value += 1
+            with lock:
+                # args_library.convergence = alt_msas
+                args_library.count_convergence.value += 1
+            # print(f'.done {proc}, generated {alt_msas}', flush=True)
+            # print(args_library.count_convergence.value)
+            if args_library.proc_num > 2:
+                print(f'.done {proc}', flush=True)
+                break
+            else:
+                if args_library.count_convergence.value >= 3:
+                    print(f'.done {proc}', flush=True)
+                    break
 
     # end of child
     sys.exit(0)
@@ -503,21 +517,24 @@ def run_guidance2(args_library):
     # CREATE THE PERTURBED ALN DIR
     os.mkdir(args_library.Scoring_Alignments_Dir)
 
-    lock = Lock()
     countTrees = 0
-    epsilon = 0.0009
+    epsilon = 0.0006
     manager = Manager()
+    lock = manager.Lock()
     args_library.mean_res_pair_score = manager.list()
     args_library.mean_col_score = manager.list()
+    args_library.count_convergence = manager.Value('i', 0)
+    # this args_library.convergence value might be unnecessary at the end and can be removed
     args_library.convergence = args_library.Bootstraps * Num_of_Aln_from_HoT_per_Run
 
     # Running parallel processes using multiprocessing, each will run an equal share of the BP alignments (?)
-    processes = [Process(target=run_hot_process_on_tree, args=(args_library, epsilon, proc, RandomBranches,op_vals_arr_ref, ep_vals_arr_ref, Num_of_Aln_from_HoT_per_Run)) for proc in range(args_library.proc_num)]
+    processes = [Process(target=run_hot_process_on_tree, args=(args_library, epsilon, proc, RandomBranches,op_vals_arr_ref, ep_vals_arr_ref, Num_of_Aln_from_HoT_per_Run, lock)) for proc in range(args_library.proc_num)]
     for process in processes:
         process.start()
     for process in processes:
         process.join()
 
+    # this is the number of alternative MSAs produced at the end
     alt_msas = len(os.listdir(args_library.Scoring_Alignments_Dir))
     args_library.convergence = alt_msas
     log_file.write(f"run_HOT_COS_GUIDANCE2 converged at tree #{alt_msas}\n")
@@ -533,6 +550,8 @@ def run_guidance2(args_library):
     #                   f"run_Guidance2: Only {aln_count} alignments were created on {args_library.Scoring_Alignments_Dir} while expecting {expected_count}\n", args_library)
     # else:
     #     print("\nSUCCESS!\n")
+    print(args_library.mean_res_pair_score)
+    print(args_library.mean_col_score)
     print("\nSUCCESS!\n")
 
 

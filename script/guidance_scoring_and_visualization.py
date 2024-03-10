@@ -1201,18 +1201,19 @@ def calculate_sp_scores_convergence(args_library, countTrees):
     return alt_msas
 
 
-def add_scores_to_dict(args_library, epsilon, countTrees):
+def add_scores_to_dict(args_library, epsilon, countTrees, lock):
     # score = 10*epsilon  #just random score not satisfying the condition of convergence
     MSA_score_file = os.path.join(args_library.WorkingDir, f"{args_library.Output_Prefix + f'_tree_{countTrees}'}_msa.scr")
 
     with open(MSA_score_file, 'r') as f:
         for line in f:
             if "#MEAN_RES_PAIR_SCORE" in line:
-                args_library.mean_res_pair_score.append(float(line.strip().split()[1]))
-                args_library.mean_col_score.append(float(line.strip().split()[3]))
+                with lock:
+                    args_library.mean_res_pair_score.append(float(line.strip().split()[1]))
+                    args_library.mean_col_score.append(float(line.strip().split()[3]))
     f.close()
-    print(args_library.mean_res_pair_score)
-    print(args_library.mean_col_score)
+    # print(args_library.mean_res_pair_score)
+    # print(args_library.mean_col_score)
 
 def check_convergence(args_library, epsilon):
     score1, score2 = 10 * epsilon, 10 * epsilon
