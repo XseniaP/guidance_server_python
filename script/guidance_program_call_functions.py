@@ -126,7 +126,7 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
                 PROGRESS.write(
                     f"\n<ul><li>{(i + 1) * 4} out of {args_library.Bootstraps * 4} alternative alignments were created</li></ul>\n")
 
-        # check convergence
+        # check convergence // maybe change it to CountTrees >=5, so that we start checking scores for tree #5 only
         if countTrees != 0:
             alt_msas = calculate_sp_scores_convergence(args_library, countTrees)
             add_scores_to_dict(args_library, epsilon, countTrees, lock)

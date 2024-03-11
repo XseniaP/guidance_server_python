@@ -1222,7 +1222,7 @@ def check_convergence(args_library, epsilon):
         score2 = abs(args_library.mean_res_pair_score[-1] - args_library.mean_res_pair_score[-2])
 
 
-    if score1 <= epsilon and score2 >= -epsilon:
+    if score1 <= epsilon and score2 <= epsilon:
         return 1
     else:
         return 0
