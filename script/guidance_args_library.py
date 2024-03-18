@@ -290,8 +290,6 @@ class Library:
                 log_file.write(validation_message)
 
             ans = validate_seqs(self.WorkingDir, self.fragments_file_name, self.Seq_Type, "No", "")
-            with open(f'{self.OutLogFile}', "a") as log_file:
-                log_file.write("return: " + ans + "\n")
 
             if "sys_error" in ans:
                 exit_on_error('sys_error', " ".join(ans), self)
@@ -302,6 +300,9 @@ class Library:
                 with open(f'{self.OutLogFile}', "a") as log_file:
                     log_file.write(f"Warning: {ans[1]}; Nevertheless, calculation is continued\n")
                 print(f"Warning: {ans[1]}; Nevertheless, calculation is continued\n")
+
+            with open(f'{self.OutLogFile}', "a") as log_file:
+                log_file.write("return: " + ans + "\n")
 
             self.fragments_file_name = ans[2]
             self.NumOfFragments = ans[3]
@@ -379,9 +380,6 @@ class Library:
                     log_file.write(f"Guidance::validate_Seqs({self.WorkingDir}{self.SeqsFile_Codons}, {self.Seq_Type}, No): \n")
                     ans = validate_seqs(self.WorkingDir, self.SeqsFile_Codons, self.Seq_Type, "No","")
 
-                ans_joined = " ".join(ans)
-                log_file.write(f"return: {ans_joined}\n")
-
                 if ans[0] == "sys_error":
                     exit_on_error('sys_error', ans[1], self)
                 elif ans[0] != "OK":
@@ -390,6 +388,9 @@ class Library:
                 if ans[0] == "OK" and ans[1] != "":
                     log_file.write(f"Warning: {ans[1]}; Nevertheless calculation is continued\n")
                     print(f"Warning: {ans[1]}; Nevertheless calculation is continued\n")
+
+                ans_joined = " ".join(ans)
+                log_file.write(f"return: {ans_joined}\n")
 
             self.SeqsFile = ans[2]
             self.NumOfSeq = int(ans[3])
@@ -410,17 +411,17 @@ class Library:
                         ans = validate_seqs(self.WorkingDir, self.Alignment_File, self.Seq_Type,
                                                      "Yes", self.CodonTable)
 
-                    log_file.write(f"return: {' '.join(ans)}\n")
-
                     if ans[0] == "sys_error":
                         exit_on_error('sys_error', ans[1], self)
                     elif ans[0] != "OK":
-                        exit_on_error('user_error', ' '.join(ans), self)
+                        exit_on_error('user_error', ''.join(ans), self)
                     if ans[0] == "OK" and ans[1] != "":
                         print(f"Warning: {ans[1]}; Nevertheless calculation is continued")
                         log_file.write(f"Warning: {ans[1]}; Nevertheless calculation is continued\n")
                         self.Alignment_File = ans[2]
                         self.NumOfSeq = int(ans[3])
+
+                    log_file.write(f"return: {' '.join(ans)}\n")
 
             except IOError as e:
                 exit_on_error('sys_error', f"Can't open Log File: {self.OutLogFile}: {e}", self)

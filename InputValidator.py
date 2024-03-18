@@ -154,14 +154,14 @@ class InputValidator:
             
         m = re.search('([^ABRNDCQEGHILKMFPSTWYVXZabrndcqeghilkmfpstwyvxz-])', seq)
         if seqType == 'AminoAcids' and m: #Maybe allow: _*-?
-            return f"Seq: '{seqName}' contained the character: '{m.group(1)}' which is not a standard Amino Acid<br>"
+            return f"Seq: '{seqName}' contained the character '{m.group(1)}', which is not a standard Amino Acid<br>"
             
         m = re.search('([^ACGTRYWSMKHBVDNUXacgtrywsmkhbvdnux-])', seq)
         if seqType != 'AminoAcids' and m: 
             wrong_char = m.group(1)
             if re.search('[Uu]', seq) and seqType == 'Nucleotides': 
-                return f"Currently GUIDANCE does not accept 'U's in nucleotide sequences, you may consider replacing the 'U's by 'T's and re-submit. <br> In addition, seq: '{seqName}' contained the character: '{wrong_char}' which is not a standard Nucleotide <br>"
-            return f"Seq: '{seqName}' contained the character: '{wrong_char}' which is not a standard Nucleotide<br>"
+                return f"Currently GUIDANCE does not accept 'U's in nucleotide sequences, you may consider replacing the 'U's by 'T's and re-submit. <br> In addition, seq: '{seqName}' contained the character '{wrong_char}', which is not a standard Nucleotide <br>"
+            return f"Seq: '{seqName}' contained the character '{wrong_char}', which is not a standard Nucleotide<br>"
             
         m = re.search('[Uu]', seq)
         if seqType == "Nucleotides" and m: #Maybe allow: _*-?
@@ -176,7 +176,7 @@ class InputValidator:
         DNA_seq = DNA_seq.rstrip()
         seq_length = len(DNA_seq)
         if seq_length % 3 > 0:
-            return f"Sequence '{seqName}' is not a valid coding sequence: the sequence is of length {seq_length} which it is not divided by 3"
+            return f"Sequence '{seqName}' is not a valid coding sequence: the sequence is of length {seq_length} which is not divided by 3"
         
         i = 0
         while i < seq_length - 2:
