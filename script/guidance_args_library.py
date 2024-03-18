@@ -37,7 +37,6 @@ class Library:
         self.gallery_URL = ""
         self.home_URL = ""
         self.status_file = ""  # will follow the status of alternative MSA creation on the web-server
-        self.usage_ = "FILL IN USAGE LATER"
         self.DNA_AA = {}
         self.align_param = ""
         self.SP_SEQ_CUTOFF = "0.6"
@@ -58,6 +57,38 @@ class Library:
         self.usrSeq_File = ""
         self.MSA_Program = ""
         self.server_output = ""
+        # self.usage_ = "FILL IN USAGE LATER"
+        self.usage_ = "USAGE: --seqFile <seqFile> --msaProgram <MAFFT|PRANK|CLUSTALW|MUSCLE|PAGAN> --seqType <aa|nuc|codon> --outDir <full path outDir> \
+    Optional parameters: \
+  --program <GUIDANCE|HoT|GUIDANCE2> default=GUIDANCE2 \
+  --bootstraps <number of bootstrap iterations> default=100 \
+  --genCode <option value> default=1 \
+                <option value=1>  Nuclear Standard \
+                <option value=15> Nuclear Blepharisma \
+           	    <option value=6>  Nuclear Ciliate \
+                <option value=10> Nuclear Euplotid \
+                <option value=2>  Mitochondria Vertebrate \
+                <option value=5>  Mitochondria Invertebrate \
+                <option value=3>  Mitochondria Yeast \
+                <option value=13> Mitochondria Ascidian \
+                <option value=9>  Mitochondria Echinoderm \
+                <option value=14> Mitochondria Flatworm \
+                <option value=4>  Mitochondria Protozoan \
+  --outOrder <aligned|as_input> default=aligned \
+  --msaFile <msaFile> - not recommended, see documentation online guidance.tau.ac.il \
+  --seqCutoff <confidence cutoff between 0 to 1> default=0.6 \
+  --colCutoff <confidence cutoff between 0 to 1> default=0.93 \
+  --Z_Seq_Cutoff <Z score as additional criteria to filter sequences> EXPERIMENTAL, default=NA (not active) \
+  --Z_Col_Cutoff <Z score as additional criteria to filter position> EXPERIMENTAL, default=NA (not active) \
+  --mafft <path to mafft executable> default=mafft \
+  --prank <path to prank executable> default=prank \
+  --clustalw <path to clustalw executable> default=clustalw \
+  --muscle <path to muscle executable> default=muscle \
+  --pagan <path to pagan executable> default=pagan \
+  --ruby <path to ruby executable> default=ruby \
+  --dataset Unique name for the Dataset - will be used as prefix to outputs (default=MSA) \
+  --MSA_Param passing parameters for the alignment program. To pass parameter containning '-' in it, add \\ before each '-' e.g. \\-F for PRANK \
+  --proc_num <num of processors to use> default=1"
 
 
     def check_and_set_input_and_output_variables(self, arguments):
@@ -206,10 +237,12 @@ class Library:
             self.overview_URL = "http://guidance.tau.ac.il/ver2/overview.php"
             self.gallery_URL = "http://guidance.tau.ac.il/ver2/Gallery.php"
             self.home_URL = "http://guidance.tau.ac.il/ver2/"
+            self.credits_URL = "http://guidance.tau.ac.il/ver2/credits.php"
         else:
             self.overview_URL = "http://guidance.tau.ac.il/overview.html"
             self.gallery_URL = "http://guidance.tau.ac.il/Gallery.htm"
             self.home_URL = "http://guidance.tau.ac.il/"
+            self.credits_URL = "http://guidance.tau.ac.il/credits.html"
 
         self.OutLogFile = f"{self.outDir}/log"
         self.Output = self.OutLogFile
@@ -250,7 +283,7 @@ class Library:
                 copy(user_fragments_file, os.path.join(self.WorkingDir, self.fragments_file_name))
             except Exception as e:
                 # raise RuntimeError(f"Can't copy user fragments file: {user_fragments_file} to {self.VARS['WorkingDir']}{self.VARS['fragments_file_name']}. Error: {e}\n")
-                exit_on_error("sys_error",f"Can't copy user fragments file: $user_fragments_file to {self.WorkingDir}{self.fragments_file_name}\n", self)
+                exit_on_error("sys_error",f"Can't copy user fragments file: {user_fragments_file} to {self.WorkingDir}{self.fragments_file_name}\n", self)
             with open(f'{self.OutLogFile}', "a") as log_file:
                 validation_message = f"Validating fragments: Guidance::validate_Seqs({self.WorkingDir}, {self.fragments_file_name}, {self.Seq_Type}, No): \n"
                 print(validation_message, end="")
@@ -274,22 +307,25 @@ class Library:
             self.NumOfFragments = ans[3]
 
             tmp = re.split(re.escape("--"), self.align_param)
+            # tmp = re.split(r'\-\-', self.align_param)
             tmp_size = len(tmp)
             if tmp_size >= 1:  # command line type
                 for i in range(len(tmp)):
                     if 'addfragments' in tmp[i]:
                         tmp[i] = f"addfragments {os.path.join(self.WorkingDir, self.fragments_file_name_seqName_coded)}"
-
                 self.align_param = "--".join(tmp)
+                # self.align_param = "\-\-".join(tmp)
             else:  # server type
                 tmp = re.split(re.escape("--"), self.align_param)
+                # tmp = re.split(r'--', self.align_param)
                 for i in range(len(tmp)):
                     if 'addfragments' in tmp[i]:
                         tmp[i] = f"addfragments {os.path.join(self.WorkingDir, self.fragments_file_name_seqName_coded)}"
                 self.align_param = "--".join(tmp)
+                # self.align_param = "\-\-".join(tmp)
 
             # Check if need to remove reorder with fragments
-            if '--reorder' in self.align_param:
+            if '--reorder' in self.align_param or '\-\-reorder' in self.align_param:
                 self.align_param = self.align_param.replace('--reorder', '')        # if seed is provided reorder must be removed so the seeds will be first
                 print(
                     "WARNING: --reorder is not allowed if seed alignment is provided, therefore the --reorder argument will be ignored, and the output order will be the same as input (with seeds first)\n")
@@ -446,8 +482,6 @@ class Library:
         # Defaults (still not supported by the web server implementation, experimental feature)
         self.Z_Col_Cutoff ='NA'
         self.Z_Seq_Cutoff ='NA'
-        # Ksenia delete
-        # self.Seq_Cutoff = 'NA'
 
         if self.CALLING_SERVER == "GUIDANCE2":
             self.overview_URL = "http://guidance.tau.ac.il/ver2/overview.php"

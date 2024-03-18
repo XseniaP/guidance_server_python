@@ -20,6 +20,7 @@ class InputValidator:
         seq_length = 0
         counter = 0
         warning = ''
+        errors = ""
         
         try: 
             with open (seqFilePath, "r", encoding="ISO-8859-1") as f_in: 
@@ -42,7 +43,8 @@ class InputValidator:
                                 if m: 
                                     # validate previous seq
                                     if seq == '' and seq_name != '':
-                                        return f"The sequence named '{seq_name}' is missing<br>"
+                                        # return f"The sequence named '{seq_name}' is missing<br>"
+                                        errors += f"The sequence named '{seq_name}' is missing<br>"
                                         
                                     if seq != '' and seq_name != '':
                                         # validate seq according to if is MSA or not
@@ -51,12 +53,14 @@ class InputValidator:
                                             if seq_length == 0: 
                                                 seq_length = len(seq)# initialize the first one
                                             if len(seq) != seq_length:
-                                                return f"The sequences of the provided MSA are not properly aligned, For example the seq: '{seq_name}' does not aligned to all others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only<br>"
+                                                # return f"The sequences of the provided MSA are not properly aligned, For example the seq: '{seq_name}' does not aligned to all others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only<br>"
+                                                errors += f"The sequences of the provided MSA are not properly aligned, For example the seq: '{seq_name}' does not aligned to all others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only<br>"
                                             if seqType == "Codons": 
                                                 # Make sure that in Codon Alignment there are no stop Codons and all seq are divided by 3
                                                 ans = InputValidator.validate_seq_in_CodonAlign( seq, seq_name, codonTable)
                                                 if ans != 'OK': 
-                                                    return ans
+                                                    # return ans
+                                                    errors += ans
                                         if not isMSA:
                                             # check gap characters
                                             m = re.search (r'([-]+)$', seq)
@@ -64,7 +68,8 @@ class InputValidator:
                                                 seq = re.sub (m.group(1), '', seq)
                                                 warning = "Gap characters (-) were removed from the end of the sequences"
                                             if re.search('[-]', seq):
-                                                return f"Seq: named '{seq_name}' contain a gap character '-' which is illegal when sequences are submited to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option<br>"
+                                                # return f"Seq: named '{seq_name}' contain a gap character '-' which is illegal when sequences are submited to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option<br>"
+                                                errors += f"Seq: named '{seq_name}' contain a gap character '-' which is illegal when sequences are submited to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option<br>"
                                         if re.search('\*+', seq):
                                             seq = re.sub ('\*+', '', seq)
                                             warning = "Star character (*) were removed from the end of the sequences"
@@ -74,7 +79,8 @@ class InputValidator:
                                             f_out.write(f"{seq}\n")        # prev seq
                                             counter += 1
                                         else:
-                                            return ans
+                                            # return ans
+                                            errors += ans
                                             
                                     # start new seq
                                     m = re.search( r'^>(.*)', line)
@@ -83,14 +89,16 @@ class InputValidator:
                                         seq_name = re.sub('^\s+|\s+$', '', seq_name) # remove leading/trailing blanks
                                         if seq_name == '':
                                             seqNum = counter + 1
-                                            return "Seq number {seqNum} has no sequence name; Please fix and resubmit<br>"
+                                            # return "Seq number {seqNum} has no sequence name; Please fix and resubmit<br>"
+                                            errors += "Seq number {seqNum} has no sequence name; Please fix and resubmit<br>"
                                         else:
                                             seq = ''
                                             
                         # end of loop: validate last seq
                         #print (f'validate_Seqs: end of loop')
                         if seq == '' and seq_name != '':
-                            return f"The sequence named '{seq_name}' is missing<br>"
+                            # return f"The sequence named '{seq_name}' is missing<br>"
+                            errors += f"The sequence named '{seq_name}' is missing<br>"
                         else:
                             # validate seq according to if is MSA or not
                             if isMSA: 
@@ -98,12 +106,14 @@ class InputValidator:
                                 if seq_length == 0: 
                                     seq_length = len(seq)# initialize the first one
                                 if len(seq) != seq_length:
-                                    return f"The sequences of the provided MSA are not properly aligned, For example the seq: '{seq_name}' does not aligned to all others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only<br>"
+                                    # return f"The sequences of the provided MSA are not properly aligned, For example the seq: '{seq_name}' does not aligned to all others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only<br>"
+                                    errors += f"The sequences of the provided MSA are not properly aligned, For example the seq: '{seq_name}' does not aligned to all others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only<br>"
                                 if seqType == "Codons": 
                                     # Make sure that in Codon Alignment there are no stop Codons and all seq are divided by 3
                                     ans = InputValidator.validate_seq_in_CodonAlign( seq, seq_name, codonTable)
                                     if ans != 'OK': 
-                                        return ans
+                                        # return ans
+                                        errors += ans
                             if not isMSA:
                                 # check gap characters
                                 m = re.search (r'([-]+)$', seq)
@@ -119,7 +129,8 @@ class InputValidator:
                                 f_out.write(f"{seq}\n")        # prev seq
                                 counter += 1
                             else:
-                                return ans
+                                # return ans
+                                errors += ans
                     f_out.close()
                 except:
                     error = f"Validate_Seqs:Can't open {seqFilePath_fixed} for writing"
@@ -130,7 +141,8 @@ class InputValidator:
         except: 
             error = f"Validate_Seqs:Can't open {seqFilePath}"
             return 'sys_error', error
-            
+        if errors != "":
+            return errors
         return 'OK', warning, seqFile_fixed, counter
 
     def validate_single_seq (seqName, seq, seqType):
