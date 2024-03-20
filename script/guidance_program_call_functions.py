@@ -120,23 +120,28 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
 
         os.system(cmd)
 
-        if args_library.isServer == 1:
-            i = tree_num / args_library.proc_num
-            with open(args_library.status_file, "w") as PROGRESS:
-                PROGRESS.write(
-                    f"\n<ul><li>{(i + 1) * 4} out of {args_library.Bootstraps * 4} alternative alignments were created</li></ul>\n")
+        # Ksenia removed this part
+        # if args_library.isServer == 1:
+        #     i = tree_num / args_library.proc_num
+        #     with open(args_library.status_file, "w") as PROGRESS:
+        #         PROGRESS.write(
+        #             f"\n<ul><li>{(i + 1) * 4} out of {args_library.Bootstraps * 4} alternative alignments were created</li></ul>\n")
 
-        # check convergence // maybe change it to CountTrees >=5, so that we start checking scores for tree #5 only
-        if countTrees != 0:
-            alt_msas = calculate_sp_scores_convergence(args_library, countTrees)
-            add_scores_to_dict(args_library, epsilon, countTrees, lock)
-            # print(args_library.mean_res_pair_score)
-            # print(args_library.mean_col_score)
-            os.system(
-                f'rm {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f"_tree_{countTrees}_*.scr")}')
-            convergence = check_convergence(args_library, epsilon)
-            print(
-                f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
+        # check convergence starting from the 20th tree (starting from 80 MSAs)
+        # if countTrees != 0:
+        if countTrees >= 20:
+            # check the convergence only for every nth tree
+            if args_library.proc_num >=2 or (args_library.proc_num == 1 and countTrees % 3 == 0):
+            # if countTrees % 1 == 0:
+                alt_msas = calculate_sp_scores_convergence(args_library, countTrees)
+                add_scores_to_dict(args_library, epsilon, countTrees, lock)
+                # print(args_library.mean_res_pair_score)
+                # print(args_library.mean_col_score)
+                os.system(
+                    f'rm {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f"_tree_{countTrees}_*.scr")}')
+                convergence = check_convergence(args_library, epsilon)
+                print(
+                        f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
         if convergence == 1:
             # print(f"run_HOT_COS_GUIDANCE2 converged at tree #{alt_msas}\n")
             # if alt_msas < args_library.convergence:
@@ -152,11 +157,11 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
                 print(f'.done {proc}', flush=True)
                 break
             else:
-                if args_library.count_convergence.value >= 3:
+                if args_library.count_convergence.value >= 2:
                     print(f'.done {proc}', flush=True)
                     break
 
-    # end of child
+    # end of child // end of process
     sys.exit(0)
 
 # else:
@@ -528,7 +533,7 @@ def run_guidance2(args_library):
     args_library.convergence = args_library.Bootstraps * Num_of_Aln_from_HoT_per_Run
 
     # Running parallel processes using multiprocessing, each will run an equal share of the BP alignments (?)
-    processes = [Process(target=run_hot_process_on_tree, args=(args_library, epsilon, proc, RandomBranches,op_vals_arr_ref, ep_vals_arr_ref, Num_of_Aln_from_HoT_per_Run, lock)) for proc in range(args_library.proc_num)]
+    processes = [Process(target=run_hot_process_on_tree, args=(args_library, epsilon, proc, RandomBranches, op_vals_arr_ref, ep_vals_arr_ref, Num_of_Aln_from_HoT_per_Run, lock)) for proc in range(args_library.proc_num)]
     for process in processes:
         process.start()
     for process in processes:

@@ -384,10 +384,19 @@ def validate_seqs(working_dir, input_file, seq_type, msa, codon_table):
             # outfile.close()
             # infile.close()
             if errors != "":
+                try:
+                    f = open(f'{working_dir}/errors.txt', "w")
+                    f.write(errors.replace("<br>", "\n"))
+                    f.close()
+                except:
+                    error = f"validate_seqs:Can't open {f} for writing\n"
+                    return 'sys_error', error
                 return errors
             return "OK", warning, input_file + ".FIXED", str(counter)
     except Exception as e:
-        raise RuntimeError(f"Validate_Seqs:Can't open {working_dir}{infile} : {e}\n")
+        # raise RuntimeError(f"validate_seqs:Can't open {working_dir}{infile} : {e}\n")
+        error = f"validate_seqs:Can't open {working_dir}{infile} : {e}\n"
+        return 'sys_error', error
 
 
 def validate_single_seq(seq_name, seq, seq_type):

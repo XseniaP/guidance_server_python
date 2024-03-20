@@ -142,6 +142,13 @@ class InputValidator:
             error = f"Validate_Seqs:Can't open {seqFilePath}"
             return 'sys_error', error
         if errors != "":
+            try:
+                f = open(f'{working_dir}/errors.txt', "w")
+                f.write(errors.replace("<br>","\n"))
+                f.close()
+            except:
+                error = f"Validate_Seqs:Can't open {f} for writing"
+                return 'sys_error', error
             return errors
         return 'OK', warning, seqFile_fixed, counter
 

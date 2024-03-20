@@ -1,11 +1,15 @@
 from guidance_args_library import *
 from guidance_scoring_and_visualization import *
 from guidance_program_call_functions import *
+import time
 
 # --seqFile  /Users/kpolonsky/PycharmProjects/HoT_Py/Seqs.Orig.fas --msaProgram MAFFT --seqType aa --outDir /Users/kpolonsky/PycharmProjects/HoT_Py/ENSG00000017260_1/ --msaFile /Users/kpolonsky/PycharmProjects/HoT_Py/MSA.MAFFT.aln --program HoT
 
 
 if __name__ == "__main__":
+
+    start_time = time.time()
+
     args_library = Library()
     args_library.check_and_set_input_and_output_variables(sys.argv)
 
@@ -35,3 +39,6 @@ if __name__ == "__main__":
     create_tar_archives(args_library)
     create_png_for_seqscores(args_library)
     # create_png_for_seqscores("/Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/IQTREE_PYTHON_45_8_CPUs_N0_100_bootstraps/AGO1/MSA.MAFFT.Guidance2")
+    end_time = time.time()
+    time_taken = end_time - start_time
+    print(f"Duration of this guidance run: \n {time_taken / 60:.2f} minutes")
