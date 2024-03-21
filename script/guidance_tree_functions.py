@@ -7,7 +7,7 @@ import os
 import subprocess
 from Bio import AlignIO, Phylo
 
-from guidance_common_functions import print_message_to_output, exit_on_error
+from guidance_common_functions import print_message_to_output, exit_on_error, update_progress
 
 Bin = os.path.dirname(sys.argv[0])
 
@@ -377,7 +377,8 @@ def fix_mafft_rough_tree(tree_file):
 def Bootstrap_Trees(args_library):
     # ---------------------------------------------
     if args_library.isServer == 1:
-        print_message_to_output("Constructing bootstrap guide-trees", args_library)
+        # print_message_to_output("Constructing bootstrap guide-trees", args_library)
+        update_progress(f"{args_library.WorkingDir}{args_library.progress_report}", "Constructing bootstrap guide-trees")
 
     os.makedirs(args_library.BootStrap_Dir)
     args_library.Tree_File = f"{args_library.dataset}.{args_library.MSA_Program}.aln.treefile"

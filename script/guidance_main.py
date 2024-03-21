@@ -18,6 +18,13 @@ if __name__ == "__main__":
         with open(f"{args_library.WorkingDir}{args_library.output_page}", "a") as output_file:
             output_file.write("<h4><font face=Verdana><u>Running Messages:</u></h4></font>\n")
 
+    # if is_server == 1:
+    #     change_qued_to_running(VARS['WorkingDir'] + VARS['output_page'])
+    #     with open(VARS['WorkingDir'] + VARS['output_page'], "a") as OUTPUT:
+    #         OUTPUT.write("<h4><font face=Verdana><u>Running Progress:</u></h4></font>\n")
+            print_initial_running_progress(args_library)
+            output_file.write("<div id='includedContent'>{{ progress_report|safe }}</div>\n")
+
     if args_library.PROGRAM in ["GUIDANCE", "GUIDANCE3"]:
         run_guidance(args_library)
 

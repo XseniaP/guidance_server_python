@@ -8,7 +8,7 @@ from Bio.Seq import Seq
 from Bio.Data import CodonTable
 import subprocess
 from Bio import SeqIO, AlignIO
-from guidance_common_functions import print_message_to_output, exit_on_error
+from guidance_common_functions import print_message_to_output, exit_on_error, update_progress
 from guidance_tree_functions import fix_mafft_rough_tree
 import tarfile
 import glob
@@ -826,7 +826,8 @@ def names_according_cos(file_path):
 def align(args_library):
     # ---------------------------------------------
     if args_library.isServer == 1:
-        print_message_to_output("Generating the base alignment\n", args_library)
+        # print_message_to_output("Generating the base alignment\n", args_library)
+        update_progress(f"{args_library.WorkingDir}{args_library.progress_report}", "Generating the base alignment")
 
     args_library.Alignment_File = f"{args_library.dataset}.{args_library.MSA_Program}.aln"
     args_library.Core_Alignment_File = f"{args_library.dataset}.{args_library.MSA_Program}.CORE.aln"

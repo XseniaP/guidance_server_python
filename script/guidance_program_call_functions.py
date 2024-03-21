@@ -507,8 +507,9 @@ def run_guidance2(args_library):
 
     if args_library.isServer == 1:
         args_library.status_file = args_library.WorkingDir + "MSA_STATUS.txt"
-        with open(args_library.status_file, "w") as STATUS:
-            STATUS.write("<ul><li><p><font face=Verdana size=2>Start creating alternative alignments<br></li></ul>\n")
+        # with open(args_library.status_file, "w") as STATUS:
+        #     STATUS.write("<ul><li><p><font face=Verdana size=2>Start creating alternative alignments<br></li></ul>\n")
+        update_progress(f"{args_library.WorkingDir}{args_library.progress_report}", "Generating alternative alignments")
 
         with open(f"{args_library.server_output}", "a") as OUTPUT:
         # with open(f"{args_library.WorkingDir}{args_library.server_output}", "a") as OUTPUT:

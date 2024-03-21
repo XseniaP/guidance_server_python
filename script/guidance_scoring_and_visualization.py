@@ -685,13 +685,19 @@ def make_Jalview_AnnotationGraph(Jalview_AnnotFile, Data_File, Y_label, Y_data_C
 def calculate_sp_scores(args_library):
     if args_library.isServer == 1:
         if args_library.PROGRAM == "GUIDANCE":
-            print_message_to_output("Calculating GUIDANCE scores", args_library)
+            # print_message_to_output("Calculating GUIDANCE scores", args_library)
+            message = "Calculating GUIDANCE scores"
         elif args_library.PROGRAM == "HoT":
-            print_message_to_output("Calculating HoT scores", args_library)
+            # print_message_to_output("Calculating HoT scores", args_library)
+            message = "Calculating HoT scores"
         elif args_library.PROGRAM == "GUIDANCE2":
-            print_message_to_output("Calculating GUIDANCE2 scores", args_library)
+            # print_message_to_output("Calculating GUIDANCE2 scores", args_library)
+            message = "Calculating GUIDANCE2 scores"
         elif args_library.PROGRAM == "GUIDANCE3":
-            print_message_to_output("Calculating GUIDANCE3 scores", args_library)
+            # print_message_to_output("Calculating GUIDANCE3 scores", args_library)
+            message = "Calculating GUIDANCE3 scores"
+
+    print_message_to_output(message, args_library)
 
     if args_library.PROGRAM in ["GUIDANCE", "HoT"]:
         args_library.Output_Prefix = f"{args_library.dataset}.{args_library.MSA_Program}.Guidance"
@@ -756,6 +762,8 @@ def calculate_sp_scores(args_library):
         os.rename(f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}.NEW",
                   f"{args_library.WorkingDir}{args_library.Alignment_File}")
 
+    if args_library.isServer == 1:
+        update_progress(f"{args_library.WorkingDir}{args_library.progress_report}", message)
 
 def round_scores_file(score_file):
     with open(score_file, 'r') as file:
