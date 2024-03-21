@@ -16,7 +16,10 @@ from random import randint
 LOGGER_LEVEL_JOB_MANAGE_THREAD_SAFE = logging.DEBUG
 LOGGER_LEVEL_JOB_MANAGE_API = logging.DEBUG
 # SERVER_DIR = r'/var/www/flask/guidance/'
-SERVER_DIR = "/Users/kpolonsky/PycharmProjects/guidance_server_python"
+Bin = os.path.dirname(sys.argv[0])
+BIN_DIR = os.path.dirname(Bin)
+# SERVER_DIR = "/Users/kpolonsky/PycharmProjects/guidance_server_python"
+SERVER_DIR = BIN_DIR
 def init_dir_path():
     path2change = SERVER_DIR
     os.chdir(path2change)
