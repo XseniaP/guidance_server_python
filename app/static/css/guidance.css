@@ -61,5 +61,14 @@
 .bottom_link a:visited {text-decoration: none; color: rgb(156,80,103); }
 .bottom_link A:active {text-decoration: none}
 .bottom_link A:hover {text-decoration: underline overline; color: rgb(156,80,103); }
+.main-form {
+	background-color: rgb(248, 249, 250);
+	border-radius: 5px;
+	margin-top: 20px;
+}
+
+.alert-class{
+	margin: 10px 0px;
+}
 
 </STYLE>
