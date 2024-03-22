@@ -5,6 +5,8 @@ from matplotlib import pyplot as plt
 from guidance_sequence_functions import *
 import numpy as np
 
+from time_decorator import timeit
+
 
 def remove_pos_no_bioperl(pos_to_remove, msa_hash_ref):
     for seq_id, seq_list in msa_hash_ref.items():
@@ -47,7 +49,7 @@ def read_msa_to_hash(msa_file):
 
     return "OK", msa_hash, msa_length, msa_order
 
-
+@timeit
 def remove_low_sp_sites_no_bioperl(msa_file, sp_file, out_file, cutoff, pos_removed_file):
     num_pos_removed = 0
 
@@ -113,7 +115,7 @@ def calculate_mean_and_std(data_file, column):
 
     return avg, std
 
-
+@timeit
 def remove_low_sp_sites_consider_z(msa_file, sp_file, out_file, cutoff, z_cutoff, pos_removed_file):
     num_removed_pos = 0
     result, msa_hash_ref, msa_length, msa_order_array_ref = read_msa_to_hash(msa_file)
@@ -148,7 +150,7 @@ def remove_low_sp_sites_consider_z(msa_file, sp_file, out_file, cutoff, z_cutoff
 
     return "OK", num_removed_pos, msa_length
 
-
+@timeit
 def convert_to_csv(input_file, output_file):
     try:
         with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
@@ -165,7 +167,7 @@ def convert_to_csv(input_file, output_file):
     except Exception as e:
         return f"Error: {str(e)}"
 
-
+@timeit
 def print_colored_alignment_with_css(in_msa_file, out_html_file, scores_file, codes_file, col_scores_csv, x_label,
                                      seq_scores):
     with open(seq_scores, 'r') as seq_scores_file:
@@ -334,7 +336,7 @@ def print_scale(file, align_width):
             i += 1
     file.write("\n</tr>\n")
 
-
+@timeit
 def create_html_graph(CSV_File, OUT, X_LABLE):
     # Create an HTML BARs graph
     # GET: 1. CSV FILE (The X var is the first Col and the Y is the second, X must be sorted)
@@ -419,7 +421,7 @@ def print_color_scale(file, fontsize, colorstep_code):
         "</font></center>\n<center><table style = 'table-layout: auto;margin-left:0em;margin-right: 0em;padding:1px 1px 1px 1px; margin:1px 1px 1px 1px; border-collapse: collapse;' border=0 cols=3 width=310>\n<tr>\n<td align=left><b>Confident</b></td>\n<td align=center><b><---></b></td>\n<td align=right><b>Uncertain</b></td>\n</tr>\n</table></center>\n</td>\n</tr>\n</table>\n")
     file.write("<left><table style = 'table-layout: auto;margin-left: 0em;margin-right:0em;padding:1px 1px 1px 1px; margin:1px 1px 1px 1px; border-collapse:collapse;' border=0 cols=2 width=100>\n<tr>\n<td align=center class=\"ScoreNaN\">&nbsp;</td><td align=left>Insufficient Data</b></td>")
 
-
+@timeit
 def remove_low_sp_seq(msa_file, seq_sp_file, out_file, cutoff, removed_seq_file, seq_type="ByRowNum"):
     # Alow removal of sequences by their row number ($type=ByRowNum)in the MSA (when using the MSA set score raw file the scores are for MSA row)
     # or by sequence name ($type=BySeqName)
@@ -474,6 +476,7 @@ def remove_low_sp_seq(msa_file, seq_sp_file, out_file, cutoff, removed_seq_file,
 
     return ["OK"]
 
+@timeit
 def remove_low_sp_seq_consider_z_score(msa_file, seq_sp_file, out_file, sp_cutoff, z_cutoff, removed_seq_file, seq_type="ByRowNum"):
     # Will remove all sequences in which their Z score is below cutoff and their SP score is also below cutoff.
     # Allow removal of sequences by their row number ($type=ByRowNum) in the MSA
@@ -517,7 +520,7 @@ def remove_low_sp_seq_consider_z_score(msa_file, seq_sp_file, out_file, sp_cutof
                     out.write(f">{seq_name}_SP_{seq_sp_score}_Z_{z_score}\n{seq}\n")
     return ["OK"]
 
-
+@timeit
 def make_JalView_output(JalView_Applet_Page, WorkingDir, http, inMsa, inMsa_With_names, scores, outJalviewFeaturesFile, NamesCodeFile, Jalview_AnnotFile, Data_File, Y_label):
     try:
         with open(JalView_Applet_Page, "w") as jalview_file:
@@ -542,7 +545,7 @@ def make_JalView_output(JalView_Applet_Page, WorkingDir, http, inMsa, inMsa_With
     except Exception as e:
         return f"Error: {str(e)}"
 
-
+@timeit
 def make_Jalview_Color_MSA(inMsaFile, scoresFile, outJalviewFeaturesFile, codesFile=""):
     sequenceLengthForDisplay = 400000
     # Print HTML start
@@ -654,7 +657,7 @@ def make_Jalview_Color_MSA(inMsaFile, scoresFile, outJalviewFeaturesFile, codesF
 #     color_step = ["Score1", "Score2", "Score3", "Score4", "Score5", "Score6", "Score7", "Score8", "Score9"]
 #     return color_step[int(9 * score)]
 
-
+@timeit
 def make_Jalview_AnnotationGraph(Jalview_AnnotFile, Data_File, Y_label, Y_data_Col=1):
     last_x = 0
     with open(Jalview_AnnotFile, "w") as out_file:
@@ -681,7 +684,7 @@ def make_Jalview_AnnotationGraph(Jalview_AnnotFile, Data_File, Y_label, Y_data_C
 
     return ["OK"]
 
-
+@timeit
 def calculate_sp_scores(args_library):
     if args_library.isServer == 1:
         if args_library.PROGRAM == "GUIDANCE":
@@ -697,7 +700,7 @@ def calculate_sp_scores(args_library):
             # print_message_to_output("Calculating GUIDANCE3 scores", args_library)
             message = "Calculating GUIDANCE3 scores"
 
-    print_message_to_output(message, args_library)
+        print_message_to_output(message, args_library)
 
     if args_library.PROGRAM in ["GUIDANCE", "HoT"]:
         args_library.Output_Prefix = f"{args_library.dataset}.{args_library.MSA_Program}.Guidance"
@@ -780,7 +783,7 @@ def round_scores_file(score_file):
             else:
                 file.write(f"{parts[0]}\t{parts[1]}\n")
 
-
+@timeit
 def modify_score_files_for_codons_and_server(args_library):
     if args_library.Seq_Type == 'Codons':
         # We should modify the Scores files to be for CODONS - i.e each col score is repeated 3 times for the col and col+1,col+2
@@ -834,7 +837,7 @@ def modify_score_files_for_codons_and_server(args_library):
         round_scores_file(os.path.join(args_library.WorkingDir, "{}_res_pair_seq.scr".format(args_library.Output_Prefix)))
         round_scores_file(os.path.join(args_library.WorkingDir, "{}_res_pair_col.scr".format(args_library.Output_Prefix)))
 
-
+@timeit
 def remove_sites(args_library):
     # Return names to the Seq score file
     ############################################
@@ -924,7 +927,7 @@ def remove_sites(args_library):
                               f"Guidance::codes2nameFastaFrom1: Guidance::codes2nameFastaFrom1(\"{args_library.WorkingDir}{args_library.Alignment_File_without_low_SP_Z_Col}\",\"{args_library.WorkingDir}{args_library.code_fileName}\",\"{args_library.WorkingDir}{args_library.Alignment_File_without_low_SP_Z_Col_with_Names}\") failed: {joined_answer}\n",
                               args_library)
 
-
+@timeit
 def prepare_plots(args_library):
     try:
         with open(f"{args_library.OutLogFile}", "a") as log_file:
@@ -950,7 +953,7 @@ def prepare_plots(args_library):
         sys.exit(f"ERROR: Could not open log file in prepare_plots(): {e}\n")
 
 
-
+@timeit
 def remove_sequences_sp_score(args_library):
     # remove seq with SP-score < Seq sp_cutoff
     ############################################
@@ -988,7 +991,7 @@ def remove_sequences_sp_score(args_library):
                           f"Guidance::codes2nameFastaFrom1: Guidance::codes2nameFastaFrom1(Guidance::codes2nameFastaFrom1(\"{args_library.WorkingDir}{args_library.removed_low_SP_SEQ}\",\"{args_library.WorkingDir}{args_library.code_fileName}\",\"{args_library.WorkingDir}{args_library.removed_low_SP_SEQ_With_Names}\") failed:" + ''.join(
                               ans) + "\n", args_library)
 
-
+@timeit
 def remove_sequences_sp_and_z_score(args_library):
     # remove seq with SP-score < Seq sp_cutoff if Z<(-Z_Cutoff)
     ##############################################################
@@ -1057,6 +1060,7 @@ def print_output_to_the_server(args_library):
     pass
 
 # def create_png_for_seqscores(prefix):
+@timeit
 def create_png_for_seqscores(args_library):
     data_file = f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_seq.scr_with_Names"
     # data_file = f"{prefix}_res_pair_seq.scr_with_Names"
@@ -1130,7 +1134,7 @@ def create_png_for_seqscores(args_library):
     plt.close(fig2)
     # fig2.savefig(f'{prefix}_boxplot_seq_scores_and_outliers.png')
 
-
+@timeit
 def calculate_sp_scores_convergence(args_library, countTrees):
     if args_library.isServer == 1:
         if args_library.PROGRAM == "GUIDANCE":
@@ -1208,7 +1212,7 @@ def calculate_sp_scores_convergence(args_library, countTrees):
 
     return alt_msas
 
-
+@timeit
 def add_scores_to_dict(args_library, epsilon, countTrees, lock):
     # score = 10*epsilon  #just random score not satisfying the condition of convergence
     MSA_score_file = os.path.join(args_library.WorkingDir, f"{args_library.Output_Prefix + f'_tree_{countTrees}'}_msa.scr")
@@ -1222,7 +1226,7 @@ def add_scores_to_dict(args_library, epsilon, countTrees, lock):
     f.close()
     # print(args_library.mean_res_pair_score)
     # print(args_library.mean_col_score)
-
+@timeit
 def check_convergence(args_library, epsilon):
     score1, score2 = 10 * epsilon, 10 * epsilon
     if len(args_library.mean_col_score)>1 and len(args_library.mean_res_pair_score)>1:

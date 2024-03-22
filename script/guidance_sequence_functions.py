@@ -12,6 +12,7 @@ from guidance_common_functions import print_message_to_output, exit_on_error, up
 from guidance_tree_functions import fix_mafft_rough_tree
 import tarfile
 import glob
+from time_decorator import timeit
 
 # script_dir = os.path.dirname(os.path.realpath(__file__))
 Bin = os.path.dirname(sys.argv[0])
@@ -728,7 +729,7 @@ def codes2name_fasta_from1(aln_with_codes, codes_file, aln_with_names):
 
     return ["OK"]
 
-
+@timeit
 def add_original_seq_names_to_the_MSA(args_library):
     args_library.Alignment_File_With_Names = args_library.Alignment_File + ".With_Names"
     ans = codes2name_fasta_from1(f"{args_library.WorkingDir}{args_library.Alignment_File}",
@@ -776,7 +777,7 @@ def convert_fs_to_lower_case(file_path):
     except OSError as e:
         return f"convert_fs_to_lower_case: Fail to open {e.filename} : {str(e)}"
 
-
+@timeit
 def convert_fs_to_upper_case(file_path):
     try:
         with open(file_path, 'r') as file:
@@ -822,7 +823,7 @@ def names_according_cos(file_path):
     except OSError as e:
         return f"names_according_cos: Failed to open {e.filename} - {str(e)}"
 
-
+@timeit
 def align(args_library):
     # ---------------------------------------------
     if args_library.isServer == 1:

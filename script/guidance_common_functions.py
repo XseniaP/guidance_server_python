@@ -8,7 +8,8 @@ import sys
 import zipfile
 import time
 import guidance_CONSTANTS
-
+from time_decorator import timeit
+@timeit
 def sample_from_empirical_distribution(distribution_file_name, out_sample_file_name, sample_size):
     op_vals = []
     op_density = []
@@ -45,7 +46,7 @@ def sample_from_empirical_distribution(distribution_file_name, out_sample_file_n
 
     return op_vals
 
-
+@timeit
 def sample_from_uniform_dist(start, end, out_sample_file_name, sample_size):
     sample = []
     try:
@@ -382,6 +383,7 @@ def print_initial_running_progress(args_library):
 
         PROGRESS.write("</font>\n")
 
+@timeit
 def update_progress(progress_file, message):
     with open(progress_file, "r") as progress:
         data = progress.readlines()

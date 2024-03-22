@@ -7,10 +7,41 @@ from multiprocessing import Process, Manager
 import uuid
 import sys
 import multiprocessing as mp
-
+from time_decorator import timeit
 
 from multiprocessing.sharedctypes import Value, Array
 from multiprocessing import Process, Manager, Lock
+
+@timeit
+def run_hot_internal(args_library, op_vals_arr_ref, countTrees, tree_good_BranchLength, Branch):
+    HOT_COS_GUIDANCE2_cmd = f"cd {args_library.WorkingDir}; python3 {HOT_GUIDANCE2_PROGRAM} {args_library.dataset}_{countTrees} {args_library.HoT_MSA_Program}"
+    print(HOT_COS_GUIDANCE2_cmd)
+
+    if args_library.Seq_Type in ["AminoAcids", "Codons"]:
+        HOT_COS_GUIDANCE2_cmd += " aa"
+    elif args_library.Seq_Type == "Nucleotides":
+        HOT_COS_GUIDANCE2_cmd += " nt"
+
+    HOT_COS_GUIDANCE2_cmd += f" {args_library.codded_seq_fileName} . \"\" 0 {args_library.HoT_MSA_Program_path} {tree_good_BranchLength} {Branch}"
+
+    if args_library.MSA_Program == "MAFFT":
+        if args_library.PROGRAM == "GUIDANCE2":
+            HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} --op {op_vals_arr_ref[countTrees]}"
+        elif args_library.PROGRAM == "GUIDANCE3_HOT":
+            HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} --op {op_vals_arr_ref[countTrees]} --ep {ep_vals_arr_ref[countTrees]}"
+    elif args_library.MSA_Program == "PRANK":
+        HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} -gaprate={op_vals_arr_ref[countTrees]}"
+    elif args_library.MSA_Program == "CLUSTALW":
+        HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} -GAPOPEN={op_vals_arr_ref[countTrees]}"
+
+    HOT_COS_GUIDANCE2_cmd += " >> COS.std"
+
+    # log_file.write(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
+    # print(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
+    os.system(HOT_COS_GUIDANCE2_cmd)
+    return HOT_COS_GUIDANCE2_cmd
+
+@timeit
 def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_arr_ref, ep_vals_arr_ref, Num_of_Aln_from_HoT_per_Run, lock):
     try:
         log_file = open(args_library.OutLogFile, "a")
@@ -55,31 +86,35 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
         tree_good_BranchLength = f"{tree}.GoodBranchLength"
         reformat_trees_branch_length(tree, tree_good_BranchLength)
 
-        HOT_COS_GUIDANCE2_cmd = f"cd {args_library.WorkingDir}; python3 {HOT_GUIDANCE2_PROGRAM} {args_library.dataset}_{countTrees} {args_library.HoT_MSA_Program}"
-        print(HOT_COS_GUIDANCE2_cmd)
+        # HOT_COS_GUIDANCE2_cmd = f"cd {args_library.WorkingDir}; python3 {HOT_GUIDANCE2_PROGRAM} {args_library.dataset}_{countTrees} {args_library.HoT_MSA_Program}"
+        # print(HOT_COS_GUIDANCE2_cmd)
+        #
+        # if args_library.Seq_Type in ["AminoAcids", "Codons"]:
+        #     HOT_COS_GUIDANCE2_cmd += " aa"
+        # elif args_library.Seq_Type == "Nucleotides":
+        #     HOT_COS_GUIDANCE2_cmd += " nt"
+        #
+        # HOT_COS_GUIDANCE2_cmd += f" {args_library.codded_seq_fileName} . \"\" 0 {args_library.HoT_MSA_Program_path} {tree_good_BranchLength} {Branch}"
+        #
+        # if args_library.MSA_Program == "MAFFT":
+        #     if args_library.PROGRAM == "GUIDANCE2":
+        #         HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} --op {op_vals_arr_ref[countTrees]}"
+        #     elif args_library.PROGRAM == "GUIDANCE3_HOT":
+        #         HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} --op {op_vals_arr_ref[countTrees]} --ep {ep_vals_arr_ref[countTrees]}"
+        # elif args_library.MSA_Program == "PRANK":
+        #     HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} -gaprate={op_vals_arr_ref[countTrees]}"
+        # elif args_library.MSA_Program == "CLUSTALW":
+        #     HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} -GAPOPEN={op_vals_arr_ref[countTrees]}"
+        #
+        # HOT_COS_GUIDANCE2_cmd += " >> COS.std"
+        #
+        # log_file.write(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
+        # print(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
+        # os.system(HOT_COS_GUIDANCE2_cmd)
 
-        if args_library.Seq_Type in ["AminoAcids", "Codons"]:
-            HOT_COS_GUIDANCE2_cmd += " aa"
-        elif args_library.Seq_Type == "Nucleotides":
-            HOT_COS_GUIDANCE2_cmd += " nt"
-
-        HOT_COS_GUIDANCE2_cmd += f" {args_library.codded_seq_fileName} . \"\" 0 {args_library.HoT_MSA_Program_path} {tree_good_BranchLength} {Branch}"
-
-        if args_library.MSA_Program == "MAFFT":
-            if args_library.PROGRAM == "GUIDANCE2":
-                HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} --op {op_vals_arr_ref[countTrees]}"
-            elif args_library.PROGRAM == "GUIDANCE3_HOT":
-                HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} --op {op_vals_arr_ref[countTrees]} --ep {ep_vals_arr_ref[countTrees]}"
-        elif args_library.MSA_Program == "PRANK":
-            HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} -gaprate={op_vals_arr_ref[countTrees]}"
-        elif args_library.MSA_Program == "CLUSTALW":
-            HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} -GAPOPEN={op_vals_arr_ref[countTrees]}"
-
-        HOT_COS_GUIDANCE2_cmd += " >> COS.std"
-
+        HOT_COS_GUIDANCE2_cmd = run_hot_internal(args_library, op_vals_arr_ref, countTrees, tree_good_BranchLength, Branch)
         log_file.write(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
         print(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
-        os.system(HOT_COS_GUIDANCE2_cmd)
 
         # pertubed_aln = []
 
@@ -120,12 +155,6 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
 
         os.system(cmd)
 
-        # Ksenia removed this part
-        # if args_library.isServer == 1:
-        #     i = tree_num / args_library.proc_num
-        #     with open(args_library.status_file, "w") as PROGRESS:
-        #         PROGRESS.write(
-        #             f"\n<ul><li>{(i + 1) * 4} out of {args_library.Bootstraps * 4} alternative alignments were created</li></ul>\n")
 
         # check convergence starting from the 20th tree (starting from 80 MSAs)
         # if countTrees != 0:
@@ -164,10 +193,11 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
     # end of child // end of process
     sys.exit(0)
 
+
 # else:
 #     e = Exception
 #     raise Exception(f"ERROR: fork failed: {e}\n")
-
+@timeit
 def run_guidance(args_library):
     # Align
     ##############
@@ -330,7 +360,7 @@ def run_guidance(args_library):
             os.rename(f"{args_library.WorkingDir}{args_library.Alignment_File}_new",
                       f"{args_library.WorkingDir}{args_library.Alignment_File}")
 
-
+@timeit
 def run_guidance2(args_library):
     args_library.Scoring_Alignments_Dir = args_library.GUIDANCE2_MSAs_Dir
 
@@ -401,7 +431,7 @@ def run_guidance2(args_library):
         ans = pull_out_bp_trees(args_library.WorkingDir, args_library.dataset, args_library.Bootstraps,
                                 args_library.MSA_Program)
         if ans[0] != "ok":
-            exit_on_error("sys_error", f"Guidance::pullOutBPtrees: {' '.join(ans)}\n")
+            exit_on_error("sys_error", f"Guidance::pullOutBPtrees: {' '.join(ans)}\n", args_library)
         if args_library.MSA_Program != "MAFFT":
             numUniqueTrees = ans[1]
             numRepeats4UniqueTree = ans[2]
@@ -546,6 +576,14 @@ def run_guidance2(args_library):
     log_file.write(f"run_HOT_COS_GUIDANCE2 converged at tree #{alt_msas}\n")
     log_file.close()
 
+    # Ksenia removed this part
+    # if args_library.isServer == 1:
+    #     with open(args_library.status_file, "w") as PROGRESS:
+    #         PROGRESS.write(
+    #             f"\n<ul><li>{alt_msas} out of {args_library.Bootstraps * 4} alternative alignments were created</li></ul>\n")
+    #         PROGRESS.write(
+    #             f"\n<ul><li>{alt_msas} alternative alignments were created</li></ul>\n")
+
     # To validate all alns were created
     # aln_count = len(os.listdir(args_library.Scoring_Alignments_Dir))
     # expected_count = Num_of_Aln_from_HoT_per_Run * args_library.Bootstraps
@@ -560,7 +598,7 @@ def run_guidance2(args_library):
     print(args_library.mean_col_score)
     print("\nSUCCESS!\n")
 
-
+@timeit
 def run_hot(args_library):
     #	python3 ../hot_cos_main.py caseID msa_method seq_type input_fasta_file . output_dir >& COS.std
     #msa_method: MA0 = mafft ; CW2 = clustalW.

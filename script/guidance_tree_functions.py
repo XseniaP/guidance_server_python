@@ -8,6 +8,7 @@ import subprocess
 from Bio import AlignIO, Phylo
 
 from guidance_common_functions import print_message_to_output, exit_on_error, update_progress
+from time_decorator import timeit
 
 Bin = os.path.dirname(sys.argv[0])
 
@@ -31,7 +32,7 @@ MidPoint_Rooting_R = os.path.join(Bin, 'programs', 'MidPoint_Rooting.R')
 # phylonet_prog = os.path.join(Bin, 'exec', 'phylonet_v1_7', 'phylonet_v1_7.jar')
 isEqualTopologyProg = os.path.join(Bin, 'programs', 'isEqualTree', 'isEqualTree')
 
-
+@timeit
 def calculate_msa_depth(inMSA, args_library):
     try:
         with open(inMSA, "r") as inMSA_file:
@@ -50,6 +51,7 @@ def calculate_msa_depth(inMSA, args_library):
 
 
 # NEED TO UPDATE FOR IQTREE
+@timeit
 def pull_out_bp_trees_bbl(no_bp_dir, dataset, bp_repeats, aln_prog):
     if not no_bp_dir.endswith("/"):
         no_bp_dir += "/"
@@ -154,7 +156,7 @@ def pull_out_bp_trees_bbl(no_bp_dir, dataset, bp_repeats, aln_prog):
         else:
             return ["ok"]
 
-
+@timeit
 def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog):
     ####################################################################################################################
     # pull out all the BP trees into the BP directory
@@ -206,7 +208,7 @@ def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog):
     else:
         return ["ok"]
 
-
+@timeit
 def root_BP_trees(bsDir, dataset, orig_prog, bp_repeats, suffix=None, rooting_type="BioPerl"):
     ####################################################################################################################
     # Root all trees on BP dir
@@ -257,7 +259,7 @@ def root_BP_trees(bsDir, dataset, orig_prog, bp_repeats, suffix=None, rooting_ty
 
     return ["ok"]
 
-
+@timeit
 def root_tree(in_tree, out_tree):
     """
     The input tree (in_tree) must be an unrooted tree, i.e., the root node has at least 3 sons.
@@ -310,7 +312,7 @@ def root_tree(in_tree, out_tree):
     with open(out_tree, 'w') as outfile:
         outfile.write(newstr)
 
-
+@timeit
 def reformat_trees_branch_length(in_tree, out_tree):
     """
     Reformat tree branch lengths and write the tree in newick format.
@@ -347,7 +349,7 @@ def reformat_trees_branch_length(in_tree, out_tree):
     with open(out_tree, 'w') as outfile:
         outfile.write(newstr)
 
-
+@timeit
 def fix_mafft_rough_tree(tree_file):
     """
     Fix MAFFT RoughTree by removing underscores and extra symbols in node labels.
@@ -373,7 +375,7 @@ def fix_mafft_rough_tree(tree_file):
     with open(tree_file, 'w') as tree_file_handle:
         tree_file_handle.write(f'{tree}\n')
 
-
+@timeit
 def Bootstrap_Trees(args_library):
     # ---------------------------------------------
     if args_library.isServer == 1:
@@ -399,8 +401,10 @@ def Bootstrap_Trees(args_library):
             print(cmd + "\n")
 
         else:  # use JTT for distance estimation
+            # cmd = (
+            #     f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m JTT -bo {args_library.Bootstraps} -nt {args_library.proc_num} -st AA -n 0 -fast")
             cmd = (
-                f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m JTT -bo {args_library.Bootstraps} -nt {args_library.proc_num} -st AA -n 0 -fast")
+                f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m JTT -bo {args_library.Bootstraps} -st AA -n 0 -fast")
             print(cmd + "\n")
 
     elif args_library.Seq_Type == "Nucleotides":
@@ -408,8 +412,10 @@ def Bootstrap_Trees(args_library):
             cmd = (
                 f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m JC -bo {args_library.Bootstraps} -nt {args_library.proc_num} -st DNA -n 0 -fast")
         else:  # use HKY for distance estimation
+            # cmd = (
+            #     f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m HKY -bo {args_library.Bootstraps} -nt {args_library.proc_num} -st DNA -n 0 -fast")
             cmd = (
-                f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m HKY -bo {args_library.Bootstraps} -nt {args_library.proc_num} -st DNA -n 0 -fast")
+                f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m HKY -bo {args_library.Bootstraps} -st DNA -n 0 -fast")
 
     with open(f'{args_library.OutLogFile}', "a") as log_file:
         log_file.write(f"Bootstrap_Trees: {cmd}\n")
