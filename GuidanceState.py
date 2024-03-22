@@ -647,6 +647,8 @@ class GuidanceState:
         form = self.form
         var = self.var
         warning_msg = ''
+        # KSENIA
+        var['errors_file'] = f"results/{var['run_number']}/errors.txt"
         
         # validate seqs
         job_logger = logging.getLogger(var['run_number'])
@@ -700,7 +702,7 @@ class GuidanceState:
                         
                     else: # Codon Alignment
                         job_logger.info (f"validate_Seqs({var['WorkingDir']},{var['Alignment_File']},{form['Seq_Type']}, True, {form['CodonTable']}):\n")
-                        ans = validate_Seqs( var['WorkingDir'], var['Alignment_File'] , form['Seq_Type'] , True, form['CodonTable'])
+                        ans = InputValidator.validate_Seqs( var['WorkingDir'], var['Alignment_File'] , form['Seq_Type'] , True, form['CodonTable'])
                         var['LongestSeq'] = InputValidator.get_max_seq_length(alignment_file)
                         
                     job_logger.info(f'return: {join_list(ans)}\n')

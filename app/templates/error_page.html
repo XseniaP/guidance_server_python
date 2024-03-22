@@ -3,8 +3,10 @@
 {% block body %} 
 
     <br><center><h2 style="text-align:left;"><font color="red" size=+2>Error:<br>
-    {{ error_text|safe }}</font><br>
-    Please try to re-run your job or <a href="mailto:evolseq@tauex.tau.ac.il<evolseq@tauex.tau.ac.il>;?subject=Guidance%20Support%20Request">contact us</a> for further information</h2></center>
+    </font><br>
+    Please review the errors, adjust your input and try to re-run your job or <a href="mailto:evolseq@tauex.tau.ac.il<evolseq@tauex.tau.ac.il>;?subject=Guidance%20Support%20Request">contact us</a> for further information</h2></center>
+
+    <ul><li><A HREF="{{var['errors_file']}}" TARGET=results_Colored>List of errors encountered</A></font><br></li></ul>
 
     <br><br><br><br><br><br><br><br><br><br><br><br><br>
     <h4 class=footer><p align='center'>Questions and comments are welcome! Please <span class="admin_link"><a href="mailto:evolseq@tauex.tau.ac.il?subject=Guidance%20Support%20Request">contact us</a></span></p></h4><div id="bottom_links"> 

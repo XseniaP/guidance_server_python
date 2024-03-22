@@ -98,7 +98,7 @@ if __name__ == "__main__":
     sequencing_method.met_init(sequence.sequence_type, file_handler)
     string = ''.join([str(item) for item in sequence.bidirectional_sequences_manager['fasta'][0]])
     write_to_file('input.fasta', string)
-    print(f"TREE_FILE:{tree.tree_file}\n")  # <STDIN>
+    # print(f"TREE_FILE:{tree.tree_file}\n")  # <STDIN>
 
     if os.path.exists(tree.tree_file):
         log_print(1, 1, f"-{tree.tree_file} exists", file_handler)
@@ -124,7 +124,7 @@ if __name__ == "__main__":
 
     outfile, msar = None, None
 
-    # Create hot files
+    # Create hot files: i=0 fasta , i=1 atsaf
     for i in range(2):
         outfile = f"hot_{sequence.hot_direction[i].upper()}"
         if (msar := sequence.reverse_sequence(outfile + sequence.file_extensions[0], 1, file_handler)):

@@ -8,7 +8,8 @@ import sys
 import zipfile
 import time
 import guidance_CONSTANTS
-
+from time_decorator import timeit
+@timeit
 def sample_from_empirical_distribution(distribution_file_name, out_sample_file_name, sample_size):
     op_vals = []
     op_density = []
@@ -45,7 +46,7 @@ def sample_from_empirical_distribution(distribution_file_name, out_sample_file_n
 
     return op_vals
 
-
+@timeit
 def sample_from_uniform_dist(start, end, out_sample_file_name, sample_size):
     sample = []
     try:
@@ -349,3 +350,51 @@ def print_message_to_output(msg, args_library):
     except Exception as e:
         print(f"Failed to open output file: {e}\n")
         sys.exit()
+
+
+def print_initial_running_progress(args_library):
+    args_library.progress_report = "ProgressReport.html"
+    args_library.alt_msa_status = "MSA_STATUS.txt"
+
+    with open(args_library.WorkingDir + args_library.alt_msa_status, "a") as ALT_STATUS:
+        ALT_STATUS.write("<ul class=\"in_progress\"><li>Generating alternative alignments</li></ul>\n")
+
+    with open(args_library.WorkingDir + args_library.progress_report, "a") as PROGRESS:
+        PROGRESS.write("<p><font face=Verdana size=2>\n")
+
+        if args_library.Redirect_From_MAFFT != "1":
+            PROGRESS.write("<ul class=\"in_progress\"><li>Generating the base alignment</li></ul>\n")
+
+        PROGRESS.write("<ul class=\"in_progress\"><li>Constructing bootstrap guide-trees</li></ul>\n")
+        # PROGRESS.write("REPLACE")
+        PROGRESS.write("<ul class=\"in_progress\"><li>Generating alternative alignments</li></ul>\n")
+
+        if args_library.PROGRAM == "GUIDANCE":
+            PROGRESS.write("<ul class=\"in_progress\"><li>Calculating GUIDANCE scores</li></ul>\n")
+
+        if args_library.PROGRAM == "HoT":
+            PROGRESS.write("<ul class=\"in_progress\"><li>Calculating HoT scores</li></ul>\n")
+
+        if args_library.PROGRAM == "GUIDANCE2":
+            PROGRESS.write("<ul class=\"in_progress\"><li>Calculating GUIDANCE2 scores</li></ul>\n")
+
+        if args_library.PROGRAM == "GUIDANCE3":
+            PROGRESS.write("<ul class=\"in_progress\"><li>Calculating GUIDANCE3 scores</li></ul>\n")
+
+        PROGRESS.write("</font>\n")
+
+@timeit
+def update_progress(progress_file, message):
+    with open(progress_file, "r") as progress:
+        data = progress.readlines()
+
+    with open(progress_file, "w") as progress:
+        for line in data:
+            if message in line:
+                line = line.replace("in_progress", "finished")
+                if "(estimated time" in line:
+                    line = line.replace("(estimated time", "").split(")")[1]
+                progress.write(line)
+            else:
+                progress.write(line)
+
