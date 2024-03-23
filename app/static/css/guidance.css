@@ -71,4 +71,38 @@
 	margin: 10px 0px;
 }
 
+.select-label{
+	margin-bottom: 0;
+}
+
+.header-image{
+	width: 100%;
+}
+
+.overview-text{
+	margin-left: 0px;
+	margin-right: 0px;
+	border-left-width: thick;
+	border-right-width: thick;
+	text-align: justify;
+}
+
+.overview-headline{
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+.image-container{
+	width: 100%;
+}
+
+.sticky-top-toc {
+  top: 60px;
+}
+
+.overview-container{
+	padding-left: 30px;
+	padding-right: 30px;
+}
+
 </STYLE>

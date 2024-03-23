@@ -143,7 +143,7 @@
 
 
                 <div class="mb-3" id="MSA_PROGRAM_GUIDANCE">
-                    <label for="MSA_Program_GUIDANCE" class="form-label">Select algorithm</label>
+                    <label for="MSA_Program_GUIDANCE" class="form-label">Select the MSA algorithm</label>
                       <select name="MSA_Program_GUIDANCE" id="MSA_Program_GUIDANCE" class="form-select" onchange="javascript:toggle_MSA_Options()">
                     <option value="MAFFT">MAFFT (default)
     <!--				<option value="MAFFT_LINSI">MAFFT-LINSI  -->
@@ -156,7 +156,7 @@
 
 
                 <div class="mb-3" id="MSA_PROGRAM">
-                    <label for="MSA_Program" class="form-label">Select algorithm</label>
+                    <label for="MSA_Program" class="form-label">Select the MSA algorithm</label>
                       <select name="MSA_Program" id="MSA_Program" class="form-select" onchange="javascript:toggle_MSA_Options()">
                     <option value="MAFFT">MAFFT (default)
     <!--				<option value="MAFFT_LINSI">MAFFT-LINSI  -->
@@ -211,103 +211,121 @@
             {% endif %}
 
 
-                <div class="d-grid gap-2 d-md-block">
-                    <script type="text/javascript" src="js/validation-rules.js"></script>
-                    <input type="hidden" id="solved" name="solved" value="false"/>
-                    <input class="btn btn-primary" type=submit value="Submit" id="SubmitButton">
-                    <input class="btn btn-outline-secondary" type="reset" value="Clear Form" id="buttons">
-<!--                <a href="/Gallery/output.php">Show Example Results</a>-->
-                         </div>
-
-
         <INPUT TYPE="hidden" NAME="SP_SEQ_CUTOFF" SIZE=4 VALUE="0.6">
         <INPUT TYPE="hidden" NAME="SP_COL_CUTOFF" SIZE=4 VALUE="0.93">
 
 
         {% if back_from_mafft is not defined %}
 
-<!--                -->
-<!--                <div class="accordion" id="accordionExample">-->
-<!--  <div class="accordion-item">-->
-<!--    <h2 class="accordion-header">-->
-<!--      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">-->
-<!--        Accordion Item #1-->
-<!--      </button>-->
-<!--    </h2>-->
-<!--    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">-->
-<!--      <div class="accordion-body">-->
-<!--        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-
-
-
-
-            <br><br><br>
-            <FONT size=+2 color='red'><B><U>Advanced Options</FONT></B></U></p>
-            <div id="BOOTSTRAP">
-                <B>Number of bootstrap repeats</B>&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE="TEXT" NAME="Bootstraps" VALUE="100" SIZE=4></br>
+        <div class="accordion" id="accordionExample">
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Advanced Options
+              </button>
             </div>
+            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <div id="BOOTSTRAP">
+<!--                    <B>Number of bootstrap repeats</B>&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE="TEXT" NAME="Bootstraps" VALUE="100" SIZE=4></br>-->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Number of bootstrap repeats</span>
+                        <input type="text" name="Bootstraps" value="100" size=4 class="form-control">
+                    </div>
+                </div>
 
-            <br><br>
-            <div id="Output_Order">
-            <b>Output order</b>:
-                    <br>&nbsp;<input type="radio" name="outorder" value="as_input">&nbsp;Same as input
-                    <br>&nbsp;<input type="radio" name="outorder" value="aligned" checked>&nbsp;Aligned<br><br>
-            </div>
-            <div id="CodonsTable">
-                <b>Genetic Code:</b>&nbsp;&nbsp;&nbsp;
-                            <select name="GENCODE"> <!-- Options values are according to BioPerl -->
-                                <option value=1>Nuclear Standard
-                                <option value=15>Nuclear Blepharisma
-                                <option value=6>Nuclear Ciliate
-                                <option value=10>Nuclear Euplotid
-                                <option value=2>Mitochondria Vertebrate
-                                <option value=5>Mitochondria Invertebrate
-                                <option value=3>Mitochondria Yeast
-                                <option value=13>Mitochondria Ascidian
-                                <option value=9>Mitochondria Echinoderm
-                                <option value=14>Mitochondria Flatworm
-                                <option value=4>Mitochondria Protozoan
-                                </select><br><br>
-            </div>
+            <div class="mb-3" id="Output_Order">
+                    <label class="form-label">Output order</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="outorder" id="as_input"  value="as_input">
+                      <label class="form-check-label" for="as_input">
+                        Same as input
+                      </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="outorder" id="aligned" value="aligned" checked>
+                      <label class="form-check-label" for="aligned">
+                        Aligned
+                      </label>
+                    </div>
+                </div>
 
-            <br><br>
-            <div id="MAFFT_OPTION">
-            <b>Advanced MAFFT Options:</b><br>Max-Iterate
-            <select name="maxiterate"> 
-            <option value="0" selected="selected">0</option> 
-            <option value="1">1</option> 
-            <option value="2">2</option> 
-            <option value="5">5</option> 
-            <option value="10">10</option> 
-            <option value="20">20</option> 
-            <option value="50">50</option> 
-            <option value="80">80</option> 
-            <option value="100">100</option> 
-            <option value="1000">1000(long run)</option>
-            </select><br>
-            Pairwise alignment method <select name="pair"> 
-            <option value="" selected="selected">6mer</option> 
-            <option value="localpair">localpair</option> 
-            <option value="genafpair">genafpair</option> 
-            <option value="globalpair">globalpair</option> 
-            </select> 
-            </div>
-            <br>
-            <div id="PRANK_OPTION">
-            <b>Advanced PRANK Options:</b><br>
-            
-            <input type="checkbox" name="F" value="+F" checked> Trust insertions (+F)
-            </div>
+                <div id="CodonsTable">
+                    <b>Genetic Code:</b>&nbsp;&nbsp;&nbsp;
+                                <select name="GENCODE"> <!-- Options values are according to BioPerl -->
+                                    <option value=1>Nuclear Standard
+                                    <option value=15>Nuclear Blepharisma
+                                    <option value=6>Nuclear Ciliate
+                                    <option value=10>Nuclear Euplotid
+                                    <option value=2>Mitochondria Vertebrate
+                                    <option value=5>Mitochondria Invertebrate
+                                    <option value=3>Mitochondria Yeast
+                                    <option value=13>Mitochondria Ascidian
+                                    <option value=9>Mitochondria Echinoderm
+                                    <option value=14>Mitochondria Flatworm
+                                    <option value=4>Mitochondria Protozoan
+                                    </select><br><br>
+                </div>
 
-            </div>
-            <br>
-<!--            LOWER -->
-            <input type=submit value="Submit" id="SubmitButton1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="reset" value="Clear" id="buttons">
-<!--            <button type="button" onclick="LoadExample()">Load  an  example</button><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="-1"><A href="Gallery/output.php">Show Example Results</A></font>-->
+                <div id="MAFFT_OPTION">
+                    <label class="form-label">Advanced MAFFT Options:</label>
+                     <div class="input-group mb-3">
+                        <label class="input-group-text select-label" for="maxiterate">Max-Iterate</label>
+                        <select class="form-select" name="maxiterate" id="maxiterate">
+                            <option value="0" selected="selected">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="80">80</option>
+                            <option value="100">100</option>
+                            <option value="1000">1000(long run)</option>
+                        </select>
+                    </div>
+                     <div class="input-group mb-3">
+                        <label class="input-group-text select-label" for="pair">Pairwise alignment method</label>
+                        <select class="form-select" name="pair" id="pair">
+                            <option value="" selected="selected">6mer</option>
+                            <option value="localpair">localpair</option>
+                            <option value="genafpair">genafpair</option>
+                            <option value="globalpair">globalpair</option>
+                        </select>
+                    </div>
+                </div>
+
+
+
+<!--                <div id="MAFFT_OPTION">-->
+<!--                <b>Advanced MAFFT Options:</b><br>Max-Iterate-->
+<!--                <select name="maxiterate">-->
+<!--                <option value="0" selected="selected">0</option>-->
+<!--                <option value="1">1</option>-->
+<!--                <option value="2">2</option>-->
+<!--                <option value="5">5</option>-->
+<!--                <option value="10">10</option>-->
+<!--                <option value="20">20</option>-->
+<!--                <option value="50">50</option>-->
+<!--                <option value="80">80</option>-->
+<!--                <option value="100">100</option>-->
+<!--                <option value="1000">1000(long run)</option>-->
+<!--                </select><br>-->
+<!--                Pairwise alignment method <select name="pair">-->
+<!--                <option value="" selected="selected">6mer</option>-->
+<!--                <option value="localpair">localpair</option>-->
+<!--                <option value="genafpair">genafpair</option>-->
+<!--                <option value="globalpair">globalpair</option>-->
+<!--                </select>-->
+<!--                </div>-->
+                <div id="PRANK_OPTION">
+                    <b>Advanced PRANK Options:</b><br>
+                    <input type="checkbox" name="F" value="+F" checked> Trust insertions (+F)
+                </div>
+      </div>
+    </div>
+  </div>
+
         {% endif %}
      
 <!-- removed captcha code
@@ -316,12 +334,16 @@
 			$("#CaptchaCode").blur();
 		});
 </script>
--->			
+-->
 			<br>
-			<br>
-			<br><br>
-	</td></table>
             </div>
+        <div class="d-grid gap-2 d-md-block">
+            <script type="text/javascript" src="js/validation-rules.js"></script>
+            <input type="hidden" id="solved" name="solved" value="false"/>
+            <input class="btn btn-primary" type=submit value="Submit" id="SubmitButton">
+            <input class="btn btn-outline-secondary" type="reset" value="Clear Form" id="buttons">
+<!--                <a href="/Gallery/output.php">Show Example Results</a>-->
+         </div>
 	</form>
 
     {% if rerun_params is defined %}
