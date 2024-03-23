@@ -105,4 +105,52 @@
 	padding-right: 30px;
 }
 
+nav[data-toggle="toc"] {
+  /*top: 42px;*/
+	/*left: 20px;*/
+	/*margin-bottom: 42px;*/
+	/*padding-left: 0px;*/
+}
+
+.btn-outline-primary-small{
+	font-size: small;
+}
+
+
+pre[class*="language-"] button {
+  position: absolute;
+  top: 5px;
+	/*bottom: 10px;*/
+  right: 5px;
+	/*left:10px;*/
+
+  font-size: 0.7rem;
+  padding: 0.35rem;
+  background-color: #e3f2fd;
+
+  border: ridge 0.5px #e3f2fd;
+  border-radius: 10px;
+  /*text-shadow: #c4c4c4 0 0 2px;*/
+}
+
+pre[class*="language-"] button:hover {
+  cursor: pointer;
+  background-color: #bcbabb;
+}
+
+
+code[class*="language-"] {
+white-space: pre-wrap;
+word-break: break-all;
+}
+
+pre[class*="language-"] {
+  position: relative;
+	overflow: auto;
+  margin: 5px 0 ;
+  padding: 1.75rem 0 1.75rem 1rem;
+	border-radius: 10px;
+  /* more stuff */
+}
+
 </STYLE>

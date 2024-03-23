@@ -5,7 +5,6 @@
 <title>Guidance Overview</title>
 <title>Overview</title>
 
-
 <body data-spy="scroll" data-bs-target="#toc">
 <div class="container">
     <div class="row">
@@ -14,10 +13,10 @@
             <nav id="toc" data-toggle="toc" class="sticky-top sticky-top-toc"></nav>
         </div>
         <!-- main content area -->
-        <div class="col-sm-9 main-form overview-container" >
+        <div class="col-sm-9 main-form overview-container">
             <div class="display-5" style="text-align: left;">GUIDANCE2 Overview</b></div>
             <a name="intro"></a>
-            <h1 class="overview-headline"> <br> Introduction</h1><br>
+            <h1 class="overview-headline"><br> Introduction</h1><br>
             <p class="overview-text">Multiple sequence alignment (MSA) is a prerequisite for virtually all comparative
                 sequence analyses, including phylogeny reconstruction, functional motif or domain characterization,
                 sequence-based structural alignment, inference of positive selection, and profile based homology
@@ -52,9 +51,8 @@
                 are supported by the data.
             </p>
 
-            <br>
             <a NAME="WhatNotGoodFor"></a>
-            <h1 class="overview-headline">What is GUIDANCE not good for?</h1><br>
+            <h1 class="overview-headline"><br>What is GUIDANCE not good for?</h1><br>
             <p class="overview-text">GUIDANCE cannot tell you which alignment is better. For example, align the same
                 sequences using either PRANK or MAFFT and assign GUIDANCE scores to both. If the PRANK alignment has an
                 average score of 0.8 while the MAFFT alignment got 1 this does not mean that the MAFFT alignment is more
@@ -72,9 +70,8 @@
                 using the option to upload aligned sequences.
             </p>
 
-            <br>
             <a NAME="input"></a>
-            <h1 class="overview-headline">Input</h1><br>
+            <h1 class="overview-headline"><br>Input</h1><br>
             <p class="overview-text">The minimal input to the GUIDANCE server consists of:
                 <br>
             <ol>
@@ -144,10 +141,9 @@
             </p>
 
             <a NAME="meth1"></a>
-            <br>
-            <h1 class="overview-headline">Methodology</h1>
+            <h1 class="overview-headline"><br>Methodology</h1>
             <a NAME="GUIDANCE"></a><br>
-            <h2><b>What are the GUIDANCE2 and GUIDANCE scores?</b></h2>
+            <h2 data-toc-text="GUIDANCE scores"><b>What are the GUIDANCE2 and GUIDANCE scores?</b></h2>
             <br>
             <p class="overview-text">GUIDANCE scores reflect the robustness of an alignment to perturbations.<br><br>
                 For this goal, a standard MSA is first generated, hereby termed "base
@@ -163,7 +159,7 @@
                 in ref. <A href="#Ref1">[2]</A>.
             </p>
             <ul>
-                <li><h2><b>Constructing the set of MSAs</b></h2>
+                <li><h2 data-toc-text="Constructing MSAs"><b>Constructing the set of MSAs</b></h2>
                     <p class="overview-text"> Neighbor joining <A HREF="#REF6">[7]</a> bootstrap trees <A HREF="#REF7">[8]</a>
                         are first constructed from the base MSA. Next, each bootstrap tree is given as an input guide
                         tree to the alignment algorithm.</p>
@@ -228,9 +224,8 @@
                 to shorten the running time. HoT running time depends on the number of
                 branches in the guide tree, which increases linearly with the number of
                 sequences. Zorro, TCS, ALiScore, TrimAl and NOISY were run on a pre-calculated MSA.
-                <br>Please note that that the stand-alone versions of GUIDANCE and GUIDANCE2 support parallel computing,
-                thus
-                a significant reduction in running times is possible.</p>
+                <br>Please note that the stand-alone versions of GUIDANCE and GUIDANCE2 support parallel computing,
+                thus a significant reduction in running times is possible.</p>
 
             <img class="image-container" src="{{url_for('static',filename='images/fig2.png')}}"><br>
             <!--<img src="fig_method.server-1.gif" width="600" height="450"><br>-->
@@ -238,10 +233,10 @@
             <p style="margin-left: 40px; margin-right: 60px; font-size: small; text-align: justify">
                 <b>FIGURE 2: time performance as a function of the sequence length.</b>
                 Sets of 40 simulated protein sequences with different lengths were aligned
-                using MAFFT and analyzed by alignment reliability methods.</p><br>
+                using MAFFT and analyzed by alignment reliability methods.</p>
 
             <a NAME="output"></a>
-            <h1 class="overview-headline">Output</h1><br>
+            <h1 class="overview-headline"><br>Output</h1><br>
             <p class="overview-text"><br> GUIDANCE directs you to a web page called "GUIDANCE Job Status
                 Page". This web page is automatically updated every 30 seconds, showing
                 messages regarding the different stages of the server activity. When the
@@ -251,159 +246,179 @@
                 output page click <A href="Gallery/output.php">here</A>)</p>
 
             <a NAME="graphic"></a>
-            <li><b>MSA colored according to the confidence score</b>
-                This link is the main link for the GUIDANCE output, which is a projection of the confidence scores of
+
+            <h2>
+                <li><b>MSA colored according to the confidence score</b></li>
+            </h2>
+            <p class="overview-text">This link is the main link for the GUIDANCE output, which is a projection of the
+                confidence scores of
                 each residue onto the MSA, using a color-scale. Shades of magenta indicate confidently aligned residues
                 while shades of blue indicate uncertainly aligned residues. In addition, GUIDANCE column scores are
-                plotted below the alignment.
-            </li>
+                plotted below the alignment.</p>
+
             <A NAME="MSA"></A>
-            <li><b>MSA file</b><BR>
-                This links to a plain-text file of the base MSA, on which the colored results are being displayed.
-            </li>
-                <A NAME="ColScore"></A>
+            <h2>
+                <li><b>MSA file</b><BR></li>
+            </h2>
+            <p class="overview-text">This links to a plain-text file of the base MSA, on which the colored results are
+                being displayed.</p>
+
+            <A NAME="ColScore"></A>
+            <h2>
             <li><b>GUIDANCE column score</b><br>
-                Here you can find a table of GUIDANCE scores obtained for each column of the MSA. Note that the score of
-                columns containing only one sequence can not be estimated and thus not presented.
+            </h2>
+            <p class="overview-text">Here you can find a table of GUIDANCE scores obtained for each column of the MSA. Note that the score of
+                columns containing only one sequence can not be estimated and thus not presented.</p>
             </li>
             <A NAME="ResScore"></A>
+            <h2>
             <li><b>GUIDANCE residue score</b><br>
-                Here you can find a table of GUIDANCE scores obtained for each residue in the MSA. Note that the score
-                of residues that are aligned to gaps only can not be estimated. They are not listed in the table.
+            </h2>
+                <p class="overview-text">Here you can find a table of GUIDANCE scores obtained for each residue in the MSA. Note that the score
+                of residues that are aligned to gaps only can not be estimated. They are not listed in the table.</p>
             </li>
             <A NAME="SeqScore"></A>
+            <h2>
             <li><b>GUIDANCE sequence score</b><br>
-                Here you can find a table of GUIDANCE scores obtained for each sequence
-                in the MSA.
+            </h2>
+                <p class="overview-text">Here you can find a table of GUIDANCE scores obtained for each sequence
+                in the MSA.</p>
             </li>
             <A NAME="PairScore"></A>
-            <li><b>GUIDANCE
-                residue-pair score</b><br>
-                Here you can find a table of GUIDANCE scores obtained for each
-                residue-pair in the MSA.
+            <h2>
+            <li><b>GUIDANCE residue-pair score</b><br>
+            </h2>
+                <p class="overview-text">Here you can find a table of GUIDANCE scores obtained for each
+                residue-pair in the MSA.</p>
             </li>
 
             <A NAME="Remove_COL"></A>
-            <li><b>Remove unreliable
-                columns below a certain cutoff</b><br>
-                The server provides a reduced MSA by removing unreliable columns
+            <h2>
+            <li><b>Remove unreliable columns below a certain cutoff</b><br>
+            </h2>
+                <p class="overview-text">The server provides a reduced MSA by removing unreliable columns
                 according to this given cutoff. This MSA contains only columns with
                 GUIDANCE score (see <A href="#GUIDANCE">"what are the GUIDANCE scores"</a>) higher than this
                 cutoff, and is recommended to be used in subsequent analyses in order to
                 reduce errors caused by alignment errors.
-                <p class="overview-text">There is no specific recommended value for this cutoff because its
-                    effect on the alignment varies considerably among datasets. After the
-                    GUIDANCE calculation is finished the user may select from a drop-down
-                    list to remove unreliable columns below a certain confidence score. When
-                    selecting a confidence score the user can see what percentage of the
-                    original columns remain in the MSA. After choosing the appropriate
-                    confidence level and clicking the "remove columns" button the GUIDANCE
-                    server provides a hyperlink to a new reduced MSA comprised of the
-                    confidently aligned columns only.</p>
-                <p class="overview-text">The default value, 0.93, was optimized for the BAliBASE benchmark
-                    database as well as for simulation studies, and corresponds to 12% false
-                    positive rate and 78% true positive rate. The user is allowed to change
-                    this cutoff, to retain more\less columns. The tradeoff, as for many
-                    other predictive tests, is between the sensitivity and specificity
-                    levels. Using a low cutoff is recommended for applications that require
-                    leaving as many accurate MSA columns as possible (i.e., high
-                    sensitivity). Other applications may require the use of confident
-                    columns only (i.e. high specificity) and thus using a high cutoff that
-                    removes many columns from the original MSA is recommended. A table
-                    describing the false-positive rate and the true-positive rate found in
-                    simulation studies for different cutoffs can be found here: <A href="Table1.txt">"Table 1"</a>.</p>
+                There is no specific recommended value for this cutoff because its
+                effect on the alignment varies considerably among datasets. After the
+                GUIDANCE calculation is finished the user may select from a drop-down
+                list to remove unreliable columns below a certain confidence score. When
+                selecting a confidence score the user can see what percentage of the
+                original columns remain in the MSA. After choosing the appropriate
+                confidence level and clicking the "remove columns" button the GUIDANCE
+                server provides a hyperlink to a new reduced MSA comprised of the
+                confidently aligned columns only.
+                The default value, 0.93, was optimized for the BAliBASE benchmark
+                database as well as for simulation studies, and corresponds to 12% false
+                positive rate and 78% true positive rate. The user is allowed to change
+                this cutoff, to retain more\less columns. The tradeoff, as for many
+                other predictive tests, is between the sensitivity and specificity
+                levels. Using a low cutoff is recommended for applications that require
+                leaving as many accurate MSA columns as possible (i.e., high
+                sensitivity). Other applications may require the use of confident
+                columns only (i.e. high specificity) and thus using a high cutoff that
+                removes many columns from the original MSA is recommended. A table
+                describing the false-positive rate and the true-positive rate found in
+                simulation studies for different cutoffs can be found here: <A href="Table1.txt">"Table 1"</a>.</p>
             </li>
             <A NAME="Remove_Seq"></A>
-            <li><b>Remove
-                unreliable sequences below a certain cutoff</b><br>
-                According to this cutoff, the server enables the removal of sequences
+            <h2>
+            <li><b>Remove unreliable sequences below a certain cutoff</b><br>
+            </h2>
+                <p class="overview-text">According to this cutoff, the server enables the removal of sequences
                 that cause errors in the MSA because their alignment with the rest of
                 the sequences is unreliable.
-                <p class="overview-text">The reduced MSA contains only sequences with GUIDANCE score (see <A href="#GUIDANCE">"what
+                The reduced MSA contains only sequences with GUIDANCE score (see <A href="#GUIDANCE">"what
                     are the GUIDANCE scores"</a>) higher than this cutoff and can be used for
-                    subsequent analyses in order to reduce errors caused by alignment
-                    errors. It is possible to change this cutoff according to the proportion
-                    of sequences that the user wishes to retain. There is no specific
-                    recommended value for this cutoff because its effect on the alignment
-                    varies considerably among datasets. The web server provides a list of
-                    cutoffs with their respective effects on the remaining proportion of
-                    sequences and users are encouraged to experiment with several
-                    cutoffs. We recommend running GUIDANCE again using these sequences as
-                    input, in order to follow the improvement of the confidence level. This
-                    can be done by simply pressing the <i><b>"run GUIDANCE on the
-                        confidently-aligned sequences only"</b></i> button.</p>
+                subsequent analyses in order to reduce errors caused by alignment
+                errors. It is possible to change this cutoff according to the proportion
+                of sequences that the user wishes to retain. There is no specific
+                recommended value for this cutoff because its effect on the alignment
+                varies considerably among datasets. The web server provides a list of
+                cutoffs with their respective effects on the remaining proportion of
+                sequences and users are encouraged to experiment with several
+                cutoffs. We recommend running GUIDANCE again using these sequences as
+                input, in order to follow the improvement of the confidence level. This
+                can be done by simply pressing the <i><b>"run GUIDANCE on the
+                    confidently-aligned sequences only"</b></i> button.</p>
             </li>
-                <A NAME="Mask_RES"></A>
-                <li><b>Mask specific residues below a certain cutoff</b><br>
-                    The GUIDANCE residue scores indicate specific residues whose alignment
-                    is unreliable (see <A href="#GUIDANCE">"what are the GUIDANCE scores"</a>). This allows masking of
-                    specific residues instead of the
-                    removal of whole columns or sequences. All residues with scores lower
-                    than the cutoff are replaced with "N" (for nucleotides) or "X" (for
-                    amino acids). This is useful, for example, to mask codons in a codon
-                    alignment before running a Ka/Ks analysis to look for positive selection
-                    (see application in <A HREF="#REF8">ref. 9</a>)<br>
-                    </li>
-                    <br>
-                    <!--
-                    This option is not available in the web server. You can download this
-                    Perl script, which takes an alignment and a file of GUIDANCE residue scores an input:<br>
-                    Download <A href="maskLowScoreResidues.zip">maskLowScoreResidues.zip</a> and extract
-                    the maskLowScoreResidues.pl from it (e.g. using zip or Winzip)<br>
-                    USAGE:perl maskLowScoreResidues.pl INPUT_MSA_FILE GUIDANCE_RESIDUE_SCORES_FILE OUTPUT_MSA_FILE CUTOFF ALPHABET<br>
-                    ALPHABET can be either aa or nuc<br>
-                    -->
-                    <br>
-                    <a NAME="simulated_benchmark"></a>
-                    <h1 class="overview-headline">Simulated benchmark</h1><br>
-                    <p class="overview-text"> Among other benchmarks used to evaluate the performance of GUIDANCE2 we used a benchmark of 541
-                    simulated protein sequences.
-                    Sequences were simulated using <a href="http://abacus.gene.ucl.ac.uk/software/indelible/"
-                                                      target="_blank">INDELible</a>.
-                    In order to have realistic parameters for the simulations, we first selected
-                    541 MSAs from the <a href="http://www.orthomam.univ-montp2.fr/orthomam/html/" target="_blank">OrthoMaM</a>
-                    database,
-                    for which CDS are available for all 40 mammals included in the database.
-                    This parameter setup resulted in MSAs similar to
-                    OrthoMaM alignments (visual comparison of alignment length, number and
-                    length of indels). The control files for <a href="http://abacus.gene.ucl.ac.uk/software/indelible/"
-                                                                target="_blank">INDELible</a> and the resulted simulated
-                    MSAs used as benchmark can be downloaded <a
-                            href="{{url_for('static',filename='download/OrthoMaM_simulations.tar.gz')}}"
-                            onclick="ga('send', 'event', 'Download', 'Downloaded', 'OrthoMaM_simulations.tar.gz download');">here</a>.</p>
-                    <br><br><b>References<br></b>
-                    <br><br>
-                    <ul>
-                        <A NAME="REF0"></A>1. Penn, O., E. Privman, H. Ashkenazy, G. Landan, D. Graur, and T. Pupko.
-                        (2010).
-                        <b>GUIDANCE: a web server for assessing alignment confidence scores.</b>
-                        <i>Nucleic Acids Research, 2010 Jul 1; 38 (Web Server issue):W23-W28</i>; doi:
-                        10.1093/nar/gkq443<br>
-                        <A NAME="REF1"></A>2. Penn, O., E. Privman, G. Landan, D. Graur, and T. Pupko. (2010).
-                        <b>An alignment confidence score capturing robustness to guide-tree uncertainty.</b>
-                        <i>Molecular Biology and Evolution, 2010 Aug;27(8):1759-67</i>;
-                        doi:10.1093/molbev/msq066 <br>
-                        <A NAME="REF2"></A>3. Landan, G. and D. Graur, <b>Local reliability measures from sets of
-                        co-optimal multiple sequence alignments.</b><i> Pac Symp Biocomput</i>, 2008. 13: p. 15-24.<br>
-                        <A NAME="REF3"></A>4. Thompson, J.D., D.G. Higgins, and T.J. Gibson, <b>CLUSTAL W: improving the
-                        sensitivity of progressive multiple sequence alignment through sequence weighting,
-                        position-specific gap penalties and weight matrix choice.</b><i> Nucleic Acids Res</i>, 1994.
-                        22(22): p. 4673-80.<br>
-                        <A NAME="REF4"></A>5. Katoh, K., et al.,<b> MAFFT version 5: improvement in accuracy of multiple
-                        sequence alignment.</b><i> Nucleic Acids Res</i>, 2005. 33(2): p. 511-8.<br>
-                        <A NAME="REF5"></A>6. Loytynoja, A. and N. Goldman, <b>Phylogeny-aware gap placement prevents
-                        errors in sequence alignment and evolutionary analysis.</b><i> Science</i>, 2008. 320(5883): p.
-                        1632-5.<br>
-                        <A NAME="REF6"></A>7. Saitou, N. and M. Nei,<b> The neighbor-joining method: a new method for
-                        reconstructing phylogenetic trees.</b><i> Mol Biol Evol</i>, 1987. 4(4): p. 406-25.<br>
-                        <A NAME="REF7"></A>8. Felsenstein, J.,<b> Confidence limits on phylogenies: an approach using
-                        the bootstrap.</b><i> Evolution</i>, 1985. 39(4): p. 783-791.<br>
-                        <A NAME="REF8"></A>9. Privman, E., O. Penn, and T. Pupko. <b>Improving the performance of
-                        positive
-                        selection inference by filtering unreliable alignment regions.</b> <i>MBE</i>,
-                        2011. doi: 10.1093/molbev/msr177.
-                        <br>
-                        <br>
+            <A NAME="Mask_RES"></A>
+            <h2>
+            <li><b>Mask specific residues below a certain cutoff</b><br>
+            </h2>
+                <p class="overview-text">The GUIDANCE residue scores indicate specific residues whose alignment
+                is unreliable (see <A href="#GUIDANCE">"what are the GUIDANCE scores"</a>). This allows masking of
+                specific residues instead of the
+                removal of whole columns or sequences. All residues with scores lower
+                than the cutoff are replaced with "N" (for nucleotides) or "X" (for
+                amino acids). This is useful, for example, to mask codons in a codon
+                alignment before running a Ka/Ks analysis to look for positive selection
+                (see application in <A HREF="#REF8">ref. 9</a>)</p>
+            </li>
+            <!--
+            This option is not available in the web server. You can download this
+            Perl script, which takes an alignment and a file of GUIDANCE residue scores an input:<br>
+            Download <A href="maskLowScoreResidues.zip">maskLowScoreResidues.zip</a> and extract
+            the maskLowScoreResidues.pl from it (e.g. using zip or Winzip)<br>
+            USAGE:perl maskLowScoreResidues.pl INPUT_MSA_FILE GUIDANCE_RESIDUE_SCORES_FILE OUTPUT_MSA_FILE CUTOFF ALPHABET<br>
+            ALPHABET can be either aa or nuc<br>
+            -->
+            <a NAME="simulated_benchmark"></a>
+            <h1 class="overview-headline">Simulated benchmark</h1><br>
+            <p class="overview-text"> Among other benchmarks used to evaluate the performance of GUIDANCE2 we used a
+                benchmark of 541
+                simulated protein sequences.
+                Sequences were simulated using <a href="http://abacus.gene.ucl.ac.uk/software/indelible/"
+                                                  target="_blank">INDELible</a>.
+                In order to have realistic parameters for the simulations, we first selected
+                541 MSAs from the <a href="http://www.orthomam.univ-montp2.fr/orthomam/html/"
+                                     target="_blank">OrthoMaM</a>
+                database,
+                for which CDS are available for all 40 mammals included in the database.
+                This parameter setup resulted in MSAs similar to
+                OrthoMaM alignments (visual comparison of alignment length, number and
+                length of indels). The control files for <a href="http://abacus.gene.ucl.ac.uk/software/indelible/"
+                                                            target="_blank">INDELible</a> and the resulted simulated
+                MSAs used as benchmark can be downloaded <a
+                        href="{{url_for('static',filename='download/OrthoMaM_simulations.tar.gz')}}"
+                        onclick="ga('send', 'event', 'Download', 'Downloaded', 'OrthoMaM_simulations.tar.gz download');">here</a>.
+            </p>
+            <br><br><b>References<br></b>
+            <br><br>
+            <ul>
+                <A NAME="REF0"></A>1. Penn, O., E. Privman, H. Ashkenazy, G. Landan, D. Graur, and T. Pupko.
+                (2010).
+                <b>GUIDANCE: a web server for assessing alignment confidence scores.</b>
+                <i>Nucleic Acids Research, 2010 Jul 1; 38 (Web Server issue):W23-W28</i>; doi:
+                10.1093/nar/gkq443<br>
+                <A NAME="REF1"></A>2. Penn, O., E. Privman, G. Landan, D. Graur, and T. Pupko. (2010).
+                <b>An alignment confidence score capturing robustness to guide-tree uncertainty.</b>
+                <i>Molecular Biology and Evolution, 2010 Aug;27(8):1759-67</i>;
+                doi:10.1093/molbev/msq066 <br>
+                <A NAME="REF2"></A>3. Landan, G. and D. Graur, <b>Local reliability measures from sets of
+                co-optimal multiple sequence alignments.</b><i> Pac Symp Biocomput</i>, 2008. 13: p. 15-24.<br>
+                <A NAME="REF3"></A>4. Thompson, J.D., D.G. Higgins, and T.J. Gibson, <b>CLUSTAL W: improving the
+                sensitivity of progressive multiple sequence alignment through sequence weighting,
+                position-specific gap penalties and weight matrix choice.</b><i> Nucleic Acids Res</i>, 1994.
+                22(22): p. 4673-80.<br>
+                <A NAME="REF4"></A>5. Katoh, K., et al.,<b> MAFFT version 5: improvement in accuracy of multiple
+                sequence alignment.</b><i> Nucleic Acids Res</i>, 2005. 33(2): p. 511-8.<br>
+                <A NAME="REF5"></A>6. Loytynoja, A. and N. Goldman, <b>Phylogeny-aware gap placement prevents
+                errors in sequence alignment and evolutionary analysis.</b><i> Science</i>, 2008. 320(5883): p.
+                1632-5.<br>
+                <A NAME="REF6"></A>7. Saitou, N. and M. Nei,<b> The neighbor-joining method: a new method for
+                reconstructing phylogenetic trees.</b><i> Mol Biol Evol</i>, 1987. 4(4): p. 406-25.<br>
+                <A NAME="REF7"></A>8. Felsenstein, J.,<b> Confidence limits on phylogenies: an approach using
+                the bootstrap.</b><i> Evolution</i>, 1985. 39(4): p. 783-791.<br>
+                <A NAME="REF8"></A>9. Privman, E., O. Penn, and T. Pupko. <b>Improving the performance of
+                positive
+                selection inference by filtering unreliable alignment regions.</b> <i>MBE</i>,
+                2011. doi: 10.1093/molbev/msr177.
+                <br>
+                <br>
+            </ul>
         </div>
     </div>
 </div>
@@ -729,7 +744,7 @@
 <!--    </table>-->
 
 
-    {% endblock %}
+{% endblock %}
 
 
 

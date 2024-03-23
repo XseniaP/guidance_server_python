@@ -3,26 +3,38 @@
 {% block body %} 
 
     <title>GUIDANCE Gallery</title>
-    <div style="font: 900 40px/1.3 'Playfair Display', Georgia; color: #003399; text-align: center;"><b>GUIDANCE2 Gallery</b></div> <br> 
-    </font> <br>
-    </h1>
-    <br><br>
-    <table width=725 border=0>
-    <br><br>
+<body data-spy="scroll" data-bs-target="#toc">
+<div class="container">
+    <div class="row">
+        <!-- sidebar, which will move to the top on a small screen -->
+        <div class="col-sm-3">
+            <nav id="toc" data-toggle="toc" class="sticky-top sticky-top-toc"></nav>
+        </div>
+        <!-- main content area -->
+        <div class="col-sm-9 main-form overview-container">
+            <div class="display-5" style="text-align: left;"><b>GUIDANCE2 Gallery</b></div> <br>
+<!--            </font> <br>-->
+<!--            </h1>-->
+<!--            <br><br>-->
+<!--            <table width=725 border=0>-->
+            <br>
+            <p align="center"><a href="http://guidance-old.tau.ac.il/Gallery/output.php" TARGET="_blank"><b>Click here</b></a> to view an example output page for an alignment of Vpu proteins.</b></p>
 
-    <p align="center"><a href="http://guidance-old.tau.ac.il/Gallery/output.php" TARGET="_blank"><b>Click here</a> to view an example output page for an alignment of Vpu proteins.</b></p>
-    <br><br>
-    <p align='center'>Color coding scheme of GUIDANCE</P><P align="center"><img src="{{url_for('static',filename='images/scale.png')}}" width="400"></P><br><BR>
-    <p>Vpu is an accessory viral protein present in human immunodeficiency virus 1 (HIV-1) and simian immunodeficiency viruses (SIVs) infecting chimpanzees and other primate species, yet absent in HIV-2. The protein contains ~80 amino-acids and has two known major functions, which are conducted by two distinct domains of the protein: promotion of CD4 degradation via the cytoplasmic domain, and enhancement of virion release from host cells via the trans-membrane domain [1]. The latter activity has shown to be related to antagonism of Tetherin, an innate immune protein that blocks the release of nascent virus from infected cells in the absence of Vpu[2].</p>
+            <h1><p><br>Color coding scheme of GUIDANCE</p><br><p align="center"><img src="{{url_for('static',filename='images/scale.png')}}" width="400"></p><br></h1>
+            <p class="overview-text"> Vpu is an accessory viral protein present in human immunodeficiency virus 1 (HIV-1) and simian immunodeficiency viruses (SIVs) infecting chimpanzees and other primate species, yet absent in HIV-2. The protein contains ~80 amino-acids and has two known major functions, which are conducted by two distinct domains of the protein: promotion of CD4 degradation via the cytoplasmic domain, and enhancement of virion release from host cells via the trans-membrane domain <a href="#REF0_gal">[1]</A>. The latter activity has shown to be related to antagonism of Tetherin, an innate immune protein that blocks the release of nascent virus from infected cells in the absence of Vpu<a href="#REF1_gal">[2]</A>.
+            <br><br> In order to exemplify the power and ease of GUIDANCE, the web-server was run on a sample of Vpu protein sequences from the three main HIV-1 groups (M, N and O) and SIV sequences from chimpanzee (Pan troglodytes), gorilla (Gorilla gorilla), and several Cercopithecus species, using the MAFFT method. The results clearly show that the alignment of the cytoplasmic domain of Vpu is not robust to perturbations in the guide tree. The same applies to some residues in the transmembrane and extracellular domains (Figure 1a). Looking at specific sequences, the SIV sequences from Cercopithecus and some of the sequences from P. troglodytes are shown to be badly aligned with the rest of the sequence set.
+            <br><br> Note that if those sequences are removed, the trans-membrane domain will become a confidently aligned block (Figure 1b). Subsequent analyses based on this MSA should take the alignment uncertainty into account. For example, if our goal is positive selection inference (see the <A href="http://selecton.tau.ac.il">Selecton server</A>) then predictions regarding unreliable regions such as the first or the last dozen of columns should be taken with a grain of salt.
+            </p>
 
-    <p>In order to exemplify the power and ease of GUIDANCE, the web-server was run on on a sample of Vpu protein sequences from the three main HIV-1 groups (M, N and O) and SIV sequences from chimpanzee (Pan troglodytes), gorilla (Gorilla gorilla), and several Cercopithecus species, using the MAFFT method. The results clearly show that the alignment of the cytoplasmic domain of Vpu is not robust to perturbations in the guide tree. The same applies to some residues in the transmembrane and extracellular domains (Figure 1a). Looking at specific sequences, the SIV sequences from Cercopithecus and some of the sequences from P. troglodytes are shown to be badly aligned with the rest of the sequence set.</p>
+            <h1><p><br>GUIDANCE Application Example</p><br></h1>
+            <img src="{{url_for('static',filename='images/vpu.gif')}}" width="1000">
 
-    <p>Note that if those sequences are removed, the trans-membrane domain will become a confidently aligned block (Figure 1b). Subsequent analyses based on this MSA should take the alignment uncertainty into account. For example, if our goal is positive selection inference (see the <A href="http://selecton.tau.ac.il">Selecton server</A>) then predictions regarding unreliable regions such as the first or the last dozen of columns should be taken with a grain of salt.</p>
+            <p><b><u>References</b></u><br><br>
+            <b><A NAME="REF0_gal"></A>1.</b>	Nomaguchi, M., M. Fujita, and A. Adachi, Role of HIV-1 Vpu protein for virus spread and pathogenesis. Microbes Infect, 2008. 10(9): p. 960-7.<br>
+            <b><A NAME="REF1_gal"></A>2.</b>	Neil, S.J., T. Zang, and P.D. Bieniasz, Tetherin inhibits retrovirus release and is antagonized by HIV-1 Vpu. Nature, 2008. 451(7177): p. 425-30.</p>
 
-    <img src="{{url_for('static',filename='images/vpu.gif')}}" width="1000">
-    
-    <p><b><u>References</b></u><br><br>
-    <b>1.</b>	Nomaguchi, M., M. Fujita, and A. Adachi, Role of HIV-1 Vpu protein for virus spread and pathogenesis. Microbes Infect, 2008. 10(9): p. 960-7.<br>
-    <b>2.</b>	Neil, S.J., T. Zang, and P.D. Bieniasz, Tetherin inhibits retrovirus release and is antagonized by HIV-1 Vpu. Nature, 2008. 451(7177): p. 425-30.</p>
-
+        <!--        </div>-->
+        </div>
+        </div>
+    </body>
 {% endblock %}
