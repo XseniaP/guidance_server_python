@@ -116,6 +116,16 @@ nav[data-toggle="toc"] {
 	font-size: small;
 }
 
+.custom-select-results {
+  display: inline-list-item;
+  width: 100%;
+  color: #bcbabb;
+  vertical-align: middle;
+  border: thick;
+	border-radius:1px;
+    border-color: #bcbabb;
+	enable-rounded;
+  }
 
 pre[class*="language-"] button {
   position: absolute;

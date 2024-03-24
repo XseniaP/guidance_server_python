@@ -20,7 +20,7 @@
             <!--    1. <a href="#download">Downloading and compiling GUIDANCE.</a><br>-->
             <!--    2. <a href="#run">Running GUIDANCE<br></a><br>-->
 
-            <h1 class="overview-headline"><br>Downloading and Compiling GUIDANCE</h1><br>
+            <h1 class="overview-headline"><br>Downloading and compiling GUIDANCE</h1><br>
 
             <p class="overview-text"> The following instructions should work right out of the box for
                 UNIX-like systems. Mac should also work in principle, but is not yet
@@ -46,7 +46,7 @@
                 2.0:</a><br></b>
 
                             <div class="alert-class">
-                    <div  class="alert alert-warning text-center" role="alert">
+                    <div  class="alert alert-success text-center" role="alert">
                     New and improved GUIDANCE2 algorithm implemeted, see <a
                         href="http://guidance.tau.ac.il/overview.php">overview</a> for details
                     </div>
@@ -87,10 +87,10 @@
                 support more optional alignment parameters</b></ul>
 
             <h2> 2. <b>Unzip and untar the files:</b></h2>
-
+            <br>
 <!--            <pre class="language-css"><code class="language-css">-->
-             <pre class="pre-scrollable language-css" style="background-color: rgb(248, 249, 250); padding: 15px; border: ridge 1.5px #ccefff;border-radius: 10px;">
-                 <code>
+             <pre class="language-css" style="background-color: rgb(248, 249, 250); padding: 0; margin-top:0;margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
+                        <code style="padding: 0; margin-top:0; margin-bottom:0;">
 <!--            <pre class="pre-scrollable language-css" style="background-color: rgb(248, 249, 250); padding: 20px; margin-top:10px; border: ridge 1.5px #ccefff;border-radius: 10px;">-->
             tar -xzvf guidance.v2.02.tar.gz
                      </code>
@@ -102,9 +102,9 @@
             <br>This will create a directory named guidance.v2.02<br>
 
             <h2> 3. <b>Make:</b></h2>
-
-            <pre class="pre-scrollable language-css" style="background-color: rgb(248, 249, 250); padding: 15px; border: ridge 1.5px #ccefff;border-radius: 10px;">
-                <code>
+            <br>
+            <pre class="language-css" style="background-color: rgb(248, 249, 250); padding: 0; margin-top:0;margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
+                        <code style="padding: 0; margin-top:0; margin-bottom:0;">
 <!--            <pre class="pre-scrollable language-css" style="background-color: rgb(248, 249, 250); padding: 20px; margin-top:10px; border: ridge 1.5px #ccefff;border-radius: 10px;">-->
                 cd guidance.v2.02
                 make
@@ -125,7 +125,8 @@
                 <li><b>PRANK:</b> Type <kbd>prank</kbd> and check that you have version v.100223 or newer.</li>
                 <ul>
                     <li>Else download and install PRANK from:<br>
-                        <a href="http://www.ebi.ac.uk/goldman-srv/prank/prank/">http://www.ebi.ac.uk/goldman-srv/prank/prank/</a>
+<!--                        <a href="http://www.ebi.ac.uk/goldman-srv/prank/prank/">http://www.ebi.ac.uk/goldman-srv/prank/prank/</a>-->
+                        <a href="http://wasabiapp.org/software/prank/">http://wasabiapp.org/software/prank/</a>
                     </li>
                 </ul>
                 <li><B>CLUSTALW:</B> Type <kbd>clustalw</kbd> and check that you have it insalled<br>
@@ -214,26 +215,26 @@
             <b>--proc_num:</b> number of processors to use (default=1)
             </p>
 
-            <h1 class="overview-headline"><b><br>Examples</b></h1><br>
-                    <pre class="pre-scrollable language-css" style="background-color: rgb(248, 249, 250); padding: 10px; margin-top:20px; margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
-                        <code>
-                     <p style="text-align: left; text-wrap: initial">  perl &#60;guidance directory&#62;/www/Guidance/guidance.pl --seqFile protein.fas --msaProgram
-                         MAFFT --seqType aa --outDir /somewhere/protein.guidance </p>
+            <h1 class="overview-headline"><b><br>Examples</b></h1>
+            <br>
+                    <pre class="language-css" style="background-color: rgb(248, 249, 250); padding: 0; margin-top:0;margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
+                        <code style="padding: 0; margin-top:0; margin-bottom:0;">
+                     <p style="text-align: left; margin: 5px; text-wrap: initial; line-height: 15px">  perl &lt;guidance directory&gt;/www/Guidance/guidance.pl --seqFile protein.fas --msaProgram MAFFT --seqType aa --outDir /somewhere/protein.guidance </p>
                             </code>
                     </pre><br>
                 <p class="overview-text">
                     will align the amino acid sequences in the fasta file &quot;protein.fas&quot; using MAFFT and
-                    output all results to the diretory &quot;/somewhere/protein.guidance&quot;
+                    output all results to the directory &quot;/somewhere/protein.guidance&quot;
                 </p>
                 <br>
-                    <pre class="pre-scrollable language-css" style="background-color: rgb(248, 249, 250); padding: 20px; margin-top:10px; border: ridge 1.5px #ccefff;border-radius: 10px;">
-                        <code>
-                     <p style="text-align: left; text-wrap: initial">   perl &#60;guidance directory&#62;/www/Guidance/guidance.pl --seqFile codingSeq.fas --msaProgram PRANK --seqType codon --outDir /somewhere/codingSeq.guidance --genCode 2 --bootstraps 30</p>
+                    <pre class="language-css" style="background-color: rgb(248, 249, 250); padding: 0px; margin-top:0px; margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
+                        <code style="padding: 0; margin-top:0; margin-bottom:0;">
+                     <p style="text-align: left; margin: 5px; text-wrap: initial; line-height: 15px">   perl &#60;guidance directory&#62;/www/Guidance/guidance.pl --seqFile codingSeq.fas --msaProgram PRANK --seqType codon --outDir /somewhere/codingSeq.guidance --genCode 2 --bootstraps 30</p>
                             </code>
                     </pre>
 
                     <p class="overview-text"> <br> will align the codon sequences in the fasta file &quot;codingSeq.fas&quot; using PRANK after
-                    translation using the vertebrate mitochondrial genetic code and output all results to the diretory
+                    translation using the vertebrate mitochondrial genetic code and output all results to the directory
                     &quot;/somewhere/codingSeq.guidance&quot;. Only 30 bootstrap iterations will be done instead of the
                     default 100 (cut run-time by a factor of 3)
                     </p>
@@ -243,7 +244,7 @@
                 For any problems or questions
                     please contact us at <a href="mailto:evolseq@tauex.tau.ac.il?subject=GUIDANCE2%20source"
                                             target="_blank">
-                        evolseq@tauex.tau.ac.il.</a><br>Enjoy!<br><br></center>
+                        evolseq@tauex.tau.ac.il</a><br>Enjoy!<br><br></center>
             </font>
         </div>
     </div>

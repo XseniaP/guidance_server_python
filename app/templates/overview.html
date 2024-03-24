@@ -72,73 +72,102 @@
 
             <a NAME="input"></a>
             <h1 class="overview-headline"><br>Input</h1><br>
-            <p class="overview-text">The minimal input to the GUIDANCE server consists of:
-                <br>
-            <ol>
-                <li> DNA, RNA or protein sequences. The sequences should be in <A
-                        href="http://en.wikipedia.org/wiki/FASTA_format"><B>FASTA</A></B> format only. Other sequence
-                    file formats such as Clustal and Phylip may be converted to FASTA using software such as <a
-                            href="http://www-bimas.cit.nih.gov/molbio/readseq/">READSEQ</a>. The type of the sequences
-                    (nucleotides, codons, or amino-acids) should be indicated.
-                </li>
-                <li> MSA algorithm according to which the sequences will be
-                    aligned. The same algorithm is then used to align the sequences
-                    while using bootstrap trees as guide-trees (see <a
-                            href="#meth1">methodology</a>). The server supports three
-                    progressive alignment algorithms: ClustalW <A href="#REF3">[4]</a>,
-                    MAFFT <A href="#REF4">[4]</a>, and PRANK <A href="#REF5">[5]</a>.
-                </li>
-                <li> The preferred methodology for quantifying MSA uncertainty: GUIDANCE2, GUIDANCE or HoT. The default
-                    is GUIDANCE2, which tend to outperform other methods.
-                    <!-- but see the section <a href="#when">"when to use each methodology"</a>.--></li>
-            </ol>
-            </p>
 
-            <a name="advanced"></a>
-            <h2><b>Advanced Options</b></h2>
-            <p class="overview-text">
-                <br>
-            <ul>
-                <a name="BootsNum"></a>
-                <li><u>Number of bootstrap repeats (not relevant to the HoT measure)</u><br>
-                    The methodology is based on the bootstrap approach (see below). The higher this number is, the more
-                    accurate the confidence score is, but also the running time increases linearly. The default value is
-                    set to 100.
-                </li>
-                <a name="OutputOrder"></a>
-                <li><u>Output order</u><br>
-                    This option defines the order of the sequences in the output
-                    alignment. Some alignment algorithms (e.g. ClustalW <A href="#REF3">[4]</a>) changes the order of
-                    the sequences. By default, the order of the sequences corresponds to their order after being aligned
-                    using the MSA algorithm. The user may choose to set the order of the sequences in the output
-                    alignment according to the input sequences file.</p>
-                </li>
-                <a name="InputMSA"></a>
-                <li><u>Input MSA</u><br>
-                    The server allows users to upload their own MSA file instead of the unaligned sequence file. In this
-                    case, the input MSA is used as the base MSA and the confidence scores are calculated in the same way
-                    as usual (see <a href="#meth1">Methodology</a> below). This option should be used with caution. It
-                    is useful for analyzing an MSA of interest, for example, an MSA that was generated using a more
-                    accurate guide-tree than the standard neighbor joining tree. However, it is important to remember
-                    that even when the base MSA is given as input, the alignment algorithm chosen is applied many times
-                    in order to generate each of the perturbed MSAs. Therefore, supplying an MSA created by one program
-                    and inferring its confidence using another program may result in false predictions.</p>
-                </li>
-                <a name="AdvancedMSA"></a>
-                <li><u>Advanced MAFFT\PRANK options</u><br>
-                    Advanced users can also alter the parameters passed on to the
-                    alignment program used. For example, by default, the server runs
-                    PRANK with the .+F. flag, but the experienced user may wish to
-                    remove that option in some cases (see <a
-                            href="http://www.ebi.ac.uk/goldman-srv/prank/">http://www.ebi.ac.uk/goldman-srv/prank/</a>).
-                    For MAFFT the user may enable the iterative refinement option and set the number of iterations in
-                    the MAXITERATE parameter. Additionally, an option to choose between the iterative refinement
-                    strategies genafpair, localpair, and globalair is provided when running MAFFT. See the MAFFT website
-                    for a description of these options (<A
-                            href="http://mafft.cbrc.jp/alignment/software/algorithms/algorithms.html">http://mafft.cbrc.jp/alignment/software/algorithms/algorithms.html</a>).
+            <ul class="list-group">
+                <!--                <a name="advanced"></a>-->
+                <li class="list-group-item">
+                    <b>The minimal input to the GUIDANCE server</b>
                 </li>
             </ul>
-            </p>
+
+            <!--            <h2><b>The minimal input to the GUIDANCE server consists of:</b></h2>-->
+            <!--            <p class="overview-text">The minimal input to the GUIDANCE server consists of:-->
+            <br>
+
+
+            <dl class="row" style="margin-left: 1px">
+                <br>
+                <dt class="col-sm-5">DNA, RNA or protein sequences.</dt>
+                <dd class="col-sm-7">The sequences should be in <A href="http://en.wikipedia.org/wiki/FASTA_format"><B>FASTA</A></B>
+                    format only. Other sequence file formats such as Clustal and Phylip may be converted to FASTA using
+                    software such as <a href="http://www-bimas.cit.nih.gov/molbio/readseq/">READSEQ</a>. The type of the
+                    sequences (nucleotides, codons, or amino-acids) should be indicated.
+                </dd>
+                <br>
+                <dt class="col-sm-5">MSA algorithm according to which the sequences will be aligned.</dt>
+                <dd class="col-sm-7">The same algorithm is then used to align the sequences while using bootstrap trees
+                    as guide-trees (see <a href="#meth1">methodology</a>). The server supports three progressive
+                    alignment algorithms: ClustalW <A href="#REF3">[4]</a>, MAFFT <A href="#REF4">[4]</a>, and PRANK <A
+                            href="#REF5">[5]</a>.
+                </dd>
+                <br>
+                <dt class="col-sm-5">The preferred methodology for quantifying MSA uncertainty: GUIDANCE2, GUIDANCE or
+                    HoT.
+                </dt>
+                <dd class="col-sm-7">The default is GUIDANCE2, which tend to outperform other methods.</dd>
+            </dl>
+
+
+            <!--            <ul class="list-group">-->
+            <!--              <li class="list-group-item">DNA, RNA or protein sequences.</li>-->
+            <!--                <p class="overview-text">The sequences should be in <A href="http://en.wikipedia.org/wiki/FASTA_format"><B>FASTA</A></B> format only. Other sequence file formats such as Clustal and Phylip may be converted to FASTA using software such as <a href="http://www-bimas.cit.nih.gov/molbio/readseq/">READSEQ</a>. The type of the sequences (nucleotides, codons, or amino-acids) should be indicated.</p>-->
+            <!--              <li class="list-group-item">MSA algorithm according to which the sequences will be aligned.</li>-->
+            <!--            <p class="overview-text">The same algorithm is then used to align the sequences while using bootstrap trees as guide-trees (see <a href="#meth1">methodology</a>). The server supports three progressive alignment algorithms: ClustalW <A href="#REF3">[4]</a>, MAFFT <A href="#REF4">[4]</a>, and PRANK <A href="#REF5">[5]</a>.</p>-->
+            <!--              <li class="list-group-item">The preferred methodology for quantifying MSA uncertainty: GUIDANCE2, GUIDANCE or HoT.</li>-->
+            <!--            <p class="overview-text">The default is GUIDANCE2, which tend to outperform other methods.</p>-->
+            <!--            </ul>-->
+
+            <ul class="list-group">
+                <a name="advanced"></a>
+                <li class="list-group-item">
+                    <b>Advanced Options</b>
+                </li>
+            </ul>
+
+
+            <dl class="row" style="margin-left: 1px">
+                <a name="BootsNum"></a>
+                <br>
+                <dt class="col-sm-5">Number of bootstrap repeats (not relevant to the HoT measure).</dt>
+                <dd class="col-sm-7">The methodology is based on the bootstrap approach (see below). The higher this
+                    number is, the more
+                    accurate the confidence score is, but also the running time increases linearly. The default value is
+                    set to 100.
+                </dd>
+                <a name="OutputOrder"></a>
+                <br>
+                <dt class="col-sm-5">Output order.</dt>
+                <dd class="col-sm-7">This option defines the order of the sequences in the output
+                                alignment. Some alignment algorithms (e.g. ClustalW <A href="#REF3">[4]</a>) changes the order of
+                                the sequences. By default, the order of the sequences corresponds to their order after being aligned
+                                using the MSA algorithm. The user may choose to set the order of the sequences in the output
+                                alignment according to the input sequences file.</dd>
+                <a name="InputMSA"></a>
+                <br>
+                <dt class="col-sm-5">Input MSA.</dt>
+                <dd class="col-sm-7">The server allows users to upload their own MSA file instead of the unaligned sequence file. In this
+                                case, the input MSA is used as the base MSA and the confidence scores are calculated in the same way
+                                as usual (see <a href="#meth1">Methodology</a> below). This option should be used with caution. It
+                                is useful for analyzing an MSA of interest, for example, an MSA that was generated using a more
+                                accurate guide-tree than the standard neighbor joining tree. However, it is important to remember
+                                that even when the base MSA is given as input, the alignment algorithm chosen is applied many times
+                                in order to generate each of the perturbed MSAs. Therefore, supplying an MSA created by one program
+                                and inferring its confidence using another program may result in false predictions.</dd>
+                <a name="AdvancedMSA"></a>
+                <br>
+                <dt class="col-sm-5">Advanced MAFFT\PRANK options.</dt>
+                <dd class="col-sm-7">Advanced users can also alter the parameters passed on to the
+                                alignment program used. For example, by default, the server runs
+                                PRANK with the .+F. flag, but the experienced user may wish to
+                                remove that option in some cases (see <a
+                                        href="http://www.ebi.ac.uk/goldman-srv/prank/">http://www.ebi.ac.uk/goldman-srv/prank/</a>).
+                                For MAFFT the user may enable the iterative refinement option and set the number of iterations in
+                                the MAXITERATE parameter. Additionally, an option to choose between the iterative refinement
+                                strategies genafpair, localpair, and globalair is provided when running MAFFT. See the MAFFT website
+                                for a description of these options (<A
+                                        href="http://mafft.cbrc.jp/alignment/software/algorithms/algorithms.html">http://mafft.cbrc.jp/alignment/software/algorithms/algorithms.html</a>).</dd>
+
+            </dl>
 
             <a NAME="meth1"></a>
             <h1 class="overview-headline"><br>Methodology</h1>
@@ -158,20 +187,28 @@
                 An in-depth description of the algorithm behind GUIDANCE can be found
                 in ref. <A href="#Ref1">[2]</A>.
             </p>
+
+
+            <dl class="row" style="margin-left: 1px">
+                <br>
+                <dt class="col-sm-5">Constructing the set of MSAs.</dt>
+                <dd class="col-sm-7">Neighbor joining <A HREF="#REF6">[7]</a> bootstrap trees <A HREF="#REF7">[8]</a>
+                    are first constructed from the base MSA. Next, each bootstrap tree is given as an input guide
+                    tree to the alignment algorithm.
+                </dd>
+                <br>
+                <dt class="col-sm-5">Calculation of the GUIDANCE scores.</dt>
+                <dd class="col-sm-7">The method assigns a confidence score for each residue-pair in the base
+                    MSA, which is the proportion of MSAs where this pair is aligned together. The confidence score
+                    of each column/sequence is simply the average of the GUIDANCE scores over all pairs in it. The
+                    confidence score of each residue is calculated by averaging the GUIDANCE residue-pair scores
+                    over all pairs that include the residue in question.
+                </dd>
+                <br>
+            </dl>
+
+
             <ul>
-                <li><h2 data-toc-text="Constructing MSAs"><b>Constructing the set of MSAs</b></h2>
-                    <p class="overview-text"> Neighbor joining <A HREF="#REF6">[7]</a> bootstrap trees <A HREF="#REF7">[8]</a>
-                        are first constructed from the base MSA. Next, each bootstrap tree is given as an input guide
-                        tree to the alignment algorithm.</p>
-                </li>
-                <li><h2><b>Calculation of the GUIDANCE scores</b></h2>
-                    <p class="overview-text">The method assigns a confidence score for each residue-pair in the base
-                        MSA, which is the proportion of MSAs where this pair is aligned together. The confidence score
-                        of each column/sequence is simply the average of the GUIDANCE scores over all pairs in it. The
-                        confidence score of each residue is calculated by averaging the GUIDANCE residue-pair scores
-                        over all pairs that include the residue in question.</p>
-                </li>
-                <!--        <ul>-->
                 <br><br>
                 <img class="image-container" src="{{url_for('static',filename='images/fig_method.server-1.png')}}"
                      width="600"><br>
@@ -231,7 +268,7 @@
             <!--<img src="fig_method.server-1.gif" width="600" height="450"><br>-->
 
             <p style="margin-left: 40px; margin-right: 60px; font-size: small; text-align: justify">
-                <b>FIGURE 2: time performance as a function of the sequence length.</b>
+                <br><b>FIGURE 2: time performance as a function of the sequence length.</b>
                 Sets of 40 simulated protein sequences with different lengths were aligned
                 using MAFFT and analyzed by alignment reliability methods.</p>
 
@@ -245,118 +282,121 @@
                 by the HoT method, also implemented in this server. (for an example
                 output page click <A href="Gallery/output.php">here</A>)</p>
 
-            <a NAME="graphic"></a>
 
-            <h2>
-                <li><b>MSA colored according to the confidence score</b></li>
-            </h2>
-            <p class="overview-text">This link is the main link for the GUIDANCE output, which is a projection of the
-                confidence scores of
-                each residue onto the MSA, using a color-scale. Shades of magenta indicate confidently aligned residues
-                while shades of blue indicate uncertainly aligned residues. In addition, GUIDANCE column scores are
-                plotted below the alignment.</p>
+            <dl class="row" style="margin-left: 1px">
+                <a NAME="graphic"></a>
+                <dt class="col-sm-3">MSA colored according to the confidence score</dt>
+                <dd class="col-sm-9">This link is the main link for the GUIDANCE output, which is a projection of the
+                    confidence scores of
+                    each residue onto the MSA, using a color-scale. Shades of magenta indicate confidently aligned
+                    residues
+                    while shades of blue indicate uncertainly aligned residues. In addition, GUIDANCE column scores are
+                    plotted below the alignment.
+                </dd>
 
-            <A NAME="MSA"></A>
-            <h2>
-                <li><b>MSA file</b><BR></li>
-            </h2>
-            <p class="overview-text">This links to a plain-text file of the base MSA, on which the colored results are
-                being displayed.</p>
+                <A NAME="MSA"></A>
+                <br>
+                <dt class="col-sm-3 text-truncate">MSA file</dt>
+                <dd class="col-sm-9">This links to a plain-text file of the base MSA, on which the colored results are
+                    being displayed.
+                </dd>
 
-            <A NAME="ColScore"></A>
-            <h2>
-            <li><b>GUIDANCE column score</b><br>
-            </h2>
-            <p class="overview-text">Here you can find a table of GUIDANCE scores obtained for each column of the MSA. Note that the score of
-                columns containing only one sequence can not be estimated and thus not presented.</p>
-            </li>
-            <A NAME="ResScore"></A>
-            <h2>
-            <li><b>GUIDANCE residue score</b><br>
-            </h2>
-                <p class="overview-text">Here you can find a table of GUIDANCE scores obtained for each residue in the MSA. Note that the score
-                of residues that are aligned to gaps only can not be estimated. They are not listed in the table.</p>
-            </li>
-            <A NAME="SeqScore"></A>
-            <h2>
-            <li><b>GUIDANCE sequence score</b><br>
-            </h2>
-                <p class="overview-text">Here you can find a table of GUIDANCE scores obtained for each sequence
-                in the MSA.</p>
-            </li>
-            <A NAME="PairScore"></A>
-            <h2>
-            <li><b>GUIDANCE residue-pair score</b><br>
-            </h2>
-                <p class="overview-text">Here you can find a table of GUIDANCE scores obtained for each
-                residue-pair in the MSA.</p>
-            </li>
+                <A NAME="ColScore"></A>
+                <br>
+                <dt class="col-sm-3">GUIDANCE column score</dt>
+                <dd class="col-sm-9">Here you can find a table of GUIDANCE scores obtained for each column of the MSA.
+                    Note that the score of
+                    columns containing only one sequence can not be estimated and thus not presented.
+                </dd>
 
-            <A NAME="Remove_COL"></A>
-            <h2>
-            <li><b>Remove unreliable columns below a certain cutoff</b><br>
-            </h2>
-                <p class="overview-text">The server provides a reduced MSA by removing unreliable columns
-                according to this given cutoff. This MSA contains only columns with
-                GUIDANCE score (see <A href="#GUIDANCE">"what are the GUIDANCE scores"</a>) higher than this
-                cutoff, and is recommended to be used in subsequent analyses in order to
-                reduce errors caused by alignment errors.
-                There is no specific recommended value for this cutoff because its
-                effect on the alignment varies considerably among datasets. After the
-                GUIDANCE calculation is finished the user may select from a drop-down
-                list to remove unreliable columns below a certain confidence score. When
-                selecting a confidence score the user can see what percentage of the
-                original columns remain in the MSA. After choosing the appropriate
-                confidence level and clicking the "remove columns" button the GUIDANCE
-                server provides a hyperlink to a new reduced MSA comprised of the
-                confidently aligned columns only.
-                The default value, 0.93, was optimized for the BAliBASE benchmark
-                database as well as for simulation studies, and corresponds to 12% false
-                positive rate and 78% true positive rate. The user is allowed to change
-                this cutoff, to retain more\less columns. The tradeoff, as for many
-                other predictive tests, is between the sensitivity and specificity
-                levels. Using a low cutoff is recommended for applications that require
-                leaving as many accurate MSA columns as possible (i.e., high
-                sensitivity). Other applications may require the use of confident
-                columns only (i.e. high specificity) and thus using a high cutoff that
-                removes many columns from the original MSA is recommended. A table
-                describing the false-positive rate and the true-positive rate found in
-                simulation studies for different cutoffs can be found here: <A href="Table1.txt">"Table 1"</a>.</p>
-            </li>
-            <A NAME="Remove_Seq"></A>
-            <h2>
-            <li><b>Remove unreliable sequences below a certain cutoff</b><br>
-            </h2>
-                <p class="overview-text">According to this cutoff, the server enables the removal of sequences
-                that cause errors in the MSA because their alignment with the rest of
-                the sequences is unreliable.
-                The reduced MSA contains only sequences with GUIDANCE score (see <A href="#GUIDANCE">"what
-                    are the GUIDANCE scores"</a>) higher than this cutoff and can be used for
-                subsequent analyses in order to reduce errors caused by alignment
-                errors. It is possible to change this cutoff according to the proportion
-                of sequences that the user wishes to retain. There is no specific
-                recommended value for this cutoff because its effect on the alignment
-                varies considerably among datasets. The web server provides a list of
-                cutoffs with their respective effects on the remaining proportion of
-                sequences and users are encouraged to experiment with several
-                cutoffs. We recommend running GUIDANCE again using these sequences as
-                input, in order to follow the improvement of the confidence level. This
-                can be done by simply pressing the <i><b>"run GUIDANCE on the
-                    confidently-aligned sequences only"</b></i> button.</p>
-            </li>
-            <A NAME="Mask_RES"></A>
-            <h2>
-            <li><b>Mask specific residues below a certain cutoff</b><br>
-            </h2>
-                <p class="overview-text">The GUIDANCE residue scores indicate specific residues whose alignment
-                is unreliable (see <A href="#GUIDANCE">"what are the GUIDANCE scores"</a>). This allows masking of
-                specific residues instead of the
-                removal of whole columns or sequences. All residues with scores lower
-                than the cutoff are replaced with "N" (for nucleotides) or "X" (for
-                amino acids). This is useful, for example, to mask codons in a codon
-                alignment before running a Ka/Ks analysis to look for positive selection
-                (see application in <A HREF="#REF8">ref. 9</a>)</p>
-            </li>
+                <A NAME="ResScore"></A>
+                <br>
+                <dt class="col-sm-3">GUIDANCE residue score</dt>
+                <dd class="col-sm-9">Here you can find a table of GUIDANCE scores obtained for each residue in the MSA.
+                    Note that the score
+                    of residues that are aligned to gaps only can not be estimated. They are not listed in the table.
+                </dd>
+
+                <A NAME="SeqScore"></A>
+                <br>
+                <dt class="col-sm-3">GUIDANCE sequence score</dt>
+                <dd class="col-sm-9">Here you can find a table of GUIDANCE scores obtained for each sequence
+                    in the MSA.
+                </dd>
+
+                <A NAME="PairScore"></A>
+                <br>
+                <dt class="col-sm-3">GUIDANCE residue-pair score</dt>
+                <dd class="col-sm-9">Here you can find a table of GUIDANCE scores obtained for each
+                    residue-pair in the MSA.
+                </dd>
+
+                <A NAME="Remove_COL"></A>
+                <br>
+                <dt class="col-sm-3">Remove unreliable columns below a certain cutoff</dt>
+                <dd class="col-sm-9">The server provides a reduced MSA by removing unreliable columns
+                    according to this given cutoff. This MSA contains only columns with
+                    GUIDANCE score (see <A href="#GUIDANCE">"what are the GUIDANCE scores"</a>) higher than this
+                    cutoff, and is recommended to be used in subsequent analyses in order to
+                    reduce errors caused by alignment errors.
+                    There is no specific recommended value for this cutoff because its
+                    effect on the alignment varies considerably among datasets. After the
+                    GUIDANCE calculation is finished the user may select from a drop-down
+                    list to remove unreliable columns below a certain confidence score. When
+                    selecting a confidence score the user can see what percentage of the
+                    original columns remain in the MSA. After choosing the appropriate
+                    confidence level and clicking the "remove columns" button the GUIDANCE
+                    server provides a hyperlink to a new reduced MSA comprised of the
+                    confidently aligned columns only.
+                    The default value, 0.93, was optimized for the BAliBASE benchmark
+                    database as well as for simulation studies, and corresponds to 12% false
+                    positive rate and 78% true positive rate. The user is allowed to change
+                    this cutoff, to retain more\less columns. The tradeoff, as for many
+                    other predictive tests, is between the sensitivity and specificity
+                    levels. Using a low cutoff is recommended for applications that require
+                    leaving as many accurate MSA columns as possible (i.e., high
+                    sensitivity). Other applications may require the use of confident
+                    columns only (i.e. high specificity) and thus using a high cutoff that
+                    removes many columns from the original MSA is recommended. A table
+                    describing the false-positive rate and the true-positive rate found in
+                    simulation studies for different cutoffs can be found here: <A href="Table1.txt">"Table 1"</a>.
+                </dd>
+
+                <A NAME="Remove_Seq"></A>
+                <br>
+                <dt class="col-sm-3">Remove unreliable sequences below a certain cutoff</dt>
+                <dd class="col-sm-9">According to this cutoff, the server enables the removal of sequences
+                    that cause errors in the MSA because their alignment with the rest of
+                    the sequences is unreliable.
+                    The reduced MSA contains only sequences with GUIDANCE score (see <A href="#GUIDANCE">"what
+                        are the GUIDANCE scores"</a>) higher than this cutoff and can be used for
+                    subsequent analyses in order to reduce errors caused by alignment
+                    errors. It is possible to change this cutoff according to the proportion
+                    of sequences that the user wishes to retain. There is no specific
+                    recommended value for this cutoff because its effect on the alignment
+                    varies considerably among datasets. The web server provides a list of
+                    cutoffs with their respective effects on the remaining proportion of
+                    sequences and users are encouraged to experiment with several
+                    cutoffs. We recommend running GUIDANCE again using these sequences as
+                    input, in order to follow the improvement of the confidence level. This
+                    can be done by simply pressing the <i><b>"run GUIDANCE on the
+                        confidently-aligned sequences only"</b></i> button.
+                </dd>
+
+                <A NAME="Mask_RES"></A>
+                <br>
+                <dt class="col-sm-3">Mask specific residues below a certain cutoff</dt>
+                <dd class="col-sm-9">The GUIDANCE residue scores indicate specific residues whose alignment
+                    is unreliable (see <A href="#GUIDANCE">"what are the GUIDANCE scores"</a>). This allows masking of
+                    specific residues instead of the
+                    removal of whole columns or sequences. All residues with scores lower
+                    than the cutoff are replaced with "N" (for nucleotides) or "X" (for
+                    amino acids). This is useful, for example, to mask codons in a codon
+                    alignment before running a Ka/Ks analysis to look for positive selection
+                    (see application in <A HREF="#REF8">ref. 9</a>)
+                </dd>
+            </dl>
+
             <!--
             This option is not available in the web server. You can download this
             Perl script, which takes an alignment and a file of GUIDANCE residue scores an input:<br>
@@ -384,10 +424,24 @@
                 MSAs used as benchmark can be downloaded <a
                         href="{{url_for('static',filename='download/OrthoMaM_simulations.tar.gz')}}"
                         onclick="ga('send', 'event', 'Download', 'Downloaded', 'OrthoMaM_simulations.tar.gz download');">here</a>.
+
+<!--            -->
+<!--            <ul class="list-group">-->
+<!--                &lt;!&ndash;                <a name="advanced"></a>&ndash;&gt;-->
+<!--                <li class="list-group-item">-->
+<!--                    <b>The minimal input to the GUIDANCE server</b>-->
+<!--                </li>-->
+<!--            </ul>-->
+
+
+
             </p>
-            <br><br><b>References<br></b>
-            <br><br>
-            <ul>
+<!--            <br><br><b>References<br></b>-->
+<!--            <br><br>-->
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <b>References</b>
+                    <br><br>
                 <A NAME="REF0"></A>1. Penn, O., E. Privman, H. Ashkenazy, G. Landan, D. Graur, and T. Pupko.
                 (2010).
                 <b>GUIDANCE: a web server for assessing alignment confidence scores.</b>
@@ -418,7 +472,9 @@
                 2011. doi: 10.1093/molbev/msr177.
                 <br>
                 <br>
+                </li>
             </ul>
+                <br>
         </div>
     </div>
 </div>

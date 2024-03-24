@@ -278,7 +278,7 @@ def print_remove_site_selection_box (sp_res_file, msa_length):
                         Cutoff_Removed_Pos_Hash[score] = 1
         
     f.close()
-    
+    # KSENIA
     return_str = '<select name="Col_Cutoff" id="Col_Cutoff">'
     for cutoff in sorted(Cutoff_Removed_Pos_Hash.keys()): 
         col_bellow_Cutoof=0
