@@ -97,8 +97,8 @@
                 <dt class="col-sm-5">MSA algorithm according to which the sequences will be aligned.</dt>
                 <dd class="col-sm-7">The same algorithm is then used to align the sequences while using bootstrap trees
                     as guide-trees (see <a href="#meth1">methodology</a>). The server supports three progressive
-                    alignment algorithms: ClustalW <A href="#REF3">[4]</a>, MAFFT <A href="#REF4">[4]</a>, and PRANK <A
-                            href="#REF5">[5]</a>.
+                    alignment algorithms: ClustalW <A href="#REF3">[4]</a>, MAFFT <A href="#REF4">[5]</a>, and PRANK <A
+                            href="#REF5">[6]</a>.
                 </dd>
                 <br>
                 <dt class="col-sm-5">The preferred methodology for quantifying MSA uncertainty: GUIDANCE2, GUIDANCE or
@@ -160,7 +160,7 @@
                                 alignment program used. For example, by default, the server runs
                                 PRANK with the .+F. flag, but the experienced user may wish to
                                 remove that option in some cases (see <a
-                                        href="http://www.ebi.ac.uk/goldman-srv/prank/">http://www.ebi.ac.uk/goldman-srv/prank/</a>).
+                                        href="http://wasabiapp.org/software/prank/">http://wasabiapp.org/software/prank/</a>).
                                 For MAFFT the user may enable the iterative refinement option and set the number of iterations in
                                 the MAXITERATE parameter. Additionally, an option to choose between the iterative refinement
                                 strategies genafpair, localpair, and globalair is provided when running MAFFT. See the MAFFT website
@@ -171,8 +171,8 @@
 
             <a NAME="meth1"></a>
             <h1 class="overview-headline"><br>Methodology</h1>
-            <a NAME="GUIDANCE"></a><br>
-            <h2 data-toc-text="GUIDANCE scores"><b>What are the GUIDANCE2 and GUIDANCE scores?</b></h2>
+            <a NAME="GUIDANCE"></a>
+            <h2><br> <b>What are the GUIDANCE2 and GUIDANCE scores?</b></h2>
             <br>
             <p class="overview-text">GUIDANCE scores reflect the robustness of an alignment to perturbations.<br><br>
                 For this goal, a standard MSA is first generated, hereby termed "base
@@ -185,7 +185,7 @@
                 Comparing the base alignment to the set of alternative alignments results in scores between 0-1 for each
                 residue, residue-pair, column and sequence of the MSA.<br><br>
                 An in-depth description of the algorithm behind GUIDANCE can be found
-                in ref. <A href="#Ref1">[2]</A>.
+                in ref. <A href="#REF1">[2]</A>.
             </p>
 
 
@@ -231,7 +231,7 @@
                 same maximal score by the alignment algorithm. The co-optimal MSAs set
                 is constructed by reversing the sequences at each of the
                 pairwise-profiles-alignment steps of the progressive alignment algorithm
-                <a href="REF2">[3]</a>. The comparison results in scores between 0-1 for each residue, residue-pair,
+                <a href="#REF2">[3]</a>. The comparison results in scores between 0-1 for each residue, residue-pair,
                 column and sequence of the MSA.</p>
 
             <!--
@@ -413,7 +413,7 @@
                 Sequences were simulated using <a href="http://abacus.gene.ucl.ac.uk/software/indelible/"
                                                   target="_blank">INDELible</a>.
                 In order to have realistic parameters for the simulations, we first selected
-                541 MSAs from the <a href="http://www.orthomam.univ-montp2.fr/orthomam/html/"
+                541 MSAs from the <a href="http://www.orthomam.univ-montp2.fr/"
                                      target="_blank">OrthoMaM</a>
                 database,
                 for which CDS are available for all 40 mammals included in the database.
