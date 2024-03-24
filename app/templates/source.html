@@ -45,19 +45,18 @@
                     onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v2.0.tar.gz download');">version
                 2.0:</a><br></b>
 
-                            <div class="alert-class">
-                    <div  class="alert alert-success text-center" role="alert">
-                    New and improved GUIDANCE2 algorithm implemeted, see <a
-                        href="http://guidance.tau.ac.il/overview.html">overview</a> for details
-<!--                        New and improved GUIDANCE2 algorithm implemeted, see <a-->
-<!--                        href="/overview.html">overview</a> for details-->
+                <div class="alert-class">
+                    <div class="alert alert-success text-center" role="alert">
+                        New and improved GUIDANCE2 algorithm implemeted, see <a
+                            href="http://guidance.tau.ac.il/overview.html">overview</a> for details
+                        <!--                        New and improved GUIDANCE2 algorithm implemeted, see <a-->
+                        <!--                        href="/overview.html">overview</a> for details-->
                     </div>
                 </div>
 
 
-
-<!--                New and improved GUIDANCE2 algorithm implemeted, see <a-->
-<!--                        href="http://guidance.tau.ac.il/overview.php">overview</a> for details-->
+                <!--                New and improved GUIDANCE2 algorithm implemeted, see <a-->
+                <!--                        href="http://guidance.tau.ac.il/overview.php">overview</a> for details-->
             </ul>
 
             <ul><b>2014, August 7 - releasing <a href="{{url_for('static',filename='download/guidance.v1.5.tar.gz')}}"
@@ -90,22 +89,24 @@
 
             <h2> 2. <b>Unzip and untar the files:</b></h2>
             <br>
-<!--            <pre class="language-css"><code class="language-css">-->
-             <pre class="language-css" style="background-color: rgb(248, 249, 250); padding: 0; margin-top:0;margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
+            <!--            <pre class="language-css"><code class="language-css">-->
+            <pre class="language-css"
+                 style="background-color: rgb(248, 249, 250); padding: 0; margin-top:0;margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
                         <code style="padding: 0; margin-top:0; margin-bottom:0;">
 <!--            <pre class="pre-scrollable language-css" style="background-color: rgb(248, 249, 250); padding: 20px; margin-top:10px; border: ridge 1.5px #ccefff;border-radius: 10px;">-->
             tar -xzvf guidance.v2.02.tar.gz
                      </code>
              </pre>
-<!--            </code></pre>-->
+            <!--            </code></pre>-->
             <br>
 
-<!--            <code> tar -xzvf guidance.v2.02.tar.gz </code><br>-->
+            <!--            <code> tar -xzvf guidance.v2.02.tar.gz </code><br>-->
             <br>This will create a directory named guidance.v2.02<br>
 
             <h2> 3. <b>Make:</b></h2>
             <br>
-            <pre class="language-css" style="background-color: rgb(248, 249, 250); padding: 0; margin-top:0;margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
+            <pre class="language-css"
+                 style="background-color: rgb(248, 249, 250); padding: 0; margin-top:0;margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
                         <code style="padding: 0; margin-top:0; margin-bottom:0;">
 <!--            <pre class="pre-scrollable language-css" style="background-color: rgb(248, 249, 250); padding: 20px; margin-top:10px; border: ridge 1.5px #ccefff;border-radius: 10px;">-->
                 cd guidance.v2.02
@@ -113,7 +114,7 @@
                     </code>
             </pre>
             <br>
-<!--            <pre class="language-css"><code>make</code></pre>-->
+            <!--            <pre class="language-css"><code>make</code></pre>-->
 
 
             <h2> 4. <b>Check if you have the desired alignment program(s) installed:</b></h2><br>
@@ -127,7 +128,7 @@
                 <li><b>PRANK:</b> Type <kbd>prank</kbd> and check that you have version v.100223 or newer.</li>
                 <ul>
                     <li>Else download and install PRANK from:<br>
-<!--                        <a href="http://www.ebi.ac.uk/goldman-srv/prank/prank/">http://www.ebi.ac.uk/goldman-srv/prank/prank/</a>-->
+                        <!--                        <a href="http://www.ebi.ac.uk/goldman-srv/prank/prank/">http://www.ebi.ac.uk/goldman-srv/prank/prank/</a>-->
                         <a href="http://wasabiapp.org/software/prank/">http://wasabiapp.org/software/prank/</a>
                     </li>
                 </ul>
@@ -167,86 +168,90 @@
 
             <h1 class="overview-headline"><br>Running GUIDANCE</h1><br>
             <p class="overview-text">
-            Run the Perl script: guidance/www/Guidance/guidance.pl<br>
-            (Note that you cannot move this script out of its directory, because it
-            uses relative paths to other files in other directories. Sorry)<br>
-            GUIDANCE uses flags in the command line arguments: (for help, type:
-            "perl guidance.pl")<br>
-            <br>
-            <b>USAGE:</b> perl &#60;guidance directory&#62;/www/Guidance/guidance.pl --seqFile SEQFILE --msaProgram
-            [MAFFT|PRANK|CLUSTALW|MUSCLE] --seqType [aa|nuc|codon] --outDir FULL_PATH_OUTDIR<br>
-            <br>
-            <b>Required parameters:</b><br>
-            <b>--seqFile:</b> Input sequence file in FASTA format<br>
-            <b>--msaProgram:</b> Which MSA program to use<br>
-            <b>--seqType:</b> Type of sequences for alignment (amino acids,
-            nucleotides, or codons)<br>
-            <b>--outDir:</b> Output directory that will be created automatically
-            and hold all output files [please provid full (and not relative) path]<br>
-            <br>
-            <b>Optional parameters:</b><br>
-            <b>--program</b> [GUIDANCE2|GUIDANCE|HoT] Default=GUIDANCE2<br>
-            <b>--bootstraps:</b> Number of bootstrap iterations (only for
-            GUIDQANCE). Defaut=100<br>
-            <b>--genCode:</b> Genetic code identifier (only for codon
-            sequences). Default=1<br>
-            1) Nuclear Standard<br>
-            15) Nuclear Blepharisma<br>
-            6) Nuclear Ciliate<br>
-            10) Nuclear Euplotid<br>
-            2) Mitochondria Vertebrate<br>
-            5) Mitochondria Invertebrate<br>
-            3) Mitochondria Yeast<br>
-            13) Mitochondria Ascidian<br>
-            9) Mitochondria Echinoderm<br>
-            14) Mitochondria Flatworm<br>
-            4) Mitochondria Protozoan<br>
-            <b>--outOrder</b> [aligned|as_input] default=aligned<br>
-            <b>--msaFile:</b> Input alignment file - not recommended, see
-            the <a href="http://guidance.tau.ac.il/overview.html#InputMSA">overview</a> section<br>
-            <b>--seqCutoff:</b> Confidence cutoff between 0 to 1. Default=0.6<br>
-            <b>--colCutoff:</b> Confidence cutoff between 0 to 1. Default=0.93<br>
-            <b>--mafft:</b> path to mafft executable. Default=mafft<br>
-            <b>--prank:</b> path to prank executable. Default=prank<br>
-            <b>--muscle:</b> path to muscle executable. default=muscle<br>
-            <b>--pagan: </b> path to pagan executable, default=pagan<br>
-            <b>--ruby:</b> path to ruby executable. default=ruby<br>
-            <b>--dataset:</b> Unique name for the Dataset - will be used as prefix to outputs (default=MSA)<br>
-            <b>--MSA_Param:</b> passing parameters for the alignment program e.g -F to prank. To pass parameter
-            containning '-' in it, add \ before each '-' e.g. \-F for PRANK<br>
-            <b>--proc_num:</b> number of processors to use (default=1)
+                Run the Perl script: guidance/www/Guidance/guidance.pl<br>
+                (Note that you cannot move this script out of its directory, because it
+                uses relative paths to other files in other directories. Sorry)<br>
+                GUIDANCE uses flags in the command line arguments: (for help, type:
+                "perl guidance.pl")<br>
+                <br>
+                <b>USAGE:</b> perl &#60;guidance directory&#62;/www/Guidance/guidance.pl --seqFile SEQFILE --msaProgram
+                [MAFFT|PRANK|CLUSTALW|MUSCLE] --seqType [aa|nuc|codon] --outDir FULL_PATH_OUTDIR<br>
+                <br>
+                <b>Required parameters:</b><br>
+                <b>--seqFile:</b> Input sequence file in FASTA format<br>
+                <b>--msaProgram:</b> Which MSA program to use<br>
+                <b>--seqType:</b> Type of sequences for alignment (amino acids,
+                nucleotides, or codons)<br>
+                <b>--outDir:</b> Output directory that will be created automatically
+                and hold all output files [please provid full (and not relative) path]<br>
+                <br>
+                <b>Optional parameters:</b><br>
+                <b>--program</b> [GUIDANCE2|GUIDANCE|HoT] Default=GUIDANCE2<br>
+                <b>--bootstraps:</b> Number of bootstrap iterations (only for
+                GUIDQANCE). Defaut=100<br>
+                <b>--genCode:</b> Genetic code identifier (only for codon
+                sequences). Default=1<br>
+                1) Nuclear Standard<br>
+                15) Nuclear Blepharisma<br>
+                6) Nuclear Ciliate<br>
+                10) Nuclear Euplotid<br>
+                2) Mitochondria Vertebrate<br>
+                5) Mitochondria Invertebrate<br>
+                3) Mitochondria Yeast<br>
+                13) Mitochondria Ascidian<br>
+                9) Mitochondria Echinoderm<br>
+                14) Mitochondria Flatworm<br>
+                4) Mitochondria Protozoan<br>
+                <b>--outOrder</b> [aligned|as_input] default=aligned<br>
+                <b>--msaFile:</b> Input alignment file - not recommended, see
+                the <a href="http://guidance.tau.ac.il/overview.html#InputMSA">overview</a> section<br>
+                <b>--seqCutoff:</b> Confidence cutoff between 0 to 1. Default=0.6<br>
+                <b>--colCutoff:</b> Confidence cutoff between 0 to 1. Default=0.93<br>
+                <b>--mafft:</b> path to mafft executable. Default=mafft<br>
+                <b>--prank:</b> path to prank executable. Default=prank<br>
+                <b>--muscle:</b> path to muscle executable. default=muscle<br>
+                <b>--pagan: </b> path to pagan executable, default=pagan<br>
+                <b>--ruby:</b> path to ruby executable. default=ruby<br>
+                <b>--dataset:</b> Unique name for the Dataset - will be used as prefix to outputs (default=MSA)<br>
+                <b>--MSA_Param:</b> passing parameters for the alignment program e.g -F to prank. To pass parameter
+                containning '-' in it, add \ before each '-' e.g. \-F for PRANK<br>
+                <b>--proc_num:</b> number of processors to use (default=1)
             </p>
 
             <h1 class="overview-headline"><b><br>Examples</b></h1>
             <br>
-                    <pre class="language-css" style="background-color: rgb(248, 249, 250); padding: 0; margin-top:0;margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
+            <pre class="language-css"
+                 style="background-color: rgb(248, 249, 250); padding: 0; margin-top:0;margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
                         <code style="padding: 0; margin-top:0; margin-bottom:0;">
                      <p style="text-align: left; margin: 5px; text-wrap: initial; line-height: 15px">  perl &lt;guidance directory&gt;/www/Guidance/guidance.pl --seqFile protein.fas --msaProgram MAFFT --seqType aa --outDir /somewhere/protein.guidance </p>
                             </code>
-                    </pre><br>
-                <p class="overview-text">
-                    will align the amino acid sequences in the fasta file &quot;protein.fas&quot; using MAFFT and
-                    output all results to the directory &quot;/somewhere/protein.guidance&quot;
-                </p>
-                <br>
-                    <pre class="language-css" style="background-color: rgb(248, 249, 250); padding: 0px; margin-top:0px; margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
+                    </pre>
+            <br>
+            <p class="overview-text">
+                will align the amino acid sequences in the fasta file &quot;protein.fas&quot; using MAFFT and
+                output all results to the directory &quot;/somewhere/protein.guidance&quot;
+            </p>
+            <br>
+            <pre class="language-css"
+                 style="background-color: rgb(248, 249, 250); padding: 0px; margin-top:0px; margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
                         <code style="padding: 0; margin-top:0; margin-bottom:0;">
                      <p style="text-align: left; margin: 5px; text-wrap: initial; line-height: 15px">   perl &#60;guidance directory&#62;/www/Guidance/guidance.pl --seqFile codingSeq.fas --msaProgram PRANK --seqType codon --outDir /somewhere/codingSeq.guidance --genCode 2 --bootstraps 30</p>
                             </code>
                     </pre>
 
-                    <p class="overview-text"> <br> will align the codon sequences in the fasta file &quot;codingSeq.fas&quot; using PRANK after
-                    translation using the vertebrate mitochondrial genetic code and output all results to the directory
-                    &quot;/somewhere/codingSeq.guidance&quot;. Only 30 bootstrap iterations will be done instead of the
-                    default 100 (cut run-time by a factor of 3)
-                    </p>
-                <br>
+            <p class="overview-text"><br> will align the codon sequences in the fasta file &quot;codingSeq.fas&quot;
+                using PRANK after
+                translation using the vertebrate mitochondrial genetic code and output all results to the directory
+                &quot;/somewhere/codingSeq.guidance&quot;. Only 30 bootstrap iterations will be done instead of the
+                default 100 (cut run-time by a factor of 3)
+            </p>
+            <br>
             <br>
             <center>
                 For any problems or questions
-                    please contact us at <a href="mailto:evolseq@tauex.tau.ac.il?subject=GUIDANCE2%20source"
-                                            target="_blank">
-                        evolseq@tauex.tau.ac.il</a><br>Enjoy!<br><br></center>
+                please contact us at <a href="mailto:evolseq@tauex.tau.ac.il?subject=GUIDANCE2%20source"
+                                        target="_blank">
+                evolseq@tauex.tau.ac.il</a><br>Enjoy!<br><br></center>
             </font>
         </div>
     </div>

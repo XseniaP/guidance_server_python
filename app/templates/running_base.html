@@ -2,41 +2,41 @@
 
 {% block head %}
 
-        
-        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
-        
-        <TITLE>GUIDANCE Run - {{form['JOB_TITLE']}} Number: {{var['run_number']}}</TITLE>
-             
-        <style type="text/css">
-            #menu {
-            text-decoration: none;
-            color: white;
-            font-size: 12px;
-            font-weight: 700;
-            }
 
-            ul.in_progress {
-                /*list-style-image: url('{{url_for('static',filename='images/inprogress.gif')}}');*/
-                list-style-image: url('{{url_for('static',filename="images/pending.svg")}}');
-                padding-bottom: 0 em;
-            }
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
 
-            ul.finished {
-                /*list-style-image: url('{{url_for('static',filename='images/finished.gif')}}');*/
-                list-style-image: url('{{url_for('static',filename="images/check_circle.svg")}}');
-                /*<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>*/
-                text-align: start;
-            }
-        </style>
-        
-        <!--<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/guidance.css')}}">
+<TITLE>GUIDANCE Run - {{form['JOB_TITLE']}} Number: {{var['run_number']}}</TITLE>
 
-        <script src="{{url_for('static',filename='js/jquery-1.7.2.min.js')}}"></script> -->
-        
+<style type="text/css">
+    #menu {
+        text-decoration: none;
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    ul.in_progress {
+        /*list-style-image: url('{{url_for('static',filename='images/inprogress.gif')}}');*/
+        list-style-image: url('{{url_for(' static ',filename="images/pending.svg")}}');
+        padding-bottom: 0em;
+    }
+
+    ul.finished {
+        /*list-style-image: url('{{url_for('static',filename='images/finished.gif')}}');*/
+        list-style-image: url('{{url_for(' static ',filename="images/check_circle.svg")}}');
+        /*<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>*/
+        text-align: start;
+    }
+</style>
+
+<!--<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/guidance.css')}}">
+
+<script src="{{url_for('static',filename='js/jquery-1.7.2.min.js')}}"></script> -->
+
 {% endblock %}
 
 
-{% block body %} 
+{% block body %}
 
 <!--    <h1 align=center>GUIDANCE2 Job Status - <FONT color='red'>{{job_state}}</FONT></h1>-->
 <body data-spy="scroll" data-bs-target="#toc">
@@ -49,88 +49,91 @@
         <!-- main content area -->
         <div class="col-sm-9 main-form overview-container">
 
-    <h1 class="overview-headline" align=center><br> GUIDANCE2 Job Status</h1>
+            <h1 class="overview-headline" align=center><br> GUIDANCE2 Job Status</h1>
             <div class="alert-class">
                 {% if job_state == 'RUNNING' %}
-                <div  class="alert alert-warning text-center" role="alert">
-                <p style="font-size:30px; color:darkslategrey">{{job_state}}</p>
+                <div class="alert alert-warning text-center" role="alert">
+                    <p style="font-size:30px; color:darkslategrey">{{job_state}}</p>
                 </div>
-            {% endif %}
-            {% if job_state == 'FINISHED' %}
-                <div  class="alert alert-success text-center" role="alert">
-                <p style="font-size:30px; color:darkslategrey">{{job_state}}</p>
+                {% endif %}
+                {% if job_state == 'FINISHED' %}
+                <div class="alert alert-success text-center" role="alert">
+                    <p style="font-size:30px; color:darkslategrey">{{job_state}}</p>
                 </div>
-            {% endif %}
+                {% endif %}
                 {% if job_state == 'FAILED' %}
-                <div  class="alert alert-danger text-center" role="alert">
-                <p style="font-size:30px; color:darkred">{{job_state}}</p>
+                <div class="alert alert-danger text-center" role="alert">
+                    <p style="font-size:30px; color:darkred">{{job_state}}</p>
                 </div>
-            {% endif %}
+                {% endif %}
 
 
             </div>
-<!--    <blockquote>-->
+            <!--    <blockquote>-->
 
-    <p><font face=Verdana size=2>
-    GUIDANCE is now processing your request.<br>
+            <p><font face=Verdana size=2>
+                GUIDANCE is now processing your request.<br>
 
-    <br>This page will be automatically updated every 30 seconds. You can also reload it manually.<br>
-    Once the job has finished, several links to the output files will appear below.
-    <br><br>
-    If you wish to view these results at a later time without recalculating
-    them, please bookmark this page. The results will be kept in the server for one month.
+                <br>This page will be automatically updated every 30 seconds. You can also reload it manually.<br>
+                Once the job has finished, several links to the output files will appear below.
+                <br><br>
+                If you wish to view these results at a later time without recalculating
+                them, please bookmark this page. The results will be kept in the server for one month.
 
-    </font></p>
+            </font></p>
 
-    <h4>Running Parameters</h4>
-    <p>
-    Job title:<b>{{form['JOB_TITLE']}}<br></b>
-    {{var['sequences_link']|safe}}
-    Number of sequences analyzed: {{var['NumOfSeq']}}<br>
-    MSA Algorithm: {{form['MSA_Program']}}<br>
-    {% if var['align_param'] != '' %}
-        Advanced Alignment Parameters: {{var['align_param']}}<br>
-    {% endif %}
-    
-    {% if form['PROGRAM'] == 'GUIDANCE' %}
-        Number of bootstrap repeats: {{form['Bootstraps']}}<br>
-    {% endif %}
-    
-    {% if form['PROGRAM'] == 'GUIDANCE2' %}
-        Number of alternative guide-trees: {{form['Bootstraps']}}<br>
-    {% endif %}
-    
-    Method: {{form['PROGRAM']}}<br>
-    </p></font>
-        
-    {% if var['warning_messages'] != '' %}
-        {{var['warning_messages']|safe}}
-    {% endif %}
-    
-    {% if runtime_warnings != '' %}
-        {{runtime_warnings|safe}}
-    {% endif %}
-    
-    <h4>Running Progress</h4>
-    <div id='includedContent'>{{ progress_report|safe }}</div>
-    
-    {% block body_running %} {% endblock %}
-    
-    <h4 class=footer><p align='center'><br> Questions and comments are welcome! Please <span class="admin_link"><a href="mailto:evolseq@tauex.tau.ac.il?subject=Guidance%20Run%20Number%20{{var['run_number']}}">contact us</a></span></p></h4><div id="bottom_links">
-<!--    <span class="bottom_link">-->
-<!--    <a href="/" target="_blank">Home</a>-->
-<!--    &nbsp;|&nbsp-->
-<!--    <a href="/overview" target="_blank">Overview</a>-->
-<!--    &nbsp;|&nbsp;-->
-<!--    <a href="/gallery" target="_blank">Gallery</a>-->
-<!--    &nbsp;|&nbsp;-->
-<!--    <a href="/credits" target="_blank">Credits</a>-->
-<!--    </span>-->
-<!--    <br />-->
-    </div>
+            <h4>Running Parameters</h4>
+            <p>
+                Job title:<b>{{form['JOB_TITLE']}}<br></b>
+                {{var['sequences_link']|safe}}
+                Number of sequences analyzed: {{var['NumOfSeq']}}<br>
+                MSA Algorithm: {{form['MSA_Program']}}<br>
+                {% if var['align_param'] != '' %}
+                Advanced Alignment Parameters: {{var['align_param']}}<br>
+                {% endif %}
+
+                {% if form['PROGRAM'] == 'GUIDANCE' %}
+                Number of bootstrap repeats: {{form['Bootstraps']}}<br>
+                {% endif %}
+
+                {% if form['PROGRAM'] == 'GUIDANCE2' %}
+                Number of alternative guide-trees: {{form['Bootstraps']}}<br>
+                {% endif %}
+
+                Method: {{form['PROGRAM']}}<br>
+            </p></font>
+
+            {% if var['warning_messages'] != '' %}
+            {{var['warning_messages']|safe}}
+            {% endif %}
+
+            {% if runtime_warnings != '' %}
+            {{runtime_warnings|safe}}
+            {% endif %}
+
+            <h4>Running Progress</h4>
+            <div id='includedContent'>{{ progress_report|safe }}</div>
+
+            {% block body_running %} {% endblock %}
+
+            <h4 class=footer><p align='center'><br> Questions and comments are welcome! Please <span class="admin_link"><a
+                    href="mailto:evolseq@tauex.tau.ac.il?subject=Guidance%20Run%20Number%20{{var['run_number']}}">contact us</a></span>
+            </p></h4>
+            <div id="bottom_links">
+                <!--    <span class="bottom_link">-->
+                <!--    <a href="/" target="_blank">Home</a>-->
+                <!--    &nbsp;|&nbsp-->
+                <!--    <a href="/overview" target="_blank">Overview</a>-->
+                <!--    &nbsp;|&nbsp;-->
+                <!--    <a href="/gallery" target="_blank">Gallery</a>-->
+                <!--    &nbsp;|&nbsp;-->
+                <!--    <a href="/credits" target="_blank">Credits</a>-->
+                <!--    </span>-->
+                <!--    <br />-->
+            </div>
         </div>
     </div>
 </div>
 </body>
-        
+
 {% endblock %} 
