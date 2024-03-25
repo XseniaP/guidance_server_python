@@ -1,17 +1,17 @@
 <STYLE TYPE='text/css' MEDIA=screen>
 
 #notes  {
-        color: "red"; 
+        color: "red";
         font-weight : 600;
         font-size : 24px;
-        text-align : center; 
-        } 
-#form  { font-weight : 600; font-size : 16px;} 
+        text-align : center;
+        }
+#form  { font-weight : 600; font-size : 16px;}
 
 #table_form {
-	font-weight : 600; 
+	font-weight : 600;
 	font-size : 16px;
-	} 
+	}
 
 
 #title {
@@ -27,11 +27,11 @@
 
 #table_form {
 
-	border-right: solid;				
-	border-width:	5;				
-	border-left: none;  			
-	border-right-width: thick; 				
-	border-color: #400080;		
+	border-right: solid;
+	border-width:	5;
+	border-left: none;
+	border-right-width: thick;
+	border-color: #400080;
 }
 
 #PRANK_OPTION,#CodonsTable,#GUIDANCE_WARN,#MSA_PROGRAM_GUIDANCE{display: none;}
@@ -47,12 +47,12 @@
 .title_menu A:active {text-decoration: none;font-weight:600;color:#0033FF;}
 .title_menu A:hover {text-decoration: underline;font-weight:bold;color:#0033FF;}
 
-#bottom_links{ 	    
+#bottom_links{
     width: 100%;
     margin-left: 1%;
-	color: rgb(156,80,103); 
-	background-color: white; 
-	text-align: center; 
+	color: rgb(156,80,103);
+	background-color: white;
+	text-align: center;
 	font-size: 90%;
 	}
 /* bottom links */
@@ -75,8 +75,12 @@
 	margin-bottom: 0;
 }
 
-.header-image{
-	width: 100%;
+.header-image img{
+  	background-size: cover;
+  	max-height: 200px;
+	height: 100%;
+	max-width: 100%;
+
 }
 
 .overview-text{
@@ -150,17 +154,52 @@ pre[class*="language-"] button:hover {
 
 
 code[class*="language-"] {
-white-space: pre-wrap;
-word-break: break-all;
+/*white-space: pre-wrap;*/
+/*word-break: break-all;*/
+/*	word-break: normal;*/
 }
 
 pre[class*="language-"] {
   position: relative;
 	overflow: auto;
-  margin: 5px 0 ;
-  padding: 1.75rem 0 1.75rem 1rem;
+  /*margin: 5px 0 ;*/
+  /*padding: 1.75rem 0 1.75rem 1rem;*/
 	border-radius: 10px;
   /* more stuff */
+}
+
+.text-decoration-line.no-underline {
+  text-decoration: none;
+}
+
+.latest-tag {
+	color: limegreen;
+    border-radius: 10px;
+    border-color: limegreen !important;
+    border-width: 0.5px;
+    font-size: 12px;
+    line-height: 18px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 0 10px;
+    font-weight: 400;
+}
+
+.code-wrap {
+	background-color: rgb(248, 249, 250);
+	padding: 10px 100px 10px 10px;
+	margin: 0 0 0 0;
+	border: ridge 1.5px #ccefff ;
+	border-radius: 10px;
+	border-inline-width: thin;
+	text-align: left;
+}
+
+.code-style{
+	text-wrap: initial;
+	color: #A02560;
+	padding: 0 0 0 0;
+	margin: 0 0 0 0;
 }
 
 </STYLE>

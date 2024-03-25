@@ -27,75 +27,402 @@
                 supported. Windows will require some additional work, such as setting up a cygwin environment.<br></p>
             <br>
 
-            <h2><b>1. Download </b> the <a href="{{url_for('static',filename='download/guidance.v2.02.tar.gz')}}"
-                                           onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v2.02.tar.gz download');">GUIDANCE
-                source code</a>.</h2><br>
-            <ul><b>2016, October 26 - releasing <a
-                    href="{{url_for('static',filename='download/guidance.v2.02.tar.gz')}}"
-                    onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v2.02.tar.gz download');">version
-                2.02:</a><br></b>
-                Supporting newer gcc versions (up until version 6.20), minor bugfixes</b></ul>
-            <ul><b>2015, November 24 - releasing <a
-                    href="{{url_for('static',filename='download/guidance.v2.01.tar.gz')}}"
-                    onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v2.01.tar.gz download');">version
-                2.01:</a><br></b>
-                Minor bugfixes</b></ul>
-            <ul><b>2014, September 7 - releasing <a
-                    href="{{url_for('static',filename='download/guidance.v2.0.tar.gz')}}"
-                    onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v2.0.tar.gz download');">version
-                2.0:</a><br></b>
+            <h2><b>1. Download </b>
+                <!--                the <a href="{{url_for('static',filename='download/guidance.v2.02.tar.gz')}}"-->
+                <!--                                           onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v2.02.tar.gz download');">GUIDANCE-->
+                <!--                source code</a>.-->
+            </h2><br>
 
-                <div class="alert-class">
-                    <div class="alert alert-success text-center" role="alert">
-                        New and improved GUIDANCE2 algorithm implemeted, see <a
-                            href="http://guidance.tau.ac.il/overview.html">overview</a> for details
-                        <!--                        New and improved GUIDANCE2 algorithm implemeted, see <a-->
-                        <!--                        href="/overview.html">overview</a> for details-->
-                    </div>
-                </div>
+            <!--            <ul><b>-->
 
-
-                <!--                New and improved GUIDANCE2 algorithm implemeted, see <a-->
-                <!--                        href="http://guidance.tau.ac.il/overview.php">overview</a> for details-->
+            <!--            <span style="color: limegreen" class="material-symbols-outlined">sell</span>-->
+            <!--                <div class="ml-2 min-width-0">-->
+            <!--                  <div class="d-flex">-->
+            <!--                    <span class="css-truncate css-truncate-target text-bold mr-2" style="max-width: none;">guidance.v2.02</span>-->
+            <!--                    <span title="Label: Latest" data-view-component="true" class="Label Label&#45;&#45;success flex-shrink-0">-->
+            <!--                      Latest-->
+            <!--                    </span>-->
+            <!--                  </div>-->
+            <!--                <div class="text-small color-fg-muted"><relative-time datetime="2023-11-28T20:33:23Z" class="no-wrap" title="Nov 28, 2023, 3:33 PM EST">Nov 28, 2023</relative-time></div>-->
+            <!--                </div>-->
+            <ul>
+                <dl class="row" style="margin-left: 1px">
+                    <br>
+                    <dt class="col-sm-4">
+                        <a class="d-flex" data-pjax="#repo-content-pjax-container" style="text-decoration-line: none"
+                           data-turbo-frame="repo-content-turbo-frame"
+                           href="{{url_for('static',filename='download/guidance.v2.02.tar.gz')}}"
+                           onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v2.02.tar.gz download');">
+                            <span style="color: limegreen; font-size: 20px"
+                                  class="material-symbols-outlined">sell</span>
+                            <div class="ml-2">
+                                <div class="d-flex">
+                                    <span class="css-truncate css-truncate-target text-bold mr-2"
+                                          style="max-width: none; margin-left: 5px"> guidance.v2.02 </span>
+                                    <span title="Latest" data-view-component="true"
+                                          class="border flex-shrink-0 latest-tag"> Latest </span>
+                                    <!--                                <span class="border border-success"></span>-->
+                                </div>
+                                <div style="font-size: 13px; color: gray; font-weight: normal">
+                                    <relative-time datetime="2023-11-28T20:33:23Z" class="no-wrap"
+                                                   title="Nov28">Nov 28, 2023
+                                    </relative-time>
+                                </div>
+                            </div>
+                        </a>
+                    </dt>
+                    <dd class="col-sm-8">The latest version of GUIDANCE2</dd>
+                </dl>
             </ul>
 
-            <ul><b>2014, August 7 - releasing <a href="{{url_for('static',filename='download/guidance.v1.5.tar.gz')}}"
-                                                 onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.5.tar.gz download');">version
-                1.5:</a><br></b>
-                Other way to calculate col_col score which account for gap positions, bugfixes</b></ul>
-            <ul><b>2013, December 22 - releasing <a
-                    href="{{url_for('static',filename='download/guidance.v1.4.1.tar.gz')}}"
-                    onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.4.1.tar.gz download');">version
-                1.4.1:</a><br></b>
-                Added support for new versions of PRANK and MAFFT, bugfixes</b></ul>
-            <ul><b>2012, October 24 - releasing <a
-                    href="{{url_for('static',filename='download/guidance.v1.3.1.tar.gz')}}"
-                    onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.3.1.tar.gz download');">version
-                1.3.1:</a><br></b>
-                Minor bugfixes</b></ul>
-            <ul><b>2012, October 3 - releasing <a href="{{url_for('static',filename='download/guidance.v1.3.tar.gz')}}"
-                                                  onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.3.tar.gz download');">version
-                1.3:</a><br></b>
-                Added support for new versions of PRANK, bugfixes</b></ul>
-            <ul><b>2012, June 22 - releasing <a href="{{url_for('static',filename='download/guidance.v1.2.tar.gz')}}"
-                                                onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.2.tar.gz download');">version
-                1.2:</a><br></b>
-                Added support for the new aligner PAGAN, parallelization, reduced running time, bugfixes</b></ul>
-            <ul><b>2011, May 2 - releasing <a href="guidance.v1.1.tgz"
-                                              onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.1.tar.gz download');">version
-                1.1:</a><br></b>
-                Added visualization in Jalview, option for using MUSCLE, improved commandline interface, bugfixes,
-                support more optional alignment parameters</b></ul>
+
+            <!--                <a-->
+            <!--                    href="{{url_for('static',filename='download/guidance.v2.02.tar.gz')}}"-->
+            <!--                    onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v2.02.tar.gz download');">guidance.v2.02:</a>-->
+            <!--                <span title="Label: Latest" data-view-component="true" class="Label Label&#45;&#45;success flex-shrink-0">-->
+            <!--          Latest</span><br>-->
+            <!--            </b></ul>-->
+
+
+            <ul>
+                <dl class="row" style="margin-left: 1px">
+                    <br>
+                    <dt class="col-sm-4">
+                        <a class="d-flex" data-pjax="#repo-content-pjax-container" style="text-decoration-line: none"
+                           data-turbo-frame="repo-content-turbo-frame"
+                           href="{{url_for('static',filename='download/guidance.v2.02.tar.gz')}}"
+                           onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v2.02.tar.gz download');">
+                            <span style="color: limegreen; font-size: 20px"
+                                  class="material-symbols-outlined">sell</span>
+                            <div class="ml-2">
+                                <div class="d-flex">
+                                    <span class="css-truncate css-truncate-target text-bold mr-2"
+                                          style="max-width: none; margin-left: 5px"> guidance.v2.02 </span>
+                                </div>
+                                <div style="font-size: 13px; color: gray; font-weight: normal">
+                                    <relative-time datetime="2023-11-28T20:33:23Z" class="no-wrap"
+                                                   title="2016 Nov26">2016, October 26
+                                    </relative-time>
+                                </div>
+                            </div>
+                        </a>
+                    </dt>
+                    <dd class="col-sm-8">Supporting newer gcc versions (up until version 6.20), minor bugfixes</dd>
+                </dl>
+            </ul>
+
+
+            <!--            <ul><b>2016, October 26 - releasing <a-->
+            <!--                    href="{{url_for('static',filename='download/guidance.v2.02.tar.gz')}}"-->
+            <!--                    onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v2.02.tar.gz download');">version-->
+            <!--                2.02:</a><br></b>-->
+            <!--                Supporting newer gcc versions (up until version 6.20), minor bugfixes</b></ul>-->
+
+
+            <ul>
+                <dl class="row" style="margin-left: 1px">
+                    <br>
+                    <dt class="col-sm-4">
+                        <a class="d-flex" data-pjax="#repo-content-pjax-container" style="text-decoration-line: none"
+                           data-turbo-frame="repo-content-turbo-frame"
+                           href="{{url_for('static',filename='download/guidance.v2.01.tar.gz')}}"
+                           onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v2.01.tar.gz download');">
+                            <span style="color: limegreen; font-size: 20px"
+                                  class="material-symbols-outlined">sell</span>
+                            <div class="ml-2">
+                                <div class="d-flex">
+                                    <span class="css-truncate css-truncate-target text-bold mr-2"
+                                          style="max-width: none; margin-left: 5px"> guidance.v2.01 </span>
+                                </div>
+                                <div style="font-size: 13px; color: gray; font-weight: normal">
+                                    <relative-time datetime="2023-11-28T20:33:23Z" class="no-wrap"
+                                                   title="2015 Nov24">2015, November 24
+                                    </relative-time>
+                                </div>
+                            </div>
+                        </a>
+                    </dt>
+                    <dd class="col-sm-8">Minor bugfixes</dd>
+                </dl>
+            </ul>
+
+
+            <!--            <ul><b>2015, November 24 - releasing <a-->
+            <!--                    href="{{url_for('static',filename='download/guidance.v2.01.tar.gz')}}"-->
+            <!--                    onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v2.01.tar.gz download');">version-->
+            <!--                2.01:</a><br></b>-->
+            <!--                Minor bugfixes</b></ul>-->
+
+
+            <ul>
+                <dl class="row" style="margin-left: 1px">
+                    <br>
+                    <dt class="col-sm-4">
+                        <a class="d-flex" data-pjax="#repo-content-pjax-container" style="text-decoration-line: none"
+                           data-turbo-frame="repo-content-turbo-frame"
+                           href="{{url_for('static',filename='download/guidance.v2.0.tar.gz')}}"
+                           onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v2.0.tar.gz download');">
+                            <span style="color: limegreen; font-size: 20px"
+                                  class="material-symbols-outlined">sell</span>
+                            <div class="ml-2">
+                                <div class="d-flex">
+                                    <span class="css-truncate css-truncate-target text-bold mr-2"
+                                          style="max-width: none; margin-left: 5px"> guidance.v2.0 </span>
+                                </div>
+                                <div style="font-size: 13px; color: gray; font-weight: normal">
+                                    <relative-time datetime="2023-11-28T20:33:23Z" class="no-wrap"
+                                                   title="2014 Sep7">2014, September 7
+                                    </relative-time>
+                                </div>
+                            </div>
+                        </a>
+                    </dt>
+                    <dd class="col-sm-8">GUIDANCE2 release</dd>
+                </dl>
+            </ul>
+
+
+            <!--            <ul><b>2014, September 7 - releasing <a-->
+            <!--                    href="{{url_for('static',filename='download/guidance.v2.0.tar.gz')}}"-->
+            <!--                    onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v2.0.tar.gz download');">version-->
+            <!--                2.0:</a><br></b>-->
+
+
+            <div class="alert-class">
+                <div class="alert alert-success text-center" role="alert">
+                    New and improved GUIDANCE2 algorithm implemeted, see <a
+                        href="http://guidance.tau.ac.il/overview.html">overview</a> for details
+                    <!--                        New and improved GUIDANCE2 algorithm implemeted, see <a-->
+                    <!--                        href="/overview.html">overview</a> for details-->
+                </div>
+            </div>
+
+
+            <!--                New and improved GUIDANCE2 algorithm implemeted, see <a-->
+            <!--                        href="http://guidance.tau.ac.il/overview.php">overview</a> for details-->
+
+
+            <ul>
+                <dl class="row" style="margin-left: 1px">
+                    <br>
+                    <dt class="col-sm-4">
+                        <a class="d-flex" data-pjax="#repo-content-pjax-container" style="text-decoration-line: none"
+                           data-turbo-frame="repo-content-turbo-frame"
+                           href="{{url_for('static',filename='download/guidance.v1.5.tar.gz')}}"
+                           onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.5.tar.gz download');">
+                            <span style="color: limegreen; font-size: 20px"
+                                  class="material-symbols-outlined">sell</span>
+                            <div class="ml-2">
+                                <div class="d-flex">
+                                    <span class="css-truncate css-truncate-target text-bold mr-2"
+                                          style="max-width: none; margin-left: 5px"> guidance.v1.5 </span>
+                                </div>
+                                <div style="font-size: 13px; color: gray; font-weight: normal">
+                                    <relative-time datetime="2023-11-28T20:33:23Z" class="no-wrap"
+                                                   title="2014 Aug7">2014, August 7
+                                    </relative-time>
+                                </div>
+                            </div>
+                        </a>
+                    </dt>
+                    <dd class="col-sm-8">Other way to calculate col_col score which account for gap positions,
+                        bugfixes
+                    </dd>
+                </dl>
+            </ul>
+
+
+            <!--            <ul><b>2014, August 7 - releasing <a href="{{url_for('static',filename='download/guidance.v1.5.tar.gz')}}"-->
+            <!--                                                 onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.5.tar.gz download');">version-->
+            <!--                1.5:</a><br></b>-->
+            <!--                Other way to calculate col_col score which account for gap positions, bugfixes</b></ul>-->
+            <!--            -->
+
+
+            <ul>
+                <dl class="row" style="margin-left: 1px">
+                    <br>
+                    <dt class="col-sm-4">
+                        <a class="d-flex" data-pjax="#repo-content-pjax-container" style="text-decoration-line: none"
+                           data-turbo-frame="repo-content-turbo-frame"
+                           href="{{url_for('static',filename='download/guidance.v1.4.1.tar.gz')}}"
+                           onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.4.1.tar.gz download');">
+                            <span style="color: limegreen; font-size: 20px"
+                                  class="material-symbols-outlined">sell</span>
+                            <div class="ml-2">
+                                <div class="d-flex">
+                                    <span class="css-truncate css-truncate-target text-bold mr-2"
+                                          style="max-width: none; margin-left: 5px"> guidance.v1.4.1 </span>
+                                </div>
+                                <div style="font-size: 13px; color: gray; font-weight: normal">
+                                    <relative-time datetime="2023-11-28T20:33:23Z" class="no-wrap"
+                                                   title="2013 Dec22">2013, December 22
+                                    </relative-time>
+                                </div>
+                            </div>
+                        </a>
+                    </dt>
+                    <dd class="col-sm-8">Added support for new versions of PRANK and MAFFT, bugfixes</dd>
+                </dl>
+            </ul>
+
+
+            <!--            <ul><b>2013, December 22 - releasing <a-->
+            <!--                    href="{{url_for('static',filename='download/guidance.v1.4.1.tar.gz')}}"-->
+            <!--                    onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.4.1.tar.gz download');">version-->
+            <!--                1.4.1:</a><br></b>-->
+            <!--                Added support for new versions of PRANK and MAFFT, bugfixes</b></ul>-->
+
+
+            <ul>
+                <dl class="row" style="margin-left: 1px">
+                    <br>
+                    <dt class="col-sm-4">
+                        <a class="d-flex" data-pjax="#repo-content-pjax-container" style="text-decoration-line: none"
+                           data-turbo-frame="repo-content-turbo-frame"
+                           href="{{url_for('static',filename='download/guidance.v1.3.1.tar.gz')}}"
+                           onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.3.1.tar.gz download');">
+                            <span style="color: limegreen; font-size: 20px"
+                                  class="material-symbols-outlined">sell</span>
+                            <div class="ml-2">
+                                <div class="d-flex">
+                                    <span class="css-truncate css-truncate-target text-bold mr-2"
+                                          style="max-width: none; margin-left: 5px"> guidance.v1.3.1 </span>
+                                </div>
+                                <div style="font-size: 13px; color: gray; font-weight: normal">
+                                    <relative-time datetime="2023-11-28T20:33:23Z" class="no-wrap"
+                                                   title="2012 Oct24">2012, October 24
+                                    </relative-time>
+                                </div>
+                            </div>
+                        </a>
+                    </dt>
+                    <dd class="col-sm-8">Minor bugfixes</dd>
+                </dl>
+            </ul>
+
+
+            <!--            <ul><b>2012, October 24 - releasing <a-->
+            <!--                    href="{{url_for('static',filename='download/guidance.v1.3.1.tar.gz')}}"-->
+            <!--                    onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.3.1.tar.gz download');">version-->
+            <!--                1.3.1:</a><br></b>-->
+            <!--                Minor bugfixes</b></ul>-->
+
+
+            <ul>
+                <dl class="row" style="margin-left: 1px">
+                    <br>
+                    <dt class="col-sm-4">
+                        <a class="d-flex" data-pjax="#repo-content-pjax-container" style="text-decoration-line: none"
+                           data-turbo-frame="repo-content-turbo-frame"
+                           href="{{url_for('static',filename='download/guidance.v1.3.tar.gz')}}"
+                           onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.3.tar.gz download');">
+                            <span style="color: limegreen; font-size: 20px"
+                                  class="material-symbols-outlined">sell</span>
+                            <div class="ml-2">
+                                <div class="d-flex">
+                                    <span class="css-truncate css-truncate-target text-bold mr-2"
+                                          style="max-width: none; margin-left: 5px"> guidance.v1.3 </span>
+                                </div>
+                                <div style="font-size: 13px; color: gray; font-weight: normal">
+                                    <relative-time datetime="2023-11-28T20:33:23Z" class="no-wrap"
+                                                   title="2012 Oct3">2012, October 3
+                                    </relative-time>
+                                </div>
+                            </div>
+                        </a>
+                    </dt>
+                    <dd class="col-sm-8">Added support for new versions of PRANK, bugfixes</dd>
+                </dl>
+            </ul>
+
+
+            <!--            <ul><b>2012, October 3 - releasing <a href="{{url_for('static',filename='download/guidance.v1.3.tar.gz')}}"-->
+            <!--                                                  onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.3.tar.gz download');">version-->
+            <!--                1.3:</a><br></b>-->
+            <!--                Added support for new versions of PRANK, bugfixes</b></ul>-->
+
+
+            <ul>
+                <dl class="row" style="margin-left: 1px">
+                    <br>
+                    <dt class="col-sm-4">
+                        <a class="d-flex" data-pjax="#repo-content-pjax-container" style="text-decoration-line: none"
+                           data-turbo-frame="repo-content-turbo-frame"
+                           href="{{url_for('static',filename='download/guidance.v1.2.tar.gz')}}"
+                           onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.2.tar.gz download');">
+                            <span style="color: limegreen; font-size: 20px"
+                                  class="material-symbols-outlined">sell</span>
+                            <div class="ml-2">
+                                <div class="d-flex">
+                                    <span class="css-truncate css-truncate-target text-bold mr-2"
+                                          style="max-width: none; margin-left: 5px"> guidance.v1.2 </span>
+                                </div>
+                                <div style="font-size: 13px; color: gray; font-weight: normal">
+                                    <relative-time datetime="2023-11-28T20:33:23Z" class="no-wrap"
+                                                   title="2012 Jun22">2012, June 22
+                                    </relative-time>
+                                </div>
+                            </div>
+                        </a>
+                    </dt>
+                    <dd class="col-sm-8">Added support for the new aligner PAGAN, parallelization, reduced running time,
+                        bugfixes
+                    </dd>
+                </dl>
+            </ul>
+
+
+            <!--            <ul><b>2012, June 22 - releasing <a href="{{url_for('static',filename='download/guidance.v1.2.tar.gz')}}"-->
+            <!--                                                onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.2.tar.gz download');">version-->
+            <!--                1.2:</a><br></b>-->
+            <!--                Added support for the new aligner PAGAN, parallelization, reduced running time, bugfixes</b></ul>-->
+
+
+            <ul>
+                <dl class="row" style="margin-left: 1px">
+                    <br>
+                    <dt class="col-sm-4">
+                        <a class="d-flex" data-pjax="#repo-content-pjax-container" style="text-decoration-line: none"
+                           data-turbo-frame="repo-content-turbo-frame" href="guidance.v1.1.tgz"
+                           onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.1.tar.gz download');">
+                            <span style="color: limegreen; font-size: 20px"
+                                  class="material-symbols-outlined">sell</span>
+                            <div class="ml-2">
+                                <div class="d-flex">
+                                    <span class="css-truncate css-truncate-target text-bold mr-2"
+                                          style="max-width: none; margin-left: 5px"> guidance.v1.1 </span>
+                                </div>
+                                <div style="font-size: 13px; color: gray; font-weight: normal">
+                                    <relative-time datetime="2023-11-28T20:33:23Z" class="no-wrap"
+                                                   title="2011 May2">2011, May 2
+                                    </relative-time>
+                                </div>
+                            </div>
+                        </a>
+                    </dt>
+                    <dd class="col-sm-8">Added visualization in Jalview, option for using MUSCLE, improved commandline
+                        interface, bugfixes,
+                        support more optional alignment parameters
+                    </dd>
+                </dl>
+            </ul>
+
+
+            <!--            <ul><b>2011, May 2 - releasing <a href="guidance.v1.1.tgz"-->
+            <!--                                              onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v1.1.tar.gz download');">version-->
+            <!--                1.1:</a><br></b>-->
+            <!--                Added visualization in Jalview, option for using MUSCLE, improved commandline interface, bugfixes,-->
+            <!--                support more optional alignment parameters</b></ul>-->
+
 
             <h2> 2. <b>Unzip and untar the files:</b></h2>
             <br>
             <!--            <pre class="language-css"><code class="language-css">-->
-            <pre class="language-css"
-                 style="background-color: rgb(248, 249, 250); padding: 0; margin-top:0;margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
-                        <code style="padding: 0; margin-top:0; margin-bottom:0;">
-<!--            <pre class="pre-scrollable language-css" style="background-color: rgb(248, 249, 250); padding: 20px; margin-top:10px; border: ridge 1.5px #ccefff;border-radius: 10px;">-->
-            tar -xzvf guidance.v2.02.tar.gz
-                     </code>
+            <pre class="language-css code-wrap">
+                <code class="code-style">
+                    tar -xzvf guidance.v2.02.tar.gz
+                </code>
              </pre>
             <!--            </code></pre>-->
             <br>
@@ -105,13 +432,11 @@
 
             <h2> 3. <b>Make:</b></h2>
             <br>
-            <pre class="language-css"
-                 style="background-color: rgb(248, 249, 250); padding: 0; margin-top:0;margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
-                        <code style="padding: 0; margin-top:0; margin-bottom:0;">
-<!--            <pre class="pre-scrollable language-css" style="background-color: rgb(248, 249, 250); padding: 20px; margin-top:10px; border: ridge 1.5px #ccefff;border-radius: 10px;">-->
+            <pre class="language-css code-wrap">
+                <code class="code-style">
                 cd guidance.v2.02
                 make
-                    </code>
+                </code>
             </pre>
             <br>
             <!--            <pre class="language-css"><code>make</code></pre>-->
@@ -220,24 +545,18 @@
 
             <h1 class="overview-headline"><b><br>Examples</b></h1>
             <br>
-            <pre class="language-css"
-                 style="background-color: rgb(248, 249, 250); padding: 0; margin-top:0;margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
-                        <code style="padding: 0; margin-top:0; margin-bottom:0;">
-                     <p style="text-align: left; margin: 5px; text-wrap: initial; line-height: 15px">  perl &lt;guidance directory&gt;/www/Guidance/guidance.pl --seqFile protein.fas --msaProgram MAFFT --seqType aa --outDir /somewhere/protein.guidance </p>
-                            </code>
-                    </pre>
+            <pre class="language-css code-wrap">
+                <code class="code-style">perl &lt;guidance directory&gt;/www/Guidance/guidance.pl --seqFile protein.fas --msaProgram MAFFT --seqType aa --outDir /somewhere/protein.guidance</code>
+            </pre>
             <br>
             <p class="overview-text">
                 will align the amino acid sequences in the fasta file &quot;protein.fas&quot; using MAFFT and
                 output all results to the directory &quot;/somewhere/protein.guidance&quot;
             </p>
             <br>
-            <pre class="language-css"
-                 style="background-color: rgb(248, 249, 250); padding: 0px; margin-top:0px; margin-bottom:0; border: ridge 1.5px #ccefff;border-radius: 10px;">
-                        <code style="padding: 0; margin-top:0; margin-bottom:0;">
-                     <p style="text-align: left; margin: 5px; text-wrap: initial; line-height: 15px">   perl &#60;guidance directory&#62;/www/Guidance/guidance.pl --seqFile codingSeq.fas --msaProgram PRANK --seqType codon --outDir /somewhere/codingSeq.guidance --genCode 2 --bootstraps 30</p>
-                            </code>
-                    </pre>
+            <pre class="language-css code-wrap">
+                 <code class="code-style">perl &#60;guidance directory&#62;/www/Guidance/guidance.pl --seqFile codingSeq.fas --msaProgram PRANK --seqType codon --outDir /somewhere/codingSeq.guidance --genCode 2 --bootstraps 30</code>
+            </pre>
 
             <p class="overview-text"><br> will align the codon sequences in the fasta file &quot;codingSeq.fas&quot;
                 using PRANK after
