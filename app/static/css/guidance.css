@@ -1,7 +1,7 @@
 <STYLE TYPE='text/css' MEDIA=screen>
 
 #notes  {
-        color: "red";
+        color: red;
         font-weight : 600;
         font-size : 24px;
         text-align : center;
@@ -75,27 +75,10 @@
 	margin-bottom: 0;
 }
 body {
-	/*background-color: #ebf6fd;*/
-	/*background-color: #f2fafc;*/
-	/*background-color: ghostwhite;*/
-	/*background-color: whitesmoke;*/
-	/*background-color: #f0f3fa;*/
-	/*background-color: rgb(221,225,236);*/
-	/*background-color: rgb(163, 158, 161);*/
 	background-color: rgb(218, 229, 245);
 }
 
 .header-image {
-	/*border-bottom: 15px solid #d5ebfc;*/
-	/*border-top: 15px solid #d5ebfc;*/
-	/*border-bottom: 10px solid rgb(194, 210, 240);*/
-	/*border-top: 10px solid rgb(194, 210, 240);*/
-	/*border-bottom: 10px solid rgb(214, 218, 229);*/
-	/*border-top: 10px solid rgb(214, 218, 229);*/
-	/*border-bottom: 7px solid rgb(150, 185, 215);*/
-	/*border-top: 7px solid rgb(150, 185, 215);*/
-	/*border-bottom: 2px solid rgb(15, 5, 56);*/
-	/*border-top: 2px solid rgb(15, 5, 56);*/
 	border-bottom: 4px solid white;
 	border-top: 4px solid white;
 	margin-bottom: 10px;
@@ -106,7 +89,6 @@ body {
   	max-height: 200px;
 	height: 100%;
 	max-width: 100%;
-
 }
 
 .overview-text{

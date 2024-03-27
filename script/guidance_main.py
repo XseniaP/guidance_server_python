@@ -1,10 +1,10 @@
 from guidance_args_library import *
 from guidance_scoring_and_visualization import *
 from guidance_program_call_functions import *
-import time
 
-
-
+Bin = os.path.dirname(sys.argv[0])
+BIN_DIR = os.path.dirname(Bin)
+RESULTS = os.path.join(BIN_DIR, "results/Guidance")
 # --seqFile  /Users/kpolonsky/PycharmProjects/HoT_Py/Seqs.Orig.fas --msaProgram MAFFT --seqType aa --outDir /Users/kpolonsky/PycharmProjects/HoT_Py/ENSG00000017260_1/ --msaFile /Users/kpolonsky/PycharmProjects/HoT_Py/MSA.MAFFT.aln --program HoT
 
 
@@ -47,7 +47,6 @@ if __name__ == "__main__":
     create_tar_archives(args_library)
     create_png_for_seqscores(args_library)
 
+    if os.path.exists(os.path.join(RESULTS, "timestamps.txt")):
+        shutil.move(os.path.join(RESULTS, "timestamps.txt"), os.path.join(args_library.WorkingDir, "timestamps.txt"))
 
-    # end_time = time.time()
-    # time_taken = end_time - start_time
-    # print(f"Duration of this guidance run: \n {time_taken / 60:.2f} minutes")
