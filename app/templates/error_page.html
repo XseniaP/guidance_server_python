@@ -1,25 +1,35 @@
 {% extends 'base.html' %}
 
-{% block body %} 
+{% block body %}
 
-    <br><center><h2 style="text-align:left;"><font color="red" size=+2>Error:<br>
-    </font><br>
-    Please review the errors, adjust your input and try to re-run your job or <a href="mailto:evolseq@tauex.tau.ac.il<evolseq@tauex.tau.ac.il>;?subject=Guidance%20Support%20Request">contact us</a> for further information</h2></center>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-9 main-form overview-container">
+            <br>
+            <br>
+            <div class="alert alert-danger text-center" role="alert">
+                <div class="display-5" style="text-align: left;">Error</b></div>
+            </div>
 
-    <ul><li><A HREF="{{var['errors_file']}}" TARGET=results_Colored>List of errors encountered</A></font><br></li></ul>
+            Please review the errors, adjust your input and try to re-run your job or <a
+                href="mailto:evolseq@tauex.tau.ac.il<evolseq@tauex.tau.ac.il>;?subject=Guidance%20Support%20Request">contact
+            us</a> for further information</h2></center>
 
-    <br><br><br><br><br><br><br><br><br><br><br><br><br>
-    <h4 class=footer><p align='center'>Questions and comments are welcome! Please <span class="admin_link"><a href="mailto:evolseq@tauex.tau.ac.il?subject=Guidance%20Support%20Request">contact us</a></span></p></h4><div id="bottom_links"> 
-    <span class="bottom_link">
-    <a href="/" target="_blank">Home</a>
-    &nbsp;|&nbsp
-    <a href="/overview" target="_blank">Overview</a>
-    &nbsp;|&nbsp;
-    <a href="/gallery" target="_blank">Gallery</a>
-    &nbsp;|&nbsp;
-    <a href="/credits" target="_blank">Credits</a>
-    </span>
-    <br>
-    
-{% endblock %}
+            <ul>
+                <li><A style="font-size: 25px" HREF="{{var['errors_file']}}" TARGET=results_Colored>List of errors encountered</A><br>
+                </li>
+            </ul>
+
+            <br><br><br><br><br><br><br><br><br><br><br><br><br>
+            <h4 class=footer><p align='center'>Questions and comments are welcome! Please <span class="admin_link"><a
+                    href="mailto:evolseq@tauex.tau.ac.il?subject=Guidance%20Support%20Request">contact us</a></span></p><br>
+            </h4>
+            <div id="bottom_links"></div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+        {% endblock %}
 

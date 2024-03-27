@@ -29,6 +29,12 @@
            return true;
         }
 
+        function ClearSequence(){
+           form = document.Guidance_form
+           form.FASTA_txt.value = "";
+           return true;
+        }
+
     </script>
     
     {% if message is defined %}
@@ -60,63 +66,125 @@
 			  id = "Guidance_form"
 		      action="/guidance"
 		      method="post"
+              class="col-lg-6 offset-lg-3 "
 		      ENCTYPE="multipart/form-data"
 		      onsubmit="return validateform()">
-			<P align="center"><font size=+2>Select Algorithm</font>
- 		   		<select name="PROGRAM" id="PROGRAM" style="font-size: 15px;" onchange="javascript:toggle_Algorithm_Options()">
+            <div class="row justify-content-center main-form">
+			    <p class="fs-4 text-center">Compute multiple sequence alignment confidence score</p>
+                  <div class="mb-3">
+                    <label for="PROGRAM" class="form-label">Select algorithm</label>
+                      <select name="PROGRAM" id="PROGRAM" class="form-select" onchange="javascript:toggle_Algorithm_Options()">
                     <option value="GUIDANCE2">GUIDANCE2</option>
 			        <option value="GUIDANCE">GUIDANCE</option>
                     <option value="HoT">HoT</option>
-				</select><br></p>
-                <div id="GUIDANCE_WARN">
-			    <p align="center"><b><font size="-1" color="red">Warning:</font><font size="-1"color="black"> GUIDANCE is not suitable for alignments of very few sequences.<br>As a rule of thumb, use GUIDANCE2 or HoT for less than 8 sequences.</font></b></p>
-			</div>    
-            <p><b>Type your sequences </b><A href="http://en.wikipedia.org/wiki/FASTA_format"><font size=-1>(FASTA format only)</A> * large strings should be uploaded as files </font><br>
-			<textarea name="FASTA_txt" rows=8 cols=70 id="FASTA_txt">{{FASTA_txt}}</textarea><br>
+				</select>
+                    <div class="form-text">More details about each algorithm in the overview section.</div>
+                  </div>
+
+                <div id="GUIDANCE_WARN" class="alert-class">
+                    <div  class="alert alert-warning text-center" role="alert">
+                    <b>GUIDANCE</b> is not suitable for alignments of very few sequences.<br>As a rule of thumb, use <b>GUIDANCE2</b> or <b>HoT</b> for less than 8 sequences.
+                    </div>
+                </div>
+
+            <div class="mb-3">
+                <label for="FASTA_txt" class="form-label">Type your sequences <a href="http://en.wikipedia.org/wiki/FASTA_format">(FASTA format only)</a></label>
+<!--                 <p class="fs-4 text-center">Type your sequences<A href="http://en.wikipedia.org/wiki/FASTA_format">(FASTA format only)</A></p>-->
+<!--            <p><b>Type your sequences </b><A href="http://en.wikipedia.org/wiki/FASTA_format"><font size=-1>(FASTA format only)</A> * large strings should be uploaded as files </font><br>-->
+			<textarea class="form-control" name="FASTA_txt" rows=8 cols=70 id="FASTA_txt">{{FASTA_txt}}</textarea>
+                <div class="form-text">Large strings should be uploaded as files.</div>
+
+
+            <div class="container text-center">
+                <div class="row justify-content-end">
+                    <div class="btn-group col-4" role="group" aria-label="Basic outlined example">
+                        <button type="button" class="btn btn-outline-primary btn-outline-primary-small" onclick="ClearSequence()">Clear sequences</button>
+                        <button type="button" class="btn btn-outline-primary btn-outline-primary-small" onclick="LoadExample()">Load an example</button>
+                    </div>
+                </div>
+            </div>
+
+<!--                &nbsp;&nbsp;&nbsp;<input type="reset" value="Clear" id="buttons">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+<!--                <button class="btn btn-primary" type="button" onclick="LoadExample()">Load  an  example</button><br>-->
+
+                </div>
             {% if back_from_mafft is not defined %}
-                OR<br>
-                <b>Upload your sequences file <A href="http://en.wikipedia.org/wiki/FASTA_format"><font size=-1>(FASTA format only)</font></A></b>&nbsp;&nbsp;&nbsp;&nbsp;<input type="file" name="usrSeq_File" id="usrSeq_File">
-                <br><br>
+                <div class="mb-3">
+                    <label for="usrSeq_File" class="form-label">Or, upload your sequences file <a href="http://en.wikipedia.org/wiki/FASTA_format">(FASTA format only)</a></label>
+                    <input class="form-control" type="file" name="usrSeq_File" id="usrSeq_File">
+                </div>
                 {% if daily_test is defined %}
                     {% set aa_checked = 'checked' %}
                 {% else %}
                     {% set aa_checked = '' %}
                 {% endif %}
-                <B>Sequences Type: </B><input type="radio" name="Seq_Type" id="Seq_Type_aa"  value="AminoAcids" onclick="javascript:hide_div_name('CodonsTable')" {{aa_checked}}> Amino Acids &nbsp;&nbsp; <input type="radio" name="Seq_Type" id="Seq_Type_nuc" value="Nucleotides" onclick="javascript:hide_div_name('CodonsTable')">Nucleotides  &nbsp;&nbsp;<input type="radio" name="Seq_Type" id="Seq_Type_codons" value="Codons" onclick="javascript:show_div_name('CodonsTable')">Codons <BR><BR>
-                <div id="MSA_PROGRAM_GUIDANCE">
-                <b>Select the MSA algorithm</b>&nbsp;&nbsp;&nbsp;&nbsp;<select
-                    name="MSA_Program_GUIDANCE" id="MSA_Program_GUIDANCE" onchange="javascript:toggle_MSA_Options()">
+
+                <div class="mb-3">
+                    <label class="form-label">Select sequences type</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="Seq_Type" id="Seq_Type_aa"  value="AminoAcids" onclick="javascript:hide_div_name('CodonsTable')" {{aa_checked}}>
+                      <label class="form-check-label" for="Seq_Type_aa">
+                        Amino Acids
+                      </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="Seq_Type" id="Seq_Type_nuc" value="Nucleotides" onclick="javascript:hide_div_name('CodonsTable')">
+                      <label class="form-check-label" for="Seq_Type_nuc">
+                        Nucleotides
+                      </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="Seq_Type" id="Seq_Type_codons" value="Codons" onclick="javascript:show_div_name('CodonsTable')">
+                      <label class="form-check-label" for="Seq_Type_codons">
+                        Codons
+                      </label>
+                    </div>
+                </div>
+
+
+                <div class="mb-3" id="MSA_PROGRAM_GUIDANCE">
+                    <label for="MSA_Program_GUIDANCE" class="form-label">Select the MSA algorithm</label>
+                      <select name="MSA_Program_GUIDANCE" id="MSA_Program_GUIDANCE" class="form-select" onchange="javascript:toggle_MSA_Options()">
                     <option value="MAFFT">MAFFT (default)
     <!--				<option value="MAFFT_LINSI">MAFFT-LINSI  -->
                     <option value="PRANK">PRANK
                     <option value="CLUSTALW">ClustalW
                     <option value="MUSCLE">MUSCLE
-                    <option value="PAGAN">PAGAN 
-                </select>
-                <br><b><font size="-1" color="red">Warning:</font><font size="-1"color="black">  PRANK is significantly more time consuming.  MAFFT is the fastest.</font></b>
-                <br><br>
-                </div>
-                <div id="MSA_PROGRAM">
-                <b>Select the MSA algorithm</b>&nbsp;&nbsp;&nbsp;&nbsp;<select
-                    name="MSA_Program" id="MSA_Program" onchange="javascript:toggle_MSA_Options()">
+                    <option value="PAGAN">PAGAN
+				</select>
+                  </div>
+
+
+                <div class="mb-3" id="MSA_PROGRAM">
+                    <label for="MSA_Program" class="form-label">Select the MSA algorithm</label>
+                      <select name="MSA_Program" id="MSA_Program" class="form-select" onchange="javascript:toggle_MSA_Options()">
                     <option value="MAFFT">MAFFT (default)
+    <!--				<option value="MAFFT_LINSI">MAFFT-LINSI  -->
                     <option value="PRANK">PRANK
                     <option value="CLUSTALW">ClustalW
-                </select>
-                <br><b><font size="-1" color="red">Warning:</font><font size="-1"color="black">  PRANK is significantly more time consuming.  MAFFT is the fastest.</font></b>
-                <br><br>
+				</select>
+                  </div>
+
+                <div class="alert-class">
+                    <div  class="alert alert-warning text-center" role="alert">
+                    <b>Warning:</b> PRANK is significantly more time-consuming.  MAFFT is the fastest.
+                    </div>
                 </div>
-            {% endif %} 
-     		<P align=left><font size=+1><br>Please enter your email address
-<!--			<font size=+1><a href="/defaultEmailExplanation.html">-->(Optional)<!--</a></font> -->
-			&nbsp;&nbsp;&nbsp;&nbsp;
-			<INPUT TYPE="TEXT" NAME="email_add" id="email_add" value="" SIZE=50 bgcolor="yellow"><br>
-			<font size=2>Your email address will be used to update you the moment the results are ready. </font>
-			<br><br>
-			<P align=left><font size=+1><br>Job title (Optional)
-			<INPUT TYPE="TEXT" NAME="JOB_TITLE" id="JOB_TITLE" SIZE=50 bgcolor="yellow"><br>
-			<font size=2>Enter a descriptive job title for your GUIDANCE query</font>
-			<br><br>
+            {% endif %}
+
+
+            <div class="mb-3">
+                <label for="email_add" class="form-label">Please enter your email address (optional)</label>
+                <input type="email" name="email_add" class="form-control" id="email_add" aria-describedby="emailHelp">
+                <div id="emailHelp" class="form-text">Your email address will be used to update you the moment the results are ready.</div>
+            </div>
+            <div class="mb-3">
+                <label for="JOB_TITLE" class="form-label">Job title (Optional)</label>
+                <input type="email" name="JOB_TITLE" class="form-control" id="JOB_TITLE" aria-describedby="jobTitleHelp">
+                <div id="jobTitleHelp" class="form-text">Enter a descriptive job title for your GUIDANCE query.</div>
+            </div>
+
+
 
             {% if back_from_mafft is defined %}
                 <!-- SPECIFIC MAFFT RERUN_PARAM -->
@@ -141,77 +209,123 @@
                 {{ recaptcha }} <!-- Refer to 'recaptcha' variable in main.py -->
                 <font size="-1" color="red"><p>{{ message }}</p></font> <!-- Message to tell user whether or not they have filled out ReCaptcha -->
             {% endif %}
-            
-            <script type="text/javascript" src="js/validation-rules.js"></script>
-            <input type="hidden" id="solved" name="solved" value="false"/>		
-            <input type=submit value="Submit" id="SubmitButton">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value="Clear" id="buttons">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <button class="btn btn-primary" type="button" onclick="LoadExample()">Load  an  example</button><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="-1"><A href="Gallery/output.php">Show Example Results</A></font>
+
 
         <INPUT TYPE="hidden" NAME="SP_SEQ_CUTOFF" SIZE=4 VALUE="0.6">
         <INPUT TYPE="hidden" NAME="SP_COL_CUTOFF" SIZE=4 VALUE="0.93">
-            
+
+
         {% if back_from_mafft is not defined %}
-        
-            <br><br><br>
-            <FONT size=+2 color='red'><B><U>Advanced Options</FONT></B></U></p>
-            <div id="BOOTSTRAP">
-                <B>Number of bootstrap repeats</B>&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE="TEXT" NAME="Bootstraps" VALUE="100" SIZE=4></br>
-            </div>
 
-            <br><br>
-            <div id="Output_Order">
-            <b>Output order</b>:
-                    <br>&nbsp;<input type="radio" name="outorder" value="as_input">&nbsp;Same as input
-                    <br>&nbsp;<input type="radio" name="outorder" value="aligned" checked>&nbsp;Aligned<br><br>
+        <div class="accordion" id="accordionExample">
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Advanced Options
+              </button>
             </div>
-            <div id="CodonsTable">
-                <b>Genetic Code:</b>&nbsp;&nbsp;&nbsp;
-                            <select name="GENCODE"> <!-- Options values are according to BioPerl -->
-                                <option value=1>Nuclear Standard
-                                <option value=15>Nuclear Blepharisma
-                                <option value=6>Nuclear Ciliate
-                                <option value=10>Nuclear Euplotid
-                                <option value=2>Mitochondria Vertebrate
-                                <option value=5>Mitochondria Invertebrate
-                                <option value=3>Mitochondria Yeast
-                                <option value=13>Mitochondria Ascidian
-                                <option value=9>Mitochondria Echinoderm
-                                <option value=14>Mitochondria Flatworm
-                                <option value=4>Mitochondria Protozoan
-                                </select><br><br>
-            </div>
+            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <div id="BOOTSTRAP">
+<!--                    <B>Number of bootstrap repeats</B>&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE="TEXT" NAME="Bootstraps" VALUE="100" SIZE=4></br>-->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Number of bootstrap repeats</span>
+                        <input type="text" name="Bootstraps" value="100" size=4 class="form-control">
+                    </div>
+                </div>
 
-            <br><br>
-            <div id="MAFFT_OPTION">
-            <b>Advanced MAFFT Options:</b><br>Max-Iterate
-            <select name="maxiterate"> 
-            <option value="0" selected="selected">0</option> 
-            <option value="1">1</option> 
-            <option value="2">2</option> 
-            <option value="5">5</option> 
-            <option value="10">10</option> 
-            <option value="20">20</option> 
-            <option value="50">50</option> 
-            <option value="80">80</option> 
-            <option value="100">100</option> 
-            <option value="1000">1000(long run)</option>
-            </select><br>
-            Pairwise alignment method <select name="pair"> 
-            <option value="" selected="selected">6mer</option> 
-            <option value="localpair">localpair</option> 
-            <option value="genafpair">genafpair</option> 
-            <option value="globalpair">globalpair</option> 
-            </select> 
-            </div>
-            <br>
-            <div id="PRANK_OPTION">
-            <b>Advanced PRANK Options:</b><br>
-            
-            <input type="checkbox" name="F" value="+F" checked> Trust insertions (+F)
-            </div>
+            <div class="mb-3" id="Output_Order">
+                    <label class="form-label">Output order</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="outorder" id="as_input"  value="as_input">
+                      <label class="form-check-label" for="as_input">
+                        Same as input
+                      </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="outorder" id="aligned" value="aligned" checked>
+                      <label class="form-check-label" for="aligned">
+                        Aligned
+                      </label>
+                    </div>
+                </div>
 
-            </div>
-            <br> 
-            <input type=submit value="Submit" id="SubmitButton1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value="Clear" id="buttons">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <button type="button" onclick="LoadExample()">Load  an  example</button><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="-1"><A href="Gallery/output.php">Show Example Results</A></font>
+                <div id="CodonsTable">
+                    <b>Genetic Code:</b>&nbsp;&nbsp;&nbsp;
+                                <select name="GENCODE"> <!-- Options values are according to BioPerl -->
+                                    <option value=1>Nuclear Standard
+                                    <option value=15>Nuclear Blepharisma
+                                    <option value=6>Nuclear Ciliate
+                                    <option value=10>Nuclear Euplotid
+                                    <option value=2>Mitochondria Vertebrate
+                                    <option value=5>Mitochondria Invertebrate
+                                    <option value=3>Mitochondria Yeast
+                                    <option value=13>Mitochondria Ascidian
+                                    <option value=9>Mitochondria Echinoderm
+                                    <option value=14>Mitochondria Flatworm
+                                    <option value=4>Mitochondria Protozoan
+                                    </select><br><br>
+                </div>
+
+                <div id="MAFFT_OPTION">
+                    <label class="form-label">Advanced MAFFT Options:</label>
+                     <div class="input-group mb-3">
+                        <label class="input-group-text select-label" for="maxiterate">Max-Iterate</label>
+                        <select class="form-select" name="maxiterate" id="maxiterate">
+                            <option value="0" selected="selected">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="80">80</option>
+                            <option value="100">100</option>
+                            <option value="1000">1000(long run)</option>
+                        </select>
+                    </div>
+                     <div class="input-group mb-3">
+                        <label class="input-group-text select-label" for="pair">Pairwise alignment method</label>
+                        <select class="form-select" name="pair" id="pair">
+                            <option value="" selected="selected">6mer</option>
+                            <option value="localpair">localpair</option>
+                            <option value="genafpair">genafpair</option>
+                            <option value="globalpair">globalpair</option>
+                        </select>
+                    </div>
+                </div>
+
+
+
+<!--                <div id="MAFFT_OPTION">-->
+<!--                <b>Advanced MAFFT Options:</b><br>Max-Iterate-->
+<!--                <select name="maxiterate">-->
+<!--                <option value="0" selected="selected">0</option>-->
+<!--                <option value="1">1</option>-->
+<!--                <option value="2">2</option>-->
+<!--                <option value="5">5</option>-->
+<!--                <option value="10">10</option>-->
+<!--                <option value="20">20</option>-->
+<!--                <option value="50">50</option>-->
+<!--                <option value="80">80</option>-->
+<!--                <option value="100">100</option>-->
+<!--                <option value="1000">1000(long run)</option>-->
+<!--                </select><br>-->
+<!--                Pairwise alignment method <select name="pair">-->
+<!--                <option value="" selected="selected">6mer</option>-->
+<!--                <option value="localpair">localpair</option>-->
+<!--                <option value="genafpair">genafpair</option>-->
+<!--                <option value="globalpair">globalpair</option>-->
+<!--                </select>-->
+<!--                </div>-->
+                <div id="PRANK_OPTION">
+                    <b>Advanced PRANK Options:</b><br>
+                    <input type="checkbox" name="F" value="+F" checked> Trust insertions (+F)
+                </div>
+      </div>
+    </div>
+  </div>
+
         {% endif %}
      
 <!-- removed captcha code
@@ -220,11 +334,16 @@
 			$("#CaptchaCode").blur();
 		});
 </script>
--->			
+-->
 			<br>
-			<br>
-			<br><br>
-	</td></table>
+            </div>
+        <div style="margin-bottom: 15px" class="d-grid gap-2 d-md-block">
+            <script type="text/javascript" src="js/validation-rules.js"></script>
+            <input type="hidden" id="solved" name="solved" value="false"/>
+            <input class="btn btn-primary" type=submit value="Submit" id="SubmitButton">
+            <input class="btn btn-outline-secondary" type="reset" value="Clear Form" id="buttons">
+<!--                <a href="/Gallery/output.php">Show Example Results</a>-->
+         </div>
 	</form>
 
     {% if rerun_params is defined %}

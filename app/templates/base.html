@@ -1,101 +1,129 @@
 <!DOCTYPE html>
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
 <html>
-    <head>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <title>GUIDANCE Server - a web server for assessing alignment confidence score</title>
-        <link rel="stylesheet" href="{{url_for('static',filename='css/guidance.css')}}" />
-        <script type="text/javascript"
-                src="{{url_for('static',filename='js/javascript_functions.js')}}"></script>
-        <!-- google fonts -->
-        <link rel="stylesheet" type="text/css"
-              href="http://fonts.googleapis.com/css?family=Abril+Fatface">
-        <link rel="stylesheet" type="text/css"
-              href="http://fonts.googleapis.com/css?family=Playfair+Display">
-        <!-- google fonts -->
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"/>
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
+    <title>GUIDANCE Server - a web server for assessing alignment confidence score</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/guidance.css')}}"/>
+    <!--        <script type="text/javascript"-->
+    <!--                src="{{url_for('static',filename='js/javascript_functions.js')}}"></script>-->
+    <!-- google fonts -->
+    <link rel="stylesheet" type="text/css"
+          href="http://fonts.googleapis.com/css?family=Abril+Fatface">
+    <link rel="stylesheet" type="text/css"
+          href="http://fonts.googleapis.com/css?family=Playfair+Display">
+    <!-- google fonts -->
 
 
-        <META NAME="date" CONTENT="2014-03-20"> 
-        <META NAME="author" CONTENT="Itamar Sela, Haim Ashkenazy, Osnat Penn, Eyal Privman, Giddy Landan, Dan Graur, Tal Pupko"> 
-        <META NAME="keywords" CONTENT="Multiple sequence alignment, guide tree, alignment confidence,Guidance server"> 
-        <META NAME="description" CONTENT="GUIDANCE: a web server for assessing alignment confidence score">
-        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+    <META NAME="date" CONTENT="2014-03-20">
+    <META NAME="author"
+          CONTENT="Itamar Sela, Haim Ashkenazy, Osnat Penn, Eyal Privman, Giddy Landan, Dan Graur, Tal Pupko">
+    <META NAME="keywords" CONTENT="Multiple sequence alignment, guide tree, alignment confidence,Guidance server">
+    <META NAME="description" CONTENT="GUIDANCE: a web server for assessing alignment confidence score">
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
 
-        <!-- Analytics Start -->
-        <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <!-- Analytics Start -->
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-          ga('create', 'UA-54580028-1', 'auto');
-          ga('send', 'pageview');
-        </script>
-        <!-- Analytics End -->
-        
-        <!-- GOOGLE ANALYTICS START -->
-		<script type="text/javascript">
-			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-		</script>
-		<script type="text/javascript">
-			try {
-				var pageTracker = _gat._getTracker("UA-12265767-1");
-				pageTracker._setDomainName(".tau.ac.il");
-				pageTracker._trackPageview();
-			} catch(err) {}
-		</script>
-		<!-- GOOGLE ANALYTICS END -->
-        
-        <font face="verdana">
+        ga('create', 'UA-54580028-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+    <!-- Analytics End -->
 
-        <!-- guidance2_server_logo_table -->
-        <br>
-        <table width="100%" height=10% border="0"> 
-        <tr>
-            <td width=20% rowspan=3 align=left>
-                <a href="/"><img src="{{url_for('static',filename='images/guidance.gif')}}" width="216" height="108"  valign=top BORDER></a></td>
-                <td width=80% valign=right align=left>
-                <div style="font: 400 60px/1.3 'Abril Fatface', Georgia; color: #003399;">The GUIDANCE2 Server</div>
-                <font color=#725A5A face="arial" size=5>Server for alignment confidence score<br></font></td>	
+    <!-- GOOGLE ANALYTICS START -->
+    <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+        try {
+            var pageTracker = _gat._getTracker("UA-12265767-1");
+            pageTracker._setDomainName(".tau.ac.il");
+            pageTracker._trackPageview();
+        } catch (err) {
+        }
+    </script>
+    <!-- GOOGLE ANALYTICS END -->
 
+    <link rel="stylesheet" href="{{url_for('static',filename='css/guidance.css')}}"/>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/stylesheet.css')}}"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script type="text/javascript" src="{{url_for('static',filename='js/javascript_functions.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static',filename='js/validate-form.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static',filename='js/jquery-1.7.2.min.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static',filename='js/jquery.validate.min.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+    {% block head %} {% endblock %}
+</head>
 
-        </tr>
-
-        <tr></tr><tr>
-            <td colspan=3 valign=bottom align=left><span class="title_menu">
-            <a href="/guidance">HOME</a>
-            &nbsp;&nbsp;&nbsp;<a href="/guidance/overview">OVERVIEW</a>
-            &nbsp;&nbsp;&nbsp;<a href="/guidance/gallery">GALLERY</a>
-            &nbsp;&nbsp;&nbsp;<a href="/guidance/source">SOURCE CODE</a>
-            &nbsp;&nbsp;&nbsp;<a href="/guidance/credits">CITING & CREDITS</a>
-            &nbsp;&nbsp;&nbsp;<a href="mailto:evloseq@tauex.tau.ac.il?subject=GUIDANCE2%20web-server" target="_blank">CONTACT US</a>		
-            </span></td> 
-
-        </tr>
-
-        </table>
-        <hr>
-        <br>
-
-        <!-- end of guidance2_server_logo_table -->
-
-        <!-- end of header.tpl -->
-
-        <link rel="stylesheet" href="{{url_for('static',filename='css/guidance.css')}}" />
-        <link rel="stylesheet" href="{{url_for('static',filename='css/stylesheet.css')}}" />
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <script type="text/javascript" src="{{url_for('static',filename='js/javascript_functions.js')}}"></script>
-        <script type="text/javascript" src="{{url_for('static',filename='js/validate-form.js')}}"></script>
-        <script type="text/javascript" src="{{url_for('static',filename='js/jquery-1.7.2.min.js')}}"></script>
-        <script type="text/javascript" src="{{url_for('static',filename='js/jquery.validate.min.js')}}"></script>
-        
-        {% block head %} {% endblock %}
-    </head>
-    <body>
-        <blockquote>
-        {% block body %} {% endblock %}
-        
-    </body>
+<body>
+<!--sticky navigation bar-->
+<nav class="navbar sticky-top navbar-expand-lg " style="background-image: linear-gradient(to left, #72B2E4, rgb(251, 240, 246),rgb(211, 225, 252), rgb(210, 251, 252));">
+    <div class="container-fluid">
+        <span class="material-symbols-outlined" style="color: rgb(15, 5, 56)">genetics</span>
+        <a class="navbar-brand" href="/guidance/" style="color:rgb(15, 5, 56);">Guidance 2.0</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/guidance/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/guidance/overview">Overview</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/guidance/gallery">Gallery</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/guidance/source">Source code</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/guidance/credits">Citing and credits</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="mailto:evloseq@tauex.tau.ac.il?subject=GUIDANCE2%20web-server">Contact
+                        us</a>
+                </li>
+                <li>
+                <!--                  <a class="nav-link" href="https://github.com/HaimAshk/GUIDANCE"> <img src="iconmonstr-github-1.svg" width="2.5em" height="2.5em"> </a>-->
+                <a class="nav-link" href="https://github.com/HaimAshk/GUIDANCE">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--Guidance image in the header-->
+<div id="logo" class="header-image">
+    <img src={{url_for('static',filename='images/header-image-narrow-p2.png')}}>
+</div>
+<!--<blockquote>-->
+    {% block body %} {% endblock %}
+</body>
 </html>
