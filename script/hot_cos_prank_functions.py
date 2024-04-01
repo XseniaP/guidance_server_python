@@ -84,7 +84,6 @@ def align_profiles_PRK(pfile1, pfile2, tfile3, ofile, sequencing_method, sequenc
 
     return rmsa
 
-
 # # create a guide tree (named <infile>.tree) by mafft and align the original sequences and produce hot_H.fasta
 # # Rename <infile>.tree into <treefile> and delete <infile>.tree
 # # <infile> is original sequences file, <treefile> is the name to give to the guide tree created
