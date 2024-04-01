@@ -67,7 +67,7 @@ def align_profiles_PRK(pfile1, pfile2, tfile3, ofile, sequencing_method, sequenc
 
     command_line = f"({sequencing_method.version} -partaligned -d=prank_{ofile}_inp -t={tfile3} -o=prank_{ofile} -notree 2>&1) 2>&1; mv prank_{ofile}.0.fas {ofile}"
     if sequencing_method.prkver == 1:
-        command_line = f"({sequencing_method.version} -partaligned -d=prank_{ofile}_inp -t={tfile3} -o=prank_{ofile} 2>&1) 2>&1; mv prank_{ofile}.0.fas {ofile}"
+        command_line = f"({sequencing_method.version} -partaligned -d=prank_{ofile}_inp -t={tfile3} -o=prank_{ofile} 2>&1) 2>&1; mv prank_{ofile}.fas {ofile}"
 
     rc = run_command_line(command_line, file_handler)
     if 'err' in rc.lower():
