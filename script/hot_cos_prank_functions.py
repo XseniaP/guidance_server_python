@@ -5,6 +5,7 @@ import sys
 from hot_cos_logger import log_print, cleanup, write_to_file, run_command_line, debug
 
 
+# adjusted for prank v.170427: prank interface change, output file naming assumed as per this version
 def met_init_PRK(seqtype, sequencing_method, file_handler):
     # """Initialize MAFFT: prepare the command line with the relevant version and parameters"""
     # if seqtype == 2:
@@ -17,10 +18,8 @@ def met_init_PRK(seqtype, sequencing_method, file_handler):
         print(f"ERROR: Could not find {sequencing_method.version}, please make sure that {sequencing_method.version} is on your path and try again.")
         exit()
 
-    # sequencing_method.version = sequencing_method.path
     rc = run_command_line(f"{sequencing_method.version} 2>&1", file_handler)
 
-    # added in ver 2.04: prank interface change
     sequencing_method.prkver = 1 if 'showtree' in rc else 0
     sequencing_method.version += ' ' + sequencing_method.parameters
     if sequencing_method.prkver == 0:
@@ -106,26 +105,3 @@ def make_guide_tree_PRK(infile, treefile, sequencing_method, sequence, file_hand
         os.system("rm -f prank_*")
 
     return rmsa
-
-
-
-# def prepare_user_tree_mafft(tree_file):
-#     """Take a user provided guide tree and prepare it for further use removing assigned sequence names"""
-#     try:
-#         # Create a backup of the original file
-#         backup_file = f"{tree_file}.ORIG"
-#         shutil.copy(tree_file, backup_file)
-#
-#         # Read and process the tree file
-#         with open(tree_file, 'r') as f_in:
-#             lines = f_in.readlines()
-#             tree = ''.join(lines).rstrip(';')
-#             tree = tree.replace(r'(seq[0-9]{4})', r'\n\1\n')
-#
-#         # Write the processed tree back to the file
-#         with open(tree_file, 'w') as f_out:
-#             f_out.write(f'{tree}\n')
-#
-#     except IOError as e:
-#         print(f"Error processing tree file '{tree_file}': {e}")
-#
