@@ -128,8 +128,10 @@ MAFFT_GUIDANCE = "mafft"
 MAFFT_LINSI_GUIDANCE = "/bioseq/Programs/MAFFT_6.833/bin/mafft --localpair --maxiterate 1000"
 
 # Paths to PRANK program for phylogenetic analysis
-PRANK_LECS = "/share/apps/bin/prank"
-PRANK = "/usr/local/bin/prank"
+# PRANK_LECS = "/share/apps/bin/prank"
+# PRANK = "/usr/local/bin/prank"
+PRANK_LECS = "prank"
+PRANK = "prank"
 
 # Path to T-Coffee program
 T_COFFEE = "/share/apps/T-COFFEE-8.47/bin/binaries/linux/t_coffee"

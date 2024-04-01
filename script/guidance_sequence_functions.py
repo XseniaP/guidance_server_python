@@ -792,7 +792,7 @@ def convert_fs_to_upper_case(file_path):
 
         return None  # Success
     except OSError as e:
-        return f"convert_fs_to_upper_case: Fail to open {e.filename} : {str(e)}"
+        return f"convert_fs_to_upper_case: Failed to open {e.filename} : {str(e)}"
 
 
 def names_according_cos(file_path):
