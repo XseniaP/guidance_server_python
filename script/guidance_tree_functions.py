@@ -162,6 +162,7 @@ def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog):
     # pull out all the BP trees into the BP directory
     # pull out the original tree (that was done on the complete MSA file)
     ####################################################################################################################
+    make_unique = ""
 
     if not no_bp_dir.endswith("/"):
         no_bp_dir += "/"
@@ -175,13 +176,19 @@ def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog):
         non_unique_trees_dir = f"{bp_dir}nonUniqueTrees/"
         if not os.path.exists(non_unique_trees_dir):
             os.mkdir(non_unique_trees_dir)
+        make_unique = "yes"
+    else:
+        make_unique = "no"
+
 
     iqtree_boottrees_file = f"{bp_dir}{dataset}.{aln_prog}.aln.boottrees"
     print(f"iqtree boottrees file: {iqtree_boottrees_file}\n")
 
-    with open(iqtree_boottrees_file, 'r') as boottrees_file:
+    with (open(iqtree_boottrees_file, 'r') as boottrees_file):
 
         count = 0
+        count_unqique = 0
+        num_repeats = []
 
         for my_tree in boottrees_file:
             if aln_prog == "MAFFT":
@@ -201,9 +208,40 @@ def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog):
                 return f"can't open file {tree_file}"
             count += 1
 
+            if make_unique == "yes":
+                i=0
+                while i < count_unqique:
+                    unique_tree_file = f"{bp_dir}/tree_{i}/{dataset}.{aln_prog}.iqtree.tree_{i}"
+                    is_equal_topology_res_file = tree_dir + "isEqualTopology." + str(i) + ".std"
+                    is_equal_topology_command = isEqualTopologyProg + " " + tree_file + " " + unique_tree_file
+                    is_equal_topology = os.system(is_equal_topology_command)
+                    # with open(is_equal_topology_res_file, 'w') as out_equal_top:
+                    #     out_equal_top.write(str(is_equal_topology) + "\n")
+                    if is_equal_topology == 1:
+                        num_repeats[i] += 1
+                        break
+                    if is_equal_topology == 2:
+                        print("skipping ERROR in isEqualTopology of", tree_file, "and", unique_tree_file)
+                        continue
+                    i += 1
+                if i == count_unqique:
+                    num_repeats.append(1)
+                    unique_trees_dir = f"{bp_dir}/tree_{count_unqique}/"
+                    if not os.path.exists(unique_trees_dir):
+                        os.system("mkdir " + unique_trees_dir)
+                    unique_tree_file = unique_trees_dir + dataset + "." + aln_prog + ".iqtree.tree_" + str(count_unqique)
+                    os.system("cp " + tree_file + " " + unique_tree_file)
+                    count_unqique += 1
+
 
     if count != bp_repeats:
         return f"ERROR: dataset: {dataset} \t count_trees: {count} while it should be {bp_repeats}\n"
+
+    if aln_prog != "MAFFT":
+        num_repeats_file = bp_dir + "/"+ "numRepeats"
+        with open(num_repeats_file, 'w') as out_num_repeats:
+            out_num_repeats.write(" ".join(map(str, num_repeats)))
+        return "ok", count_unqique, num_repeats
 
     else:
         return ["ok"]
