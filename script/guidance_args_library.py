@@ -24,7 +24,8 @@ class Library:
         self.iqtree_prog = os.path.join(BIN_DIR, 'script/programs/iqtree-2.2.2.6-MacOSX/bin/iqtree2')
         self.mafft_prog = "mafft"
         self.prank_prog = "prank"
-        self.clustalw_prog = "clustalw"
+        # self.clustalw_prog = "clustalw"
+        self.clustalw_prog = os.path.join(BIN_DIR, 'script/programs/clustalo')
         self.ruby_prog = "ruby"
         self.muscle_prog = "muscle"
         # self.msa_set_score_prog = os.path.join(os.getcwd(), 'programs/msa_set_score/msa_set_score')
@@ -58,7 +59,7 @@ class Library:
         self.MSA_Program = ""
         self.server_output = ""
         # self.usage_ = "FILL IN USAGE LATER"
-        self.usage_ = "USAGE: --seqFile <seqFile> --msaProgram <MAFFT|PRANK|CLUSTALW|MUSCLE|PAGAN> --seqType <aa|nuc|codon> --outDir <full path outDir> \
+        self.usage_ = "USAGE: --seqFile <seqFile> --msaProgram <MAFFT|PRANK|CLUSTALO|MUSCLE|PAGAN> --seqType <aa|nuc|codon> --outDir <full path outDir> \
     Optional parameters: \
   --program <GUIDANCE|HoT|GUIDANCE2> default=GUIDANCE2 \
   --bootstraps <number of bootstrap iterations> default=100 \
@@ -119,8 +120,8 @@ class Library:
         parser.add_argument('--seqFile', dest='usrSeq_File', type=str, required=True,
                             help='Specify the sequence file (required).')
         parser.add_argument('--msaProgram', dest='MSA_Program', type=str,
-                            choices=['MAFFT', 'PRANK', 'CLUSTALW', 'MUSCLE', 'PAGAN'], required=True, default="",
-                            help='Specify the MSA program (Required). <MAFFT|PRANK|CLUSTALW|MUSCLE|PAGAN>. Default=""')
+                            choices=['MAFFT', 'PRANK', 'CLUSTALO', 'MUSCLE', 'PAGAN'], required=True, default="",
+                            help='Specify the MSA program (Required). <MAFFT|PRANK|CLUSTALO|MUSCLE|PAGAN>. Default=""')
         parser.add_argument('--seqType', dest='Seq_Type', type=str, choices=['aa', 'nuc', 'codon'],
                             required=True, default="", help='Specify the sequence type: aa, nuc, or codon (Required')
         parser.add_argument('--outDir', required=True, dest='outDir', type=str,
@@ -162,8 +163,8 @@ class Library:
                             help='Specify path to mafft executable. Default=mafft.')
         parser.add_argument('--prank', default='prank', dest='prank_prog', type=str,
                             help='Specify path to prank executable. Default=prank.')
-        parser.add_argument('--clustalw', default='clustalw', dest='clustalw_prog', type=str,
-                            help='Specify path to clustalw executable. Default=clustalw.')
+        parser.add_argument('--clustalo', default='clustalo', dest='clustalw_prog', type=str,
+                            help='Specify path to clustalo executable. Default=clustalo.')
         parser.add_argument('--muscle', default='muscle', dest='muscle_prog', type=str,
                             help='Specify path to muscle executable. Default=muscle.')
         parser.add_argument('--pagan', default='pagan', dest='pagan_prog', type=str,
@@ -214,8 +215,8 @@ class Library:
 
         self.MSA_Program = self.MSA_Program.upper()
 
-        if self.MSA_Program not in ["MAFFT", "PRANK", "CLUSTALW", "MUSCLE", "PAGAN"]:
-            raise ValueError("ERROR: msaProgram should be MAFFT or PRANK or CLUSTALW or MUSCLE or PAGAN (case sensitive)\n")
+        if self.MSA_Program not in ["MAFFT", "PRANK", "CLUSTALO", "MUSCLE", "PAGAN"]:
+            raise ValueError("ERROR: msaProgram should be MAFFT or PRANK or CLUSTALO or MUSCLE or PAGAN (case sensitive)\n")
 
         if not self.outDir.endswith("/"):
             self.outDir += "/"
@@ -474,8 +475,9 @@ class Library:
 
         self.mafft_prog = guidance_CONSTANTS.MAFFT_GUIDANCE
         self.prank_prog = guidance_CONSTANTS.PRANK_LECS
-        self.clustalw_prog = guidance_CONSTANTS.CLUSTALW_LECS
-        self.muscle_prog = guidance_CONSTANTS.MUSCLE_LECS
+        # self.clustalw_prog = guidance_CONSTANTS.CLUSTALW_LECS
+        self.clustalw_prog = guidance_CONSTANTS.CLUSTAL_OMEGA
+        self.muscle_prog = guidance_CONSTANTS.MUSCLE
         self.pagan_prog = guidance_CONSTANTS.PAGAN_LECS
         self.ruby_prog = guidance_CONSTANTS.RUBY
         self.msa_set_score_prog = MSA_SET_SCORE
@@ -567,7 +569,7 @@ class Library:
                             convert_fs_to_lower_case(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}.WithCodesName"))
                         elif self.MSA_Program == "PRANK":
                             convert_fs_to_upper_case(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}.WithCodesName"))
-                        elif self.MSA_Program == "CLUSTALW":
+                        elif self.MSA_Program == "CLUSTALO":
                             convert_fs_to_upper_case(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}.WithCodesName"))
                         elif self.MSA_Program == "MUSCLE":
                             convert_fs_to_upper_case(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}.WithCodesName"))

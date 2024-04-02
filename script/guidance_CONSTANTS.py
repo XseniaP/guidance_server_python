@@ -1,4 +1,8 @@
+import os
+import sys
 
+Bin = os.path.dirname(sys.argv[0])
+BIN_DIR = os.path.dirname(Bin)
 
 # constants to use when sending e-mails using the server admin's email address.
 ADMIN_EMAIL = "TAU BioSequence <bioSequence@tauex.tau.ac.il>"
@@ -110,8 +114,10 @@ CS_BLAST = "/share/apps/csblast-2.1.0-linux64/csblast_static"
 
 # Paths to MUSCLE program
 MUSCLE_LECS = "/share/apps/bin/muscle"
-MUSCLE = "/usr/local/bin/muscle"
-MUSCLE_3_6 = "/bioseq/Programs/muscle_3.6_from_BIOCLUSTER/muscle3.6/muscle"
+# MUSCLE = "/usr/local/bin/muscle"
+# MUSCLE_3_6 = "/bioseq/Programs/muscle_3.6_from_BIOCLUSTER/muscle3.6/muscle"
+# MUSCLE_LECS = "muscle"
+MUSCLE = "muscle"
 
 # Paths to different versions of ClustalW program
 CLUSTALW_LECS = "/share/apps/bin/clustalw"
@@ -119,6 +125,7 @@ CLUSTALW = "/usr/local/bin/clustalw"
 CLUSTALW_1_82 = "/bioseq/Programs/ClustalW_1.82/clustalw1.82/clustalw"
 CLUSTALW_1_81 = "/bioseq/Programs/ClustalW_1.81/clustalw1.81/clustalw"
 CLUSTALW_2_0_10 = "/bioseq/Programs/ClustalW_2.0.10/clustalw-2.0.10-linux-i386-libcppstatic/clustalw2"
+CLUSTAL_OMEGA = os.path.join(BIN_DIR, 'script/programs/clustalo')
 
 # Paths to different versions of MAFFT program
 MAFFT_LINSI = "/usr/local/bin/mafft-linsi"
