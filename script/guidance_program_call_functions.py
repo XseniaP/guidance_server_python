@@ -30,8 +30,9 @@ def run_hot_internal(args_library, op_vals_arr_ref, countTrees, tree_good_Branch
             HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} --op {op_vals_arr_ref[countTrees]} --ep {ep_vals_arr_ref[countTrees]}"
     elif args_library.MSA_Program == "PRANK":
         HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} -gaprate={op_vals_arr_ref[countTrees]}"
-    elif args_library.MSA_Program == "CLUSTALW":
-        HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} -GAPOPEN={op_vals_arr_ref[countTrees]}"
+    elif args_library.MSA_Program == "CLUSTALO":
+        # HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} -GAPOPEN={op_vals_arr_ref[countTrees]}"
+        HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param}"
 
     HOT_COS_GUIDANCE2_cmd += " >> COS.std"
 
@@ -71,6 +72,10 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
                 tree = f"{args_library.prune_BootStrap_Dir}tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}CORE.rooted"
             else:
                 tree = f"{args_library.BootStrap_Dir}tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}.rooted"
+
+        elif args_library.MSA_Program == "CLUSTALO":
+            tree = f"{args_library.BootStrap_Dir}nonUniqueTrees/tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}.rooted"
+
         else:
             tree = f"{args_library.BootStrap_Dir}nonUniqueTrees/tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}"
 
@@ -377,8 +382,8 @@ def run_guidance2(args_library):
         exit_on_error('user_error', "GUIDANCE2 currently does not support MUSCLE, please run GUIDANCE<br>")
     if args_library.MSA_Program == "PAGAN":
         exit_on_error('user_error', "GUIDANCE2 currently does not support PAGAN, please run GUIDANCE<br>")
-    elif args_library.MSA_Program == "CLUSTALW":
-        args_library.HoT_MSA_Program = "CLW"
+    elif args_library.MSA_Program == "CLUSTALO":
+        args_library.HoT_MSA_Program = "CLO"
         args_library.HoT_MSA_Program_path = args_library.clustalw_prog
     elif args_library.MSA_Program == "PRANK":
         args_library.HoT_MSA_Program = "PRK"
@@ -464,12 +469,12 @@ def run_guidance2(args_library):
                                 args_library.MSA_Program,
                                 args_library.Bootstraps, "", args_library.rooting_type)
             if ans[0] != "ok":
-                exit_on_error("sys_error", f"Guidance::root_BP_trees: {' '.join(ans)}\n")
+                exit_on_error("sys_error", f"Guidance::root_BP_trees: {' '.join(ans)}\n", args_library)
             if not os.path.exists(
                     f"{args_library.prune_BootStrap_Dir}tree_{args_library.Bootstraps - 1}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{args_library.Bootstraps - 1}CORE.rooted") or os.path.getsize(
                 f"{args_library.prune_BootStrap_Dir}tree_{args_library.Bootstraps - 1}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{args_library.Bootstraps - 1}CORE.rooted") == 0:
                 exit_on_error("sys_error",
-                              f"{args_library.prune_BootStrap_Dir}tree_{args_library.Bootstraps - 1}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{args_library.Bootstraps - 1}CORE.rooted does not exist/empty\n")  # TO DO: Consider to be numUniqueTrees instead Bootstraps
+                              f"{args_library.prune_BootStrap_Dir}tree_{args_library.Bootstraps - 1}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{args_library.Bootstraps - 1}CORE.rooted does not exist/empty\n", args_library)  # TO DO: Consider to be numUniqueTrees instead Bootstraps
         # prepare the trees
         log_file.write(
             f"Guidance::root_BP_trees({args_library.BootStrap_Dir},{args_library.dataset}, {args_library.MSA_Program}, {args_library.Bootstraps},'',{args_library.rooting_type});\n")
@@ -477,12 +482,31 @@ def run_guidance2(args_library):
                             args_library.Bootstraps,
                             "", args_library.rooting_type)
         if ans[0] != "ok":
-            exit_on_error("sys_error", f"Guidance::root_BP_trees: {' '.join(ans)}\n")
+            exit_on_error("sys_error", f"Guidance::root_BP_trees: {' '.join(ans)}\n", args_library)
         if not os.path.exists(
                 f"{args_library.BootStrap_Dir}tree_{args_library.Bootstraps - 1}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{args_library.Bootstraps - 1}.rooted") or os.path.getsize(
             f"{args_library.BootStrap_Dir}tree_{args_library.Bootstraps - 1}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{args_library.Bootstraps - 1}.rooted") == 0:
             exit_on_error("sys_error",
-                          f"{args_library.BootStrap_Dir}tree_{args_library.Bootstraps - 1}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{args_library.Bootstraps - 1}.rooted does not exist/empty\n")
+                          f"{args_library.BootStrap_Dir}tree_{args_library.Bootstraps - 1}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{args_library.Bootstraps - 1}.rooted does not exist/empty\n", args_library)
+
+    if args_library.MSA_Program == "CLUSTALO":
+        # prepare the trees
+        log_file.write(
+            f"Guidance::root_BP_trees({args_library.BootStrap_Dir},{args_library.dataset}, {args_library.MSA_Program}, {args_library.Bootstraps},'',{args_library.rooting_type});\n")
+        ans = root_BP_trees(f"{args_library.BootStrap_Dir}nonUniqueTrees/", args_library.dataset, args_library.MSA_Program,
+                            args_library.Bootstraps,
+                            "", args_library.rooting_type)
+
+        # tree = f"{args_library.BootStrap_Dir}nonUniqueTrees/tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}.rooted"
+
+        if ans[0] != "ok":
+            exit_on_error("sys_error", f"Guidance::root_BP_trees: {' '.join(ans)}\n", args_library)
+        if not os.path.exists(
+                f"{args_library.BootStrap_Dir}nonUniqueTrees/tree_{args_library.Bootstraps - 1}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{args_library.Bootstraps - 1}.rooted") or os.path.getsize(
+            f"{args_library.BootStrap_Dir}nonUniqueTrees/tree_{args_library.Bootstraps - 1}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{args_library.Bootstraps - 1}.rooted") == 0:
+            exit_on_error("sys_error",
+                          f"{args_library.BootStrap_Dir}nonUniqueTrees/tree_{args_library.Bootstraps - 1}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{args_library.Bootstraps - 1}.rooted does not exist/empty\n",
+                          args_library)
 
     args_library.MSA_Depth = calculate_msa_depth(args_library.WorkingDir + args_library.Alignment_File, args_library)
     # Sample OP
@@ -513,7 +537,7 @@ def run_guidance2(args_library):
                 log_file.write(
                     f"Sample op according to uniform distribution: Guidance::SampleFromUniformDist(0,0.5,{OutOP},{args_library.Bootstraps})\n")
                 op_vals_arr_ref = sample_from_uniform_dist(0, 0.5, OutOP, args_library.Bootstraps)  # for prank v.140110 the defaults are: dna 0.025 / prot 0.005
-            elif args_library.MSA_Program == "CLUSTALW":
+            elif args_library.MSA_Program == "CLUSTALO":
                 log_file.write(
                     f"Sample gap opening panelty according to uniform distribution: Guidance::SampleFromUniformDist(4,16,{OutOP},{args_library.Bootstraps})\n")
                 op_vals_arr_ref = sample_from_uniform_dist(4, 16, OutOP, args_library.Bootstraps)
@@ -627,8 +651,8 @@ def run_hot(args_library):
             elif args_library.MSA_Program == "PAGAN":
                 exit_on_error('user_error', "HoT currently does not support PAGAN, please run GUIDANCE<br>",args_library)
 
-            elif args_library.MSA_Program == "CLUSTALW":
-                args_library.HoT_MSA_Program = "CLW"
+            elif args_library.MSA_Program == "CLUSTALO":
+                args_library.HoT_MSA_Program = "CLO"
                 args_library.HoT_MSA_Program_path = args_library.clustalw_prog
 
             elif args_library.MSA_Program == "PRANK":

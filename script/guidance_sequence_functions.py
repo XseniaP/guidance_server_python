@@ -630,7 +630,7 @@ def check_msa_licit_and_size(msa_file, msa_format, check_sequence_licit_bool="ye
                     # break
                     return 'user_error', f"SEQ_NAME: {seq_record.id}", f"IRR_CHAR: {ans}"
 
-        elif msa_format in ["clustalw", "nexus"]:
+        elif msa_format in ["clustalo", "nexus"]:
             # with AlignIO.read(msa_file, msa_format) as msa_fh:
             #     for seq in msa_fh:
             #       for seq_record in seq:
@@ -969,25 +969,25 @@ def align(args_library):
 
             args_library.Alignment_File = args_library.Alignment_File + ".Sorted"
 
-    if args_library.MSA_Program == "CLUSTALW":
+    if args_library.MSA_Program == "CLUSTALO":
         cmd = ""
 
         if args_library.Seq_Type in ["AminoAcids", "Codons"]:
-            cmd = f"{args_library.clustalw_prog} -quiet -infile={args_library.WorkingDir}{args_library.codded_seq_fileName} -outfile={args_library.WorkingDir}{args_library.Alignment_File} -TYPE=PROTEIN > {args_library.WorkingDir}{args_library.Alignment_File}.std"
+            cmd = f"{args_library.clustalw_prog} --infile={args_library.WorkingDir}{args_library.codded_seq_fileName} --outfile={args_library.WorkingDir}{args_library.Alignment_File} --seqtype=Protein > {args_library.WorkingDir}{args_library.Alignment_File}.std"
         elif args_library.Seq_Type == "Nucleotides":
-            cmd = f"{args_library.clustalw_prog} -quiet -infile={args_library.WorkingDir}{args_library.codded_seq_fileName} -outfile={args_library.WorkingDir}{args_library.Alignment_File} -TYPE=DNA > {args_library.WorkingDir}{args_library.Alignment_File}.std"
+            cmd = f"{args_library.clustalw_prog} --infile={args_library.WorkingDir}{args_library.codded_seq_fileName} --outfile={args_library.WorkingDir}{args_library.Alignment_File} --seqtype=DNA > {args_library.WorkingDir}{args_library.Alignment_File}.std"
 
         with open(args_library.OutLogFile, "a") as log_file:
             log_file.write(f"Align: {cmd}\n")
 
         subprocess.run(cmd, shell=True, check=True)
 
-        convert_msa_format(f"{args_library.WorkingDir}{args_library.Alignment_File}", "clustalw",
-                                      f"{args_library.WorkingDir}{args_library.Alignment_File}.fs", "fasta")
-        shutil.move(f"{args_library.WorkingDir}{args_library.Alignment_File}",
-                    f"{args_library.WorkingDir}{args_library.Alignment_File}.orig")
-        shutil.move(f"{args_library.WorkingDir}{args_library.Alignment_File}.fs",
-                    f"{args_library.WorkingDir}{args_library.Alignment_File}")
+        # convert_msa_format(f"{args_library.WorkingDir}{args_library.Alignment_File}", "clustal",
+        #                               f"{args_library.WorkingDir}{args_library.Alignment_File}.fs", "fasta")
+        # shutil.move(f"{args_library.WorkingDir}{args_library.Alignment_File}",
+        #             f"{args_library.WorkingDir}{args_library.Alignment_File}.orig")
+        # shutil.move(f"{args_library.WorkingDir}{args_library.Alignment_File}.fs",
+        #             f"{args_library.WorkingDir}{args_library.Alignment_File}")
 
         if args_library.Align_Order == "as_input":
             with open(args_library.OutLogFile, "a") as log_file:
