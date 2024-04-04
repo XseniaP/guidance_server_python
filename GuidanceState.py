@@ -146,6 +146,7 @@ class GuidanceState:
             form['user_mail'] = cgi_form['email_add']
             form['PROGRAM'] = cgi_form['PROGRAM']
             form['Redirect_From_MAFFT'] = cgi_form['Redirect_From_MAFFT']
+            form['input_type'] = cgi_form['input_type']
 
             form['Seq_Type'] = cgi_form['Seq_Type']
             
@@ -204,7 +205,7 @@ class GuidanceState:
             #else:
                 
                 
-            form_path = os.path.join( var['WorkingDir'], "FORM.json")
+            form_path = os.path.join(var['WorkingDir'], "FORM.json")
             with open(form_path, 'w') as fp:
                 json.dump(form, fp)
             fp.close()
@@ -305,7 +306,7 @@ class GuidanceState:
                 except: 
                     error= f'GuidanceState.upload_files: can\'t open {seqsFile} for writing.'
                     raise Exception(error, "system")
-                var['IsSPAM'] = checkForSpam(seqsFile, var['WorkingDir']);
+                var['IsSPAM'] = checkForSpam(seqsFile, var['WorkingDir'])
             else:
                 # upload user seqs file and alignment file
                 try: 
@@ -656,7 +657,7 @@ class GuidanceState:
         
         if form['Redirect_From_MAFFT'] == '0': # regular run
         
-            if not dict_file_defined_not_empty('userMSA_File', form): # Seq file provided
+            if not dict_file_defined_not_empty('userMSA_File', form) and form['input_type'] == "seq": # Seq file provided
             
                 if form['Seq_Type'] != 'Codons':
                     job_logger.info (f'validate_Seqs({var["WorkingDir"]},{var["SeqsFile"]},{form["Seq_Type"]}, False):\n')
@@ -691,6 +692,10 @@ class GuidanceState:
                 alignment_file_not_empty = False
                 if os.path.exists(alignment_file): 
                     if os.path.getsize(alignment_file) > 0:
+                        alignment_file_not_empty = True
+                elif form['input_type'] != "seq":
+                    if os.path.exists(os.path.join(var['WorkingDir'], var['SeqsFile'])) and os.path.getsize(os.path.join(var['WorkingDir'], var['SeqsFile'])) > 0:
+                        shutil.copyfile(os.path.join(var['WorkingDir'], var['SeqsFile']),os.path.join(var['WorkingDir'], var['Alignment_File']))
                         alignment_file_not_empty = True
                         
                 if alignment_file_not_empty:

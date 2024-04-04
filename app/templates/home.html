@@ -142,28 +142,43 @@
                 </div>
 
 
+                <div class="mb-3">
+                    <label for="input_type" class="form-label">Select input type</label>
+                    <select name="input_type" id="input_type" class="form-select" onchange="javascript:toggle_Input_Options()">
+                        <option value="seq">Upload you unaligned (no gaps) sequences file for alignment and evaluation (default)</option>
+                        <option value="re_align">Upload your MSA file for re-alignment and evaluation</option>
+                        <option value="msa">Upload your MSA file for evaluation only</option>
+				    </select>
+                </div>
+
+
+                <div class="alert-class alert alert-warning text-center" role="alert" id="msa_disclaimer_div" style="display:none">
+                	<b>Warning:</b> This option will evaluate an MSA using the algorithm chosen below. If the uploaded alignment was generated with a different method then the one chosen below, it might affect the results.
+                </div>
+
+
                 <div class="mb-3" id="MSA_PROGRAM_GUIDANCE">
                     <label for="MSA_Program_GUIDANCE" class="form-label">Select the MSA algorithm</label>
-                      <select name="MSA_Program_GUIDANCE" id="MSA_Program_GUIDANCE" class="form-select" onchange="javascript:toggle_MSA_Options()">
+                    <select name="MSA_Program_GUIDANCE" id="MSA_Program_GUIDANCE" class="form-select" onchange="javascript:toggle_MSA_Options()">
                     <option value="MAFFT">MAFFT (default)
     <!--				<option value="MAFFT_LINSI">MAFFT-LINSI  -->
                     <option value="PRANK">PRANK
                     <option value="CLUSTALO">Clustal Omega
                     <option value="MUSCLE">MUSCLE
                     <option value="PAGAN">PAGAN
-				</select>
-                  </div>
+				    </select>
+                </div>
 
 
                 <div class="mb-3" id="MSA_PROGRAM">
                     <label for="MSA_Program" class="form-label">Select the MSA algorithm</label>
                       <select name="MSA_Program" id="MSA_Program" class="form-select" onchange="javascript:toggle_MSA_Options()">
-                    <option value="MAFFT">MAFFT (default)
+                          <option value="MAFFT">MAFFT (default)</option>
     <!--				<option value="MAFFT_LINSI">MAFFT-LINSI  -->
-                    <option value="PRANK">PRANK
-                    <option value="CLUSTALO">Clustal Omega
-				</select>
-                  </div>
+                          <option value="PRANK">PRANK</option>
+                          <option value="CLUSTALO">Clustal Omega</option>
+                      </select>
+                </div>
 
                 <div class="alert-class">
                     <div  class="alert alert-warning text-center" role="alert">
@@ -344,6 +359,7 @@
             <input class="btn btn-outline-secondary" type="reset" value="Clear Form" id="buttons">
 <!--                <a href="/Gallery/output.php">Show Example Results</a>-->
          </div>
+        </div>
 	</form>
 
     {% if rerun_params is defined %}

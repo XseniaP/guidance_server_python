@@ -12,6 +12,7 @@ BIN_DIR = os.path.dirname(Bin)
 class Library:
     def __init__(self):
         self.isServer = 0
+        self.input_type = "seq"
         # self.proc_num = None
         self.outDir = ""
         self.stored_data_file = ""
@@ -131,6 +132,9 @@ class Library:
         parser.add_argument('--program', dest='PROGRAM', type=str, choices=['GUIDANCE', 'HoT', 'GUIDANCE2'],
                             default='GUIDANCE2',
                             help='Specify the program to run (optional): GUIDANCE, HoT or GUIDANCE2. Default is GUIDANCE2.')
+        parser.add_argument('--inputType', dest='input_type', type=str, choices=['seq', 're_align', 'msa'],
+                            default='seq',
+                            help='Specify the type of input provided (optional): seq, re_align or msa. Default is seq.')
         parser.add_argument('--bootstraps', type=int, dest='Bootstraps', default=100,
                             help='Specify the number of bootstrap iterations. Default is 100.')
         parser.add_argument('--genCode', type=int, dest='CodonTable', default=1,
@@ -193,6 +197,21 @@ class Library:
         for arg_name, arg_value in vars(args).items():
             setattr(self, arg_name, arg_value)
         return args
+
+    def unalign(self):
+        with open(self.userMSA_File, "r") as file_in, open(self.usrSeq_File, 'w') as file_out:
+            lines = file_in.readlines()
+            new_line = ""
+            for line in lines:
+                if line.startswith(">"):
+                    if new_line != "":
+                        file_out.write(new_line.strip() + "\n")
+                    file_out.write(line)
+                    new_line = ""
+                else:
+                    new_line += line.replace("-", "").strip()
+            file_out.write(new_line)
+
     def check_arguments_for_errors(self):
 
         if self.BBL.upper() == "YES":
@@ -217,6 +236,16 @@ class Library:
 
         if self.MSA_Program not in ["MAFFT", "PRANK", "CLUSTALO", "MUSCLE", "PAGAN"]:
             raise ValueError("ERROR: msaProgram should be MAFFT or PRANK or CLUSTALO or MUSCLE or PAGAN (case sensitive)\n")
+
+
+        if self.input_type == "msa" or self.input_type == "re_align":
+            # self.userMSA_File = self.usrSeq_File
+            self.userMSA_File = self.Alignment_File
+            # os.remove(self.usrSeq_File)
+            # self.usrSeq_File = f"{self.usrSeq_File}_seq"
+            # self.unalign()
+            if self.input_type == "re_align":
+                self.userMSA_File = ""
 
         if not self.outDir.endswith("/"):
             self.outDir += "/"
@@ -354,7 +383,7 @@ class Library:
 
     def check_output_files(self):
 
-        if self.userMSA_File !="" and self.userMSA_File != None:       # The user gave the base MSA as input
+        if self.userMSA_File != "" and self.userMSA_File != None:       # The user gave the base MSA as input
             self.Alignment_File = "UserMSA"
             if not os.path.exists(os.path.join(self.WorkingDir, self.Alignment_File)):
                 shutil.copy(self.userMSA_File, os.path.join(self.WorkingDir, self.Alignment_File))
