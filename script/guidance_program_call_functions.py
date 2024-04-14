@@ -433,7 +433,7 @@ def run_guidance2(args_library):
         log_file.write(
             f"Guidance::pullOutBPtrees({args_library.WorkingDir}, {args_library.dataset}, {args_library.Bootstraps}, {args_library.MSA_Program});\n")
         ans = pull_out_bp_trees(args_library.WorkingDir, args_library.dataset, args_library.Bootstraps,
-                                args_library.MSA_Program)
+                                args_library.MSA_Program, args_library)
         if ans[0] != "ok":
             exit_on_error("sys_error", f"Guidance::pullOutBPtrees: {' '.join(ans)}\n", args_library)
         if args_library.MSA_Program != "MAFFT":

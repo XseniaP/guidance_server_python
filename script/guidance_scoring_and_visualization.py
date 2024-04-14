@@ -1,4 +1,5 @@
 import math
+import os
 
 from matplotlib import pyplot as plt
 
@@ -738,11 +739,14 @@ def calculate_sp_scores(args_library):
                 f"{args_library.WorkingDir}", f"{args_library.Alignment_File_translated_from_user_codon_alignmet}")):
             exit_on_error("sys_error",
                           f"{args_library.WorkingDir}{args_library.Alignment_File_translated_from_user_codon_alignmet} does not exist/empty\n", args_library)
-        cmd = f"{args_library.msa_set_score_prog} {os.path.join(args_library.WorkingDir, args_library.Alignment_File_translated_from_user_codon_alignmet)} {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)} -d  {args_library.Scoring_Alignments_Dir} > {args_library.WorkingDir}/{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+        # cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File_translated_from_user_codon_alignmet)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)}   -d {args_library.Scoring_Alignments_Dir}  >  {args_library.WorkingDir}{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+        cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File_translated_from_user_codon_alignmet)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)}   -d {args_library.Scoring_Alignments_Dir}  >  {args_library.WorkingDir}{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
     else:
-        cmd = f"{args_library.msa_set_score_prog} {os.path.join(args_library.WorkingDir, args_library.Alignment_File)} {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)} -d  {args_library.Scoring_Alignments_Dir} > {args_library.WorkingDir}/{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+        cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)}   -d {args_library.Scoring_Alignments_Dir}  >  {args_library.WorkingDir}{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
     with open(args_library.OutLogFile, "a") as log_file:
         log_file.write(f"calculating SP scores: {cmd}/n")
+    if os.path.exists(f"{args_library.Scoring_Alignments_Dir}/.DS_Store"):
+        os.remove(f"{args_library.Scoring_Alignments_Dir}/.DS_Store")
     subprocess.call(cmd, shell=True)
     if not os.path.exists(f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_res.scr") or os.path.getsize(
             f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_res.scr") == 0:
@@ -1182,11 +1186,14 @@ def calculate_sp_scores_convergence(args_library, countTrees):
                 f"{args_library.WorkingDir}", f"{args_library.Alignment_File_translated_from_user_codon_alignmet}")):
             exit_on_error("sys_error",
                           f"{args_library.WorkingDir}{args_library.Alignment_File_translated_from_user_codon_alignmet} does not exist/empty\n", args_library)
-        cmd = f"{args_library.msa_set_score_prog} {os.path.join(args_library.WorkingDir, args_library.Alignment_File_translated_from_user_codon_alignmet)} {os.path.join(args_library.WorkingDir, args_library.Output_Prefix) + f'_tree_{countTrees}'} -d  {args_library.Scoring_Alignments_Dir} > {args_library.WorkingDir}/{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+        # cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File_translated_from_user_codon_alignmet)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix) + f'_tree_{countTrees}'}   -d {args_library.Scoring_Alignments_Dir}  >  {args_library.WorkingDir}{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+        cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File_translated_from_user_codon_alignmet)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix) + f'_tree_{countTrees}'}   -d {args_library.Scoring_Alignments_Dir}"
     else:
-        cmd = f"{args_library.msa_set_score_prog} {os.path.join(args_library.WorkingDir, args_library.Alignment_File)} {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f'_tree_{countTrees}')} -d  {args_library.Scoring_Alignments_Dir} > {args_library.WorkingDir}/{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+        cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f'_tree_{countTrees}')}   -d {args_library.Scoring_Alignments_Dir}"
     with open(args_library.OutLogFile, "a") as log_file:
         log_file.write(f"calculating SP scores for tree # {countTrees}: {cmd}/n")
+    if os.path.exists(f"{args_library.Scoring_Alignments_Dir}/.DS_Store"):
+        os.remove(f"{args_library.Scoring_Alignments_Dir}/.DS_Store")
     subprocess.call(cmd, shell=True)
     alt_msas = len(os.listdir(args_library.Scoring_Alignments_Dir))
     if not os.path.exists(f"{args_library.WorkingDir}{args_library.Output_Prefix + f'_tree_{countTrees}'}_res_pair_res.scr") or os.path.getsize(

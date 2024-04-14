@@ -116,16 +116,24 @@ function toggle_MSA_Options(){
 //------------------------------------
 
 function toggle_Input_Options(){
-	var chosen_input = window.document.Guidance_form.input_type.value;
-	if(chosen_input == 'seq'){
-		msa_disclaimer_div.style.display = 'none';
-	}
-	if(chosen_input == 're_align'){
-		msa_disclaimer_div.style.display = 'none';
-	}
-	if(chosen_input == 'msa'){
-		msa_disclaimer_div.style.display = 'block';
-	}
+	var input_type = window.document.Guidance_form.Input_type.value;
+    div = getElement('msa_disclaimer_div');
+    if (input_type == 'msa') {
+       msa_disclaimer_div.style.display = 'block';
+    }
+    else {
+       msa_disclaimer_div.style.display = 'none';
+    }
+	// var chosen_input = window.document.Guidance_form.input_type.value;
+	// if(chosen_input == 'seq'){
+	// 	msa_disclaimer_div.style.display = 'none';
+	// }
+	// if(chosen_input == 're_align'){
+	// 	msa_disclaimer_div.style.display = 'none';
+	// }
+	// if(chosen_input == 'msa'){
+	// 	msa_disclaimer_div.style.display = 'block';
+	// }
 }
 
 function toggle_batch_file(elemId){

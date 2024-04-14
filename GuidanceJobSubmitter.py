@@ -37,7 +37,7 @@ class GuidanceJobSubmitter:
         if pid == 0:
             print(submission_cmd)
             job_run_output = subprocess.run(submission_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            print(job_run_output.stdout)
+            # print(job_run_output.stdout)
                       
             # check return code and raise exception if failed
             if job_run_output.returncode != 0:

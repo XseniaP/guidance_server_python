@@ -120,6 +120,7 @@ def dict_file_defined_not_empty(key, files):
     if key not in files:
         return False
     return files[key].filename != ''
+    # return files[key] != ''
 
 def dict_key_value(key, value, form):
     if key not in form.keys():

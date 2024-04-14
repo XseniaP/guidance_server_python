@@ -30,7 +30,7 @@ class InputValidator:
                     #print (f'validate_Seqs: opening {seqFilePath_fixed}')
                     with open (seqFilePath_fixed, "w", encoding="ISO-8859-1") as f_out:
                         for line in f_in:
-                            # remove newline, leading and trailing blanl spaces
+                            # remove newline, leading and trailing blank spaces
                             line = line.rstrip()
                             line = re.sub( r'^\s+|\s+$', '', line)
                             if line == '':

@@ -52,23 +52,32 @@ class GuidanceState:
                 # setup logger
                 job_logger = get_job_logger(jobId)
                 job_logger.info(f'{"#" * 100}\n{currentTime()}: entering initial GuidanceState.__init__\n')
-                
+                job_logger.info('testing1')
+
                 # initialize var dictionary
                 var = {}
                 var['WorkingDir'] = wd
                 var['SeqsFile'] = 'Seqs.Orig.fas' #generic fixed name for the sequence file. the user file will be copied to this file.
                 var['SeqsFile_Codons'] = 'Seqs.Orig_DNA.fas' #generic fixed name for the DNA CODONS sequence file. the user file will be copied to this file.
                 var['dataset'] = 'MSA'
+                job_logger.info('testing2')
+                job_logger.info(f'form[input_type] = {form["input_type"]}')
                 #if dict_file_defined_not_empty('userMSA_File', files): 
                 if dict_key_defined_not_empty('BACK_FROM_MAFFT', form):
                     var['Alignment_File'] = 'UserMSA'
-                else: 
+                # else:
+                elif form['input_type'] == 'msa':
+                    # var['Alignment_File'] = f"{var['dataset']}.{form['MSA_Program']}.aln"
+                    var['Alignment_File'] = f"{var['dataset']}.aln"
+                else:
                     var['Alignment_File'] = f"{var['dataset']}.{form['MSA_Program']}.aln"
+                job_logger.info('testing3')
                 var['align_param'] = ''
                 var['run_url'] = results_url + '/'
                 var['output_page'] = CONSTS.RESULT_WEBPAGE_NAME
                 var['run_number'] = jobId
-                var['code_fileName'] = 'Seqs.Codes'
+                job_logger.info('testing4')
+                # var['code_fileName'] = 'Seqs.Codes'
                 
                 # write paramters to log file
                 peek_form(form, files, job_logger) 
@@ -84,6 +93,8 @@ class GuidanceState:
                 else:
                     self.form['Redirect_From_MAFFT'] = '0'
 
+                if self.form['input_type'] == 'msa':
+                    self.form['userMSA_File'] = var['Alignment_File']
                 
                 self.files = files
                 self.var = var
@@ -147,7 +158,6 @@ class GuidanceState:
             form['PROGRAM'] = cgi_form['PROGRAM']
             form['Redirect_From_MAFFT'] = cgi_form['Redirect_From_MAFFT']
             form['input_type'] = cgi_form['input_type']
-
             form['Seq_Type'] = cgi_form['Seq_Type']
             
             if form['Redirect_From_MAFFT'] == '0':
@@ -263,13 +273,15 @@ class GuidanceState:
             # convert to perl hash files
             # convertScript = '/home/josefspr/bioseq/guidance/guidance.v2.02/www/Guidance/json2hash.pl'
             # convertScript = '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/Guidance/json2hash.pl'
-            convertScript = os.path.join(BIN_DIR, "script", 'json2hash.pl')
-            form_data_path = os.path.join( var['WorkingDir'], 'form.data')
-            var_data_path = os.path.join( var['WorkingDir'], 'input.data')
-            cmd = f'perl {convertScript} {form_path} {form_data_path}'
-            subprocess.run(cmd, shell=True)
-            cmd = f'perl {convertScript} {vars_path} {var_data_path}'
-            subprocess.run(cmd, shell=True)
+
+
+            # convertScript = os.path.join(BIN_DIR, "script", 'json2hash.pl')
+            # form_data_path = os.path.join( var['WorkingDir'], 'form.data')
+            # var_data_path = os.path.join( var['WorkingDir'], 'input.data')
+            # cmd = f'perl {convertScript} {form_path} {form_data_path}'
+            # subprocess.run(cmd, shell=True)
+            # cmd = f'perl {convertScript} {vars_path} {var_data_path}'
+            # subprocess.run(cmd, shell=True)
             
         except:
             return f'GuidanceState.store elements: storing var failed'
@@ -299,8 +311,12 @@ class GuidanceState:
             
             if form['FASTA_txt']:
                 job_logger.info(f'writing to {seqsFile}\n')
-                try: 
-                    with open(seqsFile, "w") as f_seq:
+                try:
+                    if form['input_type'] == 'seq' or form['input_type'] == 're_align':
+                        uploading_file = seqsFile
+                    else:
+                        uploading_file = alignment_file
+                    with open(uploading_file, "w") as f_seq:
                         f_seq.write(form['FASTA_txt'])
                     f_seq.close()
                 except: 
@@ -311,14 +327,28 @@ class GuidanceState:
                 # upload user seqs file and alignment file
                 try: 
                     if not os.path.exists(seqsFile) and files['usrSeq_File'].filename:
-                        uploading_file = files['usrSeq_File'].filename
-                        save_file_to_disk(var['WorkingDir'], job_logger, files['usrSeq_File'], var['SeqsFile'])
-                    if not os.path.exists(alignment_file) and dict_key_defined_not_empty('userMSA_File', form):
-                        uploading_file = files['userMSA_File'].filename
-                        save_file_to_disk(var['WorkingDir'], job_logger, files['userMSA_File'], var['Alignment_File'])
+                        if form['input_type'] == 'msa':
+                            save_file_to_disk(var['WorkingDir'], job_logger, files['usrSeq_File'],
+                                              var['Alignment_File'])
+                            uploading_file = os.path.join(var['WorkingDir'], var['Alignment_File'])
+                        else:
+                            save_file_to_disk(var['WorkingDir'], job_logger, files['usrSeq_File'], var['SeqsFile'])
+                            uploading_file = os.path.join(var['WorkingDir'], var['SeqsFile'])
                 except: 
                     error= f'GuidanceState.upload_files: uploading file {uploading_file} failed.'
                     raise Exception(error, "system")
+
+            # if Input_type is re-align remove gaps from uploaded file
+            if form['input_type'] == 're_align':
+
+                job_logger.info(f'removing gaps from {uploading_file}')
+                with open(uploading_file, "r") as f:
+                    content = f.read()
+                    f.close()
+                content = content.replace('-', '')
+                with open(uploading_file, "w") as f:
+                    f.write(content)
+                    f.close()
 
             # rename to codons file
             if form['Seq_Type'] == 'Codons': # and ('userMSA_File','') in form.items(): 
@@ -439,10 +469,6 @@ class GuidanceState:
                     except:
                         error = f"GuidanceState.update_state(Init): failed to write to file {var['Alignment_File']}"
                         raise Exception ( error, "system")
-                    
-                # KSENIA !!! DELETE THIS LINE
-                # shutil.copy('/Users/kpolonsky/PycharmProjects/guidance_server_python/test_MAFFT_server_MSA_input4_redirectedFromMafft.txt', os.path.join(var['WorkingDir'],'ALIGNMENT_FROM_MAFFT'))
-                # form['userMSA_File'] = 'ALIGNMENT_FROM_MAFFT'
 
                 form['userMSA_File'] = 'Alignment from MAFFT'
                 
@@ -513,7 +539,11 @@ class GuidanceState:
                         var['sequences_link'] = f"Sequences = <A HREF='{results_url}/{var['SeqsFile']}' TARGET=USER_Seqs>{form['JOB_TITLE']}</A><br>"
                     else:
                         var['sequences_link'] = f"Sequences = <A HREF='{results_url}/{var['SeqsFile']}' TARGET=USER_Seqs>Fasta Sequences</A><br>"
-                                
+
+                if dict_key_value('input_type', 're_align', form):
+                    var['sequences_link'] = var['sequences_link'].replace('<br>', ', unaligned sequences of msa file<br>')
+
+
             var['dataset']='MSA'
             var['res_pair_res_html_file']=f"{var['run_number']}/{var['dataset']}.{form['MSA_Program']}.Guidance_res_pair_res.html"
             var['Alignment_File_With_Names']= f"{var['run_number']}/{var['Alignment_File']}.With_Names"
@@ -529,16 +559,24 @@ class GuidanceState:
                 var['type_a'] = 'nuc'
             
         elif state == State.Finished:
-        
+
+            var['Alignment_File_With_Names'] = f"{var['run_number']}/{var['Alignment_File']}.With_Names"
             var['Alignment_File_without_low_SP_Col'] = f"{var['dataset']}.{form['MSA_Program']}.Without_low_SP_Col"
-            var['Alignment_File_without_low_SP_Col_with_Names'] = f"{var['Alignment_File_without_low_SP_Col']}.With_Names"
+            var[
+                'Alignment_File_without_low_SP_Col_with_Names'] = f"{var['Alignment_File_without_low_SP_Col']}.With_Names"
             var['removed_low_SP_SITE'] = f"{var['SeqsFile']}.{var['dataset']}.{form['MSA_Program']}.Removed_Col"
-            
-            var['Seq_File_without_low_SP_SEQ']=f"{var['SeqsFile']}.Without_low_SP_Seq"
-            var['removed_low_SP_SEQ']=f"{var['SeqsFile']}.Removed_Seq"
-            var['Seq_File_without_low_SP_SEQ_with_Names']=f"{var['Seq_File_without_low_SP_SEQ']}.With_Names"
-            var['removed_low_SP_SEQ_With_Names']=f"{var['removed_low_SP_SEQ']}.With_Names"
-            
+
+            if form['input_type'] != 'msa':
+                var['Seq_File_without_low_SP_SEQ'] = f"{var['SeqsFile']}.Without_low_SP_Seq"
+                var['removed_low_SP_SEQ'] = f"{var['SeqsFile']}.Removed_Seq"
+                var['Seq_File_without_low_SP_SEQ_with_Names'] = f"{var['Seq_File_without_low_SP_SEQ']}.With_Names"
+                var['removed_low_SP_SEQ_With_Names'] = f"{var['removed_low_SP_SEQ']}.With_Names"
+            else:
+                var['Seq_File_without_low_SP_SEQ'] = f"{var['dataset']}.{form['MSA_Program']}.Without_low_SP_Seq"
+                var['removed_low_SP_SEQ'] = f"{var['dataset']}.{form['MSA_Program']}.Removed_Seq"
+                var['Seq_File_without_low_SP_SEQ_with_Names'] = f"{var['Seq_File_without_low_SP_SEQ']}.With_Names"
+                var['removed_low_SP_SEQ_With_Names'] = f"{var['removed_low_SP_SEQ']}.With_Names"
+
             ''' # update sequences link
             if dict_key_defined_not_empty( 'userMSA_File', form):
                 if form['Redirect_From_MAFFT'] == '1' and 'seed' not in var['align_param']: 
@@ -585,7 +623,7 @@ class GuidanceState:
             
             msa_depth_path = os.path.join(var['WorkingDir'], 'MSA_DEPTH')
             if not os.path.exists(msa_depth_path):
-                sleep (3)
+                sleep(3)
             
             if os.path.exists(msa_depth_path):
                 with open ( msa_depth_path, 'r') as f:
@@ -657,7 +695,7 @@ class GuidanceState:
         
         if form['Redirect_From_MAFFT'] == '0': # regular run
         
-            if not dict_file_defined_not_empty('userMSA_File', form) and form['input_type'] == "seq": # Seq file provided
+            if not dict_key_defined_not_empty('userMSA_File', form): # Seq file provided
             
                 if form['Seq_Type'] != 'Codons':
                     job_logger.info (f'validate_Seqs({var["WorkingDir"]},{var["SeqsFile"]},{form["Seq_Type"]}, False):\n')

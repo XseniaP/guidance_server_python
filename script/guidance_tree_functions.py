@@ -157,7 +157,7 @@ def pull_out_bp_trees_bbl(no_bp_dir, dataset, bp_repeats, aln_prog):
             return ["ok"]
 
 @timeit
-def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog):
+def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog, args_library):
     ####################################################################################################################
     # pull out all the BP trees into the BP directory
     # pull out the original tree (that was done on the complete MSA file)
@@ -180,8 +180,8 @@ def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog):
     else:
         make_unique = "no"
 
-
-    iqtree_boottrees_file = f"{bp_dir}{dataset}.{aln_prog}.aln.boottrees"
+    iqtree_boottrees_file = f"{bp_dir}{args_library.Alignment_File}.boottrees"
+    # iqtree_boottrees_file = f"{bp_dir}{dataset}.{aln_prog}.aln.boottrees"
     print(f"iqtree boottrees file: {iqtree_boottrees_file}\n")
 
     with (open(iqtree_boottrees_file, 'r') as boottrees_file):
@@ -421,9 +421,12 @@ def Bootstrap_Trees(args_library):
         update_progress(f"{args_library.WorkingDir}{args_library.progress_report}", "Constructing bootstrap guide-trees")
 
     os.makedirs(args_library.BootStrap_Dir)
-    args_library.Tree_File = f"{args_library.dataset}.{args_library.MSA_Program}.aln.treefile"
-    args_library.Iqtree_LogFile = f"{args_library.dataset}.{args_library.MSA_Program}.aln.log"
-    args_library.Iqtree_Boottrees = f"{args_library.dataset}.{args_library.MSA_Program}.aln.boottrees"
+    # args_library.Tree_File = f"{args_library.dataset}.{args_library.MSA_Program}.aln.treefile"
+    # args_library.Iqtree_LogFile = f"{args_library.dataset}.{args_library.MSA_Program}.aln.log"
+    # args_library.Iqtree_Boottrees = f"{args_library.dataset}.{args_library.MSA_Program}.aln.boottrees"
+    args_library.Tree_File = f"{args_library.Alignment_File}.treefile"
+    args_library.Iqtree_LogFile = f"{args_library.Alignment_File}.log"
+    args_library.Iqtree_Boottrees = f"{args_library.Alignment_File}.boottrees"
 
     cmd = ""
     msa_depth = calculate_msa_depth(f"{args_library.WorkingDir}{args_library.Alignment_File}", args_library)
@@ -459,7 +462,8 @@ def Bootstrap_Trees(args_library):
         log_file.write(f"Bootstrap_Trees: {cmd}\n")
     subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 
-    tree_files = os.path.join(f"{args_library.WorkingDir}", f"{args_library.dataset}.{args_library.MSA_Program}.aln.*")
+    # tree_files = os.path.join(f"{args_library.WorkingDir}", f"{args_library.dataset}.{args_library.MSA_Program}.aln.*")
+    tree_files = os.path.join(f"{args_library.WorkingDir}", f"{args_library.Alignment_File}.*")
     for file in glob.glob(tree_files):
         shutil.move(file, f'{args_library.BootStrap_Dir}')
 

@@ -53,7 +53,7 @@ def run_msa_set_score_on_set():
         output_files_prefix = "scored_vs_true"
         try:
             # ./msa_set_score  file_with_MSA_to_score   output_files_prefix   -m file_with_a_single_alternative_MSA
-            cmd = f"./programs/msa_set_score/msa_set_score {MSA_to_score}  {output_files_prefix} -m {true_MSA}"
+            cmd = f"./programs/msa_set_score/msa_set_score   {MSA_to_score}   {output_files_prefix}   -m {true_MSA}"
             print(cmd + "\n")
             pr = open("/Users/kpolonsky/PycharmProjects/HoT_Py/" + code + "_setScoreLog.txt", "w")
             p = subprocess.Popen(cmd, stdout=pr, shell=True)

@@ -206,7 +206,7 @@ class Library:
                 if line.startswith(">"):
                     if new_line != "":
                         file_out.write(new_line.strip() + "\n")
-                    file_out.write(line)
+                    file_out.write(line.strip() + "\n")
                     new_line = ""
                 else:
                     new_line += line.replace("-", "").strip()
@@ -238,14 +238,14 @@ class Library:
             raise ValueError("ERROR: msaProgram should be MAFFT or PRANK or CLUSTALO or MUSCLE or PAGAN (case sensitive)\n")
 
 
-        if self.input_type == "msa" or self.input_type == "re_align":
+        # if self.input_type == "msa" or self.input_type == "re_align":
             # self.userMSA_File = self.usrSeq_File
-            self.userMSA_File = self.Alignment_File
+            # self.userMSA_File = self.Alignment_File
             # os.remove(self.usrSeq_File)
             # self.usrSeq_File = f"{self.usrSeq_File}_seq"
             # self.unalign()
-            if self.input_type == "re_align":
-                self.userMSA_File = ""
+            # if self.input_type == "re_align":
+            #     self.userMSA_File = ""
 
         if not self.outDir.endswith("/"):
             self.outDir += "/"
@@ -526,6 +526,8 @@ class Library:
 
         output_file_path = os.path.join(self.WorkingDir, self.output_page)
         self.server_output = output_file_path
+        # if self.input_type == "msa":
+        #     self.userMSA_File = self.Alignment_File
 
     def set_rest_of_the_variables(self):
         # codons handling
