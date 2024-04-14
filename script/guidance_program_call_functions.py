@@ -162,37 +162,38 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
 
         # check convergence starting from the 20th tree (starting from 80 MSAs)
         # if countTrees != 0:
-        if countTrees >= 20:
-            # check the convergence only for every nth tree
-            if args_library.proc_num >=2 or (args_library.proc_num == 1 and countTrees % 3 == 0):
-            # if countTrees % 1 == 0:
-                alt_msas = calculate_sp_scores_convergence(args_library, countTrees)
-                add_scores_to_dict(args_library, epsilon, countTrees, lock)
-                # print(args_library.mean_res_pair_score)
-                # print(args_library.mean_col_score)
-                os.system(
-                    f'rm {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f"_tree_{countTrees}_*.scr")}')
-                convergence = check_convergence(args_library, epsilon)
-                print(
-                        f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
-        if convergence == 1:
-            # print(f"run_HOT_COS_GUIDANCE2 converged at tree #{alt_msas}\n")
-            # if alt_msas < args_library.convergence:
-            #     with lock:
-            #         args_library.convergence = alt_msas
-            #         args_library.count_convergence.value += 1
-            with lock:
-                # args_library.convergence = alt_msas
-                args_library.count_convergence.value += 1
-            # print(f'.done {proc}, generated {alt_msas}', flush=True)
-            # print(args_library.count_convergence.value)
-            if args_library.proc_num > 2:
-                print(f'.done {proc}', flush=True)
-                break
-            else:
-                if args_library.count_convergence.value >= 2:
+        if args_library.input_type != "msa":
+            if countTrees >= 20:
+                # check the convergence only for every nth tree
+                if args_library.proc_num >=2 or (args_library.proc_num == 1 and countTrees % 3 == 0):
+                # if countTrees % 1 == 0:
+                    alt_msas = calculate_sp_scores_convergence(args_library, countTrees)
+                    add_scores_to_dict(args_library, epsilon, countTrees, lock)
+                    # print(args_library.mean_res_pair_score)
+                    # print(args_library.mean_col_score)
+                    os.system(
+                        f'rm {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f"_tree_{countTrees}_*.scr")}')
+                    convergence = check_convergence(args_library, epsilon)
+                    print(
+                            f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
+            if convergence == 1:
+                # print(f"run_HOT_COS_GUIDANCE2 converged at tree #{alt_msas}\n")
+                # if alt_msas < args_library.convergence:
+                #     with lock:
+                #         args_library.convergence = alt_msas
+                #         args_library.count_convergence.value += 1
+                with lock:
+                    # args_library.convergence = alt_msas
+                    args_library.count_convergence.value += 1
+                # print(f'.done {proc}, generated {alt_msas}', flush=True)
+                # print(args_library.count_convergence.value)
+                if args_library.proc_num > 2:
                     print(f'.done {proc}', flush=True)
                     break
+                else:
+                    if args_library.count_convergence.value >= 2:
+                        print(f'.done {proc}', flush=True)
+                        break
 
     # end of child // end of process
     sys.exit(0)
