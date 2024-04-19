@@ -98,7 +98,7 @@ class Sequence:
                           f"{name} {sequence_direction} {sid}:\n{seq}\n ref:\n{self.bidirectional_sequences_manager['sequences'][sequence_direction][int(sid)]}\n-----\n", file_handler)
 
                 if seq != self.bidirectional_sequences_manager['sequences'][sequence_direction][int(sid)]:
-                    infile.close()
+                    # infile.close()
                     if mode:
                         return 0
                     log_print(0, 2,

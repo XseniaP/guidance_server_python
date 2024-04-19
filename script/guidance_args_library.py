@@ -198,19 +198,19 @@ class Library:
             setattr(self, arg_name, arg_value)
         return args
 
-    def unalign(self):
-        with open(self.userMSA_File, "r") as file_in, open(self.usrSeq_File, 'w') as file_out:
-            lines = file_in.readlines()
-            new_line = ""
-            for line in lines:
-                if line.startswith(">"):
-                    if new_line != "":
-                        file_out.write(new_line.strip() + "\n")
-                    file_out.write(line.strip() + "\n")
-                    new_line = ""
-                else:
-                    new_line += line.replace("-", "").strip()
-            file_out.write(new_line)
+    # def unalign(self):
+    #     with open(self.userMSA_File, "r") as file_in, open(self.usrSeq_File, 'w') as file_out:
+    #         lines = file_in.readlines()
+    #         new_line = ""
+    #         for line in lines:
+    #             if line.startswith(">"):
+    #                 if new_line != "":
+    #                     file_out.write(new_line.strip() + "\n")
+    #                 file_out.write(line.strip() + "\n")
+    #                 new_line = ""
+    #             else:
+    #                 new_line += line.replace("-", "").strip()
+    #         file_out.write(new_line)
 
     def check_arguments_for_errors(self):
 
@@ -274,6 +274,7 @@ class Library:
             self.home_URL = "http://guidance.tau.ac.il/"
             self.credits_URL = "http://guidance.tau.ac.il/credits.html"
 
+        # self.OutLogFile = f"{self.WorkingDir}/log"
         self.OutLogFile = f"{self.outDir}/log"
         self.Output = self.OutLogFile
         try:
@@ -448,8 +449,8 @@ class Library:
                     if ans[0] == "OK" and ans[1] != "":
                         print(f"Warning: {ans[1]}; Nevertheless calculation is continued")
                         log_file.write(f"Warning: {ans[1]}; Nevertheless calculation is continued\n")
-                        self.Alignment_File = ans[2]
-                        self.NumOfSeq = int(ans[3])
+                        # self.Alignment_File = ans[2]
+                        # self.NumOfSeq = int(ans[3])
 
                     log_file.write(f"return: {' '.join(ans)}\n")
 
@@ -518,16 +519,16 @@ class Library:
         if self.CALLING_SERVER == "GUIDANCE2":
             self.overview_URL = "http://guidance.tau.ac.il/ver2/overview.php"
             self.gallery_URL = "http://guidance.tau.ac.il/ver2/Gallery.php"
-            self.home_URL = "http://guidance.tau.ac.il/ver2/"
+            self.home_URL = "http://guidance.tau.ac.il/"
+            self.credits_URL = "http://guidance.tau.ac.il/credits.php"
         else:
             self.overview_URL = "http://guidance.tau.ac.il/overview.html"
             self.gallery_URL = "http://guidance.tau.ac.il/Gallery.htm"
             self.home_URL = "http://guidance.tau.ac.il/"
+            self.credits_URL = "http://guidance.tau.ac.il/credits.html"
 
         output_file_path = os.path.join(self.WorkingDir, self.output_page)
         self.server_output = output_file_path
-        # if self.input_type == "msa":
-        #     self.userMSA_File = self.Alignment_File
 
     def set_rest_of_the_variables(self):
         # codons handling

@@ -167,15 +167,19 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
                 # check the convergence only for every nth tree
                 if args_library.proc_num >=2 or (args_library.proc_num == 1 and countTrees % 3 == 0):
                 # if countTrees % 1 == 0:
-                    alt_msas = calculate_sp_scores_convergence(args_library, countTrees)
-                    add_scores_to_dict(args_library, epsilon, countTrees, lock)
-                    # print(args_library.mean_res_pair_score)
-                    # print(args_library.mean_col_score)
-                    os.system(
-                        f'rm {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f"_tree_{countTrees}_*.scr")}')
-                    convergence = check_convergence(args_library, epsilon)
-                    print(
-                            f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
+                    try:
+                        alt_msas = calculate_sp_scores_convergence(args_library, countTrees)
+                        add_scores_to_dict(args_library, epsilon, countTrees, lock)
+                        # print(args_library.mean_res_pair_score)
+                        # print(args_library.mean_col_score)
+                        os.system(
+                            f'rm {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f"_tree_{countTrees}_*.scr")}')
+                        convergence = check_convergence(args_library, epsilon)
+                        print(
+                                f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
+                    except Exception as e:
+                        log_file.write(f"failed to calculate scores for convergence of proc num {proc}\ttree num {tree_num} \t# of alternative MSAs {alt_msas} error {e}\n")
+                        print(f"failed to calculate scores for convergence of proc num {proc}\ttree num {tree_num} \t# of alternative MSAs {alt_msas} \n")
             if convergence == 1:
                 # print(f"run_HOT_COS_GUIDANCE2 converged at tree #{alt_msas}\n")
                 # if alt_msas < args_library.convergence:
@@ -563,7 +567,7 @@ def run_guidance2(args_library):
         args_library.status_file = args_library.WorkingDir + "MSA_STATUS.txt"
         # with open(args_library.status_file, "w") as STATUS:
         #     STATUS.write("<ul><li><p><font face=Verdana size=2>Start creating alternative alignments<br></li></ul>\n")
-        update_progress(f"{args_library.WorkingDir}{args_library.progress_report}", "Generating alternative alignments")
+        update_progress(f"{args_library.WorkingDir}{args_library.progress_report}", "Started generating alternative alignments")
 
         with open(f"{args_library.server_output}", "a") as OUTPUT:
         # with open(f"{args_library.WorkingDir}{args_library.server_output}", "a") as OUTPUT:
@@ -600,8 +604,11 @@ def run_guidance2(args_library):
     log_file.write(f"run_HOT_COS_GUIDANCE2 converged at tree #{alt_msas}\n")
     log_file.close()
 
+
     # Ksenia removed this part
-    # if args_library.isServer == 1:
+    if args_library.isServer == 1:
+        update_progress(f"{args_library.WorkingDir}{args_library.progress_report}",
+                        f"Finished generating {alt_msas} alternative alignments")
     #     with open(args_library.status_file, "w") as PROGRESS:
     #         PROGRESS.write(
     #             f"\n<ul><li>{alt_msas} out of {args_library.Bootstraps * 4} alternative alignments were created</li></ul>\n")
@@ -618,8 +625,8 @@ def run_guidance2(args_library):
     #                   f"run_Guidance2: Only {aln_count} alignments were created on {args_library.Scoring_Alignments_Dir} while expecting {expected_count}\n", args_library)
     # else:
     #     print("\nSUCCESS!\n")
-    print(args_library.mean_res_pair_score)
-    print(args_library.mean_col_score)
+    # print(args_library.mean_res_pair_score)
+    # print(args_library.mean_col_score)
     print("\nSUCCESS!\n")
 
 @timeit

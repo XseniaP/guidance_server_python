@@ -395,6 +395,28 @@ def update_progress(progress_file, message):
                 if "(estimated time" in line:
                     line = line.replace("(estimated time", "").split(")")[1]
                 progress.write(line)
+            elif "Started generating alternative alignments" in message and "Generating alternative alignments" in line:
+                line = line.replace("Generating alternative alignments", message)
+                progress.write(line)
+            elif "Finished generating" in message and "Started generating alternative alignments" in line:
+                line = line.replace("in_progress", "finished")
+                line = line.replace("Started generating alternative alignments", message)
+                progress.write(line)
+            elif "Finished Calculating" in message and "Calculating" in line:
+                line = line.replace("in_progress", "finished")
+                line = line.replace("Calculating", "Finished Calculating")
+                progress.write(line)
+                # line = re.sub(r"<Calculating [a-zA-Z0-10]+ scores>", message, line)
+
+            # elif "Calculating" in message and "Calculating" in line:
+            #     line = re.sub(r"<Calculating \s+ scores for tree # \d+>", message, line)
+                # line = line.replace("Calculating GUIDANCE2 scores", message)
+                # progress.write(line)
+            # elif "Finished calculating" in message and "Calculating" in line:
+            #     line = line.replace("in_progress", "finished")
+                # line = line.replace("Started", "Finished")
+                # line = re.sub(r"<Calculating \s+ scores for tree # \d+>", message, line)
+                # progress.write(line)
             else:
                 progress.write(line)
 

@@ -29,7 +29,11 @@ def met_init_MAF(seqtype, sequencing_method, file_handler):
     if sequencing_method.name[2:3] == 'M':
         sequencing_method.version = sequencing_method.version + ' --localpair --maxiterate 1000'
 
-    sequencing_method.version = sequencing_method.version + (' --amino' if seqtype == 0 else ' --nuc')
+    if seqtype == 0:
+        sequencing_method.version = sequencing_method.version + ' --amino'
+    else:
+        sequencing_method.version = sequencing_method.version + ' --nuc'
+    # sequencing_method.version = sequencing_method.version + (' --amino' if seqtype == 0 else ' --nuc')
 
     # debug = int(os.environ.get('DEBUG_LEVEL', 0))
     if debug < 2:

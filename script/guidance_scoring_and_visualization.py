@@ -687,21 +687,21 @@ def make_Jalview_AnnotationGraph(Jalview_AnnotFile, Data_File, Y_label, Y_data_C
 
 @timeit
 def calculate_sp_scores(args_library):
-    if args_library.isServer == 1:
-        if args_library.PROGRAM == "GUIDANCE":
-            # print_message_to_output("Calculating GUIDANCE scores", args_library)
-            message = "Calculating GUIDANCE scores"
-        elif args_library.PROGRAM == "HoT":
-            # print_message_to_output("Calculating HoT scores", args_library)
-            message = "Calculating HoT scores"
-        elif args_library.PROGRAM == "GUIDANCE2":
-            # print_message_to_output("Calculating GUIDANCE2 scores", args_library)
-            message = "Calculating GUIDANCE2 scores"
-        elif args_library.PROGRAM == "GUIDANCE3":
-            # print_message_to_output("Calculating GUIDANCE3 scores", args_library)
-            message = "Calculating GUIDANCE3 scores"
-
-        print_message_to_output(message, args_library)
+    # if args_library.isServer == 1:
+    #     if args_library.PROGRAM == "GUIDANCE":
+    #         # print_message_to_output("Calculating GUIDANCE scores", args_library)
+    #         message = "Calculating GUIDANCE scores"
+    #     elif args_library.PROGRAM == "HoT":
+    #         # print_message_to_output("Calculating HoT scores", args_library)
+    #         message = "Calculating HoT scores"
+    #     elif args_library.PROGRAM == "GUIDANCE2":
+    #         # print_message_to_output("Calculating GUIDANCE2 scores", args_library)
+    #         message = "Calculating GUIDANCE2 scores"
+    #     elif args_library.PROGRAM == "GUIDANCE3":
+    #         # print_message_to_output("Calculating GUIDANCE3 scores", args_library)
+    #         message = "Calculating GUIDANCE3 scores"
+    #
+    #     print_message_to_output(message, args_library)
 
     if args_library.PROGRAM in ["GUIDANCE", "HoT"]:
         args_library.Output_Prefix = f"{args_library.dataset}.{args_library.MSA_Program}.Guidance"
@@ -709,7 +709,7 @@ def calculate_sp_scores(args_library):
         args_library.Output_Prefix = f"{args_library.dataset}.{args_library.MSA_Program}.Guidance2"
 
     cmd = ""
-    if args_library.userMSA_File != "" and args_library.Seq_Type == "Codons":
+    if args_library.userMSA_File != "" and args_library.Seq_Type == "Codons":       # user gave codon alignment
         args_library.Alignment_File_translated_from_user_codon_alignmet = f"{args_library.Alignment_File}.TranslatedProt"
         with open(args_library.OutLogFile, "a") as log_file:
             log_file.write(
@@ -742,17 +742,39 @@ def calculate_sp_scores(args_library):
         # cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File_translated_from_user_codon_alignmet)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)}   -d {args_library.Scoring_Alignments_Dir}  >  {args_library.WorkingDir}{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
         cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File_translated_from_user_codon_alignmet)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)}   -d {args_library.Scoring_Alignments_Dir}  >  {args_library.WorkingDir}{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
     else:
-        cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)}   -d {args_library.Scoring_Alignments_Dir}  >  {args_library.WorkingDir}{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+        # cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)}   -d {args_library.Scoring_Alignments_Dir}  >  {args_library.WorkingDir}{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+        cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)}   -d {args_library.Scoring_Alignments_Dir}"
+        # cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f'_tree_{countTrees}')}   -d {args_library.Scoring_Alignments_Dir}"
+
     with open(args_library.OutLogFile, "a") as log_file:
-        log_file.write(f"calculating SP scores: {cmd}/n")
+        log_file.write(f"calculating SP scores: {cmd}\n")
+        print(f"calculating SP scores: {cmd}\n")
+
     if os.path.exists(f"{args_library.Scoring_Alignments_Dir}/.DS_Store"):
         os.remove(f"{args_library.Scoring_Alignments_Dir}/.DS_Store")
+
     subprocess.call(cmd, shell=True)
+
     if not os.path.exists(f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_res.scr") or os.path.getsize(
             f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_res.scr") == 0:
-        exit_on_error("sys_error",
+        for i in range(3):
+            try:
+                subprocess.call(cmd, shell=True)
+            except Exception as e:
+                with open(args_library.OutLogFile, "a") as log_file:
+                    log_file.write(f"Failed to calculate final scores {e}\n")
+                    print(f"Failed to calculate final scores {e}\n")
+                continue
+            break
+
+    if not os.path.exists(
+                    f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_res.scr") or os.path.getsize(
+                    f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_res.scr") == 0:
+            exit_on_error("sys_error",
                       f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_res.scr does not exist/empty\n",
                       args_library)
+
+
     if args_library.PROGRAM == "HoT":
         with open(f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}", "r") as orig_align, open(
                 f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}.NEW", "w") as new_align:
@@ -770,7 +792,7 @@ def calculate_sp_scores(args_library):
                   f"{args_library.WorkingDir}{args_library.Alignment_File}")
 
     if args_library.isServer == 1:
-        update_progress(f"{args_library.WorkingDir}{args_library.progress_report}", message)
+        update_progress(f"{args_library.WorkingDir}{args_library.progress_report}", f"Finished Calculating {args_library.PROGRAM} scores")
 
 def round_scores_file(score_file):
     with open(score_file, 'r') as file:
@@ -1140,15 +1162,22 @@ def create_png_for_seqscores(args_library):
 
 @timeit
 def calculate_sp_scores_convergence(args_library, countTrees):
-    if args_library.isServer == 1:
-        if args_library.PROGRAM == "GUIDANCE":
-            print_message_to_output(f"Calculating GUIDANCE scores for tree # {countTrees}", args_library)
-        elif args_library.PROGRAM == "HoT":
-            print_message_to_output(f"Calculating HoT scores for tree # {countTrees}", args_library)
-        elif args_library.PROGRAM == "GUIDANCE2":
-            print_message_to_output(f"Calculating GUIDANCE2 scores for tree # {countTrees}", args_library)
-        elif args_library.PROGRAM == "GUIDANCE3":
-            print_message_to_output(f"Calculating GUIDANCE3 scores for tree # {countTrees}", args_library)
+    # if args_library.isServer == 1:
+    #     if args_library.PROGRAM == "GUIDANCE":
+    #         # print_message_to_output(f"Calculating GUIDANCE scores for tree # {countTrees}", args_library)
+    #         update_progress( f"{args_library.WorkingDir}{args_library.progress_report}",f"Calculating GUIDANCE scores for tree # {countTrees}")
+    #     elif args_library.PROGRAM == "HoT":
+    #         # print_message_to_output(f"Calculating HoT scores for tree # {countTrees}", args_library)
+    #         update_progress(f"{args_library.WorkingDir}{args_library.progress_report}",
+    #                         f"Calculating HoT scores for tree # {countTrees}")
+    #     elif args_library.PROGRAM == "GUIDANCE2":
+    #         # print_message_to_output(f"Calculating GUIDANCE2 scores for tree # {countTrees}", args_library)
+    #         update_progress(f"{args_library.WorkingDir}{args_library.progress_report}",
+    #                         f"Calculating GUIDANCE2 scores for tree # {countTrees}")
+    #     elif args_library.PROGRAM == "GUIDANCE3":
+    #         # print_message_to_output(f"Calculating GUIDANCE3 scores for tree # {countTrees}", args_library)
+    #         update_progress(f"{args_library.WorkingDir}{args_library.progress_report}",
+    #                         f"Calculating GUIDANCE3 scores for tree # {countTrees}")
 
     if args_library.PROGRAM in ["GUIDANCE", "HoT"]:
         args_library.Output_Prefix = f"{args_library.dataset}.{args_library.MSA_Program}.Guidance"
@@ -1191,7 +1220,8 @@ def calculate_sp_scores_convergence(args_library, countTrees):
     else:
         cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f'_tree_{countTrees}')}   -d {args_library.Scoring_Alignments_Dir}"
     with open(args_library.OutLogFile, "a") as log_file:
-        log_file.write(f"calculating SP scores for tree # {countTrees}: {cmd}/n")
+        log_file.write(f"calculating SP scores for tree # {countTrees}: {cmd}\n")
+        print(f"calculating SP scores for tree # {countTrees}: {cmd}\n")
     if os.path.exists(f"{args_library.Scoring_Alignments_Dir}/.DS_Store"):
         os.remove(f"{args_library.Scoring_Alignments_Dir}/.DS_Store")
     subprocess.call(cmd, shell=True)

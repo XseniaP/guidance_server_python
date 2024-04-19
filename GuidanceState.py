@@ -67,7 +67,7 @@ class GuidanceState:
                     var['Alignment_File'] = 'UserMSA'
                 # else:
                 elif form['input_type'] == 'msa':
-                    # var['Alignment_File'] = f"{var['dataset']}.{form['MSA_Program']}.aln"
+                    # assign alignment file if uploaded msa
                     var['Alignment_File'] = f"{var['dataset']}.aln"
                 else:
                     var['Alignment_File'] = f"{var['dataset']}.{form['MSA_Program']}.aln"
@@ -210,9 +210,6 @@ class GuidanceState:
                 form['usrSeq_File'] = files['usrSeq_File'].filename
             else:
                 form['usrSeq_File'] = None
-            
-            #    form['userMSA_File'] = files['MSAFile'].filename
-            #else:
                 
                 
             form_path = os.path.join(var['WorkingDir'], "FORM.json")
@@ -445,8 +442,8 @@ class GuidanceState:
                     job_logger.info( f'Total: {SeedsCount}')
                     if '--reorder' in var['align_param']:
                         var['align_param'] = var['align_param'].replace('--reorder', '') # if seed is provided reorder must be removed so the seeds will be first
-                        job_logger.info ("WARNNING: --reorder is not allowed if seed alignment is provided, therefore the --reorder argument will be ignored and the output order will be same as input (with seeds first)")
-                        warning_msg = "<br><b><font color=\"red\" size=\"3\">Warnning:</b></font><font size=\"3\"> --reorder is not allowed if seed alignment is provided, therefore the --reorder argument will be ignored and the output order will be same as input (with seed(s) first)</font></br>\n"
+                        job_logger.info ("WARNING: --reorder is not allowed if seed alignment is provided, therefore the --reorder argument will be ignored and the output order will be same as input (with seeds first)")
+                        warning_msg = "<br><b><font color=\"red\" size=\"3\">Warning:</b></font><font size=\"3\"> --reorder is not allowed if seed alignment is provided, therefore the --reorder argument will be ignored and the output order will be same as input (with seed(s) first)</font></br>\n"
                         
 
                     wget_cmd = f"links -source http://mafft.cbrc.jp/alignment/server/tmp/_inx$VARS{var['MAFFT_RunNumber']} > {os.path.join (var['WorkingDir'], var['SeqsFile'])}" # we need the 'core' sequences without seed for the alignment
@@ -522,7 +519,9 @@ class GuidanceState:
                 if form['Redirect_From_MAFFT'] == '1' and 'seed' in var['align_param']: 
                     var['sequences_link'] = f"MSA File = <A HREF='{results_url}/ALIGNMENT_FROM_MAFFT' TARGET=_blank>{form['userMSA_File']}</A><br>"
                 else:
-                    var['sequences_link'] = f"MSA File = <A HREF='{results_url}/UserMSA.FIXED.ORIG' TARGET=_blank>{form['userMSA_File']}</A><br>"
+                    # var['sequences_link'] = f"MSA File = <A HREF='{results_url}/UserMSA.FIXED.ORIG' TARGET=_blank>{form['userMSA_File']}</A><br>"
+                    var[
+                        'sequences_link'] = f"MSA File = <A HREF='{results_url}/{form['userMSA_File']}.FIXED.ORIG' TARGET=_blank>{form['userMSA_File']}</A><br>"
             else:
                 if form['Seq_Type'] == 'Codons':
                     if dict_file_defined_not_empty('usrSeq_File', files):
@@ -580,7 +579,7 @@ class GuidanceState:
             ''' # update sequences link
             if dict_key_defined_not_empty( 'userMSA_File', form):
                 if form['Redirect_From_MAFFT'] == '1' and 'seed' not in var['align_param']: 
-                    var['sequences_link'] = f"MSA File = <A HREF='{results_url}/UserMSA.FIXED.ORIG' TARGET=_blank>{form['userMSA_File']}</A><br>"
+                    var['sequences_link'] = f"MSA File = <A HREF='{results_url}/{form['userMSA_File']}.FIXED.ORIG' TARGET=_blank>{form['userMSA_File']}</A><br>"
             '''
             
             wd = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, var['run_number'])
@@ -688,6 +687,7 @@ class GuidanceState:
         warning_msg = ''
         # KSENIA
         var['errors_file'] = f"results/{var['run_number']}/errors.txt"
+        errors = ""
         
         # validate seqs
         job_logger = logging.getLogger(var['run_number'])
@@ -708,10 +708,11 @@ class GuidanceState:
                     
                 job_logger.info(f'return: {join_list(ans)}\n')
                 if ans[0] == "sys_error":
-                    raise Exception ( ans[1], "system")
+                    errors += ans[1] + " system "
+                    # raise Exception(ans[1], "system")
                 elif ans[0] != 'OK':
-                    #raise Exception ( join_list(ans), "user")
-                    raise Exception ( ans, "user")
+                    # raise Exception(ans, "user")
+                    errors += ans + " user "
                 var['SeqsFile'] = ans[2]
                 var['NumOfSeq'] = ans[3]
                 
@@ -750,10 +751,11 @@ class GuidanceState:
                         
                     job_logger.info(f'return: {join_list(ans)}\n')
                     if ans[0] == "sys_error":
-                        raise Exception ( ans[1], "system")
+                        # raise Exception ( ans[1], "system")
+                        errors += ans[1] + " system "
                     elif ans[0] != 'OK':
-                        #raise Exception (join_list(ans), "user")
-                        raise Exception (ans, "user")
+                        # raise Exception (ans, "user")
+                        errors += ans + " user "
                     var['Alignment_File'] = ans[2]
                     var['NumOfSeq'] = ans[3]
 
@@ -764,27 +766,33 @@ class GuidanceState:
 
             if var['NumOfSeq'] < 4  and form['PROGRAM'] == "GUIDANCE":
                 error = f"Only {var['NumOfSeq']} sequences were provided, however at least 4 sequences are requiered for GUIDANCE.<br>You can run HoT algorithm instead."
-                raise Exception ( error, "user")
+                # raise Exception ( error, "user")
+                errors += error + " user "
             
             if var['NumOfSeq'] < 3  and form['PROGRAM'] == "GUIDANCE2":
                 error = f"Only {var['NumOfSeq']} sequences were provided, however at least 3 sequences are requiered for GUIDANCE2.<br>You can run HoT algorithm instead."
-                raise Exception ( error, "user")
+                # raise Exception ( error, "user")
+                errors += error + " user "
                 
             if var['NumOfSeq'] >=300: 
                 error = f"Due to limited computational resources, the web-server support analysis of up to 300 sequences. You can <a href=\"/source\"  target=\"_blank\">install and use the command-line version</a> or reduce the number of sequences and submit the job again.<br>Feel free to <a href=\"mailto:haimash\@tau.ac.il\" target=\"_blank\">contact us</a> for additional help. Sorry for the inconvenience."
-                raise Exception ( error, "user")
+                # raise Exception ( error, "user")
+                errors += error + " user "
             
             if var['LongestSeq'] > 6000 and form['Seq_Type'] == "Codons":
                 error = f"Due to limited computational resources, the web-server support analysis of sequences no longer than 6,000 bp. You can <a href=\"/source\"  target=\"_blank\">install and use the command-line version</a> or reduce the size of sequences and submit the job again.<br>Feel free to <a href=\"mailto:haimash\@tau.ac.il\" target=\"_blank\">contact us</a> for additional help. Sorry for the inconvenience."
-                raise Exception ( error, "user")
+                # raise Exception ( error, "user")
+                errors += error + " user "
             
             if var['LongestSeq'] > 6000 and form['Seq_Type'] == "Nucleotides":
                 error = f"Due to limited computational resources, the web-server support analysis of sequences no longer than 6,000 bp. You can <a href=\"/source\"  target=\"_blank\">install and  use the command-line version</a> or reduce the size of sequences and submit the job again.<br>Feel free to <a href=\"mailto:haimash\@tau.ac.il\" target=\"_blank\">contact us</a> for additional help. Sorry for the inconvenience."
-                raise Exception ( error, "user")
+                # raise Exception ( error, "user")
+                errors += error + " user "
                 
             if var['LongestSeq'] > 2000 and form['Seq_Type'] == "AminoAcids":
                 error = f"Due to limited computational resources, the web-server support analysis of sequences no longer than 2,000 AA. You can <a href=\"/source\"  target=\"_blank\">install and use the command-line version</a> or reduce the size of sequences and submit the job again.<br>Feel free to <a href=\"mailto:haimash\@tau.ac.il\" target=\"_blank\">contact us</a> for additional help. Sorry for the inconvenience."
-                raise Exception ( error, "user")
+                # raise Exception ( error, "user")
+                errors += error + " user "
         
         else:  # mafft case
         
@@ -793,10 +801,11 @@ class GuidanceState:
             
             job_logger.info(f'return: {join_list(ans)}\n')
             if ans[0] == "sys_error":
-                raise Exception ( ans[1], "system")
+                # raise Exception ( ans[1], "system")
+                errors += ans[1] + " system "
             elif ans[0] != 'OK':
-                #raise Exception ( join_list(ans), "user") JS
-                raise Exception ( ans, "user")
+                # raise Exception ( ans, "user")
+                errors += ans + " user "
             var['Alignment_File'] = ans[2]
             var['NumOfSeq'] = ans[3]
     
@@ -805,7 +814,20 @@ class GuidanceState:
                 warning_msg = f"<br><b><font color=\"red\" size=\"3\">Warning:</b></font><font size=\"3\"> {ans[1]}; The calculation continues.</font>\n"
                 
         job_logger.info(f"ls of {var['WorkingDir']} fields:\n{os.listdir(var['WorkingDir'])}\n")
-        
+
+        if errors != "":
+            try:
+                f = open(f'{var["WorkingDir"]}/errors.txt', "w")
+                f.write(errors.replace("<br>","\n"))
+                f.close()
+            except:
+                error = f"Validate_Seqs:Can't open {f} for writing"
+                return 'sys_error', error
+            # return errors
+            if "user" in errors:
+                raise Exception(errors, "user")
+            else:
+                raise Exception(errors, "system")
         return 'OK', warning_msg
         
     def submit_job(self):

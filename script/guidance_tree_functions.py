@@ -465,7 +465,8 @@ def Bootstrap_Trees(args_library):
     # tree_files = os.path.join(f"{args_library.WorkingDir}", f"{args_library.dataset}.{args_library.MSA_Program}.aln.*")
     tree_files = os.path.join(f"{args_library.WorkingDir}", f"{args_library.Alignment_File}.*")
     for file in glob.glob(tree_files):
-        shutil.move(file, f'{args_library.BootStrap_Dir}')
+        if not file.endswith("ORIG"):
+            shutil.move(file, f'{args_library.BootStrap_Dir}')
 
     if os.path.getsize(f"{args_library.BootStrap_Dir}{args_library.Iqtree_Boottrees}") == 0 or not os.path.exists(
             f"{args_library.BootStrap_Dir}{args_library.Iqtree_Boottrees}"):
