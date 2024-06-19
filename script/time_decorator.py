@@ -23,7 +23,11 @@ def timeit(func):
         # else:
         #     time_file = os.path.join(RESULTS, "timestamps.txt")
         time_file = os.path.join(RESULTS, "timestamps.txt")
-        with open(time_file, "a") as file:
-            file.write(f'{func.__name__} \t {args} \t {kwargs} \t {total_time:.4f} \n')
+        if os.path.exists(time_file):
+            with open(time_file, "a") as file:
+                file.write(f'{func.__name__} \t {args} \t {kwargs} \t {total_time:.4f} \n')
+        else:
+            with open(time_file, "w") as file:
+                file.write(f'{func.__name__} \t {args} \t {kwargs} \t {total_time:.4f} \n')
         return result
     return timeit_wrapper

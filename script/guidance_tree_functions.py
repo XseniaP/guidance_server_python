@@ -10,7 +10,7 @@ from Bio import AlignIO, Phylo
 from guidance_common_functions import print_message_to_output, exit_on_error, update_progress
 from time_decorator import timeit
 
-Bin = os.path.dirname(sys.argv[0])
+Bin = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 # NEWIC2MAFFT = os.path.join(Bin, 'exec', 'newick2mafft.rb')
 # newick2mafft = os.path.join(Bin, 'exec', 'newick2mafft.rb')
@@ -32,7 +32,7 @@ MidPoint_Rooting_R = os.path.join(Bin, 'programs', 'MidPoint_Rooting.R')
 # phylonet_prog = os.path.join(Bin, 'exec', 'phylonet_v1_7', 'phylonet_v1_7.jar')
 isEqualTopologyProg = os.path.join(Bin, 'programs', 'isEqualTree', 'isEqualTree')
 
-@timeit
+#@timeit
 def calculate_msa_depth(inMSA, args_library):
     try:
         with open(inMSA, "r") as inMSA_file:
@@ -51,7 +51,7 @@ def calculate_msa_depth(inMSA, args_library):
 
 
 # NEED TO UPDATE FOR IQTREE
-@timeit
+#@timeit
 def pull_out_bp_trees_bbl(no_bp_dir, dataset, bp_repeats, aln_prog):
     if not no_bp_dir.endswith("/"):
         no_bp_dir += "/"
@@ -156,7 +156,7 @@ def pull_out_bp_trees_bbl(no_bp_dir, dataset, bp_repeats, aln_prog):
         else:
             return ["ok"]
 
-@timeit
+#@timeit
 def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog, args_library):
     ####################################################################################################################
     # pull out all the BP trees into the BP directory
@@ -246,7 +246,7 @@ def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog, args_library):
     else:
         return ["ok"]
 
-@timeit
+#@timeit
 def root_BP_trees(bsDir, dataset, orig_prog, bp_repeats, suffix=None, rooting_type="BioPerl"):
     ####################################################################################################################
     # Root all trees on BP dir
@@ -297,7 +297,7 @@ def root_BP_trees(bsDir, dataset, orig_prog, bp_repeats, suffix=None, rooting_ty
 
     return ["ok"]
 
-@timeit
+#@timeit
 def root_tree(in_tree, out_tree):
     """
     The input tree (in_tree) must be an unrooted tree, i.e., the root node has at least 3 sons.
@@ -350,7 +350,7 @@ def root_tree(in_tree, out_tree):
     with open(out_tree, 'w') as outfile:
         outfile.write(newstr)
 
-@timeit
+#@timeit
 def reformat_trees_branch_length(in_tree, out_tree):
     """
     Reformat tree branch lengths and write the tree in newick format.
@@ -387,7 +387,7 @@ def reformat_trees_branch_length(in_tree, out_tree):
     with open(out_tree, 'w') as outfile:
         outfile.write(newstr)
 
-@timeit
+#@timeit
 def fix_mafft_rough_tree(tree_file):
     """
     Fix MAFFT RoughTree by removing underscores and extra symbols in node labels.
@@ -413,7 +413,7 @@ def fix_mafft_rough_tree(tree_file):
     with open(tree_file, 'w') as tree_file_handle:
         tree_file_handle.write(f'{tree}\n')
 
-@timeit
+#@timeit
 def Bootstrap_Trees(args_library):
     # ---------------------------------------------
     if args_library.isServer == 1:

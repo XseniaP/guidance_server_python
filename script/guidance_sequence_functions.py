@@ -15,7 +15,8 @@ import glob
 from time_decorator import timeit
 
 # script_dir = os.path.dirname(os.path.realpath(__file__))
-Bin = os.path.dirname(sys.argv[0])
+# Bin = os.path.dirname(sys.argv[0])
+Bin = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 # NEWIC2MAFFT = os.path.join(Bin, 'exec', 'newick2mafft.rb')
 MSA_SET_SCORE = os.path.join(Bin, 'programs', 'msa_set_score', 'msa_set_score')
@@ -303,7 +304,7 @@ def validate_seqs(working_dir, input_file, seq_type, msa, codon_table):
                     # validate prev seq
                     if seq == "" and seq_name != "":
                         # return f"The sequence named '{seq_name}' is missing<br>"
-                        errors += f"The sequence named '{seq_name}' is missing\n"
+                        errors += f"The sequence named '{seq_name}' is missing newline before the sequence \n"
 
                     if seq != "" and seq_name != "":
                         # validate seq according to type
@@ -354,7 +355,7 @@ def validate_seqs(working_dir, input_file, seq_type, msa, codon_table):
             # validate last sequence
             if seq == "" and seq_name != "":
                 # return f"The sequence named '{seq_name}' is missing<br>"
-                errors += f"The sequence named '{seq_name}' is missing<br>"
+                errors += f"The sequence named '{seq_name}' is missing newline before the sequence <br>"
             else:
                 if msa == "Yes":
                     seq_length = len(seq) if seq_length == 0 else seq_length
@@ -729,7 +730,7 @@ def codes2name_fasta_from1(aln_with_codes, codes_file, aln_with_names):
 
     return ["OK"]
 
-@timeit
+#@timeit
 def add_original_seq_names_to_the_MSA(args_library):
     args_library.Alignment_File_With_Names = args_library.Alignment_File + ".With_Names"
     ans = codes2name_fasta_from1(f"{args_library.WorkingDir}{args_library.Alignment_File}",
@@ -777,7 +778,7 @@ def convert_fs_to_lower_case(file_path):
     except OSError as e:
         return f"convert_fs_to_lower_case: Fail to open {e.filename} : {str(e)}"
 
-@timeit
+#@timeit
 def convert_fs_to_upper_case(file_path):
     try:
         with open(file_path, 'r') as file:
@@ -823,7 +824,7 @@ def names_according_cos(file_path):
     except OSError as e:
         return f"names_according_cos: Failed to open {e.filename} - {str(e)}"
 
-@timeit
+#@timeit
 def align(args_library):
     # ---------------------------------------------
     if args_library.isServer == 1:

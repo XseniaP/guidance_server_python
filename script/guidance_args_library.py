@@ -3,7 +3,7 @@ import pickle
 import argparse
 from shutil import copy
 
-import guidance_CONSTANTS
+import config
 from guidance_sequence_functions import *
 from guidance_tree_functions import *
 Bin = os.path.dirname(sys.argv[0])
@@ -11,28 +11,22 @@ BIN_DIR = os.path.dirname(Bin)
 
 class Library:
     def __init__(self):
+        self.bin_dir = BIN_DIR
         self.isServer = 0
         self.input_type = "seq"
         # self.proc_num = None
         self.outDir = ""
         self.stored_data_file = ""
         self.stored_form_data = ""
-        # self.semphy_prog = os.path.join(os.getcwd(), 'programs/semphy/semphy')
-        # self.semphy_prog = '/Users/kpolonsky/PycharmProjects/guidance_server_python/script/programs/semphy/semphy'
         self.semphy_prog = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
-        # self.iqtree_prog = os.path.join(os.getcwd(), 'programs/iqtree-2.2.2.6-MacOSX/bin/iqtree2')
-        # self.iqtree_prog = os.path.join('/Users/kpolonsky/PycharmProjects/guidance_server_python/script/programs/iqtree-2.2.2.6-MacOSX/bin/iqtree2')
-        self.iqtree_prog = os.path.join(BIN_DIR, 'script/programs/iqtree-2.2.2.6-MacOSX/bin/iqtree2')
+        self.iqtree_prog = os.path.join(BIN_DIR, 'script/programs/iqtree/bin/iqtree2')
         self.mafft_prog = "mafft"
         self.prank_prog = "prank"
-        # self.clustalw_prog = "clustalw"
         self.clustalw_prog = os.path.join(BIN_DIR, 'script/programs/clustalo')
         self.ruby_prog = "ruby"
         self.muscle_prog = "muscle"
-        # self.msa_set_score_prog = os.path.join(os.getcwd(), 'programs/msa_set_score/msa_set_score')
         self.msa_set_score_prog = os.path.join(BIN_DIR, 'script/programs/msa_set_score/msa_set_score')
         self.pagan_prog = "pagan"
-        # self.remove_taxa_prog = os.path.join(os.getcwd(), 'programs/removeTaxa/removeTaxa')
         self.remove_taxa_prog = os.path.join(BIN_DIR, 'script/programs/removeTaxa/removeTaxa')
         self.orig_argv = sys.argv[1:]  # Skip the script name itself
         self.overview_URL = ""
@@ -357,7 +351,7 @@ class Library:
                 # self.align_param = "\-\-".join(tmp)
 
             # Check if need to remove reorder with fragments
-            if '--reorder' in self.align_param or '\-\-reorder' in self.align_param:
+            if '--reorder' in self.align_param or "\-\-reorder" in self.align_param:
                 self.align_param = self.align_param.replace('--reorder', '')        # if seed is provided reorder must be removed so the seeds will be first
                 print(
                     "WARNING: --reorder is not allowed if seed alignment is provided, therefore the --reorder argument will be ignored, and the output order will be the same as input (with seeds first)\n")
@@ -499,17 +493,17 @@ class Library:
         self.GapPenDist = "UNIF"
 
         if self.BBL.upper() == "NO":
-            self.semphy_prog = guidance_CONSTANTS.SEMPHY
+            self.semphy_prog = config.SEMPHY
         else:
-            self.semphy_prog = guidance_CONSTANTS.SEMPHY_BBL  # TO DO: Change its location to a more stable one
+            self.semphy_prog = config.SEMPHY_BBL  # TO DO: Change its location to a more stable one
 
-        self.mafft_prog = guidance_CONSTANTS.MAFFT_GUIDANCE
-        self.prank_prog = guidance_CONSTANTS.PRANK_LECS
-        # self.clustalw_prog = guidance_CONSTANTS.CLUSTALW_LECS
-        self.clustalw_prog = guidance_CONSTANTS.CLUSTAL_OMEGA
-        self.muscle_prog = guidance_CONSTANTS.MUSCLE
-        self.pagan_prog = guidance_CONSTANTS.PAGAN_LECS
-        self.ruby_prog = guidance_CONSTANTS.RUBY
+        self.mafft_prog = config.MAFFT_GUIDANCE
+        self.prank_prog = config.PRANK_LECS
+        # self.clustalw_prog = config.CLUSTALW_LECS
+        self.clustalw_prog = config.CLUSTAL_OMEGA
+        self.muscle_prog = config.MUSCLE
+        self.pagan_prog = config.PAGAN_LECS
+        self.ruby_prog = config.RUBY
         self.msa_set_score_prog = MSA_SET_SCORE
 
         # Defaults (still not supported by the web server implementation, experimental feature)
@@ -548,7 +542,7 @@ class Library:
         self.Semphy_StdFile = ""
         self.COL_SCORES_FIGURE = "Col_Scores_Graph.png"
         self.Scoring_Alignments_Dir = ""  # The dir with the alignment used to create the score
-        self.send_email_dir = guidance_CONSTANTS.SEND_EMAIL_DIR_IBIS
+        self.send_email_dir = config.SEND_EMAIL_DIR_IBIS
         self.DNA_AA = {}
 
         # if self.isServer == 1:

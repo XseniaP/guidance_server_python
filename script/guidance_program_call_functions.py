@@ -11,7 +11,7 @@ from time_decorator import timeit
 from multiprocessing.sharedctypes import Value, Array
 from multiprocessing import Process, Manager, Lock
 
-@timeit
+#@timeit
 def run_hot_internal(args_library, op_vals_arr_ref, countTrees, tree_good_BranchLength, Branch):
     HOT_COS_GUIDANCE2_cmd = f"cd {args_library.WorkingDir}; python3 {HOT_GUIDANCE2_PROGRAM} {args_library.dataset}_{countTrees} {args_library.HoT_MSA_Program}"
     print(HOT_COS_GUIDANCE2_cmd)
@@ -41,7 +41,7 @@ def run_hot_internal(args_library, op_vals_arr_ref, countTrees, tree_good_Branch
     os.system(HOT_COS_GUIDANCE2_cmd)
     return HOT_COS_GUIDANCE2_cmd
 
-@timeit
+#@timeit
 def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_arr_ref, ep_vals_arr_ref, Num_of_Aln_from_HoT_per_Run, lock):
     try:
         log_file = open(args_library.OutLogFile, "a")
@@ -206,7 +206,7 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
 # else:
 #     e = Exception
 #     raise Exception(f"ERROR: fork failed: {e}\n")
-@timeit
+#@timeit
 def run_guidance(args_library):
     # Align
     ##############
@@ -369,7 +369,7 @@ def run_guidance(args_library):
             os.rename(f"{args_library.WorkingDir}{args_library.Alignment_File}_new",
                       f"{args_library.WorkingDir}{args_library.Alignment_File}")
 
-@timeit
+#@timeit
 def run_guidance2(args_library):
     args_library.Scoring_Alignments_Dir = args_library.GUIDANCE2_MSAs_Dir
 
@@ -629,7 +629,7 @@ def run_guidance2(args_library):
     # print(args_library.mean_col_score)
     print("\nSUCCESS!\n")
 
-@timeit
+#@timeit
 def run_hot(args_library):
     #	python3 ../hot_cos_main.py caseID msa_method seq_type input_fasta_file . output_dir >& COS.std
     #msa_method: MA0 = mafft ; CW2 = clustalW.

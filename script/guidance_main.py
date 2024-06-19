@@ -9,7 +9,6 @@ RESULTS = os.path.join(BIN_DIR, "results/Guidance")
 
 
 if __name__ == "__main__":
-
     args_library = Library()
     args_library.check_and_set_input_and_output_variables(sys.argv)
 
@@ -45,7 +44,7 @@ if __name__ == "__main__":
     make_jalview(args_library)
     flag_that_finished_ok(args_library)
     create_tar_archives(args_library)
-    create_png_for_seqscores(args_library)
+    # create_png_for_seqscores(args_library)
 
     if os.path.exists(os.path.join(RESULTS, "timestamps.txt")):
         shutil.move(os.path.join(RESULTS, "timestamps.txt"), os.path.join(args_library.WorkingDir, "timestamps.txt"))

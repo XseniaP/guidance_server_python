@@ -224,11 +224,11 @@ def prepare_directories_for_rf():
         get_indelible_true_tree(indelible_tree_source, destination_folder, code)
 
         # run IQtree
-        cmd = f"cd /Users/kpolonsky/Documents/iqtree-2.2.2.6-MacOSX/bin; ./iqtree2 -s /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/MAFFT/MSA.MAFFT.aln.With_Names"
+        cmd = f"cd /Users/kpolonsky/Documents/iqtree/bin; ./iqtree2 -s /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/MAFFT/MSA.MAFFT.aln.With_Names"
         subprocess.run(cmd, shell=True, check=True)
-        cmd = f"cd /Users/kpolonsky/Documents/iqtree-2.2.2.6-MacOSX/bin; ./iqtree2 -s /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/MAFFT_after_column_deletions/MSA.MAFFT.Without_low_SP_Col.With_Names"
+        cmd = f"cd /Users/kpolonsky/Documents/iqtree/bin; ./iqtree2 -s /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/MAFFT_after_column_deletions/MSA.MAFFT.Without_low_SP_Col.With_Names"
         subprocess.run(cmd, shell=True, check=True)
-        cmd = f"cd /Users/kpolonsky/Documents/iqtree-2.2.2.6-MacOSX/bin; ./iqtree2 -s /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/Indellible_simulated_alignment/{code}_TRUE.fas"
+        cmd = f"cd /Users/kpolonsky/Documents/iqtree/bin; ./iqtree2 -s /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/Indellible_simulated_alignment/{code}_TRUE.fas"
         subprocess.run(cmd, shell=True, check=True)
 
         # run IQtree to calculate RFs
@@ -236,7 +236,7 @@ def prepare_directories_for_rf():
         # rf_log = f"/Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/True_tree/{code}_indelible_true_tree.ctrl.log"
 
     #     # regular MAFFT MSA
-    #     cmd = f"cd /Users/kpolonsky/Documents/iqtree-2.2.2.6-MacOSX/bin; ./iqtree2 -rf /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/MAFFT/MSA.MAFFT.aln.With_Names.treefile /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/True_tree/{code}_indelible_true_tree.ctrl"
+    #     cmd = f"cd /Users/kpolonsky/Documents/iqtree/bin; ./iqtree2 -rf /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/MAFFT/MSA.MAFFT.aln.With_Names.treefile /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/True_tree/{code}_indelible_true_tree.ctrl"
     #     subprocess.run(cmd, shell=True, check=True)
     #     shutil.move(rf_file,
     #                 f"/Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/RFs/{code}_MAFFT_vs_true.rfdist")
@@ -244,7 +244,7 @@ def prepare_directories_for_rf():
     #                 f"/Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/RFs/{code}_MAFFT_vs_true.rfdist.log")
     #
     #     # MSA without columns
-    #     cmd = f"cd /Users/kpolonsky/Documents/iqtree-2.2.2.6-MacOSX/bin; ./iqtree2 -rf /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/MAFFT_after_column_deletions/MSA.MAFFT.Without_low_SP_Col.With_Names.treefile /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/True_tree/{code}_indelible_true_tree.ctrl"
+    #     cmd = f"cd /Users/kpolonsky/Documents/iqtree/bin; ./iqtree2 -rf /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/MAFFT_after_column_deletions/MSA.MAFFT.Without_low_SP_Col.With_Names.treefile /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/True_tree/{code}_indelible_true_tree.ctrl"
     #     subprocess.run(cmd, shell=True, check=True)
     #     shutil.move(rf_file,
     #                 f"/Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/RFs/{code}_MAFFT_without_SP_Col_vs_true.rfdist")
@@ -252,7 +252,7 @@ def prepare_directories_for_rf():
     #                 f"/Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/RFs/{code}_MAFFT_without_SP_Col_vs_true.rfdist.log")
     #
     #     # simulated MSA
-    #     cmd = f"cd /Users/kpolonsky/Documents/iqtree-2.2.2.6-MacOSX/bin; ./iqtree2 -rf /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/Indellible_simulated_alignment/{code}_TRUE.fas.treefile /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/True_tree/{code}_indelible_true_tree.ctrl"
+    #     cmd = f"cd /Users/kpolonsky/Documents/iqtree/bin; ./iqtree2 -rf /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/Indellible_simulated_alignment/{code}_TRUE.fas.treefile /Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/True_tree/{code}_indelible_true_tree.ctrl"
     #     subprocess.run(cmd, shell=True, check=True)
     #     shutil.move(rf_file,
     #                 f"/Users/kpolonsky/Downloads/OrthoMaM_Simulations_GUIDANCE2/RF_DISTANCE/{code}/RFs/{code}_indel_simulated_vs_true.rfdist")

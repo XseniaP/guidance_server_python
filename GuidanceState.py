@@ -540,7 +540,7 @@ class GuidanceState:
                         var['sequences_link'] = f"Sequences = <A HREF='{results_url}/{var['SeqsFile']}' TARGET=USER_Seqs>Fasta Sequences</A><br>"
 
                 if dict_key_value('input_type', 're_align', form):
-                    var['sequences_link'] = var['sequences_link'].replace('<br>', ', unaligned sequences of msa file<br>')
+                    var['sequences_link'] = var['sequences_link'].replace('<br>', ', unaligned sequences of MSA file<br>')
 
 
             var['dataset']='MSA'

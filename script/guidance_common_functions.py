@@ -7,9 +7,9 @@ import re
 import sys
 import zipfile
 import time
-import guidance_CONSTANTS
+import config
 from time_decorator import timeit
-@timeit
+#@timeit
 def sample_from_empirical_distribution(distribution_file_name, out_sample_file_name, sample_size):
     op_vals = []
     op_density = []
@@ -46,7 +46,7 @@ def sample_from_empirical_distribution(distribution_file_name, out_sample_file_n
 
     return op_vals
 
-@timeit
+#@timeit
 def sample_from_uniform_dist(start, end, out_sample_file_name, sample_size):
     sample = []
     try:
@@ -89,7 +89,7 @@ def flag_that_finished_ok(args_library):
 def send_administrator_mail_on_error(message, args_library):
     email_subject = f"SYSTEM ERROR has occurred on GUIDANCE: {args_library.run_url}"
     email_message = f"Hello,\\n\\nUnfortunately a system SYSTEM ERROR has occurred on GUIDANCE: {args_library.run_url}.\\nERROR: {message}."
-    admin_email = guidance_CONSTANTS.ADMIN_EMAIL
+    admin_email = config.ADMIN_EMAIL
     # Activate in case the cluster node fails to communicate with the net
     # msg = "ssh bioseq@lecs \" cd {}; perl sendEmail.pl -f 'bioSequence@tauex.tau.ac.il' -t '{}' -u '{}' -xu '{}' -xp '{}' -s '{}' -m '{}'\"".format(VARS['send_email_dir'], admin_email, email_subject, VARS['userName'], VARS['userPass'], VARS['smtp_server'], email_message)
     msg = "{}/sendEmail.pl -f 'bioSequence@tauex.tau.ac.il' -t '{}' -u '{}' -xu '{}' -xp '{}' -s '{}' -m '{}'".format(
@@ -196,7 +196,7 @@ def send_mail_on_error(args_library):
 
     cmd = [
         send_email_script,
-        '-f', guidance_CONSTANTS.ADMIN_EMAIL,
+        '-f', config.ADMIN_EMAIL,
         '-t', args_library.user_email,
         '-u', email_subject,
         '-xu', args_library.userName,
@@ -383,7 +383,7 @@ def print_initial_running_progress(args_library):
 
         PROGRESS.write("</font>\n")
 
-@timeit
+#@timeit
 def update_progress(progress_file, message):
     with open(progress_file, "r") as progress:
         data = progress.readlines()
