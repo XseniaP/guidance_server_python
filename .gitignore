@@ -11,3 +11,5 @@ test_MAFFT_server_MSA_input4_redirectedFromMafft.txt
 app/__init__.py
 *.DS_Store
 .idea
+COS.std
+script/guidance_wrapper.py

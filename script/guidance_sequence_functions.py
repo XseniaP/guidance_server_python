@@ -13,6 +13,7 @@ from guidance_tree_functions import fix_mafft_rough_tree
 import tarfile
 import glob
 from time_decorator import timeit
+# from utils import *
 
 # script_dir = os.path.dirname(os.path.realpath(__file__))
 # Bin = os.path.dirname(sys.argv[0])
@@ -36,7 +37,10 @@ MIDPOINT_ROOTING_R = os.path.join(Bin, 'programs', 'MidPoint_Rooting.R')
 # newick2mafft = os.path.join(Bin, 'exec', 'newick2mafft.rb')
 
 # MSA_Score_CSS = "http://guidance.tau.ac.il/MSA_Colored.NEW.css"
+# KSENIA
 MSA_Score_CSS = "https://taux.evolseq.net/guidance/static/css/MSA_Colored.NEW.EM.css"
+# MSA_Score_CSS = f"{os.path.dirname(Bin)}/app/static/css/MSA_Colored.NEW.EM.css"
+# MSA_Score_CSS = "css/MSA_Colored.NEW.EM.css"
 MidPoint_Rooting_R = os.path.join(Bin, 'programs', 'MidPoint_Rooting.R')
 # phylonet_prog = os.path.join(Bin, 'exec', 'phylonet_v1_7', 'phylonet_v1_7.jar')
 isEqualTopologyProg = os.path.join(Bin, 'programs', 'isEqualTree', 'isEqualTree')

@@ -103,7 +103,7 @@ PDB_TO_UNIPROT_test = "/biodb/idmapping_PDB_UNIPROTKB.dat"
 
 
 #internal databases
-EPITOPIA_DATA = "/bioseq/epitopia/data"
+# EPITOPIA_DATA = "/bioseq/epitopia/data"
 
 #external programs
 
@@ -180,10 +180,10 @@ SEMPHY = "/bioseq/Programs/Semphy/semphy.doubleRep"
 # IQTREE = "/bioseq/Programs/iqtree/iqtree2"
 
 # Path to Semphy BBL program
-SEMPHY_BBL = ""
+# SEMPHY_BBL = ""
 
 # Path to Epitopia executable programs
-EPITOPIA_EXECUTABLES = "/bioseq/epitopia/executables"
+# EPITOPIA_EXECUTABLES = "/bioseq/epitopia/executables"
 
 # Constant values
 BLAST_MAX_HOMOLOGUES_TO_DISPLAY = 500
@@ -197,23 +197,23 @@ BIOSEQ_NODE = "bioc01.tau.ac.il"
 MAX_QUEUE_RUNS = 999
 
 # External links
-RCSB_WEB = "http://www.rcsb.org/"
-PYMOL_WEB = "http://pymol.sourceforge.net/"
-CHIMERA_WEB = 'http://www.rbvi.ucsf.edu/chimera/'
-CHIMERA_SAVING_FIGURE = 'http://www.cgl.ucsf.edu/chimera/current/docs/UsersGuide/print.html'
-CHIMERA_DOWNLOAD = CHIMERA_WEB + "download.html"
-MSA_CONVERT = 'http://www.ebi.ac.uk/cgi-bin/readseq.cgi'
-MSA_FORMATS = 'http://www.ebi.ac.uk/help/formats.html'
-
-# Redirect pages
-CONSURF_REDIRECT_PAGE = "http://consurf.tau.ac.il/too_many_runs.html"
-SELECTON_REDIRECT_PAGE = "http://selecton.tau.ac.il/too_many_runs.html"
-CONSEQ_REDIRECT_PAGE = "http://conseq.tau.ac.il/too_many_runs.html"
-PEPITOPE_REDIRECT_PAGE = "http://pepitope.tau.ac.il/too_many_runs.html"
-
-# FAQ pages
-CONSURF_TREE_FAQ = "http://consurf.tau.ac.il/quick_help.html#note5"
-
-# Files Name Conventions
-TEMPLATES_LIST_FILE = "List_of_Templates"
-PISA_ERRORS_FILE = "PISA_Errors"
+# RCSB_WEB = "http://www.rcsb.org/"
+# PYMOL_WEB = "http://pymol.sourceforge.net/"
+# CHIMERA_WEB = 'http://www.rbvi.ucsf.edu/chimera/'
+# CHIMERA_SAVING_FIGURE = 'http://www.cgl.ucsf.edu/chimera/current/docs/UsersGuide/print.html'
+# CHIMERA_DOWNLOAD = CHIMERA_WEB + "download.html"
+# MSA_CONVERT = 'http://www.ebi.ac.uk/cgi-bin/readseq.cgi'
+# MSA_FORMATS = 'http://www.ebi.ac.uk/help/formats.html'
+#
+# # Redirect pages
+# CONSURF_REDIRECT_PAGE = "http://consurf.tau.ac.il/too_many_runs.html"
+# SELECTON_REDIRECT_PAGE = "http://selecton.tau.ac.il/too_many_runs.html"
+# CONSEQ_REDIRECT_PAGE = "http://conseq.tau.ac.il/too_many_runs.html"
+# PEPITOPE_REDIRECT_PAGE = "http://pepitope.tau.ac.il/too_many_runs.html"
+#
+# # FAQ pages
+# CONSURF_TREE_FAQ = "http://consurf.tau.ac.il/quick_help.html#note5"
+#
+# # Files Name Conventions
+# TEMPLATES_LIST_FILE = "List_of_Templates"
+# PISA_ERRORS_FILE = "PISA_Errors"

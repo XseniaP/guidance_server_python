@@ -3,7 +3,7 @@ from guidance_tree_functions import *
 from guidance_common_functions import *
 from guidance_scoring_and_visualization import calculate_sp_scores, check_convergence, \
     calculate_sp_scores_convergence, add_scores_to_dict
-from multiprocessing import Process, Manager
+# from multiprocessing import Process, Manager
 import uuid
 import sys
 import multiprocessing as mp
@@ -729,5 +729,202 @@ def run_hot(args_library):
             args_library.Scoring_Alignments_Dir = f"{args_library.WorkingDir}{args_library.HoT_MSAs_Dir}"
     except Exception as e:
         sys.exit("run_hot() Error: " + str(e) + "\n")
+
+def prepare_rerun_parameters(args_library):
+    mafft_max_iterates = {
+        0: '0',
+        1: '1',
+        2: '2',
+        5: '3',
+        10: '4',
+        20: '5',
+        50: '6',
+        80: '7',
+        100: '8',
+        1000: '9',
+    }
+
+    with open(f"{args_library.WorkingDir}/rerun_param", "w") as param:
+        param.write("<?php\n")
+
+        if args_library.PROGRAM == "GUIDANCE":
+            param.write("$PROGRAM=1;\n")
+            if args_library.MSA_Program == "MAFFT":
+                param.write("$MSA_Prog=0;\n")
+            elif args_library.MSA_Program == "PRANK":
+                param.write("$MSA_Prog=1;\n")
+            elif args_library.MSA_Program == "CLUSTALW":
+                param.write("$MSA_Prog=2;\n")
+            elif args_library.MSA_Program == "MUSCLE":
+                param.write("$MSA_Prog=3;\n")
+            elif args_library.MSA_Program == "PAGAN":
+                param.write("$MSA_Prog=4;\n")
+
+        elif args_library.PROGRAM == "HoT":
+            param.write("$PROGRAM=2;\n")
+            if args_library.MSA_Program == "MAFFT":
+                param.write("$MSA_Prog=0;\n")
+            elif args_library.MSA_Program == "PRANK":
+                param.write("$MSA_Prog=1;\n")
+            elif args_library.MSA_Program == "CLUSTALW":
+                param.write("$MSA_Prog=2;\n")
+
+        elif args_library.PROGRAM == "GUIDANCE2":
+            param.write("$PROGRAM=0;\n")
+            if args_library.MSA_Program == "MAFFT":
+                param.write("$MSA_Prog=0;\n")
+            elif args_library.MSA_Program == "PRANK":
+                param.write("$MSA_Prog=1;\n")
+            elif args_library.MSA_Program == "CLUSTALW":
+                param.write("$MSA_Prog=2;\n")
+
+        if args_library.MSA_Program == "MAFFT":
+            if args_library.MAFFT_maxiterate == "":
+                param.write("$MAFFT_MAX_ITERATES=0;\n")
+            else:
+                param.write(f"$MAFFT_MAX_ITERATES={mafft_max_iterates[int(args_library.MAFFT_maxiterate)]};\n")
+
+            if args_library.MAFFT_refinement == "":
+                param.write("$MAFFT_REFINE=0;\n")
+            elif args_library.MAFFT_refinement == "localpair":
+                param.write("$MAFFT_REFINE=1;\n")
+            elif args_library.MAFFT_refinement == "genafpair":
+                param.write("$MAFFT_REFINE=2;\n")
+            elif args_library.MAFFT_refinement == "globalpair":
+                param.write("$MAFFT_REFINE=3;\n")
+        else:
+            param.write("$MAFFT_MAX_ITERATES=0;\n")
+            param.write("$MAFFT_REFINE=0;\n")
+
+        if args_library.MSA_Program == "PRANK":
+            if args_library.PRANK_F == "+F":
+                param.write("$PRANK_INSERTION=0;\n")
+            elif args_library.PRANK_F == "-F":
+                param.write("$PRANK_INSERTION=1;\n")
+        else:
+            param.write("$PRANK_INSERTION=0;\n")
+
+        param.write(f"$Bootstraps={args_library.Bootstraps};\n")
+        param.write(f"$SP_COL_CUTOFF={args_library.SP_COL_CUTOFF};\n")
+        param.write(f"$SP_SEQ_CUTOFF={args_library.SP_SEQ_CUTOFF};\n")
+
+        if args_library.Align_Order == "as_input":
+            param.write("$Align_Order=0;\n")
+        elif args_library.Align_Order == "aligned":
+            param.write("$Align_Order=1;\n")
+        else:
+            param.write("$Align_Order=1;\n")  # default
+
+        if args_library.Seq_Type == "AminoAcids":
+            param.write("$Seq_Type=0;\n")
+            param.write("$CodonTable=0;\n")  # DEFAULT VALUE
+        elif args_library.Seq_Type == "Nucleotides":
+            param.write("$Seq_Type=1;\n")
+            param.write("$CodonTable=0;\n")  # DEFAULT VALUE
+        elif args_library.Seq_Type == "Codons":
+            param.write("$Seq_Type=2;\n")
+            if args_library.CodonTable == 1:
+                param.write("$CodonTable=0;\n")
+            elif args_library.CodonTable == 15:
+                param.write("$CodonTable=1;\n")
+            elif args_library.CodonTable == 6:
+                param.write("$CodonTable=2;\n")
+            elif args_library.CodonTable == 10:
+                param.write("$CodonTable=3;\n")
+            elif args_library.CodonTable == 2:
+                param.write("$CodonTable=4;\n")
+            elif args_library.CodonTable == 5:
+                param.write("$CodonTable=5;\n")
+            elif args_library.CodonTable == 3:
+                param.write("$CodonTable=6;\n")
+            elif args_library.CodonTable == 13:
+                param.write("$CodonTable=7;\n")
+            elif args_library.CodonTable == 9:
+                param.write("$CodonTable=8;\n")
+            elif args_library.CodonTable == 14:
+                param.write("$CodonTable=9;\n")
+            elif args_library.CodonTable == 4:
+                param.write("$CodonTable=10;\n")
+
+        param.write("?>\n")
+
+
+import smtplib
+from email.message import EmailMessage
+from email.utils import formataddr
+from subprocess import run, PIPE
+import logging
+
+
+def send_finish_email_to_user(args_library):
+    # Set up logging
+    logging.basicConfig(filename=f"{args_library.WorkingDir}/log.txt", level=logging.INFO)
+
+    email_subject = ""
+    # http_path = f"http://guidance-dev.tau.ac.il/results/{vars['run_number']}"
+    base_http_path = "http://guidance-dev.tau.ac.il/"
+    http_path = base_http_path + f"/guidance/results/{args_library.run_number}"
+
+    if args_library.JOB_TITLE:
+        email_subject = f"Your Guidance results for {args_library.JOB_TITLE} are ready"
+    elif args_library.usrSeq_File:
+        email_subject = f"Your Guidance results for {args_library.usrSeq_File} are ready"
+    else:
+        email_subject = f"Your Guidance results for run number {args_library.run_number} are ready"
+
+    email_message = f"""Hello,
+
+The results for your Guidance run are ready at:
+{http_path}
+
+Running Parameters:
+Job Title: {args_library.JOB_TITLE}
+Sequences File: {args_library.usrSeq_File}
+MSA Algorithm: {args_library.MSA_Program}
+Number of Bootstraps: {args_library.Bootstraps}
+Scoring Method: {args_library.PROGRAM}
+
+Please note: the results will be kept on the server for three months.
+
+Thanks,
+GUIDANCE Team"""
+
+    # Set up email
+    msg = EmailMessage()
+    msg.set_content(email_message)
+    msg['Subject'] = email_subject
+    msg['From'] = formataddr(('GUIDANCE Team', 'admin@example.com'))  # Replace with ADMIN_EMAIL
+    msg['To'] = args_library.user_mail
+
+    # Send email
+    try:
+        with smtplib.SMTP(args_library.smtp_server) as server:
+            server.login(args_library.userName, args_library.userPass)
+            server.send_message(msg)
+            logging.info("Email sent successfully.")
+    except Exception as e:
+        logging.error(f"Failed to send email: {e}")
+
+    # Log the email message and command
+    log_msg = f"MESSAGE: {email_message}\n"
+    logging.info(log_msg)
+
+    # Run external command (if needed)
+    email_command = [
+        'perl', './perl/sendEmail.pl',
+        '-f', 'admin@example.com',  # Replace with GENERAL_CONSTANTS::ADMIN_EMAIL
+        '-t', args_library.user_mail,
+        '-u', email_subject,
+        '-xu', args_library.userName,
+        '-xp', args_library.userPass,
+        '-s', args_library.smtp_server,
+        '-m', email_message
+    ]
+
+    result = run(email_command, stdout=PIPE, stderr=PIPE, text=True)
+    if "successfully" not in result.stdout:
+        logging.error(f"send_mail: The message was not sent successfully. System returned: {result.stdout}")
+
+
 
 

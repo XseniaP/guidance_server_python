@@ -6,7 +6,8 @@ from shutil import copy
 import config
 from guidance_sequence_functions import *
 from guidance_tree_functions import *
-Bin = os.path.dirname(sys.argv[0])
+Bin = os.path.dirname(os.path.abspath(sys.argv[0]))
+# Bin = os.path.dirname(sys.argv[0])
 BIN_DIR = os.path.dirname(Bin)
 
 class Library:

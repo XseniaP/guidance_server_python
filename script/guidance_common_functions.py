@@ -192,7 +192,7 @@ def send_mail_on_error(args_library):
     email_message = "Hello,\n\nUnfortunately your GUIDANCE run (number {}) has failed.\nPlease have a look at {} for further details\n\nSorry for the inconvenience\nGUIDANCE Team".format(
         args_library.run_number, HttpPath)
 
-    send_email_script = './sendEmail.pl'
+    send_email_script = './perl/sendEmail.pl'
 
     cmd = [
         send_email_script,

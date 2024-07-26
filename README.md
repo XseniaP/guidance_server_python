@@ -1,23 +1,93 @@
 ### Guidance2.1_Beta_Version
 
-#### Guidance2.1 Beta Version Prerequisites:
+#### Running with Docker:
 
-* Create python project and save all the files and folders into the project folder accordingly
+You need to have a docker engine installed https://www.docker.com/products/docker-desktop/. 
+The following commands can be run in Terminal (Bash) to build and run Docker image: 
+
+`git clone https://github.com/XseniaP/Guidance_mid.git`
+
+`cd Guidance_mid`
+
+`docker build -t guidance .`
+
+`docker run -v <path_to_folder_with_seq_input_file>:/input -v <path_to_out_dir>:/output guidance --seqFile "/input/<name_of_seq_input_file>" --msaProgram <MAFFT or PRANK> --seqType aa --outDir "/output/<out_dir_name>/" --program GUIDANCE2 --bootstraps <integer number of bootstrap trees> --proc_num <number of CPUs>`
+
+*Sample run* for the following file structure, s.t. fasta sequence file is located in data folder and the results of this run are expected to be saved to ABD_results folder:
+
+|-- user <br />
+| &nbsp;  &nbsp; |-- data <br />
+| &nbsp;  &nbsp; | &nbsp;  &nbsp; |-- ABD.fasta <br />
+| &nbsp;  &nbsp; |-- ABD_results <br />
+
+
+`docker run -v /user/data:/input -v /user/ABD_results:/output guidance --seqFile "/input/ABD.fasta" --msaProgram MAFFT --seqType aa --outDir "/output/ABD_results/" --program GUIDANCE2 --bootstraps 100 --proc_num 8`
+
+*Sample run* for the following file structure, s.t. fasta sequence file has an absolute path /user/Downloads/data/AGMAT.fas  and the results of this run will be saved in /user/Downloads/results/AGMAT_results/ folder:
+
+|-- user <br />
+| &nbsp;  &nbsp; |-- Downloads <br />
+| &nbsp;  &nbsp; | &nbsp;  &nbsp; |-- data <br />
+| &nbsp;  &nbsp; | &nbsp;  &nbsp; | &nbsp;  &nbsp; |-- AGMAT.fas <br />
+| &nbsp;  &nbsp; | &nbsp;  &nbsp; |-- results <br />
+| &nbsp;  &nbsp; | &nbsp;  &nbsp; | &nbsp;  &nbsp; |-- AGMAT_results <br />
+
+
+`docker run -v /Users/user/Downloads/data:/input -v /Users/user/Downloads/results:/output guidance --seqFile "/input/AGMAT.fas" --msaProgram MAFFT --seqType aa --outDir "/output/AGMAT_results/" --program GUIDANCE2 --bootstraps 100 --proc_num 8`
+
+
+#### Local run on MacOS-arm64 or Ubuntu Linux
+
+**Prerequisites:**
+
+* Create python project and save all the files and folders either from **guidance_MacOS-arm64**  OR **guidance_Linux** folder  into your project folder accordingly
 * Install all prerequisites listed in requirements.txt
-**`pip install -r requirements. txt`**
+
+**On MacOS (via pip or pip3):**
+
+`git clone https://github.com/XseniaP/Guidance_mid.git`
+
+`cd Guidance_mid`
+
+`pip install -r ./guidance_MacOS-arm64/requirements.txt`
+
+**On Ubuntu Linux:**
+
+`sudo apt install python3.12-venv`
+
+`sudo apt install python3-pip`
+
+`sudo apt install git` 
+
+`git clone https://github.com/XseniaP/Guidance_mid.git`
+
+`cd Guidance_mid`
+
+`python3 -m venv .venv`
+
+`source .venv/bin/activate`
+
+`python3 -m pip install -r ./guidance_Linux/requirements.txt`
+
 * The **./script/programs** folder has multiple subfolders with the .cpp programs' source code which require platform-specific builds to be performed. 
   - semphy - **./script/programs/semphy/semphy** path is assumed
   - removeTaxa - **script/programs/removeTaxa/removeTaxa** path is assumed
   - msa_set_score - **script/programs/msa_set_score/msa_set_score** path is assumed 
   - isEqualTree - **script/programs/isEqualTree/isEqualTree** path is assumed
+  - iqtree - **./script/programs/iqtree/bin/iqtree2** path is assumed // executable for your platform (in case it's not Ubuntu Linux or MacOS-arm64/M1) can be downloaded from [http://www.iqtree.org/doc/Quickstart](http://www.iqtree.org/doc/Quickstart) and named `iqtree2` and located in the following path: 
+  ./script/programs/iqtree/bin/ 
 
-Each program makefile is located in this program subfolder accordingly. The existing executables in the folders are built for MacOS-arm64 (M1), if this is not the platform you are working on, they should be deleted and replaced with the executables which you build on your platform using the makefiles.
+Each program makefile is located in this program subfolder accordingly. The existing executables in the folders are built for MacOS-arm64 (M1) and Ubuntu Linux accordingly, if this is not the platform you are working on, they should be deleted and replaced with the executables which you build on your platform using the makefiles.
 
 * Other prerequisites to be installed:
-  - MAFFT v7.525 should be installed from [https://mafft.cbrc.jp/alignment/software/source.html](https://mafft.cbrc.jp/alignment/software/source.html) and globally callable with `mafft` command line; if local executable is used then path to it should be updated in **./script/config.py** under MAFFT_GUIDANCE variable and **./script/guidance_args_library.py**
-  - prank v.170427 should be installed from [http://wasabiapp.org/software/prank/prank_installation/](http://wasabiapp.org/software/prank/prank_installation/) and globally callable with `prank` command line; if local executable is used then path to it should be updated in **./script/config.py** under PRANK_LECS and PRANK variables and **./script/guidance_args_library.py**
-  - IQ-tree executable should be downloaded from [http://www.iqtree.org/doc/Quickstart](http://www.iqtree.org/doc/Quickstart) and named `iqtree2` and located in the following path: 
-  ./script/programs/iqtree-2.2.2.6-MacOSX/bin/ . The final path assumed is **./script/programs/iqtree-2.2.2.6-MacOSX/bin/iqtree2**
+
+  - MAFFT v7.525 should be installed from [https://mafft.cbrc.jp/alignment/software/source.html](https://mafft.cbrc.jp/alignment/software/source.html) and globally callable with `mafft` command line; if local executable is used (not recommended) then path to it should be updated in **./script/config.py** under MAFFT_GUIDANCE variable and **./script/guidance_args_library.py**
+     
+     - on Linux/Ubuntu can be installed with  `sudo apt install mafft` command line
+    
+  - prank v.170427 should be installed from [http://wasabiapp.org/software/prank/prank_installation/](http://wasabiapp.org/software/prank/prank_installation/) and globally callable with `prank` command line; if local executable is used (not recommended) then path to it should be updated in **./script/config.py** under PRANK_LECS and PRANK variables and **./script/guidance_args_library.py**
+  
+    - on Linux/Ubuntu can be installed with  `sudo apt install prank`  command line
 
   NOT YET SUPPORTED:
   
@@ -26,10 +96,15 @@ Each program makefile is located in this program subfolder accordingly. The exis
 
 #### To Run Guidance2.1 Beta Version:
 
-Simple example of running the program from the command line:
+*Simple example* of running the program from the command line:
 
-`cd <base_directory_of_the_project>`
-`python3 guidance_main.py --seqFile <path_to_the_fasta_file_with_sequences> --msaProgram MAFFT --seqType aa --outDir <path_to_the_output_directory> --program GUIDANCE2 --bootstraps 100 --proc_num 8`
+`cd <base_directory_of_the_project>`  or  `cd guidance_Linux` or `cd guidance_MacOS-arm64` in case you used git pull and are currently in the Guidance_mid folder
+
+`python3 script/guidance_main.py --seqFile <path_to_the_fasta_file_with_sequences> --msaProgram MAFFT --seqType aa --outDir <path_to_the_output_directory> --program GUIDANCE2 --bootstraps 100 --proc_num 8`
+
+After you finished working with the virtual environment on Linux/Ubuntu please deactivate the environment by running the following command line:
+
+`deactivate`
 
 In this sample run it is assumed that the input is amino-acids (aa) sequences, 100 bootstrap trees are created and 8 CPUs are used   
 The '--seqType' should be changed to 'nuc' in case of nucleotides

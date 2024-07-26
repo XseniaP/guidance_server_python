@@ -45,7 +45,7 @@ msa_file = os.path.join(VARS["WorkingDir"], VARS["Alignment_File"])
 score_file = os.path.join(VARS["WorkingDir"], f"{VARS['Output_Prefix']}_res_pair_res.scr")
 out_website = f"Mask_Residues_Res_{cutoff}.aln"
 out_file = os.path.join(VARS["WorkingDir"], out_website)
-seq_names_index = os.path.join(VARS["WorkingDir"], VARS["code_fileName"])
+seq_names_index = os.path.join(VARS["WorkingDir"], "Seqs.Codes")
 output_page = os.path.join(VARS["WorkingDir"], VARS["output_page"])
 
 # Set missing data character based on alphabet

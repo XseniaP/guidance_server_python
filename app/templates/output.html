@@ -136,14 +136,23 @@
 
     {% for remove_sequence in remove_sequences_list %}
     <ul>
-        <li><A HREF="{{var['run_number']}}/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.{{remove_sequence}}" TARGET=_blank>The
-            input sequences after the removal of unreliable sequences (with confidence score below
-            {{remove_sequence}})</A>
-            <font size=-1> (see list of removed sequences <A
-                    HREF="{{var['run_number']}}/Seqs.Orig.fas.FIXED.Removed_Seq.{{remove_sequence}}.With_Names"
-                    TARGET=_blank>here</A>)</font>
-            &nbsp;&nbsp;&nbsp;<INPUT TYPE="BUTTON" VALUE="run GUIDANCE on the confidently-aligned sequences only"
-                                     ONCLICK="window.open('/guidance/rerun/{{var['run_number']}}/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.{{remove_sequence}}.With_Names')"><br>
+        <li>
+            <a href="{{ var['run_number'] }}/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.{{ remove_sequence }}" TARGET=_blank>
+                The input sequences after the removal of unreliable sequences (with confidence score below {{ remove_sequence }})
+            </a>
+            <font size="-1">
+                (see list of removed sequences
+                <a href="{{ var['run_number'] }}/Seqs.Orig.fas.FIXED.Removed_Seq.{{ remove_sequence }}.With_Names" target=_blank>here</a>)
+            </font>
+            &nbsp;&nbsp;&nbsp;
+<!--            &nbsp;&nbsp;<input TYPE="button" value="Run GUIDANCE on the confidently-aligned sequences only" onclick="window.open('/guidance/rerun/{{ var['run_number'] }}/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.{{ remove_sequence }}.With_Names')">-->
+
+            {% set rerun_url = '/guidance/rerun/' + var['run_number'] + '/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.' + remove_sequence + '.With_Names' %}
+            <input type="button" value="Run GUIDANCE on the confidently-aligned sequences only" onclick="window.open('{{ rerun_url }}')">
+
+<!--            <input type="button" value="Run GUIDANCE on the confidently-aligned sequences only" onclick="window.open('/guidance/rerun/{{ var['run_number'] }}/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.{{ remove_sequence }}.With_Names')">-->
+
+            <br>
         </li>
     </ul>
     {% endfor %}

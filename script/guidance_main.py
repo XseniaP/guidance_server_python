@@ -45,6 +45,10 @@ if __name__ == "__main__":
     flag_that_finished_ok(args_library)
     create_tar_archives(args_library)
     # create_png_for_seqscores(args_library)
+    print(args_library)
+    if args_library.isServer == 1:
+        prepare_rerun_parameters(args_library)
+    send_finish_email_to_user(args_library)
 
     if os.path.exists(os.path.join(RESULTS, "timestamps.txt")):
         shutil.move(os.path.join(RESULTS, "timestamps.txt"), os.path.join(args_library.WorkingDir, "timestamps.txt"))
