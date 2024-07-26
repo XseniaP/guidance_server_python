@@ -45,6 +45,7 @@ else:
     VARS['Col_Scores_File'] = VARS["WorkingDir"] + "/" + VARS["Output_Prefix"] + "_res_pair_col.scr"
     VARS['Alignment_File'] = VARS['WorkingDir'] + VARS['Alignment_File']
     VARS['removed_low_SP_SITE'] = VARS['WorkingDir']+VARS['removed_low_SP_SITE'] + f".{cutoff}"
+    VARS['code_fileName'] = 'Seqs.Codes'
     is_server = "YES"
 
 

@@ -634,7 +634,7 @@ class GuidanceState:
                 var['select_remove_seq_selection_box'] = print_remove_seq_selection_box(seq_pair_scores_path, int(msa_depth))
             
             if not os.path.exists( os.path.join( var['WorkingDir'], var['Seq_File_without_low_SP_SEQ_with_Names']) ): 
-                var['remove_seq_default_line'] = f"<font color='red'><B>ATTENTION:</font></B> All sequences had score below {var['SP_SEQ_CUTOFF']}<br>"
+                var['remove_seq_default_line'] = f"<font color='red'><B>ATTENTION:</font></B> All sequences had score above {var['SP_SEQ_CUTOFF']}<br>"
             elif not os.path.exists( os.path.join( var['WorkingDir'],  var['removed_low_SP_SEQ_With_Names']) ):
                 var['remove_seq_default_line'] = f"All sequences had score higher than {var['SP_SEQ_CUTOFF']}<br>"
             else: 

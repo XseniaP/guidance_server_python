@@ -983,10 +983,16 @@ def prepare_plots(args_library):
 def remove_sequences_sp_score(args_library):
     # remove seq with SP-score < Seq sp_cutoff
     ############################################
-    args_library.Seq_File_without_low_SP_SEQ = args_library.SeqsFile + ".Without_low_SP_Seq"
-    args_library.removed_low_SP_SEQ = args_library.SeqsFile + ".Removed_Seq"
-    args_library.Seq_File_without_low_SP_SEQ_with_Names = args_library.Seq_File_without_low_SP_SEQ + ".With_Names"
-    args_library.removed_low_SP_SEQ_With_Names = args_library.removed_low_SP_SEQ + ".With_Names"
+    if args_library.input_type != 'msa':
+        args_library.Seq_File_without_low_SP_SEQ = args_library.SeqsFile + ".Without_low_SP_Seq"
+        args_library.removed_low_SP_SEQ = args_library.SeqsFile + ".Removed_Seq"
+        args_library.Seq_File_without_low_SP_SEQ_with_Names = args_library.Seq_File_without_low_SP_SEQ + ".With_Names"
+        args_library.removed_low_SP_SEQ_With_Names = args_library.removed_low_SP_SEQ + ".With_Names"
+    else:
+        args_library.Seq_File_without_low_SP_SEQ = f"{args_library.dataset}.{args_library.MSA_Program}.Without_low_SP_Seq"
+        args_library.removed_low_SP_SEQ = f"{args_library.dataset}.{args_library.MSA_Program}.Removed_Seq"
+        args_library.Seq_File_without_low_SP_SEQ_with_Names = args_library.Seq_File_without_low_SP_SEQ + ".With_Names"
+        args_library.removed_low_SP_SEQ_With_Names = args_library.removed_low_SP_SEQ + ".With_Names"
 
     try:
         with open(args_library.OutLogFile, "a") as log_file:

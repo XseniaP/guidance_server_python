@@ -137,17 +137,25 @@
     {% for remove_sequence in remove_sequences_list %}
     <ul>
         <li>
-            <a href="{{ var['run_number'] }}/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.{{ remove_sequence }}" TARGET=_blank>
+<!--            <a href="{{ var['run_number'] }}/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.{{ remove_sequence }}" TARGET=_blank>-->
+<!--                The input sequences after the removal of unreliable sequences (with confidence score below {{ remove_sequence }})-->
+<!--            </a>-->
+<!--            <font size="-1">-->
+<!--                (see list of removed sequences-->
+<!--                <a href="{{ var['run_number'] }}/Seqs.Orig.fas.FIXED.Removed_Seq.{{ remove_sequence }}.With_Names" target=_blank>here</a>)-->
+<!--            </font>-->
+            <a href="{{ var['run_number'] }}/{{ var['Seq_File_without_low_SP_SEQ'] }}.{{ remove_sequence }}" TARGET=_blank>
                 The input sequences after the removal of unreliable sequences (with confidence score below {{ remove_sequence }})
             </a>
             <font size="-1">
                 (see list of removed sequences
-                <a href="{{ var['run_number'] }}/Seqs.Orig.fas.FIXED.Removed_Seq.{{ remove_sequence }}.With_Names" target=_blank>here</a>)
+                <a href="{{ var['run_number'] }}/{{ var['Seq_File_without_low_SP_SEQ'] }}.{{ remove_sequence }}.With_Names" target=_blank>here</a>)
             </font>
             &nbsp;&nbsp;&nbsp;
 <!--            &nbsp;&nbsp;<input TYPE="button" value="Run GUIDANCE on the confidently-aligned sequences only" onclick="window.open('/guidance/rerun/{{ var['run_number'] }}/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.{{ remove_sequence }}.With_Names')">-->
 
-            {% set rerun_url = '/guidance/rerun/' + var['run_number'] + '/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.' + remove_sequence + '.With_Names' %}
+<!--            {% set rerun_url = '/guidance/rerun/' + var['run_number'] + '/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.' + remove_sequence + '.With_Names' %}-->
+            {% set rerun_url = '/guidance/rerun/' + var['run_number'] + '/' + var['Seq_File_without_low_SP_SEQ'] + '.' + remove_sequence + '.With_Names' %}
             <input type="button" value="Run GUIDANCE on the confidently-aligned sequences only" onclick="window.open('{{ rerun_url }}')">
 
 <!--            <input type="button" value="Run GUIDANCE on the confidently-aligned sequences only" onclick="window.open('/guidance/rerun/{{ var['run_number'] }}/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.{{ remove_sequence }}.With_Names')">-->
