@@ -2,12 +2,10 @@ import json
 import pickle
 import argparse
 from shutil import copy
-
-import config
+import SharedConsts as CONST
 from guidance_sequence_functions import *
 from guidance_tree_functions import *
 Bin = os.path.dirname(os.path.abspath(sys.argv[0]))
-# Bin = os.path.dirname(sys.argv[0])
 BIN_DIR = os.path.dirname(Bin)
 
 class Library:
@@ -19,16 +17,24 @@ class Library:
         self.outDir = ""
         self.stored_data_file = ""
         self.stored_form_data = ""
-        self.semphy_prog = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
-        self.iqtree_prog = os.path.join(BIN_DIR, 'script/programs/iqtree/bin/iqtree2')
+        # self.semphy_prog = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
+        self.semphy_prog = CONST.SEMPHY
+        # self.iqtree_prog = os.path.join(BIN_DIR, 'script/programs/iqtree/bin/iqtree2')
+        self.iqtree_prog = CONST.IQTREE
         self.mafft_prog = "mafft"
         self.prank_prog = "prank"
-        self.clustalw_prog = os.path.join(BIN_DIR, 'script/programs/clustalo')
-        self.ruby_prog = "ruby"
-        self.muscle_prog = "muscle"
-        self.msa_set_score_prog = os.path.join(BIN_DIR, 'script/programs/msa_set_score/msa_set_score')
-        self.pagan_prog = "pagan"
-        self.remove_taxa_prog = os.path.join(BIN_DIR, 'script/programs/removeTaxa/removeTaxa')
+        # self.clustalw_prog = os.path.join(BIN_DIR, 'script/programs/clustalo')
+        self.clustalw_prog = CONST.CLUSTAL_OMEGA
+        # self.ruby_prog = "ruby"
+        self.ruby_prog = CONST.RUBY
+        # self.muscle_prog = "muscle"
+        self.muscle_prog = CONST.MUSCLE
+        # self.msa_set_score_prog = os.path.join(BIN_DIR, 'script/programs/msa_set_score/msa_set_score')
+        self.msa_set_score_prog = CONST.MSA_SET_SCORE
+        # self.pagan_prog = "pagan"
+        self.pagan_prog = CONST.PAGAN
+        # self.remove_taxa_prog = os.path.join(BIN_DIR, 'script/programs/removeTaxa/removeTaxa')
+        self.remove_taxa_prog = CONST.REMOVE_TAXA
         self.orig_argv = sys.argv[1:]  # Skip the script name itself
         self.overview_URL = ""
         self.gallery_URL = ""
@@ -494,18 +500,18 @@ class Library:
         self.GapPenDist = "UNIF"
 
         if self.BBL.upper() == "NO":
-            self.semphy_prog = config.SEMPHY
+            self.semphy_prog = CONST.SEMPHY
         else:
-            self.semphy_prog = config.SEMPHY_BBL  # TO DO: Change its location to a more stable one
+            self.semphy_prog = CONST.SEMPHY_BBL  # TO DO: Change its location to a more stable one
 
-        self.mafft_prog = config.MAFFT_GUIDANCE
-        self.prank_prog = config.PRANK_LECS
+        self.mafft_prog = CONST.MAFFT_GUIDANCE
+        self.prank_prog = CONST.PRANK_LECS
         # self.clustalw_prog = config.CLUSTALW_LECS
-        self.clustalw_prog = config.CLUSTAL_OMEGA
-        self.muscle_prog = config.MUSCLE
-        self.pagan_prog = config.PAGAN_LECS
-        self.ruby_prog = config.RUBY
-        self.msa_set_score_prog = MSA_SET_SCORE
+        self.clustalw_prog = CONST.CLUSTAL_OMEGA
+        self.muscle_prog = CONST.MUSCLE
+        self.pagan_prog = CONST.PAGAN_LECS
+        self.ruby_prog = CONST.RUBY
+        self.msa_set_score_prog = CONST.MSA_SET_SCORE
 
         # Defaults (still not supported by the web server implementation, experimental feature)
         self.Z_Col_Cutoff ='NA'
@@ -543,15 +549,9 @@ class Library:
         self.Semphy_StdFile = ""
         self.COL_SCORES_FIGURE = "Col_Scores_Graph.png"
         self.Scoring_Alignments_Dir = ""  # The dir with the alignment used to create the score
-        self.send_email_dir = config.SEND_EMAIL_DIR_IBIS
+        # self.send_email_dir = config.SEND_EMAIL_DIR_IBIS
+        self.send_email_dir = CONST.SEND_EMAIL_DIR_IBIS
         self.DNA_AA = {}
-
-        # if self.isServer == 1:
-        #     output_file_path = os.path.join(self.WorkingDir, self.output_page)
-        #     self.Output = output_file_path
-        #     # with open(output_file_path, "a") as OUTPUT:
-            #     pass
-
 
     def user_provided_MSA(self):
         log_file_path = f"{self.OutLogFile}"

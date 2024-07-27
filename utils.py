@@ -13,24 +13,12 @@ import json
 from time import time
 from random import randint
 
+
 LOGGER_LEVEL_JOB_MANAGE_THREAD_SAFE = logging.DEBUG
 LOGGER_LEVEL_JOB_MANAGE_API = logging.DEBUG
-# SERVER_DIR = r'/var/www/flask/guidance/'
 Bin = os.path.dirname(os.path.abspath(sys.argv[0]))
-# Bin = os.path.dirname(sys.argv[0])
 BIN_DIR = os.path.dirname(Bin)
 SERVER_DIR = BIN_DIR
-
-MSA_SET_SCORE = os.path.join(Bin, 'programs', 'msa_set_score', 'msa_set_score')
-HOT_PROGRAM = os.path.join(Bin, 'hot_cos_main.py')
-MAFFT_OP_DIST = os.path.join(Bin, 'balibase.mafft_7123_mafft.op.Dist20bins.txt')
-MAFFT_OP_DIST_0_25 = os.path.join(Bin, 'balibase.mafft_7123_mafft.op2.Dist25bins.txt')
-MAFFT_EP_DIST_0_25 = os.path.join(Bin, 'balibase.mafft_7123_mafft.ep2.Dist20bins.txt')
-HOT_GUIDANCE2_PROGRAM = os.path.join(Bin, 'hot_cos_main.py')
-MIDPOINT_ROOTING_R = os.path.join(Bin, 'programs', 'MidPoint_Rooting.R')
-MSA_Score_CSS = "https://taux.evolseq.net/guidance/static/css/MSA_Colored.NEW.EM.css"
-MidPoint_Rooting_R = os.path.join(Bin, 'programs', 'MidPoint_Rooting.R')
-isEqualTopologyProg = os.path.join(Bin, 'programs', 'isEqualTree', 'isEqualTree')
 
 def init_dir_path():
     path2change = SERVER_DIR

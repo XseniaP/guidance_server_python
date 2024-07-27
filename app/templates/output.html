@@ -4,7 +4,6 @@
 
 {% if job_state == 'FINISHED' %}
 
-<!--        <H1><center><a name=finish>GUIDANCE calculation results:</a></center></H1>-->
 <br>
 <h1 class="overview-headline" align=center><br>GUIDANCE calculation results</h1>
 <h2><b>Overall results:</b></h2>
@@ -43,7 +42,6 @@
     </li>
 </ul>
 
-<!--<ul><li><form enctype="multipart/form-data" action="/mask.php" method="post">-->
 {% if var['mean_res_pair_score']|int < 1 %}
 <ul>
     <li>
@@ -72,7 +70,7 @@
 
 
 </ul></li></ul>
-<!--<ul><li><form enctype="multipart/form-data" action="/remove_pos.php" method="post">-->
+
 <ul>
     <li>
         <form enctype="multipart/form-data" action="/guidance/remove_pos/{{var['run_number']}}" method="post">
@@ -91,8 +89,7 @@
 
 </ul>
 <ul>
-    <!--<ul><li><A HREF='MSA.MAFFT.Without_low_SP_Col.With_Names' TARGET=_blank>The MSA after the removal of unreliable columns (below 0.93)</A><font size=-1> (see list of removed columns <A HREF='Seqs.Orig.fas.FIXED.MSA.MAFFT.Removed_Col' TARGET=_blank>here</A>)</font>
-    </li></ul>-->
+
     <ul>{{var['remove_columns_default_line']|safe}}</ul>
 
     {% for remove_column in remove_columns_list %}
@@ -100,9 +97,9 @@
         <li>
             <A HREF="{{var['run_number']}}/{{var['dataset']}}.{{form['MSA_Program']}}.Without_low_SP_Col.{{remove_column}}"
                TARGET=_blank>The MSA after the removal of unreliable columns (below {{remove_column}})</A>
-            <font size=-1> (see list of removed columns <A
-                    HREF="{{var['run_number']}}/Seqs.Orig.fas.FIXED.{{var['dataset']}}.{{form['MSA_Program']}}.Removed_Col.{{remove_column}}"
-                    TARGET=_blank>here</A>)</font>
+            <font size=-1> (see list of removed columns <A href="{{var['run_number']}}/{{var['SeqsFile']}}.{{var['dataset']}}.{{form['MSA_Program']}}.Removed_Col.{{remove_column}}"
+                                                           target=_blank>here</A>)</font>
+
         </li>
     </ul>
     {% endfor %}
@@ -131,19 +128,11 @@
 
     <a name="remove_seq"></a>
 
-    <!--<ul><li> All sequences had score higher than 0.6<br></li></ul>-->
     <ul>{{var['remove_seq_default_line']|safe}}</ul>
 
     {% for remove_sequence in remove_sequences_list %}
     <ul>
         <li>
-<!--            <a href="{{ var['run_number'] }}/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.{{ remove_sequence }}" TARGET=_blank>-->
-<!--                The input sequences after the removal of unreliable sequences (with confidence score below {{ remove_sequence }})-->
-<!--            </a>-->
-<!--            <font size="-1">-->
-<!--                (see list of removed sequences-->
-<!--                <a href="{{ var['run_number'] }}/Seqs.Orig.fas.FIXED.Removed_Seq.{{ remove_sequence }}.With_Names" target=_blank>here</a>)-->
-<!--            </font>-->
             <a href="{{ var['run_number'] }}/{{ var['Seq_File_without_low_SP_SEQ'] }}.{{ remove_sequence }}" TARGET=_blank>
                 The input sequences after the removal of unreliable sequences (with confidence score below {{ remove_sequence }})
             </a>
@@ -151,14 +140,9 @@
                 (see list of removed sequences
                 <a href="{{ var['run_number'] }}/{{ var['Seq_File_without_low_SP_SEQ'] }}.{{ remove_sequence }}.With_Names" target=_blank>here</a>)
             </font>
-            &nbsp;&nbsp;&nbsp;
-<!--            &nbsp;&nbsp;<input TYPE="button" value="Run GUIDANCE on the confidently-aligned sequences only" onclick="window.open('/guidance/rerun/{{ var['run_number'] }}/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.{{ remove_sequence }}.With_Names')">-->
-
-<!--            {% set rerun_url = '/guidance/rerun/' + var['run_number'] + '/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.' + remove_sequence + '.With_Names' %}-->
+            &nbsp;
             {% set rerun_url = '/guidance/rerun/' + var['run_number'] + '/' + var['Seq_File_without_low_SP_SEQ'] + '.' + remove_sequence + '.With_Names' %}
             <input type="button" value="Run GUIDANCE on the confidently-aligned sequences only" onclick="window.open('{{ rerun_url }}')">
-
-<!--            <input type="button" value="Run GUIDANCE on the confidently-aligned sequences only" onclick="window.open('/guidance/rerun/{{ var['run_number'] }}/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.{{ remove_sequence }}.With_Names')">-->
 
             <br>
         </li>
@@ -173,7 +157,7 @@
     {% endif %}
 
     {% if form['PROGRAM'] == 'GUIDANCE2' %}
-    <!--</ul><ul><li><form enctype="multipart/form-data" action="/ConcatMSAs.php" method="post">-->
+
 </ul>
 <ul>
     <li>
@@ -184,7 +168,6 @@
                                                                                                           value="{{var['run_number']}}"/>
             <input class="btn btn-outline-primary btn-outline-primary-small"  type="submit" value="Create SuperMSA"/></form>
     </li>
-    <!-- <font size ="-1">(see <a href="/guidance/overview#SuperMSA" target="_blank">help</a></font>)-->
 </ul>
 
 <!-- end of SuperMSA_results_section -->
@@ -204,8 +187,7 @@
 
 
 <ul>
-<!--    <li><A HREF='{{var['run_number']}}/MSA.MAFFT.Guidance2_AlternativeMSA.tar.gz'> The set of alternative MSAs<br></A>-->
-<!--    </li>-->
+
     <li><A HREF="{{var['run_number']}}/{{var['dataset']}}.{{form['MSA_Program']}}.Guidance2_AlternativeMSA.tar.gz"> The set of alternative MSAs<br></A>
     </li>
 </ul>

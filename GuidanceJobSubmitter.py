@@ -2,7 +2,9 @@ import pathlib
 import subprocess
 import os
 from SharedConsts import EMAIL_CONSTS
+# from script.config import EMAIL_CONSTS
 import SharedConsts as CONSTS
+# import script.config as CONSTS
 from utils import logger, get_job_logger, send_email
 
 class GuidanceJobSubmitter:

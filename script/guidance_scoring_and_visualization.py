@@ -3,9 +3,9 @@ import os
 
 from matplotlib import pyplot as plt
 
+from SharedConsts import MSA_Score_CSS
 from guidance_sequence_functions import *
 import numpy as np
-
 from time_decorator import timeit
 
 
@@ -1091,11 +1091,9 @@ def make_jalview(args_library):
 def print_output_to_the_server(args_library):
     pass
 
-# def create_png_for_seqscores(prefix):
 #@timeit
 def create_png_for_seqscores(args_library):
     data_file = f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_seq.scr_with_Names"
-    # data_file = f"{prefix}_res_pair_seq.scr_with_Names"
     scores = []
     names = []
     with open(data_file, "r") as in_file:
@@ -1114,7 +1112,6 @@ def create_png_for_seqscores(args_library):
     plt.xlabel('Sequence score')
     plt.ylabel('Number of sequences')
     plt.title('Histogram with Sequence scores distribution')
-    # plt.show()
     fig1.savefig(os.path.join(args_library.WorkingDir,'histogram_seq_scores_distribution.png'))
     plt.close(fig1)
     # fig1.savefig(f'{prefix}_histogram_seq_scores_distribution.png')
@@ -1143,48 +1140,22 @@ def create_png_for_seqscores(args_library):
     dist = yticks[1] - yticks[0]
     # Annotate outliers with their names
     for i, value in sorted_outliers:
-        # if value < 0.94:
-        #     plt.annotate(f'{names[i]}', xy=(float(f"1.0{index}"), value), xytext=(float(f"1.11{index}"), value + float(f"0.{index}")* dist),
-        #                  arrowprops=dict(facecolor='red', shrink=0.05), fontsize = 'small')
-        # else:
-        #     plt.annotate(f'{names[i]}', xy=(float(f"1.0{index}"), value),
-        #                  xytext=(float(f"1.11{index}"), value + float(f"0.{index}") * dist),
-        #                  arrowprops=dict(facecolor='red', shrink=0.05), fontsize='small')
         plt.annotate(f'{names[i]}', xy=(float(f"1.0{index}"), value),
                      xytext=(float(f"1.11{index}"), value + float(f"0.{index}") * 1.7 * dist),
                      arrowprops=dict(facecolor='red', shrink=0.05), fontsize='small')
         index += 1
 
     fig2 = plt.gcf()
-    # plt.xlabel('Data')
     plt.ylabel('Sequence score')
     plt.title('Boxplot with Sequence scores and outlier names')
     fig = plt.figure(figsize=(10, 7))
     plt.tight_layout()
-    # plt.show()
     fig2.savefig(os.path.join(args_library.WorkingDir,'boxplot_seq_scores_and_outliers.png'))
     plt.close(fig2)
-    # fig2.savefig(f'{prefix}_boxplot_seq_scores_and_outliers.png')
+
 
 #@timeit
 def calculate_sp_scores_convergence(args_library, countTrees):
-    # if args_library.isServer == 1:
-    #     if args_library.PROGRAM == "GUIDANCE":
-    #         # print_message_to_output(f"Calculating GUIDANCE scores for tree # {countTrees}", args_library)
-    #         update_progress( f"{args_library.WorkingDir}{args_library.progress_report}",f"Calculating GUIDANCE scores for tree # {countTrees}")
-    #     elif args_library.PROGRAM == "HoT":
-    #         # print_message_to_output(f"Calculating HoT scores for tree # {countTrees}", args_library)
-    #         update_progress(f"{args_library.WorkingDir}{args_library.progress_report}",
-    #                         f"Calculating HoT scores for tree # {countTrees}")
-    #     elif args_library.PROGRAM == "GUIDANCE2":
-    #         # print_message_to_output(f"Calculating GUIDANCE2 scores for tree # {countTrees}", args_library)
-    #         update_progress(f"{args_library.WorkingDir}{args_library.progress_report}",
-    #                         f"Calculating GUIDANCE2 scores for tree # {countTrees}")
-    #     elif args_library.PROGRAM == "GUIDANCE3":
-    #         # print_message_to_output(f"Calculating GUIDANCE3 scores for tree # {countTrees}", args_library)
-    #         update_progress(f"{args_library.WorkingDir}{args_library.progress_report}",
-    #                         f"Calculating GUIDANCE3 scores for tree # {countTrees}")
-
     if args_library.PROGRAM in ["GUIDANCE", "HoT"]:
         args_library.Output_Prefix = f"{args_library.dataset}.{args_library.MSA_Program}.Guidance"
     elif args_library.PROGRAM == "GUIDANCE2":
@@ -1257,7 +1228,6 @@ def calculate_sp_scores_convergence(args_library, countTrees):
 
 #@timeit
 def add_scores_to_dict(args_library, epsilon, countTrees, lock):
-    # score = 10*epsilon  #just random score not satisfying the condition of convergence
     MSA_score_file = os.path.join(args_library.WorkingDir, f"{args_library.Output_Prefix + f'_tree_{countTrees}'}_msa.scr")
 
     with open(MSA_score_file, 'r') as f:
@@ -1267,8 +1237,7 @@ def add_scores_to_dict(args_library, epsilon, countTrees, lock):
                     args_library.mean_res_pair_score.append(float(line.strip().split()[1]))
                     args_library.mean_col_score.append(float(line.strip().split()[3]))
     f.close()
-    # print(args_library.mean_res_pair_score)
-    # print(args_library.mean_col_score)
+
 #@timeit
 def check_convergence(args_library, epsilon):
     score1, score2 = 10 * epsilon, 10 * epsilon

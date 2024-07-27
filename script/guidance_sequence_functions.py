@@ -13,38 +13,6 @@ from guidance_tree_functions import fix_mafft_rough_tree
 import tarfile
 import glob
 from time_decorator import timeit
-# from utils import *
-
-# script_dir = os.path.dirname(os.path.realpath(__file__))
-# Bin = os.path.dirname(sys.argv[0])
-Bin = os.path.dirname(os.path.abspath(sys.argv[0]))
-
-# NEWIC2MAFFT = os.path.join(Bin, 'exec', 'newick2mafft.rb')
-MSA_SET_SCORE = os.path.join(Bin, 'programs', 'msa_set_score', 'msa_set_score')
-# HOT_PROGRAM = os.path.join(Bin, 'exec', 'HoT', 'COS.pl')
-HOT_PROGRAM = os.path.join(Bin, 'hot_cos_main.py')
-MAFFT_OP_DIST = os.path.join(Bin, 'balibase.mafft_7123_mafft.op.Dist20bins.txt')
-MAFFT_OP_DIST_0_25 = os.path.join(Bin, 'balibase.mafft_7123_mafft.op2.Dist25bins.txt')
-MAFFT_EP_DIST_0_25 = os.path.join(Bin, 'balibase.mafft_7123_mafft.ep2.Dist20bins.txt')
-# HOT_GUIDANCE2_PROGRAM = os.path.join(Bin, 'exec', 'HoT_COS_GUIDANCE2.pl')
-# HOT_GUIDANCE2_PROGRAM = os.path.join(Bin, 'HoT_COS_GUIDANCE2.pl')
-HOT_GUIDANCE2_PROGRAM = os.path.join(Bin, 'hot_cos_main.py')
-MIDPOINT_ROOTING_R = os.path.join(Bin, 'programs', 'MidPoint_Rooting.R')
-
-# MAFFT_OP_DIST_0_25 = os.path.join(Bin, 'balibase.mafft_7123_mafft.op2.Dist25bins.txt')
-# MAFFT_EP_DIST_0_25 = os.path.join(Bin, 'balibase.mafft_7123_mafft.ep2.Dist20bins.txt')
-
-# newick2mafft = os.path.join(Bin, 'exec', 'newick2mafft.rb')
-
-# MSA_Score_CSS = "http://guidance.tau.ac.il/MSA_Colored.NEW.css"
-# KSENIA
-MSA_Score_CSS = "https://taux.evolseq.net/guidance/static/css/MSA_Colored.NEW.EM.css"
-# MSA_Score_CSS = f"{os.path.dirname(Bin)}/app/static/css/MSA_Colored.NEW.EM.css"
-# MSA_Score_CSS = "css/MSA_Colored.NEW.EM.css"
-MidPoint_Rooting_R = os.path.join(Bin, 'programs', 'MidPoint_Rooting.R')
-# phylonet_prog = os.path.join(Bin, 'exec', 'phylonet_v1_7', 'phylonet_v1_7.jar')
-isEqualTopologyProg = os.path.join(Bin, 'programs', 'isEqualTree', 'isEqualTree')
-
 
 def trim(line):
     line = line.lstrip()
@@ -1080,9 +1048,6 @@ def codon_alignment_to_aminoacids_alignment(codon_aln, AA_aln, codon_table, xcod
                 # stop_codon_warning += ",{}".format(stop_codon_in_seq) if stop_codon_in_seq
                 # stop_codon_warning = "Stop codons were removed from all the sequences" if stop_codon_in_seq
 
-        # Close files
-        # codon_file.close()
-        # aa_file.close()
 
         warning = warning + stop_codon_warning
         return "OK", warning

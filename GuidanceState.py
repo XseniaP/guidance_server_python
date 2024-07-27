@@ -17,8 +17,8 @@ import json
 from InputValidator import InputValidator
 from utils import *
 
-Bin = os.path.dirname(sys.argv[0])
-BIN_DIR = os.path.dirname(Bin)
+# Bin = os.path.dirname(sys.argv[0])
+# BIN_DIR = os.path.dirname(Bin)
 
 # if os.path.exists('/home/josefspr/bioseq'):  # remote run
 #     sys.path.insert(0, '/home/josefspr/bioseq/guidance/guidance.v2.02/www/Guidance')
@@ -266,20 +266,7 @@ class GuidanceState:
             with open(vars_path, 'w') as fp:
                 json.dump(var, fp)
             fp.close()
-            
-            # convert to perl hash files
-            # convertScript = '/home/josefspr/bioseq/guidance/guidance.v2.02/www/Guidance/json2hash.pl'
-            # convertScript = '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/Guidance/json2hash.pl'
 
-
-            # convertScript = os.path.join(BIN_DIR, "script", 'json2hash.pl')
-            # form_data_path = os.path.join( var['WorkingDir'], 'form.data')
-            # var_data_path = os.path.join( var['WorkingDir'], 'input.data')
-            # cmd = f'perl {convertScript} {form_path} {form_data_path}'
-            # subprocess.run(cmd, shell=True)
-            # cmd = f'perl {convertScript} {vars_path} {var_data_path}'
-            # subprocess.run(cmd, shell=True)
-            
         except:
             return f'GuidanceState.store elements: storing var failed'
         

@@ -5,22 +5,14 @@ from guidance_program_call_functions import *
 Bin = os.path.dirname(sys.argv[0])
 BIN_DIR = os.path.dirname(Bin)
 RESULTS = os.path.join(BIN_DIR, "results/Guidance")
-# --seqFile  /Users/kpolonsky/PycharmProjects/HoT_Py/Seqs.Orig.fas --msaProgram MAFFT --seqType aa --outDir /Users/kpolonsky/PycharmProjects/HoT_Py/ENSG00000017260_1/ --msaFile /Users/kpolonsky/PycharmProjects/HoT_Py/MSA.MAFFT.aln --program HoT
-
 
 if __name__ == "__main__":
     args_library = Library()
     args_library.check_and_set_input_and_output_variables(sys.argv)
 
-    # NOW WE ALWAYS WITH AA SEQ
     if args_library.isServer == 1:
         with open(f"{args_library.WorkingDir}{args_library.output_page}", "a") as output_file:
             output_file.write("<h4><font face=Verdana><u>Running Messages:</u></h4></font>\n")
-
-    # if is_server == 1:
-    #     change_qued_to_running(VARS['WorkingDir'] + VARS['output_page'])
-    #     with open(VARS['WorkingDir'] + VARS['output_page'], "a") as OUTPUT:
-    #         OUTPUT.write("<h4><font face=Verdana><u>Running Progress:</u></h4></font>\n")
             print_initial_running_progress(args_library)
             output_file.write("<div id='includedContent'>{{ progress_report|safe }}</div>\n")
 
