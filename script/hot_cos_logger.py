@@ -14,11 +14,6 @@ from hot_cos_file_handler import *
 
 debug = int(os.environ.get('DEBUG_LEVEL', 0))
 
-# def my_sigtrap(sig):
-#     log_print(0,0,f"{os.path.basename(sys.argv[0])} {os.getpid()} caught a SIG{sig} -- {time.strftime('%Y-%m-%d %H:%M:%S')} \n", file_handler)
-#     sys.exit(0)
-
-
 def log_print(level, to, log_entry, file_handler):
     if level > int(debug):
         return

@@ -20,9 +20,4 @@ class FileHandler:
 
         if not os.path.exists(input_file):
             print(f"\nERROR: File not found: {input_file}\n")
-            # print_usage()
             sys.exit()
-
-    # Instance method
-    # def func(self):
-    #     pass

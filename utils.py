@@ -13,13 +13,13 @@ import json
 from time import time
 from random import randint
 
+
 LOGGER_LEVEL_JOB_MANAGE_THREAD_SAFE = logging.DEBUG
 LOGGER_LEVEL_JOB_MANAGE_API = logging.DEBUG
-# SERVER_DIR = r'/var/www/flask/guidance/'
-Bin = os.path.dirname(sys.argv[0])
+Bin = os.path.dirname(os.path.abspath(sys.argv[0]))
 BIN_DIR = os.path.dirname(Bin)
-# SERVER_DIR = "/Users/kpolonsky/PycharmProjects/guidance_server_python"
 SERVER_DIR = BIN_DIR
+
 def init_dir_path():
     path2change = SERVER_DIR
     os.chdir(path2change)
@@ -120,6 +120,7 @@ def dict_file_defined_not_empty(key, files):
     if key not in files:
         return False
     return files[key].filename != ''
+    # return files[key] != ''
 
 def dict_key_value(key, value, form):
     if key not in form.keys():
@@ -393,7 +394,7 @@ def convert_fs_to_upper_case (file):
         with open (file, 'r') as f:
             for line in f:
                 if line[0] == '>':
-                    f.write (line)
+                    f.write(line)
                 else:
                     f.write(line.upper())
         f.close()

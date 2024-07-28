@@ -51,6 +51,7 @@ else:
     VARS["Seq_Scores_File"] = f"{VARS['WorkingDir']}{VARS['Output_Prefix']}_res_pair_seq.scr"
     VARS["Seq_File_without_low_SP_SEQ"] = f"{VARS['WorkingDir']}{VARS['Seq_File_without_low_SP_SEQ']}.{cutoff}"
     VARS["removed_low_SP_SEQ"] = f"{VARS['WorkingDir']}/{VARS['removed_low_SP_SEQ']}.{cutoff}"
+    VARS["code_fileName"] = "Seqs.Codes"
     is_server = "YES"
     type = "ByRowNum"
 

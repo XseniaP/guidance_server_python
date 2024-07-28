@@ -19,12 +19,10 @@ SEND_EMAIL_DIR_IBIS = '/home/josefspr/bioseq/bioSequence_scripts_and_constants/s
 OWNER_EMAIL = 'josefspr@gmail.com'
 
 # general variables
-# SERVERS_RESULTS_DIR = '/home/josefspr/results'
-Bin = os.path.dirname(sys.argv[0])
-BIN_DIR = os.path.dirname(Bin)
+script_path = os.path.abspath(__file__)
+Bin = f"{os.path.dirname(script_path)}/script" #path to the script folder
+BIN_DIR = os.path.dirname(Bin)  #main project folder
 SERVERS_RESULTS_DIR = os.path.join(BIN_DIR, 'results')
-# SERVERS_RESULTS_DIR = '/Users/kpolonsky/PycharmProjects/guidance_server_python/results'
-# SERVERS_LOGS_DIR = '/Users/kpolonsky/PycharmProjects/guidance_server_python/logs'
 SERVERS_LOGS_DIR = os.path.join(BIN_DIR, 'logs')
 
 RELOAD_INTERVAL = 30
@@ -57,39 +55,57 @@ WEBSERVER_PROCESS_STATE_URL_EXT = os.path.join(WEBSERVER_URL_EXT, 'process_state
 WEBSERVER_RESULTS_OLD_URL = os.path.join(WEBSERVER_OLD_URL, 'results')
 SOURCES = '/source.php'
 
-# SCRIPTS_DIR = '/home/josefspr/bioseq/guidance/guidance.v2.02/www/Guidance/'
-# SCRIPTS_DIR = '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/Guidance/'
-# SCRIPTS_DIR = '/Users/kpolonsky/PycharmProjects/guidance_server_python/script/'
+#############################################################################################################
+# Ksenia: START; SCRIPTs and Programs
+#############################################################################################################
+
 SCRIPTS_DIR = os.path.join(BIN_DIR, 'script')
-
-# MAIN_SCRIPT = f'{SCRIPTS_DIR}guidance_flask.pl'
-# MAIN_SCRIPT = f'{SCRIPTS_DIR}guidance_main.py'
 MAIN_SCRIPT = os.path.join(SCRIPTS_DIR, 'guidance_main.py')
-
-# MASK_SCRIPT = f'{SCRIPTS_DIR}maskLowScoreResidues_WebServer.pl'
-# MASK_SCRIPT = f'{SCRIPTS_DIR}maskLowScoreResidues.pl'
 MASK_SCRIPT = os.path.join(SCRIPTS_DIR, 'mask_low_score_residues_webserver.py')
-# REMOVE_POS_SCRIPT = f'{SCRIPTS_DIR}Remove_Pos_bellow_Cutoff.pl'
-# REMOVE_POS_SCRIPT = os.path.join(SCRIPTS_DIR,'Remove_Pos_bellow_Cutoff.pl')
 REMOVE_POS_SCRIPT = os.path.join(SCRIPTS_DIR, 'remove_pos_below_cutoff.py')
-# REMOVE_SEQ_SCRIPT = f'{SCRIPTS_DIR}Remove_Seq_bellow_Cutoff.pl'
-# REMOVE_SEQ_SCRIPT = os.path.join(SCRIPTS_DIR,'Remove_Seq_bellow_Cutoff.pl')
 REMOVE_SEQ_SCRIPT = os.path.join(SCRIPTS_DIR, 'remove_seq_below_cutoff.py')
-# CONCAT_SCRIPT = f'{SCRIPTS_DIR}Concat_ALN_Simple_FileList.Web.pl'
-# CONCAT_SCRIPT = os.path.join(SCRIPTS_DIR,'Concat_ALN_Simple_FileList.Web.pl')
 CONCAT_SCRIPT = os.path.join(SCRIPTS_DIR,'concat_aln_filelist_web.py')
-# CONCAT_SCRIPT = f'{SCRIPTS_DIR}Concat_ALN_Simple_FileList.pl'
+
+MSA_SET_SCORE = os.path.join(SCRIPTS_DIR, 'programs', 'msa_set_score', 'msa_set_score')
+REMOVE_TAXA = os.path.join(SCRIPTS_DIR, 'programs','removeTaxa','removeTaxa')
+HOT_PROGRAM = os.path.join(SCRIPTS_DIR, 'hot_cos_main.py')
+MAFFT_OP_DIST = os.path.join(SCRIPTS_DIR, 'balibase.mafft_7123_mafft.op.Dist20bins.txt')
+MAFFT_OP_DIST_0_25 = os.path.join(SCRIPTS_DIR, 'balibase.mafft_7123_mafft.op2.Dist25bins.txt')
+MAFFT_EP_DIST_0_25 = os.path.join(SCRIPTS_DIR, 'balibase.mafft_7123_mafft.ep2.Dist20bins.txt')
+HOT_GUIDANCE2_PROGRAM = os.path.join(SCRIPTS_DIR, 'hot_cos_main.py')
+MIDPOINT_ROOTING_R = os.path.join(SCRIPTS_DIR, 'programs', 'MidPoint_Rooting.R')
+MSA_Score_CSS = "https://taux.evolseq.net/guidance/static/css/MSA_Colored.NEW.EM.css"
+MidPoint_Rooting_R = os.path.join(SCRIPTS_DIR, 'programs', 'MidPoint_Rooting.R')
+isEqualTopologyProg = os.path.join(SCRIPTS_DIR, 'programs', 'isEqualTree', 'isEqualTree')
+
+MUSCLE = "muscle"
+# SEMPHY = "/bioseq/Programs/Semphy/semphy.doubleRep"
+SEMPHY = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
+SEMPHY_BBL = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
+MAFFT_GUIDANCE = "mafft"
+PRANK_LECS = "prank"
+PRANK = "prank"
+CLUSTAL_OMEGA = os.path.join(BIN_DIR, 'script/programs/clustalo')
+PAGAN_LECS = "/share/apps/pagan-msa/bin/pagan"
+PAGAN = 'pagan'
+RUBY = "/share/apps/bin/ruby"  # or "/usr/bin/ruby"
+IQTREE = os.path.join(BIN_DIR, 'script/programs/iqtree/bin/iqtree2')
+
+#############################################################################################################
+# Ksenia: END;
+#############################################################################################################
+
 REQUIRED_MODULES = ['miniconda/miniconda3-4.7.12','python/python-3.6.7']
 
+# MOVE AND UPDATE
 EXTERAL_SCRIPTS_PATH = '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/bioSequence_scripts_and_constants'
 # EXTERAL_SCRIPTS_PATH = '/home/josefspr/bioseq/bioSequence_scripts_and_constants'
 Q_SUBMITTER_SCRIPT = f'{EXTERAL_SCRIPTS_PATH}/q_submitter_power_flask.py'
 GUIDANCE_RUNNING_JOBS = f'{EXTERAL_SCRIPTS_PATH}/guidance_running_jobs.list'
 JOB_QUEUE_NAME =  'pupkowebr@power9' #'itaym'
 
-# SUBMISSIONS_LOG = f'/home/josefspr/logs/{WEBSERVER_NAME_CAPITAL}/guidance.logv2'
+
 SUBMISSIONS_LOG = os.path.join(SERVERS_LOGS_DIR,WEBSERVER_NAME_CAPITAL, 'guidance.logv2')
-# SUBMISSIONS_LOG = f'/Users/kpolonsky/PycharmProjects/guidance_server_python/logs/{WEBSERVER_NAME_CAPITAL}/guidance.logv2'
 RESULT_WEBPAGE_NAME = 'output.html'
 EMAIL_FILE_NAME = 'email.txt'
 
@@ -129,14 +145,14 @@ class EMAIL_CONSTS:
             return f'{WEBSERVER_NAME_CAPITAL} - Job Crashed'
         else:
             return f'unknown state in create_title at EMAIL_CONSTS'
-            
+
     FINISHED_TITLE = f'{WEBSERVER_NAME_CAPITAL} - Job Finished'
     FINISHED_CONTENT = '''Thanks, for using Guidance\nYour results are at:\n{results_url}/{process_id}\nPlease, remember to cite us'''
     CRASHED_TITLE = f'{WEBSERVER_NAME_CAPITAL} - Job Failed'
     CRASHED_CONTENT =  '''Thanks, Your job has failed\nView your run at:\n{results_url}/{process_id}\n'''
     INIT_TITLE = f'{WEBSERVER_NAME_CAPITAL} - Your job has been submitted'
     INIT_CONTENT = '''Once the analysis will be ready, we will let you know! \nMeanwhile, you can track the progress of your job at:\n{results_url}/{process_id}'''
-    
+
 GUIDANCE_JOB_PREFIX = 'guidance'
 MAIN_JOB_PREFIX = GUIDANCE_JOB_PREFIX
 POSTPROCESS_JOB_PREFIX = 'PP'
@@ -174,7 +190,7 @@ SEPERATOR_FOR_MONITOR_DF = '###'
 PATH2SAVE_MONITOR_DATA = r'/Users/kpolonsky/PycharmProjects/guidance_server/results/Guidance'
 
 class UI_CONSTS:
-    
+
     states_text_dict = {
         State.Running: "Your process is running",
         State.Finished: "Your process finished... Redirecting to results page", #TODO is needed??
@@ -183,7 +199,7 @@ class UI_CONSTS:
         State.Init: "We are verifing your input, your process will start shortly",
         State.Queue: "Job is queued",
     }
-    
+
     global allowed_files_str
     ALLOWED_EXTENSIONS = {'fasta', 'fastqc', 'gz'}
     allowed_files_str = ', '.join(ALLOWED_EXTENSIONS) #better to path string than list
@@ -197,4 +213,4 @@ class UI_CONSTS:
         INVALID_FILE = f'invalid file or file extenstion, please use a valid: {allowed_files_str} file'
         EXPORT_FILE_UNAVAILABLE = f'failed to export file, try to rerun the file'
         PAGE_NOT_FOUND = 'The requested page does not exist'
-        
+

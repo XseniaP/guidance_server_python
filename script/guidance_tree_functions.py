@@ -10,7 +10,9 @@ from Bio import AlignIO, Phylo
 from guidance_common_functions import print_message_to_output, exit_on_error, update_progress
 from time_decorator import timeit
 
-Bin = os.path.dirname(sys.argv[0])
+# from utils import *
+
+Bin = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 # NEWIC2MAFFT = os.path.join(Bin, 'exec', 'newick2mafft.rb')
 # newick2mafft = os.path.join(Bin, 'exec', 'newick2mafft.rb')
@@ -27,13 +29,25 @@ MIDPOINT_ROOTING_R = os.path.join(Bin, 'programs', 'MidPoint_Rooting.R')
 
 
 # MSA_Score_CSS = "http://guidance.tau.ac.il/MSA_Colored.NEW.css"
-MSA_Score_CSS = "https://taux.evolseq.net/guidance/static/css/MSA_Colored.NEW.EM.css"
+# MSA_Score_CSS = "https://taux.evolseq.net/guidance/static/css/MSA_Colored.NEW.EM.css"
+# KSENIA
+# MSA_Score_CSS = f"{os.path.dirname(Bin)}/app/static/css/MSA_Colored.NEW.EM.css"
+# MSA_Score_CSS = "css/MSA_Colored.NEW.EM.css"
 MidPoint_Rooting_R = os.path.join(Bin, 'programs', 'MidPoint_Rooting.R')
 # phylonet_prog = os.path.join(Bin, 'exec', 'phylonet_v1_7', 'phylonet_v1_7.jar')
 isEqualTopologyProg = os.path.join(Bin, 'programs', 'isEqualTree', 'isEqualTree')
 
-@timeit
+#@timeit
 def calculate_msa_depth(inMSA, args_library):
+    """Calculates depth of MSA.
+
+      Args:
+        inMSA: path to the MSA file
+        args_library: the args_library object which stores all relevant paths, script arguments and constants
+
+      Returns:
+        Depth value of the MSA
+      """
     try:
         with open(inMSA, "r") as inMSA_file:
             aln = AlignIO.read(handle = inMSA_file, format = "fasta")
@@ -51,8 +65,24 @@ def calculate_msa_depth(inMSA, args_library):
 
 
 # NEED TO UPDATE FOR IQTREE
-@timeit
+#@timeit
 def pull_out_bp_trees_bbl(no_bp_dir, dataset, bp_repeats, aln_prog):
+    """Pulls out all the Bootstrap trees (after Binary Branch Lengths (BBL) optimization) into the BP directory.
+    Pulls out the original tree (that was done on the complete MSA file)
+
+
+          Args:
+            no_bp_dir: the folder in which BP dir is located, this is a working directory
+            dataset: name of the dataset, default name is "MSA"
+            bp_repeats: number of bootstrap trees produces
+            aln_prog: multiple sequence alignement program
+
+          Returns:
+            ["ok"] in case of success when align program is MAFFT
+            or a tuple "ok", count_unique_trees, num_repeats in case when align program is not MAFFT
+            an error in case if number of trees produces is not equal to a number of bootstrap trees (parameter) requested
+          """
+
     if not no_bp_dir.endswith("/"):
         no_bp_dir += "/"
 
@@ -156,12 +186,24 @@ def pull_out_bp_trees_bbl(no_bp_dir, dataset, bp_repeats, aln_prog):
         else:
             return ["ok"]
 
-@timeit
-def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog):
-    ####################################################################################################################
-    # pull out all the BP trees into the BP directory
-    # pull out the original tree (that was done on the complete MSA file)
-    ####################################################################################################################
+#@timeit
+def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog, args_library):
+    """Pulls out all the Bootstrap trees into the BP directory.
+    Pulls out the original tree (that was done on the complete MSA file)
+
+          Args:
+            no_bp_dir: the folder in which BP dir is located, this is a working directory
+            dataset: name of the dataset, default name is "MSA"
+            bp_repeats: number of bootstrap trees produces
+            aln_prog: multiple sequence alignement program
+            args_library: the object with the program paths, arguments and constants
+
+          Returns:
+            ["ok"] in case of success when align program is MAFFT
+            or a tuple "ok", count_unique_trees, num_repeats in case when align program is not MAFFT
+            an error in case if number of trees produces is not equal to a number of bootstrap trees (parameter) requested
+          """
+
     make_unique = ""
 
     if not no_bp_dir.endswith("/"):
@@ -180,8 +222,8 @@ def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog):
     else:
         make_unique = "no"
 
-
-    iqtree_boottrees_file = f"{bp_dir}{dataset}.{aln_prog}.aln.boottrees"
+    iqtree_boottrees_file = f"{bp_dir}{args_library.Alignment_File}.boottrees"
+    # iqtree_boottrees_file = f"{bp_dir}{dataset}.{aln_prog}.aln.boottrees"
     print(f"iqtree boottrees file: {iqtree_boottrees_file}\n")
 
     with (open(iqtree_boottrees_file, 'r') as boottrees_file):
@@ -246,11 +288,9 @@ def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog):
     else:
         return ["ok"]
 
-@timeit
+#@timeit
 def root_BP_trees(bsDir, dataset, orig_prog, bp_repeats, suffix=None, rooting_type="BioPerl"):
-    ####################################################################################################################
-    # Root all trees on BP dir
-    ####################################################################################################################
+    """Roots all the bootstrap trees in the BP directory."""
 
     # Default values if not defined
     if suffix is None:
@@ -297,16 +337,19 @@ def root_BP_trees(bsDir, dataset, orig_prog, bp_repeats, suffix=None, rooting_ty
 
     return ["ok"]
 
-@timeit
+#@timeit
 def root_tree(in_tree, out_tree):
     """
     The input tree (in_tree) must be an unrooted tree, i.e., the root node has at least 3 sons.
     The output tree (out_tree) will have the root with 2 sons, and all direct sons of the root will be made bifurcating.
     The rest of the tree is left untouched.
 
-    Parameters:
+    Args:
     - in_tree (str): Input tree file in Newick format.
     - out_tree (str): Output tree file in Newick format.
+
+    Returns:
+    - None
     """
 
     with open(in_tree, 'r') as infile:
@@ -350,12 +393,12 @@ def root_tree(in_tree, out_tree):
     with open(out_tree, 'w') as outfile:
         outfile.write(newstr)
 
-@timeit
+#@timeit
 def reformat_trees_branch_length(in_tree, out_tree):
     """
     Reformat tree branch lengths and write the tree in newick format.
 
-    Parameters:
+    Args:
     - in_tree (str): Input tree file in newick format.
     - out_tree (str): Output tree file in newick format.
 
@@ -387,12 +430,12 @@ def reformat_trees_branch_length(in_tree, out_tree):
     with open(out_tree, 'w') as outfile:
         outfile.write(newstr)
 
-@timeit
+#@timeit
 def fix_mafft_rough_tree(tree_file):
     """
     Fix MAFFT RoughTree by removing underscores and extra symbols in node labels.
 
-    Parameters:
+    Args:
     - tree_file (str): Input tree file in newick format.
 
     Returns:
@@ -413,17 +456,27 @@ def fix_mafft_rough_tree(tree_file):
     with open(tree_file, 'w') as tree_file_handle:
         tree_file_handle.write(f'{tree}\n')
 
-@timeit
+#@timeit
 def Bootstrap_Trees(args_library):
-    # ---------------------------------------------
+    """
+    Runs IQ-Tree bootstrapping on the existing MSA file with -fast parameter for either nucleotides (JC or HKY model used), or amino acid sequences (JTT model).
+
+    Args:
+    - args_library: an object with program paths, arguments and constants.
+
+    Returns:
+    - None
+
+    Produces 3 files with the following endings: .treefile, .log, .boottrees.
+    .boottrees file holds all the bootstrap trees produced by IQ-Tree
+    """
     if args_library.isServer == 1:
-        # print_message_to_output("Constructing bootstrap guide-trees", args_library)
         update_progress(f"{args_library.WorkingDir}{args_library.progress_report}", "Constructing bootstrap guide-trees")
 
     os.makedirs(args_library.BootStrap_Dir)
-    args_library.Tree_File = f"{args_library.dataset}.{args_library.MSA_Program}.aln.treefile"
-    args_library.Iqtree_LogFile = f"{args_library.dataset}.{args_library.MSA_Program}.aln.log"
-    args_library.Iqtree_Boottrees = f"{args_library.dataset}.{args_library.MSA_Program}.aln.boottrees"
+    args_library.Tree_File = f"{args_library.Alignment_File}.treefile"
+    args_library.Iqtree_LogFile = f"{args_library.Alignment_File}.log"
+    args_library.Iqtree_Boottrees = f"{args_library.Alignment_File}.boottrees"
 
     cmd = ""
     msa_depth = calculate_msa_depth(f"{args_library.WorkingDir}{args_library.Alignment_File}", args_library)
@@ -439,8 +492,6 @@ def Bootstrap_Trees(args_library):
             print(cmd + "\n")
 
         else:  # use JTT for distance estimation
-            # cmd = (
-            #     f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m JTT -bo {args_library.Bootstraps} -nt {args_library.proc_num} -st AA -n 0 -fast")
             cmd = (
                 f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m JTT -bo {args_library.Bootstraps} -st AA -n 0 -fast")
             print(cmd + "\n")
@@ -450,8 +501,6 @@ def Bootstrap_Trees(args_library):
             cmd = (
                 f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m JC -bo {args_library.Bootstraps} -nt {args_library.proc_num} -st DNA -n 0 -fast")
         else:  # use HKY for distance estimation
-            # cmd = (
-            #     f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m HKY -bo {args_library.Bootstraps} -nt {args_library.proc_num} -st DNA -n 0 -fast")
             cmd = (
                 f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m HKY -bo {args_library.Bootstraps} -st DNA -n 0 -fast")
 
@@ -459,9 +508,10 @@ def Bootstrap_Trees(args_library):
         log_file.write(f"Bootstrap_Trees: {cmd}\n")
     subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 
-    tree_files = os.path.join(f"{args_library.WorkingDir}", f"{args_library.dataset}.{args_library.MSA_Program}.aln.*")
+    tree_files = os.path.join(f"{args_library.WorkingDir}", f"{args_library.Alignment_File}.*")
     for file in glob.glob(tree_files):
-        shutil.move(file, f'{args_library.BootStrap_Dir}')
+        if not file.endswith("ORIG"):
+            shutil.move(file, f'{args_library.BootStrap_Dir}')
 
     if os.path.getsize(f"{args_library.BootStrap_Dir}{args_library.Iqtree_Boottrees}") == 0 or not os.path.exists(
             f"{args_library.BootStrap_Dir}{args_library.Iqtree_Boottrees}"):

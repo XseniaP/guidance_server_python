@@ -21,16 +21,11 @@ class SequencingMethod:
         'MCL': 'MCL'
     }
     def __init__(self, sequencing_name, msa_program_path, parameters):
-        # if sequencing_name not in self.method_to_cmd_mapping:
-        #     print(f"\nERROR: Unknown msa method {sequencing_name}\n{config.usage}")
-        #     sys.exit()
         if sequencing_name not in self.method_to_cmd_mapping:
             print(f"\nERROR: Unknown MSA method {sequencing_name}\n")
             print_usage()
             sys.exit()
-        # self.name = re.match(r'^(.{3})(.?)', sequencing_name).group(1)
         self.name = sequencing_name
-        # self.run_only_hot = re.match(r'^(.{3})(.?)', sequencing_name).group(2)
         self.command = self.method_to_cmd_mapping[self.name]
         self.path = msa_program_path
         self.parameters = ' '.join(parameters + [' ']).replace('---', '')

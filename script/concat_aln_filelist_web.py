@@ -7,7 +7,7 @@ def print_message_to_output(msg, output):
     output.write(f"\n<ul><ul><li>{msg}</li></ul></ul>\n")
 
 def update_msa_hash(msa_file, msa_ref, first_msa):
-    if first_msa is None or first_msa is "":
+    if first_msa is None or first_msa == "":
         first_msa = "No"
     msa_order = []
     with open(msa_file, 'r') as file:

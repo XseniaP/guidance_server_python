@@ -1,38 +1,31 @@
 import json
-import pickle
+# import pickle
 import argparse
 from shutil import copy
-
-import guidance_CONSTANTS
+import SharedConsts as CONST
 from guidance_sequence_functions import *
 from guidance_tree_functions import *
-Bin = os.path.dirname(sys.argv[0])
+Bin = os.path.dirname(os.path.abspath(sys.argv[0]))
 BIN_DIR = os.path.dirname(Bin)
 
 class Library:
     def __init__(self):
+        self.bin_dir = BIN_DIR
         self.isServer = 0
-        # self.proc_num = None
+        self.input_type = "seq"
         self.outDir = ""
         self.stored_data_file = ""
         self.stored_form_data = ""
-        # self.semphy_prog = os.path.join(os.getcwd(), 'programs/semphy/semphy')
-        # self.semphy_prog = '/Users/kpolonsky/PycharmProjects/guidance_server_python/script/programs/semphy/semphy'
-        self.semphy_prog = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
-        # self.iqtree_prog = os.path.join(os.getcwd(), 'programs/iqtree-2.2.2.6-MacOSX/bin/iqtree2')
-        # self.iqtree_prog = os.path.join('/Users/kpolonsky/PycharmProjects/guidance_server_python/script/programs/iqtree-2.2.2.6-MacOSX/bin/iqtree2')
-        self.iqtree_prog = os.path.join(BIN_DIR, 'script/programs/iqtree-2.2.2.6-MacOSX/bin/iqtree2')
+        self.semphy_prog = CONST.SEMPHY
+        self.iqtree_prog = CONST.IQTREE
         self.mafft_prog = "mafft"
         self.prank_prog = "prank"
-        # self.clustalw_prog = "clustalw"
-        self.clustalw_prog = os.path.join(BIN_DIR, 'script/programs/clustalo')
-        self.ruby_prog = "ruby"
-        self.muscle_prog = "muscle"
-        # self.msa_set_score_prog = os.path.join(os.getcwd(), 'programs/msa_set_score/msa_set_score')
-        self.msa_set_score_prog = os.path.join(BIN_DIR, 'script/programs/msa_set_score/msa_set_score')
-        self.pagan_prog = "pagan"
-        # self.remove_taxa_prog = os.path.join(os.getcwd(), 'programs/removeTaxa/removeTaxa')
-        self.remove_taxa_prog = os.path.join(BIN_DIR, 'script/programs/removeTaxa/removeTaxa')
+        self.clustalw_prog = CONST.CLUSTAL_OMEGA
+        self.ruby_prog = CONST.RUBY
+        self.muscle_prog = CONST.MUSCLE
+        self.msa_set_score_prog = CONST.MSA_SET_SCORE
+        self.pagan_prog = CONST.PAGAN
+        self.remove_taxa_prog = CONST.REMOVE_TAXA
         self.orig_argv = sys.argv[1:]  # Skip the script name itself
         self.overview_URL = ""
         self.gallery_URL = ""
@@ -58,7 +51,6 @@ class Library:
         self.usrSeq_File = ""
         self.MSA_Program = ""
         self.server_output = ""
-        # self.usage_ = "FILL IN USAGE LATER"
         self.usage_ = "USAGE: --seqFile <seqFile> --msaProgram <MAFFT|PRANK|CLUSTALO|MUSCLE|PAGAN> --seqType <aa|nuc|codon> --outDir <full path outDir> \
     Optional parameters: \
   --program <GUIDANCE|HoT|GUIDANCE2> default=GUIDANCE2 \
@@ -131,6 +123,9 @@ class Library:
         parser.add_argument('--program', dest='PROGRAM', type=str, choices=['GUIDANCE', 'HoT', 'GUIDANCE2'],
                             default='GUIDANCE2',
                             help='Specify the program to run (optional): GUIDANCE, HoT or GUIDANCE2. Default is GUIDANCE2.')
+        parser.add_argument('--inputType', dest='input_type', type=str, choices=['seq', 're_align', 'msa'],
+                            default='seq',
+                            help='Specify the type of input provided (optional): seq, re_align or msa. Default is seq.')
         parser.add_argument('--bootstraps', type=int, dest='Bootstraps', default=100,
                             help='Specify the number of bootstrap iterations. Default is 100.')
         parser.add_argument('--genCode', type=int, dest='CodonTable', default=1,
@@ -193,10 +188,11 @@ class Library:
         for arg_name, arg_value in vars(args).items():
             setattr(self, arg_name, arg_value)
         return args
+
     def check_arguments_for_errors(self):
 
         if self.BBL.upper() == "YES":
-            self.semphy_prog = "/groups/pupko/haim/Programs/semphy_test_clean_log_BBL/programs/semphy/semphy"
+            self.semphy_prog = CONST.SEMPHY_BBL
 
         if not isinstance(self.Bootstraps, int) or not str(self.Bootstraps).isdigit():
             raise ValueError("ERROR: Bootstraps parameter must be a number")
@@ -245,6 +241,7 @@ class Library:
             self.home_URL = "http://guidance.tau.ac.il/"
             self.credits_URL = "http://guidance.tau.ac.il/credits.html"
 
+        # self.OutLogFile = f"{self.WorkingDir}/log"
         self.OutLogFile = f"{self.outDir}/log"
         self.Output = self.OutLogFile
         try:
@@ -253,7 +250,6 @@ class Library:
                     "\n\n========================================= NEW GUIDANCE RUN STARTED ===========================================\n")
                 log_file.write(f"GUIDANCE COMMAND: python {sys.argv[0]} {' '.join(sys.argv[1:])}\n")
         except IOError as e:
-            # raise FileNotFoundError(f"ERROR: Can't open Log File: {VARS['OutLogFile']}")
             exit_on_error('sys_error', f"Can't open Log File: {self.OutLogFile}: {e}", self)
 
         # INPUT FILES
@@ -283,7 +279,6 @@ class Library:
             try:
                 copy(user_fragments_file, os.path.join(self.WorkingDir, self.fragments_file_name))
             except Exception as e:
-                # raise RuntimeError(f"Can't copy user fragments file: {user_fragments_file} to {self.VARS['WorkingDir']}{self.VARS['fragments_file_name']}. Error: {e}\n")
                 exit_on_error("sys_error",f"Can't copy user fragments file: {user_fragments_file} to {self.WorkingDir}{self.fragments_file_name}\n", self)
             with open(f'{self.OutLogFile}', "a") as log_file:
                 validation_message = f"Validating fragments: Guidance::validate_Seqs({self.WorkingDir}, {self.fragments_file_name}, {self.Seq_Type}, No): \n"
@@ -309,7 +304,6 @@ class Library:
             self.NumOfFragments = ans[3]
 
             tmp = re.split(re.escape("--"), self.align_param)
-            # tmp = re.split(r'\-\-', self.align_param)
             tmp_size = len(tmp)
             if tmp_size >= 1:  # command line type
                 for i in range(len(tmp)):
@@ -319,15 +313,13 @@ class Library:
                 # self.align_param = "\-\-".join(tmp)
             else:  # server type
                 tmp = re.split(re.escape("--"), self.align_param)
-                # tmp = re.split(r'--', self.align_param)
                 for i in range(len(tmp)):
                     if 'addfragments' in tmp[i]:
                         tmp[i] = f"addfragments {os.path.join(self.WorkingDir, self.fragments_file_name_seqName_coded)}"
                 self.align_param = "--".join(tmp)
-                # self.align_param = "\-\-".join(tmp)
 
             # Check if need to remove reorder with fragments
-            if '--reorder' in self.align_param or '\-\-reorder' in self.align_param:
+            if '--reorder' in self.align_param or "\-\-reorder" in self.align_param:
                 self.align_param = self.align_param.replace('--reorder', '')        # if seed is provided reorder must be removed so the seeds will be first
                 print(
                     "WARNING: --reorder is not allowed if seed alignment is provided, therefore the --reorder argument will be ignored, and the output order will be the same as input (with seeds first)\n")
@@ -354,7 +346,7 @@ class Library:
 
     def check_output_files(self):
 
-        if self.userMSA_File !="" and self.userMSA_File != None:       # The user gave the base MSA as input
+        if self.userMSA_File != "" and self.userMSA_File != None:       # The user gave the base MSA as input
             self.Alignment_File = "UserMSA"
             if not os.path.exists(os.path.join(self.WorkingDir, self.Alignment_File)):
                 shutil.copy(self.userMSA_File, os.path.join(self.WorkingDir, self.Alignment_File))
@@ -396,8 +388,8 @@ class Library:
             self.SeqsFile = ans[2]
             self.NumOfSeq = int(ans[3])
 
-
-        elif os.path.exists(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}")) and os.path.getsize(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}")) > 0:   # Alignment provided
+        # Alignment provided
+        elif os.path.exists(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}")) and os.path.getsize(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}")) > 0:
             try:
                 with open(f"{self.OutLogFile}", 'a') as log_file:
                     ans = []
@@ -419,8 +411,6 @@ class Library:
                     if ans[0] == "OK" and ans[1] != "":
                         print(f"Warning: {ans[1]}; Nevertheless calculation is continued")
                         log_file.write(f"Warning: {ans[1]}; Nevertheless calculation is continued\n")
-                        self.Alignment_File = ans[2]
-                        self.NumOfSeq = int(ans[3])
 
                     log_file.write(f"return: {' '.join(ans)}\n")
 
@@ -469,18 +459,17 @@ class Library:
         self.GapPenDist = "UNIF"
 
         if self.BBL.upper() == "NO":
-            self.semphy_prog = guidance_CONSTANTS.SEMPHY
+            self.semphy_prog = CONST.SEMPHY
         else:
-            self.semphy_prog = guidance_CONSTANTS.SEMPHY_BBL  # TO DO: Change its location to a more stable one
+            self.semphy_prog = CONST.SEMPHY_BBL  # TO DO: Change its location to a more stable one
 
-        self.mafft_prog = guidance_CONSTANTS.MAFFT_GUIDANCE
-        self.prank_prog = guidance_CONSTANTS.PRANK_LECS
-        # self.clustalw_prog = guidance_CONSTANTS.CLUSTALW_LECS
-        self.clustalw_prog = guidance_CONSTANTS.CLUSTAL_OMEGA
-        self.muscle_prog = guidance_CONSTANTS.MUSCLE
-        self.pagan_prog = guidance_CONSTANTS.PAGAN_LECS
-        self.ruby_prog = guidance_CONSTANTS.RUBY
-        self.msa_set_score_prog = MSA_SET_SCORE
+        self.mafft_prog = CONST.MAFFT_GUIDANCE
+        self.prank_prog = CONST.PRANK_LECS
+        self.clustalw_prog = CONST.CLUSTAL_OMEGA
+        self.muscle_prog = CONST.MUSCLE
+        self.pagan_prog = CONST.PAGAN_LECS
+        self.ruby_prog = CONST.RUBY
+        self.msa_set_score_prog = CONST.MSA_SET_SCORE
 
         # Defaults (still not supported by the web server implementation, experimental feature)
         self.Z_Col_Cutoff ='NA'
@@ -489,11 +478,13 @@ class Library:
         if self.CALLING_SERVER == "GUIDANCE2":
             self.overview_URL = "http://guidance.tau.ac.il/ver2/overview.php"
             self.gallery_URL = "http://guidance.tau.ac.il/ver2/Gallery.php"
-            self.home_URL = "http://guidance.tau.ac.il/ver2/"
+            self.home_URL = "http://guidance.tau.ac.il/"
+            self.credits_URL = "http://guidance.tau.ac.il/credits.php"
         else:
             self.overview_URL = "http://guidance.tau.ac.il/overview.html"
             self.gallery_URL = "http://guidance.tau.ac.il/Gallery.htm"
             self.home_URL = "http://guidance.tau.ac.il/"
+            self.credits_URL = "http://guidance.tau.ac.il/credits.html"
 
         output_file_path = os.path.join(self.WorkingDir, self.output_page)
         self.server_output = output_file_path
@@ -516,15 +507,8 @@ class Library:
         self.Semphy_StdFile = ""
         self.COL_SCORES_FIGURE = "Col_Scores_Graph.png"
         self.Scoring_Alignments_Dir = ""  # The dir with the alignment used to create the score
-        self.send_email_dir = guidance_CONSTANTS.SEND_EMAIL_DIR_IBIS
+        self.send_email_dir = CONST.SEND_EMAIL_DIR_IBIS
         self.DNA_AA = {}
-
-        # if self.isServer == 1:
-        #     output_file_path = os.path.join(self.WorkingDir, self.output_page)
-        #     self.Output = output_file_path
-        #     # with open(output_file_path, "a") as OUTPUT:
-            #     pass
-
 
     def user_provided_MSA(self):
         log_file_path = f"{self.OutLogFile}"

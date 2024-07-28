@@ -14,33 +14,6 @@ import tarfile
 import glob
 from time_decorator import timeit
 
-# script_dir = os.path.dirname(os.path.realpath(__file__))
-Bin = os.path.dirname(sys.argv[0])
-
-# NEWIC2MAFFT = os.path.join(Bin, 'exec', 'newick2mafft.rb')
-MSA_SET_SCORE = os.path.join(Bin, 'programs', 'msa_set_score', 'msa_set_score')
-# HOT_PROGRAM = os.path.join(Bin, 'exec', 'HoT', 'COS.pl')
-HOT_PROGRAM = os.path.join(Bin, 'hot_cos_main.py')
-MAFFT_OP_DIST = os.path.join(Bin, 'balibase.mafft_7123_mafft.op.Dist20bins.txt')
-MAFFT_OP_DIST_0_25 = os.path.join(Bin, 'balibase.mafft_7123_mafft.op2.Dist25bins.txt')
-MAFFT_EP_DIST_0_25 = os.path.join(Bin, 'balibase.mafft_7123_mafft.ep2.Dist20bins.txt')
-# HOT_GUIDANCE2_PROGRAM = os.path.join(Bin, 'exec', 'HoT_COS_GUIDANCE2.pl')
-# HOT_GUIDANCE2_PROGRAM = os.path.join(Bin, 'HoT_COS_GUIDANCE2.pl')
-HOT_GUIDANCE2_PROGRAM = os.path.join(Bin, 'hot_cos_main.py')
-MIDPOINT_ROOTING_R = os.path.join(Bin, 'programs', 'MidPoint_Rooting.R')
-
-# MAFFT_OP_DIST_0_25 = os.path.join(Bin, 'balibase.mafft_7123_mafft.op2.Dist25bins.txt')
-# MAFFT_EP_DIST_0_25 = os.path.join(Bin, 'balibase.mafft_7123_mafft.ep2.Dist20bins.txt')
-
-# newick2mafft = os.path.join(Bin, 'exec', 'newick2mafft.rb')
-
-# MSA_Score_CSS = "http://guidance.tau.ac.il/MSA_Colored.NEW.css"
-MSA_Score_CSS = "https://taux.evolseq.net/guidance/static/css/MSA_Colored.NEW.EM.css"
-MidPoint_Rooting_R = os.path.join(Bin, 'programs', 'MidPoint_Rooting.R')
-# phylonet_prog = os.path.join(Bin, 'exec', 'phylonet_v1_7', 'phylonet_v1_7.jar')
-isEqualTopologyProg = os.path.join(Bin, 'programs', 'isEqualTree', 'isEqualTree')
-
-
 def trim(line):
     line = line.lstrip()
     line = line.rstrip()
@@ -298,12 +271,13 @@ def validate_seqs(working_dir, input_file, seq_type, msa, codon_table):
 
                 if line != "" and not line.startswith('>'):
                     seq += line
+                    # seq += line.upper()
 
                 elif line.startswith('>'):
                     # validate prev seq
                     if seq == "" and seq_name != "":
                         # return f"The sequence named '{seq_name}' is missing<br>"
-                        errors += f"The sequence named '{seq_name}' is missing\n"
+                        errors += f"The sequence named '{seq_name}' is missing newline before the sequence \n"
 
                     if seq != "" and seq_name != "":
                         # validate seq according to type
@@ -333,6 +307,7 @@ def validate_seqs(working_dir, input_file, seq_type, msa, codon_table):
                         if ans[0] == "OK":
                             outfile.write(f">{seq_name}\n")
                             outfile.write(f"{seq}\n")
+                            # outfile.write(f"{seq.upper()}\n")
                             counter += 1
                         else:
                             # return ans
@@ -354,7 +329,7 @@ def validate_seqs(working_dir, input_file, seq_type, msa, codon_table):
             # validate last sequence
             if seq == "" and seq_name != "":
                 # return f"The sequence named '{seq_name}' is missing<br>"
-                errors += f"The sequence named '{seq_name}' is missing<br>"
+                errors += f"The sequence named '{seq_name}' is missing newline before the sequence <br>"
             else:
                 if msa == "Yes":
                     seq_length = len(seq) if seq_length == 0 else seq_length
@@ -378,6 +353,7 @@ def validate_seqs(working_dir, input_file, seq_type, msa, codon_table):
                 if ans[0] == "OK":
                     outfile.write(f">{seq_name}\n")
                     outfile.write(f"{seq}\n")
+                    # outfile.write(f"{seq.upper()}\n")
                     counter += 1
                 else:
                     # return ans
@@ -492,6 +468,7 @@ def name2code_fasta_from1(in_file_name, code_file_name, out_file_name, counter_o
             out_file.write(f">{counter}\n")
 
         seq = seq_record.seq
+        # seq = seq.upper()
         for i in range(0, len(seq), 60):
             out_file.write(str(seq[i:i + 60]) + "\n")
 
@@ -729,7 +706,7 @@ def codes2name_fasta_from1(aln_with_codes, codes_file, aln_with_names):
 
     return ["OK"]
 
-@timeit
+#@timeit
 def add_original_seq_names_to_the_MSA(args_library):
     args_library.Alignment_File_With_Names = args_library.Alignment_File + ".With_Names"
     ans = codes2name_fasta_from1(f"{args_library.WorkingDir}{args_library.Alignment_File}",
@@ -777,7 +754,7 @@ def convert_fs_to_lower_case(file_path):
     except OSError as e:
         return f"convert_fs_to_lower_case: Fail to open {e.filename} : {str(e)}"
 
-@timeit
+#@timeit
 def convert_fs_to_upper_case(file_path):
     try:
         with open(file_path, 'r') as file:
@@ -819,11 +796,12 @@ def names_according_cos(file_path):
                     msa_file.write(new_line)
                 else:
                     msa_file.write(line)
+                    # msa_file.write(line.upper())
         return None  # Success
     except OSError as e:
         return f"names_according_cos: Failed to open {e.filename} - {str(e)}"
 
-@timeit
+#@timeit
 def align(args_library):
     # ---------------------------------------------
     if args_library.isServer == 1:
@@ -1075,9 +1053,6 @@ def codon_alignment_to_aminoacids_alignment(codon_aln, AA_aln, codon_table, xcod
                 # stop_codon_warning += ",{}".format(stop_codon_in_seq) if stop_codon_in_seq
                 # stop_codon_warning = "Stop codons were removed from all the sequences" if stop_codon_in_seq
 
-        # Close files
-        # codon_file.close()
-        # aa_file.close()
 
         warning = warning + stop_codon_warning
         return "OK", warning

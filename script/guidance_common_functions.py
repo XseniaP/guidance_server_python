@@ -7,9 +7,10 @@ import re
 import sys
 import zipfile
 import time
-import guidance_CONSTANTS
+import SharedConsts as CONST
 from time_decorator import timeit
-@timeit
+
+#@timeit
 def sample_from_empirical_distribution(distribution_file_name, out_sample_file_name, sample_size):
     op_vals = []
     op_density = []
@@ -46,7 +47,7 @@ def sample_from_empirical_distribution(distribution_file_name, out_sample_file_n
 
     return op_vals
 
-@timeit
+#@timeit
 def sample_from_uniform_dist(start, end, out_sample_file_name, sample_size):
     sample = []
     try:
@@ -89,9 +90,8 @@ def flag_that_finished_ok(args_library):
 def send_administrator_mail_on_error(message, args_library):
     email_subject = f"SYSTEM ERROR has occurred on GUIDANCE: {args_library.run_url}"
     email_message = f"Hello,\\n\\nUnfortunately a system SYSTEM ERROR has occurred on GUIDANCE: {args_library.run_url}.\\nERROR: {message}."
-    admin_email = guidance_CONSTANTS.ADMIN_EMAIL
+    admin_email = CONST.ADMIN_EMAIL
     # Activate in case the cluster node fails to communicate with the net
-    # msg = "ssh bioseq@lecs \" cd {}; perl sendEmail.pl -f 'bioSequence@tauex.tau.ac.il' -t '{}' -u '{}' -xu '{}' -xp '{}' -s '{}' -m '{}'\"".format(VARS['send_email_dir'], admin_email, email_subject, VARS['userName'], VARS['userPass'], VARS['smtp_server'], email_message)
     msg = "{}/sendEmail.pl -f 'bioSequence@tauex.tau.ac.il' -t '{}' -u '{}' -xu '{}' -xp '{}' -s '{}' -m '{}'".format(
         args_library.send_email_dir,
         "bioSequence@tauex.tau.ac.il",
@@ -101,9 +101,7 @@ def send_administrator_mail_on_error(message, args_library):
         args_library.smtp_server,
         email_message
     )
-    # print("MESSAGE:{}\nCOMMAND:{}".format(email_message, msg))
     os.chdir(args_library.send_email_dir)
-    # email_system_return = os.popen(msg).read()
     email_system_return = subprocess.getoutput(msg)
     return email_system_return
 
@@ -122,8 +120,6 @@ def exit_on_error(which_error, error_msg, args_library):
         error_definition = "Guidance error: "
 
     if args_library.isServer == 1:
-        # with open(os.path.join(args_library.WorkingDir, args_library.server_output), 'a') as output_file, open(
-        #         f'{args_library.OutLogFile}', "a") as log_file:
         with open(args_library.server_output, 'a') as output_file, open(
                 f'{args_library.OutLogFile}', "a") as log_file:
             if which_error == 'user_error':
@@ -192,11 +188,11 @@ def send_mail_on_error(args_library):
     email_message = "Hello,\n\nUnfortunately your GUIDANCE run (number {}) has failed.\nPlease have a look at {} for further details\n\nSorry for the inconvenience\nGUIDANCE Team".format(
         args_library.run_number, HttpPath)
 
-    send_email_script = './sendEmail.pl'
+    send_email_script = './perl/sendEmail.pl'
 
     cmd = [
         send_email_script,
-        '-f', guidance_CONSTANTS.ADMIN_EMAIL,
+        '-f', CONST.ADMIN_EMAIL,
         '-t', args_library.user_email,
         '-u', email_subject,
         '-xu', args_library.userName,
@@ -366,7 +362,6 @@ def print_initial_running_progress(args_library):
             PROGRESS.write("<ul class=\"in_progress\"><li>Generating the base alignment</li></ul>\n")
 
         PROGRESS.write("<ul class=\"in_progress\"><li>Constructing bootstrap guide-trees</li></ul>\n")
-        # PROGRESS.write("REPLACE")
         PROGRESS.write("<ul class=\"in_progress\"><li>Generating alternative alignments</li></ul>\n")
 
         if args_library.PROGRAM == "GUIDANCE":
@@ -383,17 +378,27 @@ def print_initial_running_progress(args_library):
 
         PROGRESS.write("</font>\n")
 
-@timeit
+#@timeit
 def update_progress(progress_file, message):
     with open(progress_file, "r") as progress:
         data = progress.readlines()
-
     with open(progress_file, "w") as progress:
         for line in data:
             if message in line:
                 line = line.replace("in_progress", "finished")
                 if "(estimated time" in line:
                     line = line.replace("(estimated time", "").split(")")[1]
+                progress.write(line)
+            elif "Started generating alternative alignments" in message and "Generating alternative alignments" in line:
+                line = line.replace("Generating alternative alignments", message)
+                progress.write(line)
+            elif "Finished generating" in message and "Started generating alternative alignments" in line:
+                line = line.replace("in_progress", "finished")
+                line = line.replace("Started generating alternative alignments", message)
+                progress.write(line)
+            elif "Finished Calculating" in message and "Calculating" in line:
+                line = line.replace("in_progress", "finished")
+                line = line.replace("Calculating", "Finished Calculating")
                 progress.write(line)
             else:
                 progress.write(line)

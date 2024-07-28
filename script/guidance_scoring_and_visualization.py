@@ -1,12 +1,10 @@
 import math
-
+import os
 from matplotlib import pyplot as plt
-
+from SharedConsts import MSA_Score_CSS
 from guidance_sequence_functions import *
 import numpy as np
-
 from time_decorator import timeit
-
 
 def remove_pos_no_bioperl(pos_to_remove, msa_hash_ref):
     for seq_id, seq_list in msa_hash_ref.items():
@@ -49,7 +47,7 @@ def read_msa_to_hash(msa_file):
 
     return "OK", msa_hash, msa_length, msa_order
 
-@timeit
+#@timeit
 def remove_low_sp_sites_no_bioperl(msa_file, sp_file, out_file, cutoff, pos_removed_file):
     num_pos_removed = 0
 
@@ -115,7 +113,7 @@ def calculate_mean_and_std(data_file, column):
 
     return avg, std
 
-@timeit
+#@timeit
 def remove_low_sp_sites_consider_z(msa_file, sp_file, out_file, cutoff, z_cutoff, pos_removed_file):
     num_removed_pos = 0
     result, msa_hash_ref, msa_length, msa_order_array_ref = read_msa_to_hash(msa_file)
@@ -150,7 +148,7 @@ def remove_low_sp_sites_consider_z(msa_file, sp_file, out_file, cutoff, z_cutoff
 
     return "OK", num_removed_pos, msa_length
 
-@timeit
+#@timeit
 def convert_to_csv(input_file, output_file):
     try:
         with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
@@ -167,7 +165,7 @@ def convert_to_csv(input_file, output_file):
     except Exception as e:
         return f"Error: {str(e)}"
 
-@timeit
+#@timeit
 def print_colored_alignment_with_css(in_msa_file, out_html_file, scores_file, codes_file, col_scores_csv, x_label,
                                      seq_scores):
     with open(seq_scores, 'r') as seq_scores_file:
@@ -270,7 +268,7 @@ def print_colored_alignment_with_css(in_msa_file, out_html_file, scores_file, co
                     seq = alignment[i - 1]
 
                     msa_colored_html.write("<tr>\n")
-                    if seq_scores_data[str(i)] == "nan":
+                    if seq_scores_data[str(i)] == "nan" or seq_scores_data[str(i)] == "-nan" or np.isnan(float(seq_scores_data[str(i)])):
                         color_class = "ScoreNaN"
                     else:
                         color_class = colorstep[int(9 * float(seq_scores_data[str(i)]))]
@@ -293,7 +291,7 @@ def print_colored_alignment_with_css(in_msa_file, out_html_file, scores_file, co
                             color_class = ""
                             # if scores_data[i][block_start + pos] == "nan":
                             check = scores_data[str(i)][str(pos + 1)]
-                            if scores_data[str(i)][str(pos + 1)] == 'nan':
+                            if scores_data[str(i)][str(pos + 1)] == 'nan' or scores_data[str(i)][str(pos + 1)] == '-nan' or np.isnan(float(scores_data[str(i)][str(pos + 1)])):
                                 color_class = "ScoreNaN"
                             else:
                                 color_class = colorstep[int(9 * float(scores_data[str(i)][str(pos + 1)]))]
@@ -336,7 +334,7 @@ def print_scale(file, align_width):
             i += 1
     file.write("\n</tr>\n")
 
-@timeit
+#@timeit
 def create_html_graph(CSV_File, OUT, X_LABLE):
     # Create an HTML BARs graph
     # GET: 1. CSV FILE (The X var is the first Col and the Y is the second, X must be sorted)
@@ -421,7 +419,7 @@ def print_color_scale(file, fontsize, colorstep_code):
         "</font></center>\n<center><table style = 'table-layout: auto;margin-left:0em;margin-right: 0em;padding:1px 1px 1px 1px; margin:1px 1px 1px 1px; border-collapse: collapse;' border=0 cols=3 width=310>\n<tr>\n<td align=left><b>Confident</b></td>\n<td align=center><b><---></b></td>\n<td align=right><b>Uncertain</b></td>\n</tr>\n</table></center>\n</td>\n</tr>\n</table>\n")
     file.write("<left><table style = 'table-layout: auto;margin-left: 0em;margin-right:0em;padding:1px 1px 1px 1px; margin:1px 1px 1px 1px; border-collapse:collapse;' border=0 cols=2 width=100>\n<tr>\n<td align=center class=\"ScoreNaN\">&nbsp;</td><td align=left>Insufficient Data</b></td>")
 
-@timeit
+#@timeit
 def remove_low_sp_seq(msa_file, seq_sp_file, out_file, cutoff, removed_seq_file, seq_type="ByRowNum"):
     # Alow removal of sequences by their row number ($type=ByRowNum)in the MSA (when using the MSA set score raw file the scores are for MSA row)
     # or by sequence name ($type=BySeqName)
@@ -476,7 +474,7 @@ def remove_low_sp_seq(msa_file, seq_sp_file, out_file, cutoff, removed_seq_file,
 
     return ["OK"]
 
-@timeit
+#@timeit
 def remove_low_sp_seq_consider_z_score(msa_file, seq_sp_file, out_file, sp_cutoff, z_cutoff, removed_seq_file, seq_type="ByRowNum"):
     # Will remove all sequences in which their Z score is below cutoff and their SP score is also below cutoff.
     # Allow removal of sequences by their row number ($type=ByRowNum) in the MSA
@@ -520,7 +518,7 @@ def remove_low_sp_seq_consider_z_score(msa_file, seq_sp_file, out_file, sp_cutof
                     out.write(f">{seq_name}_SP_{seq_sp_score}_Z_{z_score}\n{seq}\n")
     return ["OK"]
 
-@timeit
+#@timeit
 def make_JalView_output(JalView_Applet_Page, WorkingDir, http, inMsa, inMsa_With_names, scores, outJalviewFeaturesFile, NamesCodeFile, Jalview_AnnotFile, Data_File, Y_label):
     try:
         with open(JalView_Applet_Page, "w") as jalview_file:
@@ -545,7 +543,7 @@ def make_JalView_output(JalView_Applet_Page, WorkingDir, http, inMsa, inMsa_With
     except Exception as e:
         return f"Error: {str(e)}"
 
-@timeit
+#@timeit
 def make_Jalview_Color_MSA(inMsaFile, scoresFile, outJalviewFeaturesFile, codesFile=""):
     sequenceLengthForDisplay = 400000
     # Print HTML start
@@ -636,7 +634,7 @@ def make_Jalview_Color_MSA(inMsaFile, scoresFile, outJalviewFeaturesFile, codesF
                     else:
                         color_class = ""
                     # elif scores_data[str(i)][pos] != "nan":
-                        if scores_data[str(i)][str(pos + 1)] != "nan":
+                        if scores_data[str(i)][str(pos + 1)] != "nan" and scores_data[str(i)][str(pos + 1)] != "-nan" and not np.isnan(float(scores_data[str(i)][str(pos + 1)])):
                             color_class = color_step[int(9 * float(scores_data[str(i)][str(pos + 1)]))]
                     # get_color_class(float(scores_data[str(i)][pos]))
                             prob = scores_data[str(i)][str(pos + 1)]
@@ -644,7 +642,7 @@ def make_Jalview_Color_MSA(inMsaFile, scoresFile, outJalviewFeaturesFile, codesF
                             if color_class != "Score5":
                                 jalview_features.write(f"{prob}\tID_NOT_SPECIFIED\t{i - 1}\t{pos + 1 - gaps}\t{pos + 1 - gaps}\t{color_class}\t{prob}\n")
 
-                        elif scores_data[str(i)][str(pos + 1)] == "nan":
+                        elif scores_data[str(i)][str(pos + 1)] == "nan" or scores_data[str(i)][str(pos + 1)] == "-nan" or np.isnan(float(scores_data[str(i)][str(pos + 1)])):
                             color_class = "ScoreNaN"
                             jalview_features.write(f"NA\tID_NOT_SPECIFIED\t{i - 1}\t{pos + 1 - gaps}\t{pos + 1 - gaps}\t{color_class}\t{prob}\n")
 
@@ -657,7 +655,7 @@ def make_Jalview_Color_MSA(inMsaFile, scoresFile, outJalviewFeaturesFile, codesF
 #     color_step = ["Score1", "Score2", "Score3", "Score4", "Score5", "Score6", "Score7", "Score8", "Score9"]
 #     return color_step[int(9 * score)]
 
-@timeit
+#@timeit
 def make_Jalview_AnnotationGraph(Jalview_AnnotFile, Data_File, Y_label, Y_data_Col=1):
     last_x = 0
     with open(Jalview_AnnotFile, "w") as out_file:
@@ -684,23 +682,23 @@ def make_Jalview_AnnotationGraph(Jalview_AnnotFile, Data_File, Y_label, Y_data_C
 
     return ["OK"]
 
-@timeit
+#@timeit
 def calculate_sp_scores(args_library):
-    if args_library.isServer == 1:
-        if args_library.PROGRAM == "GUIDANCE":
-            # print_message_to_output("Calculating GUIDANCE scores", args_library)
-            message = "Calculating GUIDANCE scores"
-        elif args_library.PROGRAM == "HoT":
-            # print_message_to_output("Calculating HoT scores", args_library)
-            message = "Calculating HoT scores"
-        elif args_library.PROGRAM == "GUIDANCE2":
-            # print_message_to_output("Calculating GUIDANCE2 scores", args_library)
-            message = "Calculating GUIDANCE2 scores"
-        elif args_library.PROGRAM == "GUIDANCE3":
-            # print_message_to_output("Calculating GUIDANCE3 scores", args_library)
-            message = "Calculating GUIDANCE3 scores"
-
-        print_message_to_output(message, args_library)
+    # if args_library.isServer == 1:
+    #     if args_library.PROGRAM == "GUIDANCE":
+    #         # print_message_to_output("Calculating GUIDANCE scores", args_library)
+    #         message = "Calculating GUIDANCE scores"
+    #     elif args_library.PROGRAM == "HoT":
+    #         # print_message_to_output("Calculating HoT scores", args_library)
+    #         message = "Calculating HoT scores"
+    #     elif args_library.PROGRAM == "GUIDANCE2":
+    #         # print_message_to_output("Calculating GUIDANCE2 scores", args_library)
+    #         message = "Calculating GUIDANCE2 scores"
+    #     elif args_library.PROGRAM == "GUIDANCE3":
+    #         # print_message_to_output("Calculating GUIDANCE3 scores", args_library)
+    #         message = "Calculating GUIDANCE3 scores"
+    #
+    #     print_message_to_output(message, args_library)
 
     if args_library.PROGRAM in ["GUIDANCE", "HoT"]:
         args_library.Output_Prefix = f"{args_library.dataset}.{args_library.MSA_Program}.Guidance"
@@ -708,7 +706,7 @@ def calculate_sp_scores(args_library):
         args_library.Output_Prefix = f"{args_library.dataset}.{args_library.MSA_Program}.Guidance2"
 
     cmd = ""
-    if args_library.userMSA_File != "" and args_library.Seq_Type == "Codons":
+    if args_library.userMSA_File != "" and args_library.Seq_Type == "Codons":       # user gave codon alignment
         args_library.Alignment_File_translated_from_user_codon_alignmet = f"{args_library.Alignment_File}.TranslatedProt"
         with open(args_library.OutLogFile, "a") as log_file:
             log_file.write(
@@ -738,17 +736,42 @@ def calculate_sp_scores(args_library):
                 f"{args_library.WorkingDir}", f"{args_library.Alignment_File_translated_from_user_codon_alignmet}")):
             exit_on_error("sys_error",
                           f"{args_library.WorkingDir}{args_library.Alignment_File_translated_from_user_codon_alignmet} does not exist/empty\n", args_library)
-        cmd = f"{args_library.msa_set_score_prog} {os.path.join(args_library.WorkingDir, args_library.Alignment_File_translated_from_user_codon_alignmet)} {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)} -d  {args_library.Scoring_Alignments_Dir} > {args_library.WorkingDir}/{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+        # cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File_translated_from_user_codon_alignmet)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)}   -d {args_library.Scoring_Alignments_Dir}  >  {args_library.WorkingDir}{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+        cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File_translated_from_user_codon_alignmet)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)}   -d {args_library.Scoring_Alignments_Dir}  >  {args_library.WorkingDir}{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
     else:
-        cmd = f"{args_library.msa_set_score_prog} {os.path.join(args_library.WorkingDir, args_library.Alignment_File)} {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)} -d  {args_library.Scoring_Alignments_Dir} > {args_library.WorkingDir}/{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+        # cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)}   -d {args_library.Scoring_Alignments_Dir}  >  {args_library.WorkingDir}{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+        cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix)}   -d {args_library.Scoring_Alignments_Dir}"
+        # cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f'_tree_{countTrees}')}   -d {args_library.Scoring_Alignments_Dir}"
+
     with open(args_library.OutLogFile, "a") as log_file:
-        log_file.write(f"calculating SP scores: {cmd}/n")
+        log_file.write(f"calculating SP scores: {cmd}\n")
+        print(f"calculating SP scores: {cmd}\n")
+
+    if os.path.exists(f"{args_library.Scoring_Alignments_Dir}/.DS_Store"):
+        os.remove(f"{args_library.Scoring_Alignments_Dir}/.DS_Store")
+
     subprocess.call(cmd, shell=True)
+
     if not os.path.exists(f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_res.scr") or os.path.getsize(
             f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_res.scr") == 0:
-        exit_on_error("sys_error",
+        for i in range(3):
+            try:
+                subprocess.call(cmd, shell=True)
+            except Exception as e:
+                with open(args_library.OutLogFile, "a") as log_file:
+                    log_file.write(f"Failed to calculate final scores {e}\n")
+                    print(f"Failed to calculate final scores {e}\n")
+                continue
+            break
+
+    if not os.path.exists(
+                    f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_res.scr") or os.path.getsize(
+                    f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_res.scr") == 0:
+            exit_on_error("sys_error",
                       f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_res.scr does not exist/empty\n",
                       args_library)
+
+
     if args_library.PROGRAM == "HoT":
         with open(f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}", "r") as orig_align, open(
                 f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}.NEW", "w") as new_align:
@@ -760,13 +783,14 @@ def calculate_sp_scores(args_library):
                         new_align.write(">1\n")
                 else:
                     new_align.write(line)
+                    # new_align.write(line.upper())
         os.rename(f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}",
                   f"{args_library.WorkingDir}{args_library.Alignment_File}.ORIG")
         os.rename(f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}.NEW",
                   f"{args_library.WorkingDir}{args_library.Alignment_File}")
 
     if args_library.isServer == 1:
-        update_progress(f"{args_library.WorkingDir}{args_library.progress_report}", message)
+        update_progress(f"{args_library.WorkingDir}{args_library.progress_report}", f"Finished Calculating {args_library.PROGRAM} scores")
 
 def round_scores_file(score_file):
     with open(score_file, 'r') as file:
@@ -783,7 +807,7 @@ def round_scores_file(score_file):
             else:
                 file.write(f"{parts[0]}\t{parts[1]}\n")
 
-@timeit
+#@timeit
 def modify_score_files_for_codons_and_server(args_library):
     if args_library.Seq_Type == 'Codons':
         # We should modify the Scores files to be for CODONS - i.e each col score is repeated 3 times for the col and col+1,col+2
@@ -837,7 +861,7 @@ def modify_score_files_for_codons_and_server(args_library):
         round_scores_file(os.path.join(args_library.WorkingDir, "{}_res_pair_seq.scr".format(args_library.Output_Prefix)))
         round_scores_file(os.path.join(args_library.WorkingDir, "{}_res_pair_col.scr".format(args_library.Output_Prefix)))
 
-@timeit
+#@timeit
 def remove_sites(args_library):
     # Return names to the Seq score file
     ############################################
@@ -927,7 +951,7 @@ def remove_sites(args_library):
                               f"Guidance::codes2nameFastaFrom1: Guidance::codes2nameFastaFrom1(\"{args_library.WorkingDir}{args_library.Alignment_File_without_low_SP_Z_Col}\",\"{args_library.WorkingDir}{args_library.code_fileName}\",\"{args_library.WorkingDir}{args_library.Alignment_File_without_low_SP_Z_Col_with_Names}\") failed: {joined_answer}\n",
                               args_library)
 
-@timeit
+#@timeit
 def prepare_plots(args_library):
     try:
         with open(f"{args_library.OutLogFile}", "a") as log_file:
@@ -953,14 +977,20 @@ def prepare_plots(args_library):
         sys.exit(f"ERROR: Could not open log file in prepare_plots(): {e}\n")
 
 
-@timeit
+#@timeit
 def remove_sequences_sp_score(args_library):
     # remove seq with SP-score < Seq sp_cutoff
     ############################################
-    args_library.Seq_File_without_low_SP_SEQ = args_library.SeqsFile + ".Without_low_SP_Seq"
-    args_library.removed_low_SP_SEQ = args_library.SeqsFile + ".Removed_Seq"
-    args_library.Seq_File_without_low_SP_SEQ_with_Names = args_library.Seq_File_without_low_SP_SEQ + ".With_Names"
-    args_library.removed_low_SP_SEQ_With_Names = args_library.removed_low_SP_SEQ + ".With_Names"
+    if args_library.input_type != 'msa':
+        args_library.Seq_File_without_low_SP_SEQ = args_library.SeqsFile + ".Without_low_SP_Seq"
+        args_library.removed_low_SP_SEQ = args_library.SeqsFile + ".Removed_Seq"
+        args_library.Seq_File_without_low_SP_SEQ_with_Names = args_library.Seq_File_without_low_SP_SEQ + ".With_Names"
+        args_library.removed_low_SP_SEQ_With_Names = args_library.removed_low_SP_SEQ + ".With_Names"
+    else:
+        args_library.Seq_File_without_low_SP_SEQ = f"{args_library.dataset}.{args_library.MSA_Program}.Without_low_SP_Seq"
+        args_library.removed_low_SP_SEQ = f"{args_library.dataset}.{args_library.MSA_Program}.Removed_Seq"
+        args_library.Seq_File_without_low_SP_SEQ_with_Names = args_library.Seq_File_without_low_SP_SEQ + ".With_Names"
+        args_library.removed_low_SP_SEQ_With_Names = args_library.removed_low_SP_SEQ + ".With_Names"
 
     try:
         with open(args_library.OutLogFile, "a") as log_file:
@@ -991,7 +1021,7 @@ def remove_sequences_sp_score(args_library):
                           f"Guidance::codes2nameFastaFrom1: Guidance::codes2nameFastaFrom1(Guidance::codes2nameFastaFrom1(\"{args_library.WorkingDir}{args_library.removed_low_SP_SEQ}\",\"{args_library.WorkingDir}{args_library.code_fileName}\",\"{args_library.WorkingDir}{args_library.removed_low_SP_SEQ_With_Names}\") failed:" + ''.join(
                               ans) + "\n", args_library)
 
-@timeit
+#@timeit
 def remove_sequences_sp_and_z_score(args_library):
     # remove seq with SP-score < Seq sp_cutoff if Z<(-Z_Cutoff)
     ##############################################################
@@ -1059,11 +1089,9 @@ def make_jalview(args_library):
 def print_output_to_the_server(args_library):
     pass
 
-# def create_png_for_seqscores(prefix):
-@timeit
+#@timeit
 def create_png_for_seqscores(args_library):
     data_file = f"{args_library.WorkingDir}{args_library.Output_Prefix}_res_pair_seq.scr_with_Names"
-    # data_file = f"{prefix}_res_pair_seq.scr_with_Names"
     scores = []
     names = []
     with open(data_file, "r") as in_file:
@@ -1082,7 +1110,6 @@ def create_png_for_seqscores(args_library):
     plt.xlabel('Sequence score')
     plt.ylabel('Number of sequences')
     plt.title('Histogram with Sequence scores distribution')
-    # plt.show()
     fig1.savefig(os.path.join(args_library.WorkingDir,'histogram_seq_scores_distribution.png'))
     plt.close(fig1)
     # fig1.savefig(f'{prefix}_histogram_seq_scores_distribution.png')
@@ -1111,41 +1138,22 @@ def create_png_for_seqscores(args_library):
     dist = yticks[1] - yticks[0]
     # Annotate outliers with their names
     for i, value in sorted_outliers:
-        # if value < 0.94:
-        #     plt.annotate(f'{names[i]}', xy=(float(f"1.0{index}"), value), xytext=(float(f"1.11{index}"), value + float(f"0.{index}")* dist),
-        #                  arrowprops=dict(facecolor='red', shrink=0.05), fontsize = 'small')
-        # else:
-        #     plt.annotate(f'{names[i]}', xy=(float(f"1.0{index}"), value),
-        #                  xytext=(float(f"1.11{index}"), value + float(f"0.{index}") * dist),
-        #                  arrowprops=dict(facecolor='red', shrink=0.05), fontsize='small')
         plt.annotate(f'{names[i]}', xy=(float(f"1.0{index}"), value),
                      xytext=(float(f"1.11{index}"), value + float(f"0.{index}") * 1.7 * dist),
                      arrowprops=dict(facecolor='red', shrink=0.05), fontsize='small')
         index += 1
 
     fig2 = plt.gcf()
-    # plt.xlabel('Data')
     plt.ylabel('Sequence score')
     plt.title('Boxplot with Sequence scores and outlier names')
     fig = plt.figure(figsize=(10, 7))
     plt.tight_layout()
-    # plt.show()
     fig2.savefig(os.path.join(args_library.WorkingDir,'boxplot_seq_scores_and_outliers.png'))
     plt.close(fig2)
-    # fig2.savefig(f'{prefix}_boxplot_seq_scores_and_outliers.png')
 
-@timeit
+
+#@timeit
 def calculate_sp_scores_convergence(args_library, countTrees):
-    if args_library.isServer == 1:
-        if args_library.PROGRAM == "GUIDANCE":
-            print_message_to_output(f"Calculating GUIDANCE scores for tree # {countTrees}", args_library)
-        elif args_library.PROGRAM == "HoT":
-            print_message_to_output(f"Calculating HoT scores for tree # {countTrees}", args_library)
-        elif args_library.PROGRAM == "GUIDANCE2":
-            print_message_to_output(f"Calculating GUIDANCE2 scores for tree # {countTrees}", args_library)
-        elif args_library.PROGRAM == "GUIDANCE3":
-            print_message_to_output(f"Calculating GUIDANCE3 scores for tree # {countTrees}", args_library)
-
     if args_library.PROGRAM in ["GUIDANCE", "HoT"]:
         args_library.Output_Prefix = f"{args_library.dataset}.{args_library.MSA_Program}.Guidance"
     elif args_library.PROGRAM == "GUIDANCE2":
@@ -1182,11 +1190,15 @@ def calculate_sp_scores_convergence(args_library, countTrees):
                 f"{args_library.WorkingDir}", f"{args_library.Alignment_File_translated_from_user_codon_alignmet}")):
             exit_on_error("sys_error",
                           f"{args_library.WorkingDir}{args_library.Alignment_File_translated_from_user_codon_alignmet} does not exist/empty\n", args_library)
-        cmd = f"{args_library.msa_set_score_prog} {os.path.join(args_library.WorkingDir, args_library.Alignment_File_translated_from_user_codon_alignmet)} {os.path.join(args_library.WorkingDir, args_library.Output_Prefix) + f'_tree_{countTrees}'} -d  {args_library.Scoring_Alignments_Dir} > {args_library.WorkingDir}/{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+        # cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File_translated_from_user_codon_alignmet)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix) + f'_tree_{countTrees}'}   -d {args_library.Scoring_Alignments_Dir}  >  {args_library.WorkingDir}{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+        cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File_translated_from_user_codon_alignmet)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix) + f'_tree_{countTrees}'}   -d {args_library.Scoring_Alignments_Dir}"
     else:
-        cmd = f"{args_library.msa_set_score_prog} {os.path.join(args_library.WorkingDir, args_library.Alignment_File)} {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f'_tree_{countTrees}')} -d  {args_library.Scoring_Alignments_Dir} > {args_library.WorkingDir}/{args_library.dataset}.{args_library.MSA_Program}.msa_set_score.std"
+        cmd = f"{args_library.msa_set_score_prog}   {os.path.join(args_library.WorkingDir, args_library.Alignment_File)}   {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f'_tree_{countTrees}')}   -d {args_library.Scoring_Alignments_Dir}"
     with open(args_library.OutLogFile, "a") as log_file:
-        log_file.write(f"calculating SP scores for tree # {countTrees}: {cmd}/n")
+        log_file.write(f"calculating SP scores for tree # {countTrees}: {cmd}\n")
+        print(f"calculating SP scores for tree # {countTrees}: {cmd}\n")
+    if os.path.exists(f"{args_library.Scoring_Alignments_Dir}/.DS_Store"):
+        os.remove(f"{args_library.Scoring_Alignments_Dir}/.DS_Store")
     subprocess.call(cmd, shell=True)
     alt_msas = len(os.listdir(args_library.Scoring_Alignments_Dir))
     if not os.path.exists(f"{args_library.WorkingDir}{args_library.Output_Prefix + f'_tree_{countTrees}'}_res_pair_res.scr") or os.path.getsize(
@@ -1205,6 +1217,7 @@ def calculate_sp_scores_convergence(args_library, countTrees):
                         new_align.write(">1\n")
                 else:
                     new_align.write(line)
+                    # new_align.write(line.upper())
         os.rename(f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}",
                   f"{args_library.WorkingDir}{args_library.Alignment_File}.ORIG")
         os.rename(f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}.NEW",
@@ -1212,9 +1225,8 @@ def calculate_sp_scores_convergence(args_library, countTrees):
 
     return alt_msas
 
-@timeit
+#@timeit
 def add_scores_to_dict(args_library, epsilon, countTrees, lock):
-    # score = 10*epsilon  #just random score not satisfying the condition of convergence
     MSA_score_file = os.path.join(args_library.WorkingDir, f"{args_library.Output_Prefix + f'_tree_{countTrees}'}_msa.scr")
 
     with open(MSA_score_file, 'r') as f:
@@ -1224,15 +1236,13 @@ def add_scores_to_dict(args_library, epsilon, countTrees, lock):
                     args_library.mean_res_pair_score.append(float(line.strip().split()[1]))
                     args_library.mean_col_score.append(float(line.strip().split()[3]))
     f.close()
-    # print(args_library.mean_res_pair_score)
-    # print(args_library.mean_col_score)
-@timeit
+
+#@timeit
 def check_convergence(args_library, epsilon):
     score1, score2 = 10 * epsilon, 10 * epsilon
     if len(args_library.mean_col_score)>1 and len(args_library.mean_res_pair_score)>1:
         score1 = abs(args_library.mean_col_score[-1] - args_library.mean_col_score[-2])
         score2 = abs(args_library.mean_res_pair_score[-1] - args_library.mean_res_pair_score[-2])
-
 
     if score1 <= epsilon and score2 <= epsilon:
         return 1

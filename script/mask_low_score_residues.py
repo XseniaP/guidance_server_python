@@ -40,5 +40,3 @@ with open(out_file, "w") as out:
         seq = "".join(seq_chars)
         seq_record = SeqRecord(Seq(seq), id=ids[i], description='')
         SeqIO.write(seq_record, out, "fasta")
-        # out.write(">{}\n".format(ids[i]))
-        # out.write("{}\n".format(seq))

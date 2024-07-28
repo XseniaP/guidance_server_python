@@ -2,7 +2,9 @@ import pathlib
 import subprocess
 import os
 from SharedConsts import EMAIL_CONSTS
+# from script.config import EMAIL_CONSTS
 import SharedConsts as CONSTS
+# import script.config as CONSTS
 from utils import logger, get_job_logger, send_email
 
 class GuidanceJobSubmitter:
@@ -37,7 +39,7 @@ class GuidanceJobSubmitter:
         if pid == 0:
             print(submission_cmd)
             job_run_output = subprocess.run(submission_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            print(job_run_output.stdout)
+            # print(job_run_output.stdout)
                       
             # check return code and raise exception if failed
             if job_run_output.returncode != 0:

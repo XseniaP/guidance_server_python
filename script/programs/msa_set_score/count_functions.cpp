@@ -93,9 +93,14 @@ void add_msa(t_cnt *counter, t_msa *alt) {
     row=counter->ref->col_id[col];
 	//res=counter->ref->col2res[row][col];
     res_Cmatrix=counter->ref->col2res[row][col];
+
 	if (res_Cmatrix%2==1){res=0.5*(res_Cmatrix+1)-1;} 	// from the Cmatrix value to the actual residue number
 	else {res=-1;} 										// res=-1 for gap
-	
+
+    if (res == -1){
+        continue;
+    }
+
     alt_col=alt->res2col[row][res];				//find alt_col to compare to col  
 	
     row=0;
