@@ -7,6 +7,7 @@
 import os, sys, stat
 from utils import State
 from enum import Enum
+import platform
 
 # constants to use when sending e-mails using the server admin's email address.
 ADMIN_EMAIL = 'evolseq@gmail.com' #'TAU Evolseq <evolseq@tauex.tau.ac.il>'
@@ -66,9 +67,6 @@ MASK_SCRIPT = os.path.join(SCRIPTS_DIR, 'mask_low_score_residues_webserver.py')
 REMOVE_POS_SCRIPT = os.path.join(SCRIPTS_DIR, 'remove_pos_below_cutoff.py')
 REMOVE_SEQ_SCRIPT = os.path.join(SCRIPTS_DIR, 'remove_seq_below_cutoff.py')
 CONCAT_SCRIPT = os.path.join(SCRIPTS_DIR,'concat_aln_filelist_web.py')
-
-MSA_SET_SCORE = os.path.join(SCRIPTS_DIR, 'programs', 'msa_set_score', 'msa_set_score')
-REMOVE_TAXA = os.path.join(SCRIPTS_DIR, 'programs','removeTaxa','removeTaxa')
 HOT_PROGRAM = os.path.join(SCRIPTS_DIR, 'hot_cos_main.py')
 MAFFT_OP_DIST = os.path.join(SCRIPTS_DIR, 'balibase.mafft_7123_mafft.op.Dist20bins.txt')
 MAFFT_OP_DIST_0_25 = os.path.join(SCRIPTS_DIR, 'balibase.mafft_7123_mafft.op2.Dist25bins.txt')
@@ -77,20 +75,32 @@ HOT_GUIDANCE2_PROGRAM = os.path.join(SCRIPTS_DIR, 'hot_cos_main.py')
 MIDPOINT_ROOTING_R = os.path.join(SCRIPTS_DIR, 'programs', 'MidPoint_Rooting.R')
 MSA_Score_CSS = "https://taux.evolseq.net/guidance/static/css/MSA_Colored.NEW.EM.css"
 MidPoint_Rooting_R = os.path.join(SCRIPTS_DIR, 'programs', 'MidPoint_Rooting.R')
-isEqualTopologyProg = os.path.join(SCRIPTS_DIR, 'programs', 'isEqualTree', 'isEqualTree')
+
+if platform.system()=='Darwin': # macOS platform
+    MSA_SET_SCORE = os.path.join(SCRIPTS_DIR, 'programs', 'msa_set_score', 'msa_set_score')
+    REMOVE_TAXA = os.path.join(SCRIPTS_DIR, 'programs','removeTaxa','removeTaxa')
+    isEqualTopologyProg = os.path.join(SCRIPTS_DIR, 'programs', 'isEqualTree', 'isEqualTree')
+    SEMPHY = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
+    SEMPHY_BBL = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
+    CLUSTAL_OMEGA = os.path.join(BIN_DIR, 'script/programs/clustalo')
+    IQTREE = os.path.join(BIN_DIR, 'script/programs/iqtree/bin/iqtree2')
+
+elif platform.system()=='Linux': # Linux platform
+    MSA_SET_SCORE = os.path.join(SCRIPTS_DIR, 'programs', 'Linux ','msa_set_score', 'msa_set_score')
+    REMOVE_TAXA = os.path.join(SCRIPTS_DIR, 'programs', 'Linux ', 'removeTaxa', 'removeTaxa')
+    isEqualTopologyProg = os.path.join(SCRIPTS_DIR, 'programs', 'Linux', 'isEqualTree', 'isEqualTree')
+    SEMPHY = os.path.join(BIN_DIR, 'script/programs/Linux/semphy/semphy')
+    SEMPHY_BBL = os.path.join(BIN_DIR, 'script/programs/Linux/semphy/semphy')
+    CLUSTAL_OMEGA = os.path.join(BIN_DIR, 'script/programs/Linux/clustalo')
+    IQTREE = os.path.join(BIN_DIR, 'script/programs/Linux/iqtree/bin/iqtree2')
 
 MUSCLE = "muscle"
-# SEMPHY = "/bioseq/Programs/Semphy/semphy.doubleRep"
-SEMPHY = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
-SEMPHY_BBL = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
 MAFFT_GUIDANCE = "mafft"
 PRANK_LECS = "prank"
 PRANK = "prank"
-CLUSTAL_OMEGA = os.path.join(BIN_DIR, 'script/programs/clustalo')
 PAGAN_LECS = "/share/apps/pagan-msa/bin/pagan"
 PAGAN = 'pagan'
 RUBY = "/share/apps/bin/ruby"  # or "/usr/bin/ruby"
-IQTREE = os.path.join(BIN_DIR, 'script/programs/iqtree/bin/iqtree2')
 
 #############################################################################################################
 # Ksenia: END;
