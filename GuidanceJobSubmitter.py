@@ -13,7 +13,6 @@ class GuidanceJobSubmitter:
     def submit_job(working_dir, run_parameters):
         
         job_id = str(pathlib.Path(working_dir).stem)
-        # parameters = f"{os.path.join(working_dir,'input.data')} {os.path.join(working_dir,'form.data')}"
         parameters = f"{os.path.join(working_dir, 'VARS.json')} {os.path.join(working_dir, 'FORM.json')}"
         cmds_file = os.path.join(working_dir, 'qsub.cmds')
         GuidanceJobSubmitter._write_cmds_file(cmds_file, parameters, working_dir, job_id)
@@ -22,8 +21,6 @@ class GuidanceJobSubmitter:
 
         # a simple command when using shebang header (#!) in q_submitter_power.py
         # replace by JS
-        #submission_cmd = f"{CONSTS.Q_SUBMITTER_SCRIPT} {cmds_file} {working_dir} -q '{CONSTS.JOB_QUEUE_NAME}' --verbose"
-        # submission_cmd = f'cd {working_dir}; perl {CONSTS.MAIN_SCRIPT} {parameters} > {os.path.join(working_dir, "std.out")}'
         submission_cmd = f'cd {working_dir}; python3 {CONSTS.MAIN_SCRIPT} {parameters} > {os.path.join(working_dir, "std.out")}'
 
         #terminal_cmd = f'/opt/pbs/bin/qsub {str(temp_script_path)}'
