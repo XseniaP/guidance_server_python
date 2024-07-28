@@ -55,6 +55,10 @@ WEBSERVER_PROCESS_STATE_URL_EXT = os.path.join(WEBSERVER_URL_EXT, 'process_state
 WEBSERVER_RESULTS_OLD_URL = os.path.join(WEBSERVER_OLD_URL, 'results')
 SOURCES = '/source.php'
 
+#############################################################################################################
+# Ksenia: START; SCRIPTs and Programs
+#############################################################################################################
+
 SCRIPTS_DIR = os.path.join(BIN_DIR, 'script')
 MAIN_SCRIPT = os.path.join(SCRIPTS_DIR, 'guidance_main.py')
 MASK_SCRIPT = os.path.join(SCRIPTS_DIR, 'mask_low_score_residues_webserver.py')
@@ -77,7 +81,7 @@ isEqualTopologyProg = os.path.join(SCRIPTS_DIR, 'programs', 'isEqualTree', 'isEq
 MUSCLE = "muscle"
 # SEMPHY = "/bioseq/Programs/Semphy/semphy.doubleRep"
 SEMPHY = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
-SEMPHY_BBL = ""
+SEMPHY_BBL = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
 MAFFT_GUIDANCE = "mafft"
 PRANK_LECS = "prank"
 PRANK = "prank"
@@ -87,6 +91,9 @@ PAGAN = 'pagan'
 RUBY = "/share/apps/bin/ruby"  # or "/usr/bin/ruby"
 IQTREE = os.path.join(BIN_DIR, 'script/programs/iqtree/bin/iqtree2')
 
+#############################################################################################################
+# Ksenia: END;
+#############################################################################################################
 
 REQUIRED_MODULES = ['miniconda/miniconda3-4.7.12','python/python-3.6.7']
 

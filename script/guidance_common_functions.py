@@ -8,8 +8,8 @@ import sys
 import zipfile
 import time
 import SharedConsts as CONST
-# import config
 from time_decorator import timeit
+
 #@timeit
 def sample_from_empirical_distribution(distribution_file_name, out_sample_file_name, sample_size):
     op_vals = []
@@ -92,7 +92,6 @@ def send_administrator_mail_on_error(message, args_library):
     email_message = f"Hello,\\n\\nUnfortunately a system SYSTEM ERROR has occurred on GUIDANCE: {args_library.run_url}.\\nERROR: {message}."
     admin_email = CONST.ADMIN_EMAIL
     # Activate in case the cluster node fails to communicate with the net
-    # msg = "ssh bioseq@lecs \" cd {}; perl sendEmail.pl -f 'bioSequence@tauex.tau.ac.il' -t '{}' -u '{}' -xu '{}' -xp '{}' -s '{}' -m '{}'\"".format(VARS['send_email_dir'], admin_email, email_subject, VARS['userName'], VARS['userPass'], VARS['smtp_server'], email_message)
     msg = "{}/sendEmail.pl -f 'bioSequence@tauex.tau.ac.il' -t '{}' -u '{}' -xu '{}' -xp '{}' -s '{}' -m '{}'".format(
         args_library.send_email_dir,
         "bioSequence@tauex.tau.ac.il",
@@ -102,9 +101,7 @@ def send_administrator_mail_on_error(message, args_library):
         args_library.smtp_server,
         email_message
     )
-    # print("MESSAGE:{}\nCOMMAND:{}".format(email_message, msg))
     os.chdir(args_library.send_email_dir)
-    # email_system_return = os.popen(msg).read()
     email_system_return = subprocess.getoutput(msg)
     return email_system_return
 
@@ -123,8 +120,6 @@ def exit_on_error(which_error, error_msg, args_library):
         error_definition = "Guidance error: "
 
     if args_library.isServer == 1:
-        # with open(os.path.join(args_library.WorkingDir, args_library.server_output), 'a') as output_file, open(
-        #         f'{args_library.OutLogFile}', "a") as log_file:
         with open(args_library.server_output, 'a') as output_file, open(
                 f'{args_library.OutLogFile}', "a") as log_file:
             if which_error == 'user_error':
@@ -367,7 +362,6 @@ def print_initial_running_progress(args_library):
             PROGRESS.write("<ul class=\"in_progress\"><li>Generating the base alignment</li></ul>\n")
 
         PROGRESS.write("<ul class=\"in_progress\"><li>Constructing bootstrap guide-trees</li></ul>\n")
-        # PROGRESS.write("REPLACE")
         PROGRESS.write("<ul class=\"in_progress\"><li>Generating alternative alignments</li></ul>\n")
 
         if args_library.PROGRAM == "GUIDANCE":
@@ -388,7 +382,6 @@ def print_initial_running_progress(args_library):
 def update_progress(progress_file, message):
     with open(progress_file, "r") as progress:
         data = progress.readlines()
-
     with open(progress_file, "w") as progress:
         for line in data:
             if message in line:
@@ -407,17 +400,6 @@ def update_progress(progress_file, message):
                 line = line.replace("in_progress", "finished")
                 line = line.replace("Calculating", "Finished Calculating")
                 progress.write(line)
-                # line = re.sub(r"<Calculating [a-zA-Z0-10]+ scores>", message, line)
-
-            # elif "Calculating" in message and "Calculating" in line:
-            #     line = re.sub(r"<Calculating \s+ scores for tree # \d+>", message, line)
-                # line = line.replace("Calculating GUIDANCE2 scores", message)
-                # progress.write(line)
-            # elif "Finished calculating" in message and "Calculating" in line:
-            #     line = line.replace("in_progress", "finished")
-                # line = line.replace("Started", "Finished")
-                # line = re.sub(r"<Calculating \s+ scores for tree # \d+>", message, line)
-                # progress.write(line)
             else:
                 progress.write(line)
 

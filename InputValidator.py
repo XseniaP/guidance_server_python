@@ -7,7 +7,8 @@ import Bio
 if os.path.exists('/home/josefspr/bioseq'):  # remote run
     sys.path.insert(0, '/home/josefspr/bioseq/guidance/guidance.v2.02/www/Guidance')
 
-import SharedConsts as CONSTS  
+# this line is used and important here
+import SharedConsts as CONSTS
 from utils import *
 
 class InputValidator: 
@@ -37,7 +38,9 @@ class InputValidator:
                                 continue
                             # append sequences separated by newline
                             if line[0] != '>':
+                               # seq += line.upper()
                                seq += line
+                            # name of the sequence is in line that starts with '>'
                             else:
                                 m = re.search( r'^>(.*)', line)
                                 if m: 
@@ -70,12 +73,14 @@ class InputValidator:
                                             if re.search('[-]', seq):
                                                 # return f"Seq: named '{seq_name}' contain a gap character '-' which is illegal when sequences are submited to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option<br>"
                                                 errors += f"Seq: named '{seq_name}' contain a gap character '-' which is illegal when sequences are submited to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option<br>"
+                                        # check for star characters
                                         if re.search('\*+', seq):
                                             seq = re.sub ('\*+', '', seq)
                                             warning = "Star character (*) were removed from the end of the sequences"
                                         ans = InputValidator.validate_single_seq( seq_name, seq, seqType)
                                         if ans == 'OK':
                                             f_out.write(f">{seq_name}\n")  # prev seq
+                                            # f_out.write(f"{seq.upper()}\n")  # prev seq
                                             f_out.write(f"{seq}\n")        # prev seq
                                             counter += 1
                                         else:
@@ -123,9 +128,10 @@ class InputValidator:
                             if re.search('\*+', seq):
                                 seq = re.sub ('\*+', '', seq)
                                 warning = "Star character (*) were removed from the end of the sequences"
-                            ans = InputValidator.validate_single_seq( seq_name, seq, seqType)
+                            ans = InputValidator.validate_single_seq(seq_name, seq, seqType)
                             if ans == 'OK':
                                 f_out.write(f">{seq_name}\n")  # prev seq
+                                # f_out.write(f"{seq.upper()}\n")  # prev seq
                                 f_out.write(f"{seq}\n")        # prev seq
                                 counter += 1
                             else:

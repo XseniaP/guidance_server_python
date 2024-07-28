@@ -15,11 +15,6 @@ from Bio.SeqRecord import SeqRecord
 
 import SharedConsts
 
-# Load Storable module
-# try:
-#     import pickle as pickle
-# except ImportError:
-#     import pickle
 
 # Function to print a message to the output
 def print_message_to_output(msg):
@@ -34,7 +29,6 @@ if len(sys.argv) < 4:
 stored_data_file, alphabet, cutoff = sys.argv[1:]
 
 # Load variables from the stored data file
-# var_path = os.path.join(stored_data_file)
 with open(stored_data_file, 'r') as vars_file:
     json_string = vars_file.read()
     VARS = json.loads(json_string)
@@ -90,11 +84,6 @@ with open(seq_names_index, "r") as seq_index:
 # Write masked sequences to output file
 with open(out_file, "w") as out:
     for i, seq_chars in enumerate(seqs):
-        # seq = "".join(seq_chars)
-        # seq_id = ids[i]
-        # seq_name = id_names.get(seq_id, seq_id)
-        # out.write(f">{seq_name}\n")
-        # out.write(f"{seq}\n")
         seq = "".join(seq_chars)
         seq_record = SeqRecord(Seq(seq), id=ids[i], description='')
         SeqIO.write(seq_record, out, "fasta")

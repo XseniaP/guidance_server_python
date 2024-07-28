@@ -394,7 +394,7 @@ def convert_fs_to_upper_case (file):
         with open (file, 'r') as f:
             for line in f:
                 if line[0] == '>':
-                    f.write (line)
+                    f.write(line)
                 else:
                     f.write(line.upper())
         f.close()

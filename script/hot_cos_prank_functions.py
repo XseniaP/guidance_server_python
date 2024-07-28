@@ -7,11 +7,6 @@ from hot_cos_logger import log_print, cleanup, write_to_file, run_command_line, 
 
 # adjusted for prank v.170427: prank interface change, output file naming assumed as per this version
 def met_init_PRK(seqtype, sequencing_method, file_handler):
-    # """Initialize MAFFT: prepare the command line with the relevant version and parameters"""
-    # if seqtype == 2:
-    #     print("ERROR: Codon models not supported by MAFFT, use NT instead.")
-    #     exit()
-    #
     sequencing_method.version = f"{sequencing_method.path}"
     rc = run_command_line(f"which {sequencing_method.version} 2>&1", file_handler)
     if "which: no" in rc:
@@ -83,9 +78,6 @@ def align_profiles_PRK(pfile1, pfile2, tfile3, ofile, sequencing_method, sequenc
 
     return rmsa
 
-# # create a guide tree (named <infile>.tree) by mafft and align the original sequences and produce hot_H.fasta
-# # Rename <infile>.tree into <treefile> and delete <infile>.tree
-# # <infile> is original sequences file, <treefile> is the name to give to the guide tree created
 def make_guide_tree_PRK(infile, treefile, sequencing_method, sequence, file_handler):
     """Make a guide tree"""
     command_line = f"({sequencing_method.version} -d={infile} -o=prank_gdt 2>&1) 2>&1; mv prank_gdt.best.fas hot_H{sequence.file_extensions[0]}; mv prank_gdt.best.dnd {treefile}"
@@ -100,7 +92,6 @@ def make_guide_tree_PRK(infile, treefile, sequencing_method, sequence, file_hand
         timefile.write(f"{treefile} {','.join(rtime)}\n")
 
     rmsa = sequence.reverse_sequence(f"hot_H{sequence.file_extensions[0]}", 0, file_handler)
-    # MSA_check2tails(f"hot_H{sequence.file_extensions[0]}", 0)
     if debug < 3:
         os.system("rm -f prank_*")
 

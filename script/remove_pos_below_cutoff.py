@@ -34,8 +34,6 @@ if sys.argv[1].startswith("--"):
 else:
     stored_data_file = sys.argv[1]
     cutoff = float(sys.argv[2])
-    # with open(stored_data_file, 'rb') as f:
-    #     VARS = pickle.load(f)
     with open(stored_data_file, 'r') as vars_file:
         json_string = vars_file.read()
         VARS = json.loads(json_string)

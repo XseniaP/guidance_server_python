@@ -271,6 +271,7 @@ def validate_seqs(working_dir, input_file, seq_type, msa, codon_table):
 
                 if line != "" and not line.startswith('>'):
                     seq += line
+                    # seq += line.upper()
 
                 elif line.startswith('>'):
                     # validate prev seq
@@ -306,6 +307,7 @@ def validate_seqs(working_dir, input_file, seq_type, msa, codon_table):
                         if ans[0] == "OK":
                             outfile.write(f">{seq_name}\n")
                             outfile.write(f"{seq}\n")
+                            # outfile.write(f"{seq.upper()}\n")
                             counter += 1
                         else:
                             # return ans
@@ -351,6 +353,7 @@ def validate_seqs(working_dir, input_file, seq_type, msa, codon_table):
                 if ans[0] == "OK":
                     outfile.write(f">{seq_name}\n")
                     outfile.write(f"{seq}\n")
+                    # outfile.write(f"{seq.upper()}\n")
                     counter += 1
                 else:
                     # return ans
@@ -465,6 +468,7 @@ def name2code_fasta_from1(in_file_name, code_file_name, out_file_name, counter_o
             out_file.write(f">{counter}\n")
 
         seq = seq_record.seq
+        # seq = seq.upper()
         for i in range(0, len(seq), 60):
             out_file.write(str(seq[i:i + 60]) + "\n")
 
@@ -792,6 +796,7 @@ def names_according_cos(file_path):
                     msa_file.write(new_line)
                 else:
                     msa_file.write(line)
+                    # msa_file.write(line.upper())
         return None  # Success
     except OSError as e:
         return f"names_according_cos: Failed to open {e.filename} - {str(e)}"

@@ -32,11 +32,9 @@ class Tree_:
             nwstr = infile.read()
 
         nwstr = re.sub(r';*$', ';', nwstr)
-        # nwstr = nwstr.rstrip(';').replace(' ', '')
         nwstr = nwstr.replace(' ', '')
         self.subtrees = {'tree': nwstr}
 
-        # nwstr = nwstr[:-1]
         nwstr = nwstr.rstrip('\n')
 
         if notu == 2:
@@ -138,8 +136,6 @@ class Tree_:
                 cleanup(1, file_handler)
 
             self.subtrees['br'].append([{}, {}, {}])
-            # subtrees['br'].append([{'notu': len(a0)}])
-
             self.subtrees['br'][i][0]['notu'] = len(a0)
             self.subtrees['br'][i][1]['notu'] = len(a1)
             self.subtrees['br'][i][2]['notu'] = notu
@@ -197,14 +193,6 @@ class Tree_:
                 log_print(6, 0, f"-br {i},{j} : {self.subtrees['br'][i][j]['tree']}\n", file_handler)
                 log_print(6, 0, f"-br {i},{j} : {','.join(map(str, self.subtrees['br'][i][j]['otu']))}\n", file_handler)
                 tree = self.subtrees['br'][i][j]['tree']
-
-                # # DELETE - THIS IS TREE VISUALIZATION
-                # print(tree)
-                # # Create a Tree object from Newick string
-                # tree__ = Tree.get_from_string(tree, schema="newick")
-                # # Draw the tree
-                # tree__.print_plot()
-
                 tree = tree.translate(str.maketrans('()', '<>'))
                 k = 0
                 for k in range(1, self.subtrees['br'][i][j]['notu'] + 1):

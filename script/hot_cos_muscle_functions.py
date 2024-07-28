@@ -4,6 +4,9 @@ import re
 import sys
 from hot_cos_logger import log_print, cleanup, write_to_file, run_command_line, debug
 
+######################################
+#JUST A PLACEHOLDER , NOT IMPLEMENTED
+######################################
 
 # adjusted for prank v.170427: prank interface change, output file naming assumed as per this version
 def met_init_MCL(seqtype, sequencing_method, file_handler):

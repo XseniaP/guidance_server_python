@@ -3,13 +3,17 @@ from guidance_tree_functions import *
 from guidance_common_functions import *
 from guidance_scoring_and_visualization import calculate_sp_scores, check_convergence, \
     calculate_sp_scores_convergence, add_scores_to_dict
-# from multiprocessing import Process, Manager
 import uuid
 import sys
 import multiprocessing as mp
 from time_decorator import timeit
 from multiprocessing.sharedctypes import Value, Array
 from multiprocessing import Process, Manager, Lock
+import smtplib
+from email.message import EmailMessage
+from email.utils import formataddr
+from subprocess import run, PIPE
+import logging
 
 #@timeit
 def run_hot_internal(args_library, op_vals_arr_ref, countTrees, tree_good_BranchLength, Branch):
@@ -36,8 +40,6 @@ def run_hot_internal(args_library, op_vals_arr_ref, countTrees, tree_good_Branch
 
     HOT_COS_GUIDANCE2_cmd += " >> COS.std"
 
-    # log_file.write(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
-    # print(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
     os.system(HOT_COS_GUIDANCE2_cmd)
     return HOT_COS_GUIDANCE2_cmd
 
@@ -55,15 +57,11 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
 
         convergence = 0
 
-        # countTrees = proc * bp_per_proc + tree_num
         countTrees = proc + args_library.proc_num * tree_num
         print(f"proc num {proc}\ttree num {tree_num} --> global tree index {countTrees}\n")
 
         if countTrees >= args_library.Bootstraps:
             break
-        # alt_msas = len(os.listdir(args_library.Scoring_Alignments_Dir))
-        # if alt_msas >= args_library.convergence:
-        #     break
 
         Branch = RandomBranches[countTrees]
 
@@ -89,32 +87,6 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
 
         tree_good_BranchLength = f"{tree}.GoodBranchLength"
         reformat_trees_branch_length(tree, tree_good_BranchLength)
-
-        # HOT_COS_GUIDANCE2_cmd = f"cd {args_library.WorkingDir}; python3 {HOT_GUIDANCE2_PROGRAM} {args_library.dataset}_{countTrees} {args_library.HoT_MSA_Program}"
-        # print(HOT_COS_GUIDANCE2_cmd)
-        #
-        # if args_library.Seq_Type in ["AminoAcids", "Codons"]:
-        #     HOT_COS_GUIDANCE2_cmd += " aa"
-        # elif args_library.Seq_Type == "Nucleotides":
-        #     HOT_COS_GUIDANCE2_cmd += " nt"
-        #
-        # HOT_COS_GUIDANCE2_cmd += f" {args_library.codded_seq_fileName} . \"\" 0 {args_library.HoT_MSA_Program_path} {tree_good_BranchLength} {Branch}"
-        #
-        # if args_library.MSA_Program == "MAFFT":
-        #     if args_library.PROGRAM == "GUIDANCE2":
-        #         HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} --op {op_vals_arr_ref[countTrees]}"
-        #     elif args_library.PROGRAM == "GUIDANCE3_HOT":
-        #         HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} --op {op_vals_arr_ref[countTrees]} --ep {ep_vals_arr_ref[countTrees]}"
-        # elif args_library.MSA_Program == "PRANK":
-        #     HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} -gaprate={op_vals_arr_ref[countTrees]}"
-        # elif args_library.MSA_Program == "CLUSTALW":
-        #     HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} -GAPOPEN={op_vals_arr_ref[countTrees]}"
-        #
-        # HOT_COS_GUIDANCE2_cmd += " >> COS.std"
-        #
-        # log_file.write(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
-        # print(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
-        # os.system(HOT_COS_GUIDANCE2_cmd)
 
         HOT_COS_GUIDANCE2_cmd = run_hot_internal(args_library, op_vals_arr_ref, countTrees, tree_good_BranchLength, Branch)
         log_file.write(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
@@ -143,7 +115,6 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
             if args_library.PROGRAM == "GUIDANCE2":
                 cp_from = f"{args_library.WorkingDir}{args_library.dataset}_{countTrees}_cos_{args_library.HoT_MSA_Program}/{base}.fasta"
                 cp_to = f"{args_library.Scoring_Alignments_Dir}{base}_tree_{countTrees}_OP_{op_vals_arr_ref[countTrees]}_Split_{Branch}.fasta"
-                # cmd = f"cp {args_library.WorkingDir}{args_library.dataset}_{countTrees}_cos_{args_library.HoT_MSA_Program}/{base}.fasta {args_library.Scoring_Alignments_Dir}{base}_tree_{countTrees}_OP_{op_vals_arr_ref[countTrees]}_Split_{Branch}.fasta"
                 cmd = f"cp {cp_from} {cp_to}"
             elif args_library.PROGRAM == "GUIDANCE3_HOT":
                 cmd = f"cp {args_library.WorkingDir}{args_library.dataset}_{countTrees}_cos_{args_library.HoT_MSA_Program}/{base}.fasta {args_library.Scoring_Alignments_Dir}{base}_tree_{countTrees}_OP_{op_vals_arr_ref[countTrees]}_EP_{ep_vals_arr_ref[countTrees]}_Split_{Branch}.fasta"
@@ -170,8 +141,6 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
                     try:
                         alt_msas = calculate_sp_scores_convergence(args_library, countTrees)
                         add_scores_to_dict(args_library, epsilon, countTrees, lock)
-                        # print(args_library.mean_res_pair_score)
-                        # print(args_library.mean_col_score)
                         os.system(
                             f'rm {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f"_tree_{countTrees}_*.scr")}')
                         convergence = check_convergence(args_library, epsilon)
@@ -189,8 +158,6 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
                 with lock:
                     # args_library.convergence = alt_msas
                     args_library.count_convergence.value += 1
-                # print(f'.done {proc}, generated {alt_msas}', flush=True)
-                # print(args_library.count_convergence.value)
                 if args_library.proc_num > 2:
                     print(f'.done {proc}', flush=True)
                     break
@@ -203,9 +170,6 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
     sys.exit(0)
 
 
-# else:
-#     e = Exception
-#     raise Exception(f"ERROR: fork failed: {e}\n")
 #@timeit
 def run_guidance(args_library):
     # Align
@@ -413,6 +377,10 @@ def run_guidance2(args_library):
         convert_fs_to_upper_case(
             f"{args_library.WorkingDir}{args_library.Alignment_File}")
 
+    else:
+        convert_fs_to_upper_case(
+            f"{args_library.WorkingDir}{args_library.Alignment_File}")
+
     # TO DO: handle the adjustdirection
 
     # BootStrap Trees
@@ -565,12 +533,9 @@ def run_guidance2(args_library):
 
     if args_library.isServer == 1:
         args_library.status_file = args_library.WorkingDir + "MSA_STATUS.txt"
-        # with open(args_library.status_file, "w") as STATUS:
-        #     STATUS.write("<ul><li><p><font face=Verdana size=2>Start creating alternative alignments<br></li></ul>\n")
         update_progress(f"{args_library.WorkingDir}{args_library.progress_report}", "Started generating alternative alignments")
 
         with open(f"{args_library.server_output}", "a") as OUTPUT:
-        # with open(f"{args_library.WorkingDir}{args_library.server_output}", "a") as OUTPUT:
             OUTPUT.write(
                 "<?php\n\tif (file_exists('MSA_STATUS.txt'))\n\t{\n\t\t$fil = fopen('MSA_STATUS.txt', r);\n\t\t$dat = fread($fil, filesize('MSA_STATUS.txt'));\n\t\techo \"$dat\";\n\tfclose($fil);\n\t}\n?>\n")
 
@@ -609,11 +574,6 @@ def run_guidance2(args_library):
     if args_library.isServer == 1:
         update_progress(f"{args_library.WorkingDir}{args_library.progress_report}",
                         f"Finished generating {alt_msas} alternative alignments")
-    #     with open(args_library.status_file, "w") as PROGRESS:
-    #         PROGRESS.write(
-    #             f"\n<ul><li>{alt_msas} out of {args_library.Bootstraps * 4} alternative alignments were created</li></ul>\n")
-    #         PROGRESS.write(
-    #             f"\n<ul><li>{alt_msas} alternative alignments were created</li></ul>\n")
 
     # To validate all alns were created
     # aln_count = len(os.listdir(args_library.Scoring_Alignments_Dir))
@@ -726,6 +686,8 @@ def run_hot(args_library):
             # HoT assumes that all the sequences are upper case
             if os.path.exists(f"{args_library.WorkingDir}{args_library.Alignment_File}.WithCodesName"):
                 convert_fs_to_upper_case(f"{args_library.WorkingDir}{args_library.Alignment_File}.WithCodesName")
+            # if os.path.exists(f"{args_library.WorkingDir}{args_library.Alignment_File}"):
+            #     convert_fs_to_upper_case(f"{args_library.WorkingDir}{args_library.Alignment_File}")
             args_library.Scoring_Alignments_Dir = f"{args_library.WorkingDir}{args_library.HoT_MSAs_Dir}"
     except Exception as e:
         sys.exit("run_hot() Error: " + str(e) + "\n")
@@ -768,6 +730,8 @@ def prepare_rerun_parameters(args_library):
                 param.write("$MSA_Prog=1;\n")
             elif args_library.MSA_Program == "CLUSTALW":
                 param.write("$MSA_Prog=2;\n")
+            elif args_library.MSA_Program == "CLUSTALO":
+                param.write("$MSA_Prog=2;\n")
 
         elif args_library.PROGRAM == "GUIDANCE2":
             param.write("$PROGRAM=0;\n")
@@ -776,6 +740,8 @@ def prepare_rerun_parameters(args_library):
             elif args_library.MSA_Program == "PRANK":
                 param.write("$MSA_Prog=1;\n")
             elif args_library.MSA_Program == "CLUSTALW":
+                param.write("$MSA_Prog=2;\n")
+            elif args_library.MSA_Program == "CLUSTALO":
                 param.write("$MSA_Prog=2;\n")
 
         if args_library.MSA_Program == "MAFFT":
@@ -847,13 +813,6 @@ def prepare_rerun_parameters(args_library):
                 param.write("$CodonTable=10;\n")
 
         param.write("?>\n")
-
-
-import smtplib
-from email.message import EmailMessage
-from email.utils import formataddr
-from subprocess import run, PIPE
-import logging
 
 
 def send_finish_email_to_user(args_library):

@@ -1,13 +1,10 @@
 import math
 import os
-
 from matplotlib import pyplot as plt
-
 from SharedConsts import MSA_Score_CSS
 from guidance_sequence_functions import *
 import numpy as np
 from time_decorator import timeit
-
 
 def remove_pos_no_bioperl(pos_to_remove, msa_hash_ref):
     for seq_id, seq_list in msa_hash_ref.items():
@@ -786,6 +783,7 @@ def calculate_sp_scores(args_library):
                         new_align.write(">1\n")
                 else:
                     new_align.write(line)
+                    # new_align.write(line.upper())
         os.rename(f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}",
                   f"{args_library.WorkingDir}{args_library.Alignment_File}.ORIG")
         os.rename(f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}.NEW",
@@ -1219,6 +1217,7 @@ def calculate_sp_scores_convergence(args_library, countTrees):
                         new_align.write(">1\n")
                 else:
                     new_align.write(line)
+                    # new_align.write(line.upper())
         os.rename(f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}",
                   f"{args_library.WorkingDir}{args_library.Alignment_File}.ORIG")
         os.rename(f"{os.path.join(args_library.WorkingDir, args_library.Alignment_File)}.NEW",
@@ -1244,7 +1243,6 @@ def check_convergence(args_library, epsilon):
     if len(args_library.mean_col_score)>1 and len(args_library.mean_res_pair_score)>1:
         score1 = abs(args_library.mean_col_score[-1] - args_library.mean_col_score[-2])
         score2 = abs(args_library.mean_res_pair_score[-1] - args_library.mean_res_pair_score[-2])
-
 
     if score1 <= epsilon and score2 <= epsilon:
         return 1

@@ -2,8 +2,6 @@
 results/Guidance/*
 logs/Guidance/*
 *.log
-script/SIMULATED_SEQ
-script/SIMULATED_SEQ_42
 test_MAFFT_server_MSA_input2_nucleotides.txt
 test_MAFFT_server_MSA_input3_nucleotides.txt
 test_MAFFT_server_MSA_input_nucleotides.txt
@@ -14,3 +12,5 @@ app/__init__.py
 .idea
 COS.std
 script/guidance_wrapper.py
+app/.env
+*/.DS_Store

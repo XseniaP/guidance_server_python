@@ -16,7 +16,7 @@ if __name__ == "__main__":
             print_initial_running_progress(args_library)
             output_file.write("<div id='includedContent'>{{ progress_report|safe }}</div>\n")
 
-
+    # this should be disabled
     if args_library.PROGRAM in ["GUIDANCE", "GUIDANCE3"]:
         run_guidance(args_library)
 

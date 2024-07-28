@@ -1,5 +1,5 @@
 import json
-import pickle
+# import pickle
 import argparse
 from shutil import copy
 import SharedConsts as CONST
@@ -13,27 +13,18 @@ class Library:
         self.bin_dir = BIN_DIR
         self.isServer = 0
         self.input_type = "seq"
-        # self.proc_num = None
         self.outDir = ""
         self.stored_data_file = ""
         self.stored_form_data = ""
-        # self.semphy_prog = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
         self.semphy_prog = CONST.SEMPHY
-        # self.iqtree_prog = os.path.join(BIN_DIR, 'script/programs/iqtree/bin/iqtree2')
         self.iqtree_prog = CONST.IQTREE
         self.mafft_prog = "mafft"
         self.prank_prog = "prank"
-        # self.clustalw_prog = os.path.join(BIN_DIR, 'script/programs/clustalo')
         self.clustalw_prog = CONST.CLUSTAL_OMEGA
-        # self.ruby_prog = "ruby"
         self.ruby_prog = CONST.RUBY
-        # self.muscle_prog = "muscle"
         self.muscle_prog = CONST.MUSCLE
-        # self.msa_set_score_prog = os.path.join(BIN_DIR, 'script/programs/msa_set_score/msa_set_score')
         self.msa_set_score_prog = CONST.MSA_SET_SCORE
-        # self.pagan_prog = "pagan"
         self.pagan_prog = CONST.PAGAN
-        # self.remove_taxa_prog = os.path.join(BIN_DIR, 'script/programs/removeTaxa/removeTaxa')
         self.remove_taxa_prog = CONST.REMOVE_TAXA
         self.orig_argv = sys.argv[1:]  # Skip the script name itself
         self.overview_URL = ""
@@ -60,7 +51,6 @@ class Library:
         self.usrSeq_File = ""
         self.MSA_Program = ""
         self.server_output = ""
-        # self.usage_ = "FILL IN USAGE LATER"
         self.usage_ = "USAGE: --seqFile <seqFile> --msaProgram <MAFFT|PRANK|CLUSTALO|MUSCLE|PAGAN> --seqType <aa|nuc|codon> --outDir <full path outDir> \
     Optional parameters: \
   --program <GUIDANCE|HoT|GUIDANCE2> default=GUIDANCE2 \
@@ -199,24 +189,10 @@ class Library:
             setattr(self, arg_name, arg_value)
         return args
 
-    # def unalign(self):
-    #     with open(self.userMSA_File, "r") as file_in, open(self.usrSeq_File, 'w') as file_out:
-    #         lines = file_in.readlines()
-    #         new_line = ""
-    #         for line in lines:
-    #             if line.startswith(">"):
-    #                 if new_line != "":
-    #                     file_out.write(new_line.strip() + "\n")
-    #                 file_out.write(line.strip() + "\n")
-    #                 new_line = ""
-    #             else:
-    #                 new_line += line.replace("-", "").strip()
-    #         file_out.write(new_line)
-
     def check_arguments_for_errors(self):
 
         if self.BBL.upper() == "YES":
-            self.semphy_prog = "/groups/pupko/haim/Programs/semphy_test_clean_log_BBL/programs/semphy/semphy"
+            self.semphy_prog = CONST.SEMPHY_BBL
 
         if not isinstance(self.Bootstraps, int) or not str(self.Bootstraps).isdigit():
             raise ValueError("ERROR: Bootstraps parameter must be a number")
@@ -237,16 +213,6 @@ class Library:
 
         if self.MSA_Program not in ["MAFFT", "PRANK", "CLUSTALO", "MUSCLE", "PAGAN"]:
             raise ValueError("ERROR: msaProgram should be MAFFT or PRANK or CLUSTALO or MUSCLE or PAGAN (case sensitive)\n")
-
-
-        # if self.input_type == "msa" or self.input_type == "re_align":
-            # self.userMSA_File = self.usrSeq_File
-            # self.userMSA_File = self.Alignment_File
-            # os.remove(self.usrSeq_File)
-            # self.usrSeq_File = f"{self.usrSeq_File}_seq"
-            # self.unalign()
-            # if self.input_type == "re_align":
-            #     self.userMSA_File = ""
 
         if not self.outDir.endswith("/"):
             self.outDir += "/"
@@ -284,7 +250,6 @@ class Library:
                     "\n\n========================================= NEW GUIDANCE RUN STARTED ===========================================\n")
                 log_file.write(f"GUIDANCE COMMAND: python {sys.argv[0]} {' '.join(sys.argv[1:])}\n")
         except IOError as e:
-            # raise FileNotFoundError(f"ERROR: Can't open Log File: {VARS['OutLogFile']}")
             exit_on_error('sys_error', f"Can't open Log File: {self.OutLogFile}: {e}", self)
 
         # INPUT FILES
@@ -314,7 +279,6 @@ class Library:
             try:
                 copy(user_fragments_file, os.path.join(self.WorkingDir, self.fragments_file_name))
             except Exception as e:
-                # raise RuntimeError(f"Can't copy user fragments file: {user_fragments_file} to {self.VARS['WorkingDir']}{self.VARS['fragments_file_name']}. Error: {e}\n")
                 exit_on_error("sys_error",f"Can't copy user fragments file: {user_fragments_file} to {self.WorkingDir}{self.fragments_file_name}\n", self)
             with open(f'{self.OutLogFile}', "a") as log_file:
                 validation_message = f"Validating fragments: Guidance::validate_Seqs({self.WorkingDir}, {self.fragments_file_name}, {self.Seq_Type}, No): \n"
@@ -340,7 +304,6 @@ class Library:
             self.NumOfFragments = ans[3]
 
             tmp = re.split(re.escape("--"), self.align_param)
-            # tmp = re.split(r'\-\-', self.align_param)
             tmp_size = len(tmp)
             if tmp_size >= 1:  # command line type
                 for i in range(len(tmp)):
@@ -350,12 +313,10 @@ class Library:
                 # self.align_param = "\-\-".join(tmp)
             else:  # server type
                 tmp = re.split(re.escape("--"), self.align_param)
-                # tmp = re.split(r'--', self.align_param)
                 for i in range(len(tmp)):
                     if 'addfragments' in tmp[i]:
                         tmp[i] = f"addfragments {os.path.join(self.WorkingDir, self.fragments_file_name_seqName_coded)}"
                 self.align_param = "--".join(tmp)
-                # self.align_param = "\-\-".join(tmp)
 
             # Check if need to remove reorder with fragments
             if '--reorder' in self.align_param or "\-\-reorder" in self.align_param:
@@ -427,8 +388,8 @@ class Library:
             self.SeqsFile = ans[2]
             self.NumOfSeq = int(ans[3])
 
-
-        elif os.path.exists(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}")) and os.path.getsize(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}")) > 0:   # Alignment provided
+        # Alignment provided
+        elif os.path.exists(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}")) and os.path.getsize(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}")) > 0:
             try:
                 with open(f"{self.OutLogFile}", 'a') as log_file:
                     ans = []
@@ -450,8 +411,6 @@ class Library:
                     if ans[0] == "OK" and ans[1] != "":
                         print(f"Warning: {ans[1]}; Nevertheless calculation is continued")
                         log_file.write(f"Warning: {ans[1]}; Nevertheless calculation is continued\n")
-                        # self.Alignment_File = ans[2]
-                        # self.NumOfSeq = int(ans[3])
 
                     log_file.write(f"return: {' '.join(ans)}\n")
 
@@ -506,7 +465,6 @@ class Library:
 
         self.mafft_prog = CONST.MAFFT_GUIDANCE
         self.prank_prog = CONST.PRANK_LECS
-        # self.clustalw_prog = config.CLUSTALW_LECS
         self.clustalw_prog = CONST.CLUSTAL_OMEGA
         self.muscle_prog = CONST.MUSCLE
         self.pagan_prog = CONST.PAGAN_LECS
@@ -549,7 +507,6 @@ class Library:
         self.Semphy_StdFile = ""
         self.COL_SCORES_FIGURE = "Col_Scores_Graph.png"
         self.Scoring_Alignments_Dir = ""  # The dir with the alignment used to create the score
-        # self.send_email_dir = config.SEND_EMAIL_DIR_IBIS
         self.send_email_dir = CONST.SEND_EMAIL_DIR_IBIS
         self.DNA_AA = {}
 

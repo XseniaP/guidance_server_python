@@ -471,13 +471,9 @@ def Bootstrap_Trees(args_library):
     .boottrees file holds all the bootstrap trees produced by IQ-Tree
     """
     if args_library.isServer == 1:
-        # print_message_to_output("Constructing bootstrap guide-trees", args_library)
         update_progress(f"{args_library.WorkingDir}{args_library.progress_report}", "Constructing bootstrap guide-trees")
 
     os.makedirs(args_library.BootStrap_Dir)
-    # args_library.Tree_File = f"{args_library.dataset}.{args_library.MSA_Program}.aln.treefile"
-    # args_library.Iqtree_LogFile = f"{args_library.dataset}.{args_library.MSA_Program}.aln.log"
-    # args_library.Iqtree_Boottrees = f"{args_library.dataset}.{args_library.MSA_Program}.aln.boottrees"
     args_library.Tree_File = f"{args_library.Alignment_File}.treefile"
     args_library.Iqtree_LogFile = f"{args_library.Alignment_File}.log"
     args_library.Iqtree_Boottrees = f"{args_library.Alignment_File}.boottrees"
@@ -496,8 +492,6 @@ def Bootstrap_Trees(args_library):
             print(cmd + "\n")
 
         else:  # use JTT for distance estimation
-            # cmd = (
-            #     f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m JTT -bo {args_library.Bootstraps} -nt {args_library.proc_num} -st AA -n 0 -fast")
             cmd = (
                 f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m JTT -bo {args_library.Bootstraps} -st AA -n 0 -fast")
             print(cmd + "\n")
@@ -507,8 +501,6 @@ def Bootstrap_Trees(args_library):
             cmd = (
                 f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m JC -bo {args_library.Bootstraps} -nt {args_library.proc_num} -st DNA -n 0 -fast")
         else:  # use HKY for distance estimation
-            # cmd = (
-            #     f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m HKY -bo {args_library.Bootstraps} -nt {args_library.proc_num} -st DNA -n 0 -fast")
             cmd = (
                 f"{args_library.iqtree_prog} -s {args_library.WorkingDir}{args_library.Alignment_File} -m HKY -bo {args_library.Bootstraps} -st DNA -n 0 -fast")
 
@@ -516,7 +508,6 @@ def Bootstrap_Trees(args_library):
         log_file.write(f"Bootstrap_Trees: {cmd}\n")
     subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 
-    # tree_files = os.path.join(f"{args_library.WorkingDir}", f"{args_library.dataset}.{args_library.MSA_Program}.aln.*")
     tree_files = os.path.join(f"{args_library.WorkingDir}", f"{args_library.Alignment_File}.*")
     for file in glob.glob(tree_files):
         if not file.endswith("ORIG"):

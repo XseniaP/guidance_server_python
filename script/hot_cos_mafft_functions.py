@@ -33,9 +33,6 @@ def met_init_MAF(seqtype, sequencing_method, file_handler):
         sequencing_method.version = sequencing_method.version + ' --amino'
     else:
         sequencing_method.version = sequencing_method.version + ' --nuc'
-    # sequencing_method.version = sequencing_method.version + (' --amino' if seqtype == 0 else ' --nuc')
-
-    # debug = int(os.environ.get('DEBUG_LEVEL', 0))
     if debug < 2:
         sequencing_method.version = sequencing_method.version + ' --quiet'
     log_print(1, 0, "metvar: " + sequencing_method.version, file_handler)
@@ -54,7 +51,6 @@ def align_sequences_MAF(infile, treefile, outfile, sequencing_method_version, se
     rtime = [float(x) for x in re.findall(r"\n(?:real|user|sys) ([0-9\.]+)", rc)]
     print(file_handler.time_file, f"{outfile} {','.join(map(str, rtime))}\n")
 
-    # return MSA_check2tails(outfile, 0)
     return sequence.reverse_sequence(outfile, 0, file_handler)
 
 
@@ -70,7 +66,6 @@ def align_profiles_MAF(pfile1, pfile2, ofile, sequencing_method_path, sequence, 
     rtime = re.findall(r"\nreal ([0-9.]+).*\nuser ([0-9.]+).*\nsys ([0-9.]+)", rc)
     with open(file_handler.time_file,'a') as time_file_handler:
         time_file_handler.write(f"{ofile} {','.join(map(str, rtime))}\n")
-    # return MSA_check2tails(ofile, 0)
     return sequence.reverse_sequence(ofile, 0, file_handler)
 
 
