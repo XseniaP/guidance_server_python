@@ -6,7 +6,6 @@ test_MAFFT_server_MSA_input2_nucleotides.txt
 test_MAFFT_server_MSA_input3_nucleotides.txt
 test_MAFFT_server_MSA_input_nucleotides.txt
 test_MAFFT_server_MSA_input4_redirectedFromMafft.txt
-app/__init__.py
 *.DS_Store
 .DS_Store
 .idea
