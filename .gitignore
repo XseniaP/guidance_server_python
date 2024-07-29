@@ -9,3 +9,5 @@ COS.std
 script/guidance_wrapper.py
 app/.env
 */.DS_Store
+perl/guidance_flask.pl
+perl/codonAlign_flask.pm

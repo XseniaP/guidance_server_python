@@ -9,11 +9,11 @@ import multiprocessing as mp
 from time_decorator import timeit
 from multiprocessing.sharedctypes import Value, Array
 from multiprocessing import Process, Manager, Lock
-import smtplib
-from email.message import EmailMessage
-from email.utils import formataddr
-from subprocess import run, PIPE
-import logging
+# import smtplib
+# from email.message import EmailMessage
+# from email.utils import formataddr
+# from subprocess import run, PIPE
+# import logging
 
 #@timeit
 def run_hot_internal(args_library, op_vals_arr_ref, countTrees, tree_good_BranchLength, Branch):
@@ -815,75 +815,73 @@ def prepare_rerun_parameters(args_library):
         param.write("?>\n")
 
 
-def send_finish_email_to_user(args_library):
-    # Set up logging
-    logging.basicConfig(filename=f"{args_library.WorkingDir}/log.txt", level=logging.INFO)
-
-    email_subject = ""
-    # http_path = f"http://guidance-dev.tau.ac.il/results/{vars['run_number']}"
-    base_http_path = "http://guidance-dev.tau.ac.il/"
-    http_path = base_http_path + f"/guidance/results/{args_library.run_number}"
-
-    if args_library.JOB_TITLE:
-        email_subject = f"Your Guidance results for {args_library.JOB_TITLE} are ready"
-    elif args_library.usrSeq_File:
-        email_subject = f"Your Guidance results for {args_library.usrSeq_File} are ready"
-    else:
-        email_subject = f"Your Guidance results for run number {args_library.run_number} are ready"
-
-    email_message = f"""Hello,
-
-The results for your Guidance run are ready at:
-{http_path}
-
-Running Parameters:
-Job Title: {args_library.JOB_TITLE}
-Sequences File: {args_library.usrSeq_File}
-MSA Algorithm: {args_library.MSA_Program}
-Number of Bootstraps: {args_library.Bootstraps}
-Scoring Method: {args_library.PROGRAM}
-
-Please note: the results will be kept on the server for three months.
-
-Thanks,
-GUIDANCE Team"""
-
-    # Set up email
-    msg = EmailMessage()
-    msg.set_content(email_message)
-    msg['Subject'] = email_subject
-    msg['From'] = formataddr(('GUIDANCE Team', 'admin@example.com'))  # Replace with ADMIN_EMAIL
-    msg['To'] = args_library.user_mail
-
-    # Send email
-    try:
-        with smtplib.SMTP(args_library.smtp_server) as server:
-            server.login(args_library.userName, args_library.userPass)
-            server.send_message(msg)
-            logging.info("Email sent successfully.")
-    except Exception as e:
-        logging.error(f"Failed to send email: {e}")
-
-    # Log the email message and command
-    log_msg = f"MESSAGE: {email_message}\n"
-    logging.info(log_msg)
-
-    # Run external command (if needed)
-    email_command = [
-        'perl', f'{CONST.BIN_DIR}/perl/sendEmail.pl',
-        '-f', 'admin@example.com',  # Replace with GENERAL_CONSTANTS::ADMIN_EMAIL
-        '-t', args_library.user_mail,
-        '-u', email_subject,
-        '-xu', args_library.userName,
-        '-xp', args_library.userPass,
-        '-s', args_library.smtp_server,
-        '-m', email_message
-    ]
-
-    result = run(email_command, stdout=PIPE, stderr=PIPE, text=True)
-    if "successfully" not in result.stdout:
-        logging.error(f"send_mail: The message was not sent successfully. System returned: {result.stdout}")
-
-
+# def send_finish_email_to_user(args_library):
+#     # Set up logging
+#     logging.basicConfig(filename=f"{args_library.WorkingDir}/log.txt", level=logging.INFO)
+#
+#     email_subject = ""
+#     # http_path = f"http://guidance-dev.tau.ac.il/results/{vars['run_number']}"
+#     base_http_path = "http://guidance-dev.tau.ac.il/"
+#     http_path = base_http_path + f"/guidance/results/{args_library.run_number}"
+#
+#     if args_library.JOB_TITLE:
+#         email_subject = f"Your Guidance results for {args_library.JOB_TITLE} are ready"
+#     elif args_library.usrSeq_File:
+#         email_subject = f"Your Guidance results for {args_library.usrSeq_File} are ready"
+#     else:
+#         email_subject = f"Your Guidance results for run number {args_library.run_number} are ready"
+#
+#     email_message = f"""Hello,
+#
+# The results for your Guidance run are ready at:
+# {http_path}
+#
+# Running Parameters:
+# Job Title: {args_library.JOB_TITLE}
+# Sequences File: {args_library.usrSeq_File}
+# MSA Algorithm: {args_library.MSA_Program}
+# Number of Bootstraps: {args_library.Bootstraps}
+# Scoring Method: {args_library.PROGRAM}
+#
+# Please note: the results will be kept on the server for three months.
+#
+# Thanks,
+# GUIDANCE Team"""
+#
+#     # Set up email
+#     msg = EmailMessage()
+#     msg.set_content(email_message)
+#     msg['Subject'] = email_subject
+#     msg['From'] = formataddr(('GUIDANCE Team', 'admin@example.com'))  # Replace with ADMIN_EMAIL
+#     msg['To'] = args_library.user_mail
+#
+#     # Send email
+#     try:
+#         with smtplib.SMTP(args_library.smtp_server) as server:
+#             server.login(args_library.userName, args_library.userPass)
+#             server.send_message(msg)
+#             logging.info("Email sent successfully.")
+#     except Exception as e:
+#         logging.error(f"Failed to send email: {e}")
+#
+#     # Log the email message and command
+#     log_msg = f"MESSAGE: {email_message}\n"
+#     logging.info(log_msg)
+#
+#     # Run external command (if needed)
+#     email_command = [
+#         'perl', f'{CONST.BIN_DIR}/perl/sendEmail.pl',
+#         '-f', 'admin@example.com',  # Replace with GENERAL_CONSTANTS::ADMIN_EMAIL
+#         '-t', args_library.user_mail,
+#         '-u', email_subject,
+#         '-xu', args_library.userName,
+#         '-xp', args_library.userPass,
+#         '-s', args_library.smtp_server,
+#         '-m', email_message
+#     ]
+#
+#     result = run(email_command, stdout=PIPE, stderr=PIPE, text=True)
+#     if "successfully" not in result.stdout:
+#         logging.error(f"send_mail: The message was not sent successfully. System returned: {result.stdout}")
 
 
