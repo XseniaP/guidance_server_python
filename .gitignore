@@ -1,4 +1,25 @@
+# Virtual environment
+venv/
+ENV/
 .venv
+.env
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+__pycache__/*
+*.py[cod]
+*$py.class
+
+# PyCharm specific
+.idea/
+
+# Don't include workspace-specific settings
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/dictionaries
+.idea/shelf
+
+#logs, test runs files, perl files
 results/Guidance/*
 logs/Guidance/*
 *.log
