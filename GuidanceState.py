@@ -969,7 +969,7 @@ class GuidanceState:
             f.write('bash activate /home/josefspr/bioseq/guidance/miniconda_guidance_env;')
             f.write(f'cd {working_dir};')
             f.write(new_line_delimiter)
-            f.write(f'perl {CONSTS.MAIN_SCRIPT} {parameters} > {os.path.join(working_dir, "std.out")}\t{CONSTS.WEBSERVER_NAME}_{run_number}')
+            f.write(f'python3 {CONSTS.MAIN_SCRIPT} {parameters} > {os.path.join(working_dir, "std.out")}\t{CONSTS.WEBSERVER_NAME}_{run_number}')
             
             f.write('\n')
         f.close()

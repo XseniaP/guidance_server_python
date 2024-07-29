@@ -15,7 +15,7 @@ def print_message_to_output(msg):
 
 VARS = {}
 if len(sys.argv) < 2:
-    sys.exit("USAGE: perl {} --MSA <Base MSA> --Scores <Scores_File> --FilterdMSA <Out_MSA_File> --Cutoff <Cutoff> --RemovedPos <Out_File_With_Removed_Pos>\n".format(sys.argv[0]))
+    sys.exit("USAGE: python3 {} --MSA <Base MSA> --Scores <Scores_File> --FilterdMSA <Out_MSA_File> --Cutoff <Cutoff> --RemovedPos <Out_File_With_Removed_Pos>\n".format(sys.argv[0]))
 
 # Command line mode
 if sys.argv[1].startswith("--"):

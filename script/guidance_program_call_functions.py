@@ -870,7 +870,7 @@ GUIDANCE Team"""
 
     # Run external command (if needed)
     email_command = [
-        'perl', './perl/sendEmail.pl',
+        'perl', f'{CONST.BIN_DIR}/perl/sendEmail.pl',
         '-f', 'admin@example.com',  # Replace with GENERAL_CONSTANTS::ADMIN_EMAIL
         '-t', args_library.user_mail,
         '-u', email_subject,
