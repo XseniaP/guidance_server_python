@@ -86,8 +86,8 @@ if platform.system()=='Darwin': # macOS platform
     IQTREE = os.path.join(BIN_DIR, 'script/programs/iqtree/bin/iqtree2')
 
 elif platform.system()=='Linux': # Linux platform
-    MSA_SET_SCORE = os.path.join(SCRIPTS_DIR, 'programs', 'Linux ','msa_set_score', 'msa_set_score')
-    REMOVE_TAXA = os.path.join(SCRIPTS_DIR, 'programs', 'Linux ', 'removeTaxa', 'removeTaxa')
+    MSA_SET_SCORE = os.path.join(SCRIPTS_DIR, 'programs', 'Linux','msa_set_score', 'msa_set_score')
+    REMOVE_TAXA = os.path.join(SCRIPTS_DIR, 'programs', 'Linux', 'removeTaxa', 'removeTaxa')
     isEqualTopologyProg = os.path.join(SCRIPTS_DIR, 'programs', 'Linux', 'isEqualTree', 'isEqualTree')
     SEMPHY = os.path.join(BIN_DIR, 'script/programs/Linux/semphy/semphy')
     SEMPHY_BBL = os.path.join(BIN_DIR, 'script/programs/Linux/semphy/semphy')
@@ -198,7 +198,9 @@ SRVER_USERNAME = 'bioseq'
 SEPERATOR_FOR_MONITOR_DF = '###'
 #PATH2SAVE_MONITOR_DATA = r'SavedObjects/monitored_data'
 # PATH2SAVE_MONITOR_DATA = r'/home/josefspr/results/Guidance'
-PATH2SAVE_MONITOR_DATA = r'/Users/kpolonsky/PycharmProjects/guidance_server/results/Guidance'
+
+# KSENIA
+PATH2SAVE_MONITOR_DATA = f'{BIN_DIR}/results/Guidance'
 
 class UI_CONSTS:
 
