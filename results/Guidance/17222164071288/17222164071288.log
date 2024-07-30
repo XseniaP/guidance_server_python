@@ -1,0 +1,74 @@
+2024-07-28 21:26:46,663[INFO][GuidanceState.py][__init__]: ####################################################################################################
+21:26:46 2024-07-28: entering initial GuidanceState.__init__
+
+2024-07-28 21:26:46,663[INFO][GuidanceState.py][__init__]: testing1
+2024-07-28 21:26:46,663[INFO][GuidanceState.py][__init__]: testing2
+2024-07-28 21:26:46,663[INFO][GuidanceState.py][__init__]: form[input_type] = seq
+2024-07-28 21:26:46,664[INFO][GuidanceState.py][__init__]: testing3
+2024-07-28 21:26:46,664[INFO][GuidanceState.py][__init__]: testing4
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: These are the keys that the CGI received:
+Bootstraps; F; FASTA_txt; GENCODE; JOB_TITLE; MSA_Program; MSA_Program_GUIDANCE; PROGRAM; SP_COL_CUTOFF; SP_SEQ_CUTOFF; Seq_Type; email_add; input_type; maxiterate; outorder; pair; solved
+
+
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: Form values are:
+
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: Bootstraps = 5
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: F = +F
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: FASTA_txt = 
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: GENCODE = 1
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: JOB_TITLE = test
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: MSA_Program = MAFFT
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: MSA_Program_GUIDANCE = MAFFT
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: PROGRAM = GUIDANCE2
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: SP_COL_CUTOFF = 0.93
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: SP_SEQ_CUTOFF = 0.6
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: Seq_Type = AminoAcids
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: email_add = kseniap@mail.tau.ac.il
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: input_type = seq
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: maxiterate = 0
+2024-07-28 21:26:46,664[INFO][utils.py][peek_form]: outorder = aligned
+2024-07-28 21:26:46,665[INFO][utils.py][peek_form]: pair = 
+2024-07-28 21:26:46,665[INFO][utils.py][peek_form]: solved = false
+2024-07-28 21:26:46,665[INFO][utils.py][peek_form]: usrSeq_File = AGMAT.fas
+2024-07-28 21:26:46,665[INFO][GuidanceState.py][upload_files]: 
+################################################################################
+Uploading data regular run
+
+2024-07-28 21:26:46,665[INFO][utils.py][save_file_to_disk]: Saving FILE to disk
+2024-07-28 21:26:46,665[INFO][utils.py][save_file_to_disk]: Uploaded file name is:AGMAT.fas
+2024-07-28 21:26:46,665[INFO][utils.py][save_file_to_disk]: Uploaded data was saved to /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17222164071288/Seqs.Orig.fas successfully
+
+2024-07-28 21:26:46,666[INFO][GuidanceState.py][upload_files]: ls of /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17222164071288 fields:
+['17222164071288.log', 'Seqs.Orig.fas']
+
+2024-07-28 21:26:46,666[INFO][GuidanceState.py][update_state]: update_state(INIT)
+2024-07-28 21:26:46,667[INFO][GuidanceState.py][validateInput]: 
+################################################################################
+validating seqs
+
+2024-07-28 21:26:46,667[INFO][GuidanceState.py][validateInput]: validate_Seqs(/Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17222164071288,Seqs.Orig.fas,AminoAcids, False):
+
+2024-07-28 21:26:46,673[INFO][GuidanceState.py][validateInput]: return: OK,,Seqs.Orig.fas.FIXED,40
+
+2024-07-28 21:26:46,673[INFO][GuidanceState.py][validateInput]: ls of /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17222164071288 fields:
+['VARS.json', 'Seqs.Orig.fas.FIXED', '17222164071288.log', 'Seqs.Orig.fas']
+
+2024-07-28 21:26:46,673[INFO][__init__.py][home]: validated data, status = OK
+2024-07-28 21:26:46,673[INFO][__init__.py][home]: validated data
+2024-07-28 21:26:46,673[INFO][__init__.py][home]: storing state
+2024-07-28 21:26:46,685[INFO][__init__.py][home]: process added man_results = True, redirecting url
+2024-07-28 21:26:46,695[INFO][__init__.py][process_state]: process_id = 17222164071288, job_state = State.Running
+2024-07-28 21:26:46,695[INFO][GuidanceState.py][__init__]: ####################################################################################################
+GuidanceState.__init__: jobId = 17222164071288, wd = /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17222164071288
+2024-07-28 21:27:16,914[INFO][__init__.py][process_state]: process_id = 17222164071288, job_state = State.Finished
+2024-07-28 21:27:16,914[INFO][GuidanceState.py][__init__]: ####################################################################################################
+GuidanceState.__init__: jobId = 17222164071288, wd = /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17222164071288
+2024-07-28 21:27:16,915[INFO][GuidanceState.py][update_state]: update_state(FINISHED)
+2024-07-28 21:27:21,995[INFO][GuidanceState.py][get_state]: entered method
+2024-07-28 21:27:21,998[INFO][__init__.py][results]: process_id = 17222164071288, job_state = State.Finished
+2024-07-28 21:27:21,998[INFO][GuidanceState.py][__init__]: ####################################################################################################
+GuidanceState.__init__: jobId = 17222164071288, wd = /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17222164071288
+2024-07-28 21:27:26,232[INFO][GuidanceState.py][get_state]: entered method
+2024-07-28 21:27:26,235[INFO][__init__.py][results]: process_id = 17222164071288, job_state = State.Finished
+2024-07-28 21:27:26,235[INFO][GuidanceState.py][__init__]: ####################################################################################################
+GuidanceState.__init__: jobId = 17222164071288, wd = /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17222164071288

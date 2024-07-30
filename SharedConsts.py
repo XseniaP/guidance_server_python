@@ -101,7 +101,6 @@ PRANK = "prank"
 PAGAN_LECS = "/share/apps/pagan-msa/bin/pagan"
 PAGAN = 'pagan'
 RUBY = 'ruby'
-# RUBY = "/share/apps/bin/ruby"  # or "/usr/bin/ruby"
 
 #############################################################################################################
 # Ksenia: END;

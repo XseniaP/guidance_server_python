@@ -20,7 +20,8 @@ __pycache__/*
 .idea/shelf
 
 #logs, test runs files, perl files
-#results/Guidance/*
+results/Guidance/17223713016299
+results/Guidance/17223739504328
 logs/Guidance/*
 *.log
 *.DS_Store
@@ -32,3 +33,4 @@ app/.env
 */.DS_Store
 perl/guidance_flask.pl
 perl/codonAlign_flask.pm
+*sav
