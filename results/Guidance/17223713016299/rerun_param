@@ -1,0 +1,13 @@
+<?php
+$PROGRAM=0;
+$MSA_Prog=0;
+$MAFFT_MAX_ITERATES=2;
+$MAFFT_REFINE=0;
+$PRANK_INSERTION=0;
+$Bootstraps=5;
+$SP_COL_CUTOFF=0.93;
+$SP_SEQ_CUTOFF=0.6;
+$Align_Order=1;
+$Seq_Type=0;
+$CodonTable=0;
+?>

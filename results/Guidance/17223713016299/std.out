@@ -1,0 +1,38 @@
+/Users/kpolonsky/PycharmProjects/guidance_server_python/script/programs/iqtree/bin/iqtree2 -s /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/MSA.MAFFT.aln -m JTT -bo 5 -st AA -n 0 -fast
+
+iqtree boottrees file: /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/BP/MSA.MAFFT.aln.boottrees
+
+proc num 0	tree num 0 --> global tree index 0
+
+cd /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/; python3 /Users/kpolonsky/PycharmProjects/guidance_server_python/script/hot_cos_main.py MSA_0 MFT
+run_HOT_COS_GUIDANCE2: cd /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/; python3 /Users/kpolonsky/PycharmProjects/guidance_server_python/script/hot_cos_main.py MSA_0 MFT aa Seqs.numberd.fas . "" 0 mafft /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/BP/tree_0/MSA.MAFFT.iqtree.tree_0.rooted.GoodBranchLength 50 ---  --maxiterate 2 --reorder --op 1.835696531301435 >> COS.std
+
+proc num 0	tree num 1 --> global tree index 1
+
+cd /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/; python3 /Users/kpolonsky/PycharmProjects/guidance_server_python/script/hot_cos_main.py MSA_1 MFT
+run_HOT_COS_GUIDANCE2: cd /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/; python3 /Users/kpolonsky/PycharmProjects/guidance_server_python/script/hot_cos_main.py MSA_1 MFT aa Seqs.numberd.fas . "" 0 mafft /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/BP/tree_1/MSA.MAFFT.iqtree.tree_1.rooted.GoodBranchLength 29 ---  --maxiterate 2 --reorder --op 1.5083955086697705 >> COS.std
+
+proc num 0	tree num 2 --> global tree index 2
+
+cd /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/; python3 /Users/kpolonsky/PycharmProjects/guidance_server_python/script/hot_cos_main.py MSA_2 MFT
+run_HOT_COS_GUIDANCE2: cd /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/; python3 /Users/kpolonsky/PycharmProjects/guidance_server_python/script/hot_cos_main.py MSA_2 MFT aa Seqs.numberd.fas . "" 0 mafft /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/BP/tree_2/MSA.MAFFT.iqtree.tree_2.rooted.GoodBranchLength 18 ---  --maxiterate 2 --reorder --op 2.3296013345783555 >> COS.std
+
+proc num 0	tree num 3 --> global tree index 3
+
+cd /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/; python3 /Users/kpolonsky/PycharmProjects/guidance_server_python/script/hot_cos_main.py MSA_3 MFT
+run_HOT_COS_GUIDANCE2: cd /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/; python3 /Users/kpolonsky/PycharmProjects/guidance_server_python/script/hot_cos_main.py MSA_3 MFT aa Seqs.numberd.fas . "" 0 mafft /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/BP/tree_3/MSA.MAFFT.iqtree.tree_3.rooted.GoodBranchLength 20 ---  --maxiterate 2 --reorder --op 2.9439850951345643 >> COS.std
+
+proc num 0	tree num 4 --> global tree index 4
+
+cd /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/; python3 /Users/kpolonsky/PycharmProjects/guidance_server_python/script/hot_cos_main.py MSA_4 MFT
+run_HOT_COS_GUIDANCE2: cd /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/; python3 /Users/kpolonsky/PycharmProjects/guidance_server_python/script/hot_cos_main.py MSA_4 MFT aa Seqs.numberd.fas . "" 0 mafft /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/BP/tree_4/MSA.MAFFT.iqtree.tree_4.rooted.GoodBranchLength 1 ---  --maxiterate 2 --reorder --op 2.0476007967609027 >> COS.std
+
+proc num 0	tree num 5 --> global tree index 5
+
+the convergence final number is 20
+
+SUCCESS!
+
+calculating SP scores: /Users/kpolonsky/PycharmProjects/guidance_server_python/script/programs/msa_set_score/msa_set_score   /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/MSA.MAFFT.aln   /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/MSA.MAFFT.Guidance2   -d /Users/kpolonsky/PycharmProjects/guidance_server_python/results/Guidance/17223713016299/BP/GUIDANCE2_MSA/
+
+<guidance_args_library.Library object at 0x7fa888418fa0>
