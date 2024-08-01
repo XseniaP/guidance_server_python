@@ -6,6 +6,7 @@ ENV/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+*/__pycache__/
 __pycache__/*
 *.py[cod]
 *$py.class
@@ -20,17 +21,15 @@ __pycache__/*
 .idea/shelf
 
 #logs, test runs files, perl files
-results/Guidance/17223713016299
-results/Guidance/17223739504328
+results/Guidance/*
 logs/Guidance/*
 *.log
-*.DS_Store
+*/.DS_Store
 .DS_Store
 #.idea
 COS.std
 script/guidance_wrapper.py
 app/.env
-*/.DS_Store
 perl/guidance_flask.pl
 perl/codonAlign_flask.pm
 *sav

@@ -216,15 +216,21 @@ def check_DNA_seq(input_DNA, DNA_input_name, ter_mark, table_codon_index, is_dna
     while i < seq_length - 2:
         codon = input_DNA[i:i + 3]
 
-        if (not codon_table_obj.is_unknown_codon(codon) and codon_table_obj.is_ter_codon(codon)) or '*' in codon:
-            if i <= seq_length - 6:
-                ans = ("no", f"A Stop codon, \"{codon}\", was found in sequence {DNA_input_name} in position {i + 1}. Please verify that there are no internal stop-codons in your sequences.")
-                return ans
+        # if (not codon_table_obj.is_unknown_codon(codon) and codon_table_obj.is_ter_codon(codon)) or '*' in codon:
+        #     if i <= seq_length - 6:
+        #         ans = ("no", f"A Stop codon, \"{codon}\", was found in sequence {DNA_input_name} in position {i + 1}. Please verify that there are no internal stop-codons in your sequences.")
+        #         return ans
+
+        if ((
+                    codon not in codon_table_obj.forward_table and codon in codon_table_obj.stop_codons) or "*" in codon) and i <= seq_length - 6:
+            ans = ["no",
+                   f"A Stop codon ,\"{codon}\", was found in sequence {DNA_input_name} in position {i + 1}. Please verify that there are no internal stop-codons in your sequences.\n"]
+            return ans
 
         elif i == seq_length - 3 and '-' in codon:
             pass
         # in case the DNA input file was aligned, we ask the user to remove stop codons from the end of the sequences, as some of his seuqneces might have stop codons and some are not - and we don't want to delete it for him (to decide for him whether to remove, or to put a gap etc.)
-        elif is_dna_aligned == "yes" and i == seq_length - 3 and codon_table_obj.is_ter_codon(codon):
+        elif is_dna_aligned == "yes" and i == seq_length - 3 and codon in codon_table_obj.stop_codons:
             ans = ("no", f"Please remove the Stop Codon \"{codon}\" from your sequence {DNA_input_name}.")
             return ans
 

@@ -816,6 +816,7 @@ def daily_test():
     return render_template('home.html', FASTA_txt = FASTA_txt, daily_test = 'yes')
 
 if __name__ == "__main__":
-    # app = create_app()
+    # to see in the browser use http://127.0.0.1:5000/guidance/
+    # app.run(debug=True)
     app.config['APPLICATION_ROOT'] = '/guidance'  # Ksenia
     app.run(debug=True, port=3000)     # Ksenia
