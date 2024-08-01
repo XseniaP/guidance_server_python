@@ -60,7 +60,7 @@ class InputValidator:
                                                 errors += f"The sequences of the provided MSA are not properly aligned, For example the seq: '{seq_name}' does not aligned to all others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only<br>"
                                             if seqType == "Codons": 
                                                 # Make sure that in Codon Alignment there are no stop Codons and all seq are divided by 3
-                                                ans = InputValidator.validate_seq_in_CodonAlign( seq, seq_name, codonTable)
+                                                ans = InputValidator.validate_seq_in_CodonAlign(seq, seq_name, codonTable)
                                                 if ans != 'OK': 
                                                     # return ans
                                                     errors += ans
@@ -115,7 +115,7 @@ class InputValidator:
                                     errors += f"The sequences of the provided MSA are not properly aligned, For example the seq: '{seq_name}' does not aligned to all others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only<br>"
                                 if seqType == "Codons": 
                                     # Make sure that in Codon Alignment there are no stop Codons and all seq are divided by 3
-                                    ans = InputValidator.validate_seq_in_CodonAlign( seq, seq_name, codonTable)
+                                    ans = InputValidator.validate_seq_in_CodonAlign(seq, seq_name, codonTable)
                                     if ans != 'OK': 
                                         # return ans
                                         errors += ans

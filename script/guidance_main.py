@@ -40,7 +40,7 @@ if __name__ == "__main__":
     print(args_library)
     if args_library.isServer == 1:
         prepare_rerun_parameters(args_library)
-    send_finish_email_to_user(args_library)
+        send_finish_email_to_user(args_library)
 
     if os.path.exists(os.path.join(RESULTS, "timestamps.txt")):
         shutil.move(os.path.join(RESULTS, "timestamps.txt"), os.path.join(args_library.WorkingDir, "timestamps.txt"))

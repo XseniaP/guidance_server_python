@@ -839,21 +839,23 @@ def modify_score_files_for_codons_and_server(args_library):
         # CP the scores files calculated for PROT
         #############################################
         for file_suffix in ["_col_col", "_res_pair_col", "_res_pair_seq_pair", "_res_pair_res", "_res_pair"]:
-            prot_file = os.path.join(args_library.WorkingDir, "{}.PROT.scr".format(args_library.Output_Prefix + file_suffix))
-            new_file = os.path.join(args_library.WorkingDir, "{}.scr".format(args_library.Output_Prefix + file_suffix))
+            new_file = os.path.join(args_library.WorkingDir, "{}.PROT.scr".format(args_library.Output_Prefix + file_suffix))
+            prot_file = os.path.join(args_library.WorkingDir, "{}.scr".format(args_library.Output_Prefix + file_suffix))
             # print("mv {} {}".format(prot_file, new_file))
-            os.rename(prot_file, new_file)
+            if  os.path.exists(prot_file):
+                os.rename(prot_file, new_file)
 
         # Convert the scores files calculated for PRO to codons
         #########################################################
         for file_suffix in ["_res_pair_col", "_res_pair_res", "_res_pair"]:
             prot_file = os.path.join(args_library.WorkingDir, "{}.PROT.scr".format(args_library.Output_Prefix + file_suffix))
             new_file = os.path.join(args_library.WorkingDir, "{}.scr".format(args_library.Output_Prefix + file_suffix))
-            with open(args_library.OutLogFile, "a") as log_file:
-                log_file.write("Convert_to_Codons_Numbering({}, {})\n".format(prot_file, new_file))
-            ans = convert_to_codons_numbering(prot_file, new_file)
-            if ans[0] != 'OK':
-                exit_on_error('sys_error', ' '.join(ans), args_library)
+            if os.path.exists(prot_file):
+                with open(args_library.OutLogFile, "a") as log_file:
+                    log_file.write("Convert_to_Codons_Numbering({}, {})\n".format(prot_file, new_file))
+                ans = convert_to_codons_numbering(prot_file, new_file)
+                if ans[0] != 'OK':
+                    exit_on_error('sys_error', ' '.join(ans), args_library)
 
     if args_library.isServer == 1:
         with open(args_library.OutLogFile, "a") as log_file:

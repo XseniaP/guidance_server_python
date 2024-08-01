@@ -329,7 +329,7 @@ class Library:
         if "--reorder" in self.align_param and "seed" in self.align_param:
             self.align_param = re.sub(r"--reorder", "", self.align_param)
             print(
-                "WARNNING: --reorder is not allowed if seed alignment is provided, therefore the --reorder argument will be ignored and the output order will be the same as input (with seeds first)\n")
+                "WARNING: --reorder is not allowed if seed alignment is provided, therefore the --reorder argument will be ignored and the output order will be the same as input (with seeds first)\n")
             with open(f'{self.OutLogFile}', "a") as log_file:
                 log_file.write(
                     "WARNING: --reorder is not allowed if seed alignment is provided, therefore the --reorder argument will be ignored, and the output order will be the same as input (with seeds first)\n")
@@ -338,10 +338,10 @@ class Library:
         if retree_match:
             retree_value = int(retree_match.group(1))
             if retree_value > 1:
-                print(f"WARNNING: --retree {retree_value} is not supported in GUIDANCE, therefore this argument is ignored.\n")
+                print(f"WARNING: --retree {retree_value} is not supported in GUIDANCE, therefore this argument is ignored.\n")
                 with open(f'{self.OutLogFile}', "a") as log_file:
                     log_file.write(
-                        f"WARNNING: --retree {retree_value} is not supported in GUIDANCE, therefore this argument is ignored.\n")
+                        f"WARNING: --retree {retree_value} is not supported in GUIDANCE, therefore this argument is ignored.\n")
                 self.align_param = re.sub(r"--retree ([0-9]+)", "", self.align_param)
 
     def check_output_files(self):

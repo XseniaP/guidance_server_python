@@ -120,12 +120,20 @@ def convert_msa_format(infile, infile_format, outfile, outfile_format):
 # if a seqName was not given, give a tentative name.
 # create an AA file that will be submitted to MUSCLE
 def translate_DNA_to_AA(input_file, output_file, codon_table_index, x_codonfile, output_html, ref_DNA_AA_seq, www_dir="", ref_seq_name=None, out_name_format="NUM"):
+    if out_name_format is None:
+        out_name_format = "NUM"
+    else:
+        out_name_format = out_name_format.upper()
+
+    if ref_seq_name is not None and ref_seq_name == "":
+        ref_seq_name = []  # Set to an empty list
+
     counter = 0
     xFlag = "no"
     ter_mark_found = ""
     print_last_stop_codon = "no"
 
-    codonTable = Bio.Data.CodonTable.unambiguous_dna_by_id[codon_table_index]
+    codonTable = CodonTable.unambiguous_dna_by_id[codon_table_index]
 
     with open(output_file, "w") as out_AA, open(x_codonfile, "w") as x_codon:
         x_codon.write("<html><table width=50%>\n<tr><td>Sequence Name<\/td><td>Codon Position<\/td><td>Codon<\/td><\/tr>\n")
@@ -168,7 +176,7 @@ def translate_DNA_to_AA(input_file, output_file, codon_table_index, x_codonfile,
                 ref_DNA_AA_seq[counter] = [DNASequence, AASeq]
 
             if ref_seq_name is not None:
-                for i in range(1, len(ref_seq_name) + 1):
+                for i in range(len(ref_seq_name)):
                     if ref_seq_name[i] is not None and DNASequenceName == ref_seq_name[i]:
                         return "user", f"The Sequence name \"{DNASequenceName}\" appears in your DNA input file more than once. Please make sure that each sequence name in your input files is unique and re-submit your query.\n"
 
