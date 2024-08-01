@@ -133,7 +133,8 @@ def translate_DNA_to_AA(input_file, output_file, codon_table_index, x_codonfile,
     ter_mark_found = ""
     print_last_stop_codon = "no"
 
-    codonTable = CodonTable.unambiguous_dna_by_id[codon_table_index]
+    print(CodonTable.unambiguous_dna_by_id.keys())
+    codonTable = CodonTable.unambiguous_dna_by_id[int(codon_table_index)]
 
     with open(output_file, "w") as out_AA, open(x_codonfile, "w") as x_codon:
         x_codon.write("<html><table width=50%>\n<tr><td>Sequence Name<\/td><td>Codon Position<\/td><td>Codon<\/td><\/tr>\n")
@@ -211,7 +212,7 @@ def translate_DNA_to_AA(input_file, output_file, codon_table_index, x_codonfile,
 
 def check_DNA_seq(input_DNA, DNA_input_name, ter_mark, table_codon_index, is_dna_aligned):
     ans = ("yes", "yes")
-    codon_table_obj = CodonTable.unambiguous_dna_by_id[table_codon_index]
+    codon_table_obj = CodonTable.unambiguous_dna_by_id[int(table_codon_index)]
     seq_length = len(input_DNA)
 
     if seq_length % 3 != 0:
@@ -247,7 +248,7 @@ def check_DNA_seq(input_DNA, DNA_input_name, ter_mark, table_codon_index, is_dna
     return ans
 
 def translate_sequence(DNA_sequence, DNA_sequence_name, codon_table_index, x_flag, x_codonfile):
-    codon_table_obj = CodonTable.unambiguous_dna_by_id[codon_table_index]
+    codon_table_obj = CodonTable.unambiguous_dna_by_id[int(codon_table_index)]
     seq_length = len(DNA_sequence)
     i = 0
     AA_seq = ""
@@ -419,7 +420,7 @@ def validate_single_seq(seq_name, seq, seq_type):
 def validate_seq_in_codon_align(dna_sequence, dna_sequence_name, codon_table_index):
     # stopCodon_Found = "NO"
     aa_sequence = ""
-    # codonTable_obj = CodonTable.unambiguous_dna_by_id[codon_table_index]
+    # codonTable_obj = CodonTable.unambiguous_dna_by_id[int(codon_table_index)]
     # codonTable_obj = Seq.IUPAC.unambiguous_dna
     dna_sequence = dna_sequence.rstrip('\n')
     seq_length = len(dna_sequence)
