@@ -249,25 +249,25 @@
                     </div>
                 </div>
 
-            <div class="mb-3" id="Output_Order">
+                <div class="mb-3" id="Output_Order">
                     <label class="form-label">Output order</label>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="outorder" id="as_input"  value="as_input">
-                      <label class="form-check-label" for="as_input">
+                        <label class="form-check-label" for="as_input">
                         Same as input
-                      </label>
+                        </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="outorder" id="aligned" value="aligned" checked>
-                      <label class="form-check-label" for="aligned">
+                        <label class="form-check-label" for="aligned">
                         Aligned
-                      </label>
+                        </label>
                     </div>
                 </div>
 
                 <div id="CodonsTable">
                     <b>Genetic Code:</b>&nbsp;&nbsp;&nbsp;
-                                <select name="GENCODE"> <!-- Options values are according to BioPerl -->
+                                <select class="input-group mb-3" name="GENCODE"> <!-- Options values are according to BioPerl -->
                                     <option value=1>Nuclear Standard
                                     <option value=15>Nuclear Blepharisma
                                     <option value=6>Nuclear Ciliate
@@ -280,7 +280,7 @@
                                     <option value=14>Mitochondria Flatworm
                                     <option value=4>Mitochondria Protozoan
                                     </select><br><br>
-                </div>
+            </div>
 
                 <div id="MAFFT_OPTION">
                     <label class="form-label">Advanced MAFFT Options:</label>
@@ -310,29 +310,6 @@
                     </div>
                 </div>
 
-
-
-<!--                <div id="MAFFT_OPTION">-->
-<!--                <b>Advanced MAFFT Options:</b><br>Max-Iterate-->
-<!--                <select name="maxiterate">-->
-<!--                <option value="0" selected="selected">0</option>-->
-<!--                <option value="1">1</option>-->
-<!--                <option value="2">2</option>-->
-<!--                <option value="5">5</option>-->
-<!--                <option value="10">10</option>-->
-<!--                <option value="20">20</option>-->
-<!--                <option value="50">50</option>-->
-<!--                <option value="80">80</option>-->
-<!--                <option value="100">100</option>-->
-<!--                <option value="1000">1000(long run)</option>-->
-<!--                </select><br>-->
-<!--                Pairwise alignment method <select name="pair">-->
-<!--                <option value="" selected="selected">6mer</option>-->
-<!--                <option value="localpair">localpair</option>-->
-<!--                <option value="genafpair">genafpair</option>-->
-<!--                <option value="globalpair">globalpair</option>-->
-<!--                </select>-->
-<!--                </div>-->
                 <div id="PRANK_OPTION">
                     <b>Advanced PRANK Options:</b><br>
                     <input type="checkbox" name="F" value="+F" checked> Trust insertions (+F)
@@ -404,9 +381,7 @@
                 form.GENCODE.selectedIndex = '{{rerun_params['CodonTable']}}';
             }
             toggle_MSA_Options();
-            
 
-            
         </script>
         
     {% endif %}

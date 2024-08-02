@@ -40,12 +40,12 @@ function toggleLayer( whichLayer_show, whichLayer_hide, sent_from_PDB ){
 }
 //------------------------------------
 function show_div_name(div_id){
-        var show = getElement( div_id );
+        var show = getElement(div_id);
         show.style.display = 'block';
 }
 //------------------------------------
 function hide_div_name(div_id){
-        var show = getElement( div_id );
+        var show = getElement(div_id);
         show.style.display = 'none';
 }
 

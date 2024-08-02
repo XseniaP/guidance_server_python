@@ -3,6 +3,7 @@ import sys
 import logging
 import re
 import Bio
+from Bio.Data import CodonTable
 
 if os.path.exists('/home/josefspr/bioseq'):  # remote run
     sys.path.insert(0, '/home/josefspr/bioseq/guidance/guidance.v2.02/www/Guidance')
@@ -11,11 +12,12 @@ if os.path.exists('/home/josefspr/bioseq'):  # remote run
 import SharedConsts as CONSTS
 from utils import *
 
-class InputValidator: 
+class InputValidator:
+    def __init__(self):
+        return
+    def validate_Seqs(self, working_dir, seqFile, seqType, isMSA, codonTable=None):
 
-    def validate_Seqs (working_dir, seqFile, seqType, isMSA, codonTable=None):
-
-        seqFilePath = os.path.join( working_dir, seqFile)
+        seqFilePath = os.path.join(working_dir, seqFile)
         seq = ''
         seq_name = ''
         seq_length = 0
@@ -24,10 +26,10 @@ class InputValidator:
         errors = ""
         
         try: 
-            with open (seqFilePath, "r", encoding="ISO-8859-1") as f_in: 
+            with open(seqFilePath, "r", encoding="ISO-8859-1") as f_in:
                 try:
                     seqFile_fixed = f'{seqFile}.FIXED'
-                    seqFilePath_fixed = os.path.join( working_dir, seqFile_fixed)
+                    seqFilePath_fixed = os.path.join(working_dir, seqFile_fixed)
                     #print (f'validate_Seqs: opening {seqFilePath_fixed}')
                     with open (seqFilePath_fixed, "w", encoding="ISO-8859-1") as f_out:
                         for line in f_in:
@@ -60,7 +62,7 @@ class InputValidator:
                                                 errors += f"The sequences of the provided MSA are not properly aligned, For example the seq: '{seq_name}' does not aligned to all others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only<br>"
                                             if seqType == "Codons": 
                                                 # Make sure that in Codon Alignment there are no stop Codons and all seq are divided by 3
-                                                ans = InputValidator.validate_seq_in_CodonAlign( seq, seq_name, codonTable)
+                                                ans = self.validate_seq_in_CodonAlign(seq, seq_name, codonTable)
                                                 if ans != 'OK': 
                                                     # return ans
                                                     errors += ans
@@ -77,7 +79,7 @@ class InputValidator:
                                         if re.search('\*+', seq):
                                             seq = re.sub ('\*+', '', seq)
                                             warning = "Star character (*) were removed from the end of the sequences"
-                                        ans = InputValidator.validate_single_seq( seq_name, seq, seqType)
+                                        ans = self.validate_single_seq(seq_name, seq, seqType)
                                         if ans == 'OK':
                                             f_out.write(f">{seq_name}\n")  # prev seq
                                             # f_out.write(f"{seq.upper()}\n")  # prev seq
@@ -115,7 +117,7 @@ class InputValidator:
                                     errors += f"The sequences of the provided MSA are not properly aligned, For example the seq: '{seq_name}' does not aligned to all others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only<br>"
                                 if seqType == "Codons": 
                                     # Make sure that in Codon Alignment there are no stop Codons and all seq are divided by 3
-                                    ans = InputValidator.validate_seq_in_CodonAlign( seq, seq_name, codonTable)
+                                    ans = self.validate_seq_in_CodonAlign(seq, seq_name, codonTable)
                                     if ans != 'OK': 
                                         # return ans
                                         errors += ans
@@ -128,7 +130,7 @@ class InputValidator:
                             if re.search('\*+', seq):
                                 seq = re.sub ('\*+', '', seq)
                                 warning = "Star character (*) were removed from the end of the sequences"
-                            ans = InputValidator.validate_single_seq(seq_name, seq, seqType)
+                            ans = self.validate_single_seq(seq_name, seq, seqType)
                             if ans == 'OK':
                                 f_out.write(f">{seq_name}\n")  # prev seq
                                 # f_out.write(f"{seq.upper()}\n")  # prev seq
@@ -158,7 +160,7 @@ class InputValidator:
             return errors
         return 'OK', warning, seqFile_fixed, counter
 
-    def validate_single_seq (seqName, seq, seqType):
+    def validate_single_seq(self, seqName, seq, seqType):
 
         if seqType == 'AminoAcids' and not re.search('[ABRNDCQEGHILKMFPSTWYVXZabrndcqeghilkmfpstwyvxz]+', seq): 
             return f"Seq: '{seqName}' is empty<br>"
@@ -181,10 +183,10 @@ class InputValidator:
             return f"Currently GUIDANCE does not accept 'U's in nucleotide sequences, you may consider replacing the 'U's by 'T's and re-submit.<br>"
         return 'OK'
 
-    def validate_seq_in_CodonAlign ( DNA_seq, seqName, codonTableIndex):
+    def validate_seq_in_CodonAlign(self, DNA_seq, seqName, codonTableIndex):
     
         AASeq=""
-        codonTable_obj = Bio.Data.CodonTable.generic_by_id[codonTableIndex]
+        codonTable_obj = CodonTable.generic_by_id[int(codonTableIndex)]
         
         DNA_seq = DNA_seq.rstrip()
         seq_length = len(DNA_seq)
@@ -194,11 +196,11 @@ class InputValidator:
         i = 0
         while i < seq_length - 2:
 
-            codon = DNASequence[i, i+3]
+            codon = DNA_seq[i: i+3]
             if codon == '---':
                 AA = '-'
             else:
-                AA = translate_codon(codonTable_obj, codon)
+                AA = self.translate_codon(codonTable_obj, codon)
             AASeq = AASeq + AA
             i = i + 3
 
@@ -206,18 +208,18 @@ class InputValidator:
             return f"Sequence: '{seqName}' contains a stop codon, please remove all stop codons (from all sequences) and submit to GUIDANCE again"
         return 'OK'
 
-    def translate_codon (table, codon):
+    def translate_codon(self, table, codon):
 
         codon = codon.upper()
         if codon in table.stop_codons:
             return '*'
         else:
-            return forward_table[codon]
+            return table.forward_table[codon]
         
-    def countSeq(seqFile): 
+    def countSeq(self, seqFile):
         numSeqs = 0
         try:
-            with open( seqFile, "r", encoding="ISO-8859-1") as f:
+            with open(seqFile, "r", encoding="ISO-8859-1") as f:
                 for line in f:
                     if line[0] == '>':
                         numSeqs += 1
@@ -226,11 +228,11 @@ class InputValidator:
         except:
             raise Exception( f"InputValidator.countSeq: Error in sequence file {seqFile}", "user")
 
-    def get_max_seq_length (seqFile):
+    def get_max_seq_length(self, seqFile):
 
         longest_seq = 0
         try: 
-            with open (seqFile, "r", encoding="ISO-8859-1") as f: 
+            with open(seqFile, "r", encoding="ISO-8859-1") as f:
                 try: 
                     line = f.readline()
                     while line: 
