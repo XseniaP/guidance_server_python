@@ -17,6 +17,7 @@ import json
 from InputValidator import InputValidator
 from utils import *
 
+InputValidator = InputValidator()
 # Bin = os.path.dirname(sys.argv[0])
 # BIN_DIR = os.path.dirname(Bin)
 
@@ -95,6 +96,9 @@ class GuidanceState:
 
                 if self.form['input_type'] == 'msa':
                     self.form['userMSA_File'] = var['Alignment_File']
+
+                if self.form['GENCODE'] != "":
+                    self.form['CodonTable'] = self.form['GENCODE']
                 
                 self.files = files
                 self.var = var
@@ -117,12 +121,12 @@ class GuidanceState:
                 
                 form_path = os.path.join( wd, 'FORM.json')
                 with open (form_path, 'r') as f:
-                    self.form = json.load (f)
+                    self.form = json.load(f)
                 f.close()
                 
                 var_path = os.path.join( wd, 'VARS.json')
                 with open (var_path, 'r') as f:
-                    self.var = json.load (f)
+                    self.var = json.load(f)
                 f.close()
                  
                 self.files = {}
@@ -178,8 +182,10 @@ class GuidanceState:
                 form['Align_Order'] = cgi_form['outorder']
                 
             if dict_key_defined_not_empty('GENCODE', cgi_form):
-                form['CodonTable'] = cgi_form['GENCODE'] 
-            
+                form['CodonTable'] = cgi_form['GENCODE']
+            else:
+                form['CodonTable'] = 1
+
             if dict_key_defined_not_empty('F', cgi_form):
                 form['PRANK_F'] = cgi_form['F']
             
@@ -335,9 +341,9 @@ class GuidanceState:
                     f.close()
 
             # rename to codons file
-            if form['Seq_Type'] == 'Codons': # and ('userMSA_File','') in form.items(): 
-                if os.path.exists (seqsFile):
-                    shutil.move( seqsFile, os.path.join( var['WorkingDir'], var['SeqsFile_Codons']))
+            if form['Seq_Type'] == 'Codons' and form['input_type']!='msa': # and ('userMSA_File','') in form.items():
+                if os.path.exists(seqsFile):
+                    shutil.move(seqsFile, os.path.join( var['WorkingDir'], var['SeqsFile_Codons']))
                 else:
                     error= f'GuidanceState.upload_files: {seqsFile} does not exist.'
                     raise Exception(error, "system")
@@ -490,12 +496,12 @@ class GuidanceState:
             # number of sequences analized
             if not dict_key_value('Redirect_From_MAFFT','1', form): #case regular run
                 if dict_key_defined_not_empty( 'userMSA_File', form):
-                    var['NumOfSeq'] = InputValidator.countSeq(os.path.join(var['WorkingDir'],form['userMSA_File']))
+                    var['NumOfSeq'] = InputValidator.countSeq(os.path.join(var['WorkingDir'], form['userMSA_File']))
                 else:
                     if form['Seq_Type'] != 'Codons':
-                        var['NumOfSeq'] = InputValidator.countSeq(os.path.join(var['WorkingDir'],var['SeqsFile']))
+                        var['NumOfSeq'] = InputValidator.countSeq(os.path.join(var['WorkingDir'], var['SeqsFile']))
                     else:
-                        var['NumOfSeq'] = InputValidator.countSeq(os.path.join(var['WorkingDir'],var['SeqsFile_Codons']))
+                        var['NumOfSeq'] = InputValidator.countSeq(os.path.join(var['WorkingDir'], var['SeqsFile_Codons']))
             else:
                 var['NumOfSeq'] = '' 
 
@@ -732,7 +738,7 @@ class GuidanceState:
                         var['LongestSeq'] = InputValidator.get_max_seq_length(alignment_file)
                         
                     else: # Codon Alignment
-                        job_logger.info (f"validate_Seqs({var['WorkingDir']},{var['Alignment_File']},{form['Seq_Type']}, True, {form['CodonTable']}):\n")
+                        job_logger.info(f"validate_Seqs({var['WorkingDir']},{var['Alignment_File']},{form['Seq_Type']}, True, {form['CodonTable']}):\n")
                         ans = InputValidator.validate_Seqs( var['WorkingDir'], var['Alignment_File'] , form['Seq_Type'] , True, form['CodonTable'])
                         var['LongestSeq'] = InputValidator.get_max_seq_length(alignment_file)
                         
