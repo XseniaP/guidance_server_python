@@ -25,13 +25,18 @@
 	text-align : left;
 }
 
-#table_form {
+/*#table_form {*/
 
-	border-right: solid;
-	border-width: 5;
+/*	border-right: solid;*/
+/*	border-width: 5;*/
+/*	border-left: none;*/
+/*	border-right-width: thick;*/
+/*	border-color: #400080;*/
+/*}*/
+
+#table_form {
+	border-right: thick solid #400080;
 	border-left: none;
-	border-right-width: thick;
-	border-color: #400080;
 }
 
 #PRANK_OPTION,#CodonsTable,#GUIDANCE_WARN,#MSA_PROGRAM_GUIDANCE{display: none;}
@@ -136,7 +141,7 @@ nav[data-toggle="toc"] {
   border: thick;
 	border-radius:1px;
     border-color: #bcbabb;
-	enable-rounded;
+	/*enable-rounded;*/
   }
 
 pre[class*="language-"] button {
