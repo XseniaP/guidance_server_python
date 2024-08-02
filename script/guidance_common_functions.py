@@ -120,7 +120,7 @@ def exit_on_error(which_error, error_msg, args_library):
     error_definition = "<font size=+1 color='red'>ERROR! GUIDANCE session has been terminated:</font><br />\n"
     sys_error = "<font size=+1 color='red'>A SYSTEM ERROR OCCURRED!</font><br />Please try to run GUIDANCE again in a few minutes.<br />We apologize for the inconvenience.<br />\n"
 
-    if args_library.isServer == 0:
+    if args_library.isServer != 1:
         sys_error = "Guidance error\n"
         error_definition = "Guidance error: "
 
@@ -152,11 +152,24 @@ def exit_on_error(which_error, error_msg, args_library):
                 else:
                     output_file.write(line)
 
-            output_file.write(
-                    f"<hr> <h4 class=footer><p align='center'>\nQuestions and comments are welcome! Please <span class=\"admin_link\"><a href=\"mailto:bioSequence@tauex.tau.ac.il?subject=GUIDANCE%20Run%20Number%20{args_library.run_number}\">contact us</a></span></p></h4>\n<div id=\"bottom_links\"> <!-- links before the footer --><span class=\"bottom_link\"> <a href=\"{args_library.home_URL}\" target=\"_blank\">Home</a> &nbsp;|&nbsp;<a href=\"{args_library.overview_URL}\" target=\"_blank\">Overview</a> &nbsp;|&nbsp;<a href=\"{args_library.gallery_URL}\" target=\"_blank\">Gallery</a> &nbsp;|&nbsp;<a href=\"/credits.html\" target=\"_blank\">Credits</a> </span> <br /> </div>")
+        try:
+            f = open(f'{args_library.WorkingDir}/errors.txt', "w")
+            f.write(error_msg.replace("<br>", "\n"))
+            f.close()
+        except:
+            error = f"Validate_Seqs:Can't open {f} for writing"
+            return 'sys_error', error
+            # # return errors
+            # # if "user" in errors:
+            # #     raise Exception(errors, "user")
+            # # else:
+            # #     raise Exception(errors, "system")
 
-            output_file.write("</body>\n")
-            output_file.write("</html>\n")
+            # output_file.write(
+            #         f"<hr> <h4 class=footer><p align='center'>\nQuestions and comments are welcome! Please <span class=\"admin_link\"><a href=\"mailto:bioSequence@tauex.tau.ac.il?subject=GUIDANCE%20Run%20Number%20{args_library.run_number}\">contact us</a></span></p></h4>\n<div id=\"bottom_links\"> <!-- links before the footer --><span class=\"bottom_link\"> <a href=\"{args_library.home_URL}\" target=\"_blank\">Home</a> &nbsp;|&nbsp;<a href=\"{args_library.overview_URL}\" target=\"_blank\">Overview</a> &nbsp;|&nbsp;<a href=\"{args_library.gallery_URL}\" target=\"_blank\">Gallery</a> &nbsp;|&nbsp;<a href=\"/credits.html\" target=\"_blank\">Credits</a> </span> <br /> </div>")
+            #
+            # output_file.write("</body>\n")
+            # output_file.write("</html>\n")
 
         if args_library.user_email != "":
             send_mail_on_error(args_library)
@@ -164,6 +177,7 @@ def exit_on_error(which_error, error_msg, args_library):
         with open(f'{args_library.OutLogFile}', "a") as log_file:
             log_file.write(f"\nExit Time: {print_time()}\n")
         os.chmod(args_library.WorkingDir, 0o755)
+
 
     else:
         if which_error == 'user_error':

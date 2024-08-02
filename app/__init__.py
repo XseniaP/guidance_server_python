@@ -148,7 +148,7 @@ def process_state(process_id):
         log_msg = f'GuidanceState.__init__({process_id}) failed'
         logger.info (log_msg)
         if job_logger:
-            job_logger.info (log_msg)
+            job_logger.info(log_msg)
         # KSENIA
         kwargs = {
             "var": guidance_state.var,
@@ -454,7 +454,11 @@ def home():
                 crash_flag = False
             status = guidance_state.save_state(warning_messages, crash_flag=crash_flag)
             if status != 'OK':
-                raise Exception (status, "system")
+                kwargs = {
+                    "var": guidance_state.var,
+                }
+                render_template('error_page.html', error_text=msg, **kwargs)  # change
+                raise Exception(status, "system")
             
             #return render_template('posted.html', msg = 'stored')
             
@@ -488,7 +492,7 @@ def home():
                 if error_type == "system":
                     guidance_state.send_system_error_email()
                     
-            fail_page = os.path.join( CONSTS.WEBSERVER_RESULTS_DIR, new_process_id, f'GUIDANCE_{new_process_id}.END_FAIL')
+            fail_page = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, new_process_id, f'GUIDANCE_{new_process_id}.END_FAIL')
             open(fail_page, 'a').close()
 
             kwargs = {
