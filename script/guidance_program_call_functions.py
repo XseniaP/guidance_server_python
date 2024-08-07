@@ -16,7 +16,7 @@ from multiprocessing import Process, Manager, Lock
 # import logging
 
 #@timeit
-def run_hot_internal(args_library, op_vals_arr_ref, countTrees, tree_good_BranchLength, Branch):
+def run_hot_internal(args_library, op_vals_arr_ref, ep_vals_arr_ref, countTrees, tree_good_BranchLength, Branch):
     HOT_COS_GUIDANCE2_cmd = f"cd {args_library.WorkingDir}; python3 {HOT_GUIDANCE2_PROGRAM} {args_library.dataset}_{countTrees} {args_library.HoT_MSA_Program}"
     print(HOT_COS_GUIDANCE2_cmd)
 
@@ -88,7 +88,7 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
         tree_good_BranchLength = f"{tree}.GoodBranchLength"
         reformat_trees_branch_length(tree, tree_good_BranchLength)
 
-        HOT_COS_GUIDANCE2_cmd = run_hot_internal(args_library, op_vals_arr_ref, countTrees, tree_good_BranchLength, Branch)
+        HOT_COS_GUIDANCE2_cmd = run_hot_internal(args_library, op_vals_arr_ref, ep_vals_arr_ref, countTrees, tree_good_BranchLength, Branch)
         log_file.write(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
         print(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
 

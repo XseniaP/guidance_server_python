@@ -2,6 +2,9 @@ import json
 # import pickle
 import argparse
 from shutil import copy
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import SharedConsts as CONST
 from guidance_sequence_functions import *
 from guidance_tree_functions import *
