@@ -22,7 +22,7 @@ __pycache__/*
 
 #logs, test runs files, perl files
 results/Guidance/*
-logs/Guidance/*
+#logs/Guidance/*
 *.log
 */.DS_Store
 .DS_Store
@@ -33,3 +33,4 @@ app/.env
 perl/guidance_flask.pl
 perl/codonAlign_flask.pm
 *sav
+logs/Guidance/guidance.logv2
