@@ -546,6 +546,7 @@ def run_guidance2(args_library):
     # CREATE THE PERTURBED ALN DIR
     os.mkdir(args_library.Scoring_Alignments_Dir)
 
+    #Run HoT to create alternative MSAs
     countTrees = 0
     epsilon = 0.0006
     manager = Manager()
