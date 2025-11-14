@@ -171,7 +171,7 @@ def exit_on_error(which_error, error_msg, args_library):
             # output_file.write("</body>\n")
             # output_file.write("</html>\n")
 
-        if args_library.user_email != "":
+        if args_library.user_mail != "": #TODO change on the server
             send_mail_on_error(args_library)
 
         with open(f'{args_library.OutLogFile}', "a") as log_file:
@@ -212,7 +212,7 @@ def send_mail_on_error(args_library):
     cmd = [
         send_email_script,
         '-f', CONST.ADMIN_EMAIL,
-        '-t', args_library.user_email,
+        '-t', args_library.user_mail, #TODO - args_library.user_mail
         '-u', email_subject,
         '-xu', args_library.userName,
         '-xp', args_library.userPass,

@@ -6,7 +6,10 @@ import sys
 import os
 import subprocess
 from Bio import AlignIO, Phylo
-
+from Bio.Align import MultipleSeqAlignment
+from Bio.Phylo.BaseTree import Clade
+from io import StringIO
+import random
 from guidance_common_functions import print_message_to_output, exit_on_error, update_progress
 from time_decorator import timeit
 
@@ -16,7 +19,8 @@ Bin = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 # NEWIC2MAFFT = os.path.join(Bin, 'exec', 'newick2mafft.rb')
 # newick2mafft = os.path.join(Bin, 'exec', 'newick2mafft.rb')
-MSA_SET_SCORE = os.path.join(Bin, 'programs', 'msa_set_score', 'msa_set_score')
+# MSA_SET_SCORE = os.path.join(Bin, 'programs', 'msa_set_score', 'msa_set_score')
+MSA_SET_SCORE = os.path.join(Bin, 'programs', 'Linux', 'msa_set_score', 'msa_set_score')
 HOT_PROGRAM = os.path.join(Bin, 'hot_cos_main.py')
 MAFFT_OP_DIST = os.path.join(Bin, 'balibase.mafft_7123_mafft.op.Dist20bins.txt')
 MAFFT_OP_DIST_0_25 = os.path.join(Bin, 'balibase.mafft_7123_mafft.op2.Dist25bins.txt')
@@ -35,7 +39,9 @@ MIDPOINT_ROOTING_R = os.path.join(Bin, 'programs', 'MidPoint_Rooting.R')
 # MSA_Score_CSS = "css/MSA_Colored.NEW.EM.css"
 MidPoint_Rooting_R = os.path.join(Bin, 'programs', 'MidPoint_Rooting.R')
 # phylonet_prog = os.path.join(Bin, 'exec', 'phylonet_v1_7', 'phylonet_v1_7.jar')
-isEqualTopologyProg = os.path.join(Bin, 'programs', 'isEqualTree', 'isEqualTree')
+# isEqualTopologyProg = os.path.join(Bin, 'programs', 'isEqualTree', 'isEqualTree')
+isEqualTopologyProg = os.path.join(Bin, 'programs','Linux' ,'isEqualTree', 'isEqualTree') #TODO - server version
+
 
 #@timeit
 def calculate_msa_depth(inMSA, args_library):
@@ -75,12 +81,12 @@ def pull_out_bp_trees_bbl(no_bp_dir, dataset, bp_repeats, aln_prog):
             no_bp_dir: the folder in which BP dir is located, this is a working directory
             dataset: name of the dataset, default name is "MSA"
             bp_repeats: number of bootstrap trees produces
-            aln_prog: multiple sequence alignement program
+            aln_prog: multiple sequence alignment program
 
           Returns:
             ["ok"] in case of success when align program is MAFFT
             or a tuple "ok", count_unique_trees, num_repeats in case when align program is not MAFFT
-            an error in case if number of trees produces is not equal to a number of bootstrap trees (parameter) requested
+            an error in case if number of trees produced is not equal to a number of bootstrap trees (parameter) requested
           """
 
     if not no_bp_dir.endswith("/"):
@@ -251,7 +257,7 @@ def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog, args_library):
             count += 1
 
             if make_unique == "yes":
-                i=0
+                i = 0
                 while i < count_unqique:
                     unique_tree_file = f"{bp_dir}/tree_{i}/{dataset}.{aln_prog}.iqtree.tree_{i}"
                     is_equal_topology_res_file = tree_dir + "isEqualTopology." + str(i) + ".std"
@@ -307,6 +313,7 @@ def root_BP_trees(bsDir, dataset, orig_prog, bp_repeats, suffix=None, rooting_ty
 
             # Rooting based on the specified method (BioPerl or MidPoint)
             if rooting_type.upper() == "BIOPERL":
+                # remove_node_support(tree_file)  # TODO testing this for FastTree
                 root_tree(tree_file, rooted_tree_file)
             elif rooting_type.upper() == "MIDPOINT":
                 subprocess.run(["R", "--slave", "--no-save", "--no-restore", "--no-environ", "--silent",
@@ -393,6 +400,43 @@ def root_tree(in_tree, out_tree):
     with open(out_tree, 'w') as outfile:
         outfile.write(newstr)
 
+def remove_node_support(tree_file, min_branch_length=1e-6): #TODO testing this for FastTree tree
+    backup_file = f"{tree_file}.backup"
+    shutil.copy(tree_file, backup_file)
+    # Step 1: Read and clean support values
+    with open(tree_file) as f:
+        tree_str = f.read()
+
+    # Remove internal node support values (e.g. )0.95:)
+    tree_str_cleaned = re.sub(r'\)([0-9.eE\-]+):', r'):', tree_str)
+
+    # Step 2: Load tree into Biopython for branch length fixing
+    tree = Phylo.read(StringIO(tree_str_cleaned), "newick")
+
+    # Set root branch length to None (avoids ":0.000000;" at the end)
+    if tree.root.branch_length is not None:
+        tree.root.branch_length = None
+
+    # Step 3: Update small branch lengths
+    for node in tree.find_clades():
+        if node is tree.root:
+            continue  # Skip root
+        if node.branch_length is not None:
+            node.branch_length = float("{:.6f}".format(max(node.branch_length, min_branch_length)))
+
+    # Step 4: Output cleaned tree back to file
+    with open(tree_file, "w") as f:
+        Phylo.write(tree, f, "newick", format_branch_length='%0.6f')
+
+    with open(tree_file) as f:
+        tree_output = f.read()
+
+    # Remove ":0.000;" at end if present
+    tree_output = re.sub(r':0\.0+;$', ';', tree_output)
+
+    with open(tree_file, "w") as f:
+        f.write(tree_output)
+
 #@timeit
 def reformat_trees_branch_length(in_tree, out_tree):
     """
@@ -405,7 +449,6 @@ def reformat_trees_branch_length(in_tree, out_tree):
     Returns:
     - None
     """
-
     # Read input tree
     with open(in_tree, 'r') as infile:
         # input_tree = Phylo.read(infile, 'newick')
@@ -473,7 +516,7 @@ def Bootstrap_Trees(args_library):
     if args_library.isServer == 1:
         update_progress(f"{args_library.WorkingDir}{args_library.progress_report}", "Constructing bootstrap guide-trees")
 
-    os.makedirs(args_library.BootStrap_Dir)
+    os.makedirs(args_library.BootStrap_Dir, exist_ok=True) #TODO: change on the server , add exists_ok=True
     args_library.Tree_File = f"{args_library.Alignment_File}.treefile"
     args_library.Iqtree_LogFile = f"{args_library.Alignment_File}.log"
     args_library.Iqtree_Boottrees = f"{args_library.Alignment_File}.boottrees"
@@ -482,6 +525,69 @@ def Bootstrap_Trees(args_library):
     msa_depth = calculate_msa_depth(f"{args_library.WorkingDir}{args_library.Alignment_File}", args_library)
     verbose_level = 8
 
+    # ### START: TESTING WITH FASTTREE ###
+    # fasttree = 1
+    #
+    # if fasttree == 1:
+    #     #bootstrap alignment
+    #
+    #     # Load alignment
+    #     alignment = AlignIO.read(f"{args_library.WorkingDir}{args_library.Alignment_File}", 'fasta')
+    #     alignment_length = alignment.get_alignment_length()
+    #     output_prefix = f"{args_library.WorkingDir}/bootstrap_msa"
+    #
+    #     with open(f"{args_library.WorkingDir}{args_library.Iqtree_Boottrees}", "w") as tree_out:
+    #         for i in range(args_library.Bootstraps):
+    #             indices = [random.randint(0, alignment_length - 1) for _ in range(alignment_length)]
+    #             bootstrapped_records = []
+    #             for record in alignment:
+    #                 bootstrapped_seq = "".join(record.seq[j] for j in indices)
+    #                 record.seq = record.seq.__class__(bootstrapped_seq)
+    #                 bootstrapped_records.append(record)
+    #
+    #             bootstrap_alignment = MultipleSeqAlignment(bootstrapped_records)
+    #
+    #             tmp_align_file = f"{output_prefix}_{i + 1:03d}.fasta"
+    #             AlignIO.write(bootstrap_alignment, tmp_align_file, "fasta")
+    #             with open(f'{args_library.OutLogFile}', "a") as log_file:
+    #                 log_file.write(f"FastTree Boostrapped alignment #{i}: {tmp_align_file} saved\n")
+    #
+    #             # for each bootstrapped alignment run fasttree
+    #             cmd = f"FastTree {tmp_align_file}"
+    #             with open(f'{args_library.OutLogFile}', "a") as log_file:
+    #                 log_file.write(f"FastTree Bootstrap_Tree {i}: {cmd}\n")
+    #             # subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    #             result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    #             tree = result.stdout.strip()
+    #
+    #             if not tree.endswith(";"):
+    #                 tree += ";"
+    #             tree_out.write(tree + "\n")
+    #
+    #         tree_files = os.path.join(f"{args_library.WorkingDir}", f"{args_library.Alignment_File}.*")
+    #         for file in glob.glob(tree_files):
+    #             if not file.endswith("ORIG"):
+    #                 shutil.move(file, f'{args_library.BootStrap_Dir}')
+    #
+    #         bootstrap_alignment_files = os.path.join(f"{args_library.WorkingDir}", f"bootstrap_msa_*")
+    #         for boot_msa_file in glob.glob(bootstrap_alignment_files):
+    #             if os.path.isfile(boot_msa_file):
+    #                 os.remove(boot_msa_file)
+    #         with open(f'{args_library.OutLogFile}', "a") as log_file:
+    #             log_file.write("All bootstrap_msa_* files deleted\n")
+    #
+    #         if os.path.getsize(
+    #                 f"{args_library.BootStrap_Dir}{args_library.Iqtree_Boottrees}") == 0 or not os.path.exists(
+    #                 f"{args_library.BootStrap_Dir}{args_library.Iqtree_Boottrees}"):
+    #             exit_on_error("sys_error",
+    #                           f"Bootstrap_Trees: '{args_library.BootStrap_Dir}{args_library.Iqtree_Boottrees}' is empty/does not exist\n",
+    #                           args_library)
+    #         return
+    # else:
+    #     return
+    #
+    # ### END : TESTING WITH FASTTREE ###
+    #
     if args_library.BBL.upper() == "YES":
         args_library.semphy_prog = f"{args_library.semphy_prog} -n "
         verbose_level = 1

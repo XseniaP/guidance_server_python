@@ -74,7 +74,7 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
         elif args_library.MSA_Program == "CLUSTALO":
             tree = f"{args_library.BootStrap_Dir}nonUniqueTrees/tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}.rooted"
 
-        else:
+        else: # PRANK
             tree = f"{args_library.BootStrap_Dir}nonUniqueTrees/tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}"
 
         if args_library.MSA_Program == "PRANK":
@@ -135,6 +135,7 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
         # if countTrees != 0:
         if args_library.input_type != "msa":
             if countTrees >= 20:
+            # if countTrees >= 101: #TODO - to remove convergence
                 # check the convergence only for every nth tree
                 if args_library.proc_num >=2 or (args_library.proc_num == 1 and countTrees % 3 == 0):
                 # if countTrees % 1 == 0:
@@ -499,7 +500,7 @@ def run_guidance2(args_library):
         if args_library.GapPenDist.upper() == "EMP":
             log_file.write(
                 f"Sample op according to empiric distribution: Guidance::SampelFromEmpiricDistribution({OP_DistFile},{OutOP},{args_library.Bootstraps})\n")
-            op_vals_arr_ref = sample_from_empirical_distribution(OP_DistFile, OutOP, args_library.FORM['Bootstraps'])
+            op_vals_arr_ref = sample_from_empirical_distribution(OP_DistFile, OutOP, args_library.Bootstraps)
         elif args_library.GapPenDist.upper() == "UNIF":
             if args_library.MSA_Program == "MAFFT":
                 log_file.write(

@@ -47,6 +47,7 @@ app.config['RECAPTCHA_SECRET_KEY'] = os.getenv('RECAPTCHA_SECRET_KEY')
 recaptcha = ReCaptcha(app) # Create a ReCaptcha object by passing in 'app' as parameter
 process_id2update = []
 
+
 @app.route(PREFIX + '/ConcatMSAs/<process_id>', methods=['GET', 'POST'])
 def ConcatMSAs(process_id):
 
@@ -343,7 +344,15 @@ def results(process_id):
         "remove_sequences_list": sorted( remove_sequences_list, reverse=True), 
         "super_msa_list": super_msa_list
     }
-    return render_template('output.html', **kwargs)
+
+    #
+    return render_template('output.html', **kwargs) #TODO - testing removing cache
+
+    # response = make_response(render_template('output.html', **kwargs))
+    # response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    # response.headers['Pragma'] = 'no-cache'
+    # response.headers['Expires'] = '0'
+    # return response
             
 @app.route(PREFIX + '/results/<int:_process_id>/<string:show_file>', methods=['GET', 'POST'])
 def show_file( _process_id, show_file):

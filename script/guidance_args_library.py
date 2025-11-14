@@ -29,6 +29,7 @@ class Library:
         self.msa_set_score_prog = CONST.MSA_SET_SCORE
         self.pagan_prog = CONST.PAGAN
         self.remove_taxa_prog = CONST.REMOVE_TAXA
+        # self.isEqualTopologyProg = CONST.isEqualTopologyProg #TODO return for the server??? not used...
         self.orig_argv = sys.argv[1:]  # Skip the script name itself
         self.overview_URL = ""
         self.gallery_URL = ""
@@ -115,8 +116,8 @@ class Library:
         parser.add_argument('--seqFile', dest='usrSeq_File', type=str, required=True,
                             help='Specify the sequence file (required).')
         parser.add_argument('--msaProgram', dest='MSA_Program', type=str,
-                            choices=['MAFFT', 'PRANK', 'CLUSTALO', 'MUSCLE', 'PAGAN'], required=True, default="",
-                            help='Specify the MSA program (Required). <MAFFT|PRANK|CLUSTALO|MUSCLE|PAGAN>. Default=""')
+                            choices=['MAFFT', "MAFFT_LINSI", 'PRANK', 'CLUSTALO', 'MUSCLE', 'PAGAN'], required=True, default="",
+                            help='Specify the MSA program (Required). <MAFFT|MAFFT_LINSI|PRANK|CLUSTALO|MUSCLE|PAGAN>. Default=""')
         parser.add_argument('--seqType', dest='Seq_Type', type=str, choices=['aa', 'nuc', 'codon'],
                             required=True, default="", help='Specify the sequence type: aa, nuc, or codon (Required')
         parser.add_argument('--outDir', required=True, dest='outDir', type=str,
@@ -173,8 +174,8 @@ class Library:
                             help='Specify a unique name for the Dataset - will be used as prefix to outputs. Default=MSA.')
         parser.add_argument('--MSA_Param', dest='align_param', type=str, default="",
                             help='Specify the parameters for the alignment program. To pass parameter containing - in it, add \\ before each - e.g. \\-F for PRANK')
-        parser.add_argument('--proc_num', dest='proc_num', type=int, default=1,
-                            help='Specify num of processors to use. Default=1.')
+        parser.add_argument('--proc_num', dest='proc_num', type=int, default=8,
+                            help='Specify num of processors to use. Default=8.')
 
         ### EXPERIMENTAL FEATURES.... MOST ACTIVE ONLY LOCAL
         parser.add_argument('--RootingType', dest='rooting_type', choices=['BioPerl', 'MidPoint'],
@@ -200,10 +201,10 @@ class Library:
         if not isinstance(self.Bootstraps, int) or not str(self.Bootstraps).isdigit():
             raise ValueError("ERROR: Bootstraps parameter must be a number")
 
-        if self.outDir == None or self.outDir == "":
+        if self.outDir is None or self.outDir == "":
             raise ValueError("ERROR: No path for output\n")
 
-        if self.usrSeq_File == None or self.usrSeq_File == "":
+        if self.usrSeq_File is None or self.usrSeq_File == "":
             raise ValueError("ERROR: seqFile is required\n")
 
         if self.proc_num < 1:
@@ -473,6 +474,7 @@ class Library:
         self.pagan_prog = CONST.PAGAN_LECS
         self.ruby_prog = CONST.RUBY
         self.msa_set_score_prog = CONST.MSA_SET_SCORE
+        self.remove_taxa_prog = CONST.REMOVE_TAXA #TODO -add on server
 
         # Defaults (still not supported by the web server implementation, experimental feature)
         self.Z_Col_Cutoff ='NA'

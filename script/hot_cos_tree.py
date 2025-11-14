@@ -14,6 +14,10 @@ class Tree_:
         self.subtrees = {}
         self.splits_file = "splits.txt"
 
+        # if os.path.exists(self.tree_file):  # TODO: removing trees to create guide trees with MAFFT ? that is needed for fasttree?/ Remove this code to get back to boostrapped trees
+        #     os.remove(self.tree_file)
+        #     print(f"File {self.tree_file} removed successfully.")
+
         if not os.path.isfile(f'{self.tree_file}'):
             print(f"ERROR: File not found: {self.tree_file}")
             self.tree_file = 'guide_tree.nwk'
@@ -31,7 +35,8 @@ class Tree_:
         with open(file_path, 'r') as infile:
             nwstr = infile.read()
 
-        nwstr = re.sub(r';*$', ';', nwstr)
+        # nwstr = re.sub(r';*$', ';', nwstr)
+        nwstr = re.sub(r';+$', ';', nwstr)
         nwstr = nwstr.replace(' ', '')
         self.subtrees = {'tree': nwstr}
 
