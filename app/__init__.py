@@ -47,6 +47,7 @@ app.config['RECAPTCHA_SECRET_KEY'] = os.getenv('RECAPTCHA_SECRET_KEY')
 recaptcha = ReCaptcha(app) # Create a ReCaptcha object by passing in 'app' as parameter
 process_id2update = []
 
+
 @app.route(PREFIX + '/ConcatMSAs/<process_id>', methods=['GET', 'POST'])
 def ConcatMSAs(process_id):
 
@@ -148,7 +149,7 @@ def process_state(process_id):
         log_msg = f'GuidanceState.__init__({process_id}) failed'
         logger.info (log_msg)
         if job_logger:
-            job_logger.info (log_msg)
+            job_logger.info(log_msg)
         # KSENIA
         kwargs = {
             "var": guidance_state.var,
@@ -343,7 +344,15 @@ def results(process_id):
         "remove_sequences_list": sorted( remove_sequences_list, reverse=True), 
         "super_msa_list": super_msa_list
     }
-    return render_template('output.html', **kwargs)
+
+    #
+    return render_template('output.html', **kwargs) #TODO - testing removing cache
+
+    # response = make_response(render_template('output.html', **kwargs))
+    # response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    # response.headers['Pragma'] = 'no-cache'
+    # response.headers['Expires'] = '0'
+    # return response
             
 @app.route(PREFIX + '/results/<int:_process_id>/<string:show_file>', methods=['GET', 'POST'])
 def show_file( _process_id, show_file):
@@ -454,7 +463,11 @@ def home():
                 crash_flag = False
             status = guidance_state.save_state(warning_messages, crash_flag=crash_flag)
             if status != 'OK':
-                raise Exception (status, "system")
+                kwargs = {
+                    "var": guidance_state.var,
+                }
+                render_template('error_page.html', error_text=msg, **kwargs)  # change
+                raise Exception(status, "system")
             
             #return render_template('posted.html', msg = 'stored')
             
@@ -488,7 +501,7 @@ def home():
                 if error_type == "system":
                     guidance_state.send_system_error_email()
                     
-            fail_page = os.path.join( CONSTS.WEBSERVER_RESULTS_DIR, new_process_id, f'GUIDANCE_{new_process_id}.END_FAIL')
+            fail_page = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, new_process_id, f'GUIDANCE_{new_process_id}.END_FAIL')
             open(fail_page, 'a').close()
 
             kwargs = {

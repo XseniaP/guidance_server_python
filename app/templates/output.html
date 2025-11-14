@@ -221,4 +221,15 @@
 
 {% endif %}
 
+{% if job_state == 'FAILED' %}
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-9 main-form overview-container">
+                <A style="font-size: 20px" HREF="{{var['run_number']}}/errors.txt" TARGET=results_Colored>List of errors encountered</A><br>
+            <br>
+            Please review the errors, adjust your input and try to re-run your job
+        </div>
+    </div>
+{% endif %}
+
 {% endblock %} 

@@ -77,6 +77,8 @@ class GuidanceState:
                 var['run_url'] = results_url + '/'
                 var['output_page'] = CONSTS.RESULT_WEBPAGE_NAME
                 var['run_number'] = jobId
+                # KSENIA
+                # var['errors_file'] = f"results/{var['run_number']}/errors.txt"
                 job_logger.info('testing4')
                 # var['code_fileName'] = 'Seqs.Codes'
                 
@@ -669,7 +671,7 @@ class GuidanceState:
             fp.close()
         except:
             error = f'GuidanceState({state.str()}): saving var failed'
-            raise Exception ( error, "system")
+            raise Exception(error, "system")
         
         return warning_msg
         

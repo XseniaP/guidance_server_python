@@ -16,7 +16,7 @@ from multiprocessing import Process, Manager, Lock
 # import logging
 
 #@timeit
-def run_hot_internal(args_library, op_vals_arr_ref, countTrees, tree_good_BranchLength, Branch):
+def run_hot_internal(args_library, op_vals_arr_ref, ep_vals_arr_ref, countTrees, tree_good_BranchLength, Branch):
     HOT_COS_GUIDANCE2_cmd = f"cd {args_library.WorkingDir}; python3 {HOT_GUIDANCE2_PROGRAM} {args_library.dataset}_{countTrees} {args_library.HoT_MSA_Program}"
     print(HOT_COS_GUIDANCE2_cmd)
 
@@ -74,7 +74,7 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
         elif args_library.MSA_Program == "CLUSTALO":
             tree = f"{args_library.BootStrap_Dir}nonUniqueTrees/tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}.rooted"
 
-        else:
+        else: # PRANK
             tree = f"{args_library.BootStrap_Dir}nonUniqueTrees/tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}"
 
         if args_library.MSA_Program == "PRANK":
@@ -88,7 +88,7 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
         tree_good_BranchLength = f"{tree}.GoodBranchLength"
         reformat_trees_branch_length(tree, tree_good_BranchLength)
 
-        HOT_COS_GUIDANCE2_cmd = run_hot_internal(args_library, op_vals_arr_ref, countTrees, tree_good_BranchLength, Branch)
+        HOT_COS_GUIDANCE2_cmd = run_hot_internal(args_library, op_vals_arr_ref, ep_vals_arr_ref, countTrees, tree_good_BranchLength, Branch)
         log_file.write(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
         print(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
 
@@ -135,6 +135,7 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
         # if countTrees != 0:
         if args_library.input_type != "msa":
             if countTrees >= 20:
+            # if countTrees >= 101: #TODO - to remove convergence
                 # check the convergence only for every nth tree
                 if args_library.proc_num >=2 or (args_library.proc_num == 1 and countTrees % 3 == 0):
                 # if countTrees % 1 == 0:
@@ -499,7 +500,7 @@ def run_guidance2(args_library):
         if args_library.GapPenDist.upper() == "EMP":
             log_file.write(
                 f"Sample op according to empiric distribution: Guidance::SampelFromEmpiricDistribution({OP_DistFile},{OutOP},{args_library.Bootstraps})\n")
-            op_vals_arr_ref = sample_from_empirical_distribution(OP_DistFile, OutOP, args_library.FORM['Bootstraps'])
+            op_vals_arr_ref = sample_from_empirical_distribution(OP_DistFile, OutOP, args_library.Bootstraps)
         elif args_library.GapPenDist.upper() == "UNIF":
             if args_library.MSA_Program == "MAFFT":
                 log_file.write(
@@ -546,6 +547,7 @@ def run_guidance2(args_library):
     # CREATE THE PERTURBED ALN DIR
     os.mkdir(args_library.Scoring_Alignments_Dir)
 
+    #Run HoT to create alternative MSAs
     countTrees = 0
     epsilon = 0.0006
     manager = Manager()

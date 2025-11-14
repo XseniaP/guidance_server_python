@@ -59,7 +59,7 @@ class InputValidator:
                                                 seq_length = len(seq)# initialize the first one
                                             if len(seq) != seq_length:
                                                 # return f"The sequences of the provided MSA are not properly aligned, For example the seq: '{seq_name}' does not aligned to all others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only<br>"
-                                                errors += f"The sequences of the provided MSA are not properly aligned, For example the seq: '{seq_name}' does not aligned to all others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only<br>"
+                                                errors += f"The sequences of the provided MSA are not properly aligned, For example the seq: '{seq_name}' is not aligned with all others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only<br>"
                                             if seqType == "Codons": 
                                                 # Make sure that in Codon Alignment there are no stop Codons and all seq are divided by 3
                                                 ans = self.validate_seq_in_CodonAlign(seq, seq_name, codonTable)
@@ -68,16 +68,16 @@ class InputValidator:
                                                     errors += ans
                                         if not isMSA:
                                             # check gap characters
-                                            m = re.search (r'([-]+)$', seq)
+                                            m = re.search(r'([-]+)$', seq)
                                             if m:
-                                                seq = re.sub (m.group(1), '', seq)
+                                                seq = re.sub(m.group(1), '', seq)
                                                 warning = "Gap characters (-) were removed from the end of the sequences"
                                             if re.search('[-]', seq):
                                                 # return f"Seq: named '{seq_name}' contain a gap character '-' which is illegal when sequences are submited to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option<br>"
                                                 errors += f"Seq: named '{seq_name}' contain a gap character '-' which is illegal when sequences are submited to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option<br>"
                                         # check for star characters
                                         if re.search('\*+', seq):
-                                            seq = re.sub ('\*+', '', seq)
+                                            seq = re.sub('\*+', '', seq)
                                             warning = "Star character (*) were removed from the end of the sequences"
                                         ans = self.validate_single_seq(seq_name, seq, seqType)
                                         if ans == 'OK':
@@ -90,7 +90,7 @@ class InputValidator:
                                             errors += ans
                                             
                                     # start new seq
-                                    m = re.search( r'^>(.*)', line)
+                                    m = re.search(r'^>(.*)', line)
                                     if m:
                                         seq_name = m.group(1)
                                         seq_name = re.sub('^\s+|\s+$', '', seq_name) # remove leading/trailing blanks
@@ -191,7 +191,7 @@ class InputValidator:
         DNA_seq = DNA_seq.rstrip()
         seq_length = len(DNA_seq)
         if seq_length % 3 > 0:
-            return f"Sequence '{seqName}' is not a valid coding sequence: the sequence is of length {seq_length} which is not divided by 3"
+            return f"Sequence '{seqName}' is not a valid coding sequence: the sequence is of length {seq_length} which is not divided by 3\n"
         
         i = 0
         while i < seq_length - 2:
@@ -205,7 +205,7 @@ class InputValidator:
             i = i + 3
 
         if '*' in AASeq:
-            return f"Sequence: '{seqName}' contains a stop codon, please remove all stop codons (from all sequences) and submit to GUIDANCE again"
+            return f"Sequence: '{seqName}' contains a stop codon, please remove all stop codons (from all sequences) and submit to GUIDANCE again\n"
         return 'OK'
 
     def translate_codon(self, table, codon):
