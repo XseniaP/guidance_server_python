@@ -635,8 +635,8 @@ class GuidanceState:
             else: 
                 if form['Redirect_From_MAFFT'] == '1':
                     var['remove_seq_default_line'] = f'''
-                        <A HREF="{var['Seq_File_without_low_SP_SEQ_with_Names']}" TARGET=_blank>The input sequences after the removal of unreliable sequences (with confidence score below {var['SP_SEQ_CUTOFF']})</A>
-                        <font size=-1> (see list of removed sequences <A HREF="{var['removed_low_SP_SEQ_With_Names']}"
+                        <A HREF=\'{os.path.join( var['run_number'], var['Seq_File_without_low_SP_SEQ_with_Names'])}\' TARGET=_blank>The input sequences after the removal of unreliable sequences (with confidence score below {var['SP_SEQ_CUTOFF']})</A>
+                        <font size=-1> (see list of removed sequences <A HREF=\'{os.path.join( var['run_number'], var['removed_low_SP_SEQ_With_Names'])}\'
                         TARGET=_blank>here</A></font>)&nbsp;&nbsp;&nbsp;
                         <INPUT TYPE=\"BUTTON\" VALUE=\"run GUIDANCE on the confidently-aligned sequences only\" 
                         ONCLICK=\"var answer = confirm('ATTENTION: Running GUIDANCE on the confidently-aligned sequences only, ignores the parameters used for the original run on MAFFT server. It is therefore recommended to adjust these parameters or aligning the confidently-aligned sequences on MAFFT server and run GUIDANCE again from there');
@@ -644,8 +644,8 @@ class GuidanceState:
                         <br>'''
                 else:
                     var['remove_seq_default_line'] = f'''
-                        <A HREF="{var['Seq_File_without_low_SP_SEQ_with_Names']}" TARGET=_blank>The input sequences after the removal of unreliable sequences (with confidence score below {var['SP_SEQ_CUTOFF']})</A>
-                        <font size=-1> (see list of removed sequences <A HREF="{var['removed_low_SP_SEQ_With_Names']}"
+                        <A HREF=\'{os.path.join( var['run_number'], var['Seq_File_without_low_SP_SEQ_with_Names'])}\' TARGET=_blank>The input sequences after the removal of unreliable sequences (with confidence score below {var['SP_SEQ_CUTOFF']})</A>
+                        <font size=-1> (see list of removed sequences <A HREF=\'{os.path.join( var['run_number'], var['removed_low_SP_SEQ_With_Names'])}\'
                         TARGET=_blank>here</A></font>)&nbsp;&nbsp;&nbsp;
                         <INPUT TYPE=\"BUTTON\" VALUE=\"run GUIDANCE on the confidently-aligned sequences only\" 
                         ONCLICK=\"window.open(\'{CONSTS.WEBSERVER_URL}/rerun/{var['run_number']}/{var['Seq_File_without_low_SP_SEQ_with_Names']}\')\">
