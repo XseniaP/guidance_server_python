@@ -1,0 +1,32 @@
+name: dl_model_env
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.10
+  - pip
+
+  # compiled via conda for better performance and compatibility with CUDA and GPU support.
+  - numpy=1.26.4
+  - scipy
+  - pandas
+  - matplotlib
+  - scikit-learn=1.5.1
+  - joblib
+
+  - tqdm
+  - pyyaml
+
+  - pip:
+      # TensorFlow + Keras must be installed via pip to ensure compatibility with CUDA and GPU support.
+      - tensorflow==2.17.0
+      - keras==3.5.0
+
+      - shap
+      - seaborn
+      - transformers
+      - torch
+      - torchvision
+      - torchtext

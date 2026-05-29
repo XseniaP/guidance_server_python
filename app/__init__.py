@@ -323,26 +323,35 @@ def results(process_id):
                 remove_sequences_list.append(m.group(1))
     
     # superMSA's
-    super_msa_list = [] 
+    super_msa_list = []
     for file in os.listdir(os.path.join (CONSTS.WEBSERVER_RESULTS_DIR, process_id)):
         m = re.search('SuperMSA_DefaultMSA_and_([0-9]+)_Alt.fas', file)
         if m:
             if m.group(1) not in super_msa_list:
                 super_msa_list.append(m.group(1))
-    
+
+    # best MSA selected by the pretrained DL model
+    best_msa_file = ''
+    dataset = guidance_state.var.get('dataset', 'MSA')
+    msa_program = guidance_state.form.get('MSA_Program', 'MAFFT')
+    candidate_best_msa = f"{dataset}.{msa_program}.Guidance2_BestMSA.fasta"
+    if os.path.exists(os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id, candidate_best_msa)):
+        best_msa_file = candidate_best_msa
+
     sleep(3)
-    
+
     kwargs = {
         "reload_interval": CONSTS.RELOAD_INTERVAL,
-        "var": guidance_state.var, 
+        "var": guidance_state.var,
         "form": guidance_state.form,
         "job_state": job_state.str(),
         "runtime_warnings": runtime_warnings,
         "progress_report": progress_report,
-        "mask_residues_list": sorted( mask_residues_list, reverse=True), 
-        "remove_columns_list": sorted( remove_columns_list, reverse=True), 
-        "remove_sequences_list": sorted( remove_sequences_list, reverse=True), 
-        "super_msa_list": super_msa_list
+        "mask_residues_list": sorted( mask_residues_list, reverse=True),
+        "remove_columns_list": sorted( remove_columns_list, reverse=True),
+        "remove_sequences_list": sorted( remove_sequences_list, reverse=True),
+        "super_msa_list": super_msa_list,
+        "best_msa_file": best_msa_file,
     }
 
     #

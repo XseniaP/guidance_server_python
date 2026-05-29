@@ -391,6 +391,7 @@ def print_initial_running_progress(args_library):
 
         if args_library.PROGRAM == "GUIDANCE2":
             PROGRESS.write("<ul class=\"in_progress\"><li>Calculating GUIDANCE2 scores</li></ul>\n")
+            PROGRESS.write("<ul class=\"in_progress\"><li>Running the model and selecting the best MSA</li></ul>\n")
 
         if args_library.PROGRAM == "GUIDANCE3":
             PROGRESS.write("<ul class=\"in_progress\"><li>Calculating GUIDANCE3 scores</li></ul>\n")
@@ -418,6 +419,10 @@ def update_progress(progress_file, message):
             elif "Finished Calculating" in message and "Calculating" in line:
                 line = line.replace("in_progress", "finished")
                 line = line.replace("Calculating", "Finished Calculating")
+                progress.write(line)
+            elif "Finished running the model" in message and "Running the model" in line:
+                line = line.replace("in_progress", "finished")
+                line = line.replace("Running the model", "Finished running the model")
                 progress.write(line)
             else:
                 progress.write(line)

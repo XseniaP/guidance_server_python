@@ -133,12 +133,12 @@
     {% for remove_sequence in remove_sequences_list %}
     <ul>
         <li>
-            <a href="{{ var['run_number'] }}/{{ var['Seq_File_without_low_SP_SEQ'] }}.{{ remove_sequence }}" TARGET=_blank>
+            <a href="{{ var['run_number'] }}/{{ var['Seq_File_without_low_SP_SEQ'] }}.{{ remove_sequence }}.With_Names" TARGET=_blank>
                 The input sequences after the removal of unreliable sequences (with confidence score below {{ remove_sequence }})
             </a>
             <font size="-1">
                 (see list of removed sequences
-                <a href="{{ var['run_number'] }}/{{ var['Seq_File_without_low_SP_SEQ'] }}.{{ remove_sequence }}.With_Names" target=_blank>here</a>)
+                <a href="{{ var['run_number'] }}/{{ var['removed_low_SP_SEQ'] }}.{{ remove_sequence }}.With_Names" target=_blank>here</a>)
             </font>
             &nbsp;
             {% set rerun_url = '/guidance/rerun/' + var['run_number'] + '/' + var['Seq_File_without_low_SP_SEQ'] + '.' + remove_sequence + '.With_Names' %}
@@ -191,6 +191,13 @@
     <li><A HREF="{{var['run_number']}}/{{var['dataset']}}.{{form['MSA_Program']}}.Guidance2_AlternativeMSA.tar.gz"> The set of alternative MSAs<br></A>
     </li>
 </ul>
+
+{% if best_msa_file %}
+<ul>
+    <li><A HREF="{{var['run_number']}}/{{best_msa_file}}" TARGET=_blank><b>Best MSA</b> selected by the pretrained model (minimum predicted distance score)<br></A>
+    </li>
+</ul>
+{% endif %}
 
 {% endif %}
 

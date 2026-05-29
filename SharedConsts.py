@@ -84,6 +84,9 @@ if platform.system()=='Darwin': # macOS platform
     SEMPHY_BBL = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
     CLUSTAL_OMEGA = os.path.join(BIN_DIR, 'script/programs/clustalo')
     IQTREE = os.path.join(BIN_DIR, 'script/programs/iqtree/bin/iqtree2')
+    FEATURES_EXTRACTION_PROG = os.path.join(SCRIPTS_DIR, 'programs', 'features_extraction', 'features_for_msas')
+    # Force arm64 slice — the webserver may run under Rosetta (x86_64), but numpy/TF are arm64-only
+    DL_MODEL_PYTHON = ['arch', '-arm64', '/Library/Frameworks/Python.framework/Versions/3.10/bin/python3']
 
 elif platform.system()=='Linux': # Linux platform
     MSA_SET_SCORE = os.path.join(SCRIPTS_DIR, 'programs', 'Linux','msa_set_score', 'msa_set_score')
@@ -93,6 +96,17 @@ elif platform.system()=='Linux': # Linux platform
     SEMPHY_BBL = os.path.join(BIN_DIR, 'script/programs/Linux/semphy/semphy')
     CLUSTAL_OMEGA = os.path.join(BIN_DIR, 'script/programs/Linux/clustalo')
     IQTREE = os.path.join(BIN_DIR, 'script/programs/Linux/iqtree/bin/iqtree2')
+    FEATURES_EXTRACTION_PROG = os.path.join(SCRIPTS_DIR, 'programs', 'Linux', 'features_extraction', 'features_for_msas')
+    DL_MODEL_PYTHON = os.environ.get('GUIDANCE_DL_PYTHON', sys.executable).split()
+
+FEATURES_EXTRACTION_MATRIX_DIR = os.path.join(SCRIPTS_DIR, 'programs', 'features_extraction', 'input_config_files')
+DL_MODEL_PREDICT_SCRIPT = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'scripts', 'predict_pretrained_main.py')
+# Amino-acid model
+DL_MODEL_PATH = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'input', 'orthomam_model2', 'regressor_model_0_mode1_dseq_from_true.keras')
+DL_MODEL_SCALER_PATH = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'input', 'orthomam_model2', 'scaler_0_mode1_dseq_from_true.pkl')
+# Nucleotide model
+DL_MODEL_NUC_PATH = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'input', 'nucleotides_model2', 'regressor_model_0_mode1_dseq_from_true.keras')
+DL_MODEL_NUC_SCALER_PATH = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'input', 'nucleotides_model2', 'scaler_0_mode1_dseq_from_true.pkl')
 
 MUSCLE = "muscle"
 MAFFT_GUIDANCE = "mafft"
