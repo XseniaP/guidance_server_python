@@ -36,6 +36,8 @@ if __name__ == "__main__":
     make_jalview(args_library)
     flag_that_finished_ok(args_library)
     create_tar_archives(args_library)
+    if args_library.PROGRAM == "GUIDANCE2":
+        select_best_msa(args_library)
     # create_png_for_seqscores(args_library)
     print(args_library)
     if args_library.isServer == 1:

@@ -192,6 +192,13 @@
     </li>
 </ul>
 
+{% if best_msa_file %}
+<ul>
+    <li><A HREF="{{var['run_number']}}/{{best_msa_file}}" TARGET=_blank><b>Best MSA</b> selected by the pretrained model (minimum predicted distance score)<br></A>
+    </li>
+</ul>
+{% endif %}
+
 {% endif %}
 
 {% if form['Seq_Type'] == 'Codons' %}

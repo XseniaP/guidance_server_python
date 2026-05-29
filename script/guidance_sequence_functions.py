@@ -1,4 +1,5 @@
 import Bio.Data.CodonTable
+import json
 import os
 import os.path
 import re
@@ -1156,3 +1157,195 @@ def create_tar_archives(args_library):
         os.system(cmd)
         shutil.rmtree(os.path.join(args_library.WorkingDir, f"{args_library.dataset}_cos_{args_library.HoT_MSA_Program}"), ignore_errors = True)
         shutil.rmtree(os.path.join(args_library.WorkingDir, args_library.HoT_MSAs_Dir), ignore_errors=True)
+
+
+def select_best_msa(args_library):
+    """Extract features from all alternative MSAs and use the pretrained DL model to select the best one."""
+    import pandas as pd
+    from SharedConsts import (
+        FEATURES_EXTRACTION_PROG,
+        FEATURES_EXTRACTION_MATRIX_DIR,
+        DL_MODEL_PREDICT_SCRIPT,
+        DL_MODEL_PATH,
+        DL_MODEL_SCALER_PATH,
+        DL_MODEL_NUC_PATH,
+        DL_MODEL_NUC_SCALER_PATH,
+        DL_MODEL_PYTHON,
+    )
+
+    TRUE_MSA_FILENAME = "MSA_TRUE.fas"
+    run_id = os.path.basename(os.path.normpath(args_library.WorkingDir))
+
+    alt_msas_dir = os.path.join(args_library.WorkingDir, f"{args_library.Output_Prefix}_AlternativeMSA")
+    default_msa = os.path.join(args_library.WorkingDir, args_library.Alignment_File_With_Names)
+
+    if not os.path.isdir(alt_msas_dir):
+        print("[select_best_msa] Alternative MSA directory not found, skipping")
+        return
+
+    # Build temp input structure: features_input/all_msas/
+    # The executable requires a parent dir containing one subfolder with all MSA files.
+    features_input_dir = os.path.join(args_library.WorkingDir, "features_input")
+    all_msas_dir = os.path.join(features_input_dir, "all_msas")
+    os.makedirs(all_msas_dir, exist_ok=True)
+
+    for f in glob.glob(os.path.join(alt_msas_dir, "*.fasta")):
+        shutil.copy(f, all_msas_dir)
+
+    # The executable requires a reference MSA named *_TRUE.fas to compute distance features.
+    # Copy the default aligner MSA under its original name (as a scored candidate) and as
+    # MSA_TRUE.fas (as the reference required by the executable).
+    default_msa_basename = os.path.basename(default_msa)
+    if os.path.exists(default_msa):
+        shutil.copy(default_msa, os.path.join(all_msas_dir, default_msa_basename))
+        shutil.copy(default_msa, os.path.join(all_msas_dir, TRUE_MSA_FILENAME))
+    else:
+        print(f"[select_best_msa] Default MSA not found at {default_msa}, skipping best MSA selection")
+        shutil.rmtree(features_input_dir, ignore_errors=True)
+        return
+
+    # Write config_features.json — parameters differ by sequence type
+    is_nucleotide = (args_library.Seq_Type == "Nucleotides")
+
+    if is_nucleotide:
+        models_list = [
+            {"gap_open_cost": -1,   "gap_extend_cost": 0, "matrix_file_name": "NucleotidesPAM250"},
+            {"gap_open_cost": -1.5, "gap_extend_cost": 0, "matrix_file_name": "NucleotidesPAM250"},
+            {"gap_open_cost": -3,   "gap_extend_cost": 0, "matrix_file_name": "NucleotidesPAM250"},
+            {"gap_open_cost": -6,   "gap_extend_cost": 0, "matrix_file_name": "NucleotidesPAM250"},
+        ]
+        k_values = [8, 16, 32]
+        stats_output = ["ALL"]
+        model_path = DL_MODEL_NUC_PATH
+        scaler_path = DL_MODEL_NUC_SCALER_PATH
+    else:
+        models_list = [
+            {"gap_open_cost": -10, "gap_extend_cost": -0.5, "matrix_file_name": "BLOSUM62"},
+            {"gap_open_cost": -6,  "gap_extend_cost": -0.5, "matrix_file_name": "BLOSUM62"},
+            {"gap_open_cost": -10, "gap_extend_cost": -1,   "matrix_file_name": "BLOSUM62"},
+            {"gap_open_cost": -6,  "gap_extend_cost": -1,   "matrix_file_name": "BLOSUM62"},
+            {"gap_open_cost": -10, "gap_extend_cost": -0.2, "matrix_file_name": "BLOSUM62"},
+            {"gap_open_cost": -6,  "gap_extend_cost": -0.2, "matrix_file_name": "BLOSUM62"},
+            {"gap_open_cost": -10, "gap_extend_cost": -0.5, "matrix_file_name": "PAM250"},
+            {"gap_open_cost": -6,  "gap_extend_cost": -0.5, "matrix_file_name": "PAM250"},
+            {"gap_open_cost": -10, "gap_extend_cost": -1,   "matrix_file_name": "PAM250"},
+            {"gap_open_cost": -6,  "gap_extend_cost": -1,   "matrix_file_name": "PAM250"},
+            {"gap_open_cost": -10, "gap_extend_cost": -0.2, "matrix_file_name": "PAM250"},
+            {"gap_open_cost": -6,  "gap_extend_cost": -0.2, "matrix_file_name": "PAM250"},
+        ]
+        k_values = [5, 10, 20]
+        stats_output = ["ALL_NO_SUBS_MATRIX"]
+        model_path = DL_MODEL_PATH
+        scaler_path = DL_MODEL_SCALER_PATH
+
+    config = {
+        "models_list": models_list,
+        "sop_calc_type": 1,
+        "additional_weights": [
+            "HENIKOFF_WG",
+            "HENIKOFF_WOG",
+            "CLUSTAL_MID_ROOT",
+            "CLUSTAL_DIFFERENTIAL_SUM"
+        ],
+        "k_values": k_values,
+        "stats_output": stats_output,
+        "input_files_dir_path": features_input_dir,
+        "output_file_dir_path": args_library.WorkingDir,
+        "is_unified_file": True,
+        "matrix_dir_path": FEATURES_EXTRACTION_MATRIX_DIR,
+    }
+
+    config_path = os.path.join(args_library.WorkingDir, "config_features.json")
+    with open(config_path, "w") as f:
+        json.dump(config, f, indent=4)
+
+    # Run feature extraction
+    features_cmd = [FEATURES_EXTRACTION_PROG, config_path]
+    print(f"[select_best_msa] Running: {' '.join(features_cmd)}")
+    result = subprocess.run(features_cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"[select_best_msa] features_for_msas failed (rc={result.returncode}):\n{result.stderr}")
+        shutil.rmtree(features_input_dir, ignore_errors=True)
+        return
+
+    features_file = os.path.join(args_library.WorkingDir, "unified_stats_all_msas.csv")
+    if not os.path.exists(features_file):
+        print(f"[select_best_msa] Features file not found: {features_file}, skipping")
+        shutil.rmtree(features_input_dir, ignore_errors=True)
+        return
+
+    # Add code1 column required by the prediction pipeline.
+    # code1 == run_id for all rows — identifies the job group.
+    # Also drop all-NaN columns (trailing commas from C++ output produce phantom columns).
+    features_df = pd.read_csv(features_file)
+    features_df.insert(1, "code1", run_id)
+    features_df.dropna(axis=1, how="all", inplace=True)
+    features_df.to_csv(features_file, index=False)
+
+    # Run DL model prediction
+    pred_out_dir = os.path.join(args_library.WorkingDir, "best_msa_pred")
+    os.makedirs(pred_out_dir, exist_ok=True)
+
+    predict_cmd = DL_MODEL_PYTHON + [
+        DL_MODEL_PREDICT_SCRIPT,
+        "--features-file", features_file,
+        "--model-path", model_path,
+        "--scaler-path", scaler_path,
+        "--scaler-type-features", "rank",
+        "--scaler-type-labels", "rank",
+        "--out-dir", pred_out_dir,
+        "--no-metrics",
+    ]
+    print(f"[select_best_msa] Running: {' '.join(predict_cmd)}")
+    result = subprocess.run(predict_cmd, capture_output=True, text=True)
+    print(result.stdout)
+    if result.returncode != 0:
+        print(f"[select_best_msa] Prediction script failed (rc={result.returncode}):\n{result.stderr}")
+        shutil.rmtree(features_input_dir, ignore_errors=True)
+        return
+
+    pred_file = os.path.join(pred_out_dir, "prediction_pretrained_0_mode1_dseq_from_true.csv")
+    if not os.path.exists(pred_file):
+        print(f"[select_best_msa] Predictions file not found: {pred_file}, skipping")
+        shutil.rmtree(features_input_dir, ignore_errors=True)
+        return
+
+    preds = pd.read_csv(pred_file)
+    if preds.empty or "predicted_score" not in preds.columns or "code" not in preds.columns:
+        print("[select_best_msa] Predictions CSV missing expected columns, skipping")
+        shutil.rmtree(features_input_dir, ignore_errors=True)
+        return
+
+    # Keep only rows that map to a real file in all_msas_dir, excluding the reference copy.
+    # MSA_TRUE.fas is the reference used by features_for_msas; its scored counterpart is the
+    # default aligner MSA copied under its original name (e.g. MSA.MAFFT.aln.With_Names).
+    # The 'all_msas' summary row emitted by the C++ executable has no matching file so it
+    # is excluded automatically.
+    alt_preds = preds[
+        (preds["code"] != TRUE_MSA_FILENAME) &
+        preds["code"].apply(lambda c: os.path.isfile(os.path.join(all_msas_dir, c)))
+    ]
+    if alt_preds.empty:
+        print("[select_best_msa] No alternative MSA predictions found, skipping")
+        shutil.rmtree(features_input_dir, ignore_errors=True)
+        return
+
+    best_row = alt_preds.loc[alt_preds["predicted_score"].idxmin()]
+    best_code = str(best_row["code"])
+    best_score = float(best_row["predicted_score"])
+
+    best_msa_src = os.path.join(all_msas_dir, best_code)
+    if not os.path.exists(best_msa_src):
+        print(f"[select_best_msa] Best MSA file '{best_code}' not found in {all_msas_dir}, skipping")
+        shutil.rmtree(features_input_dir, ignore_errors=True)
+        return
+
+    best_msa_dst = os.path.join(args_library.WorkingDir, f"{args_library.Output_Prefix}_BestMSA.fasta")
+    shutil.copy(best_msa_src, best_msa_dst)
+    print(f"[select_best_msa] Best MSA saved: {best_msa_dst} (file: {best_code}, score: {best_score:.6f})")
+
+    if args_library.isServer == 1:
+        update_progress(f"{args_library.WorkingDir}{args_library.progress_report}",
+                        "Finished running the model and selecting the best MSA")
+
+    shutil.rmtree(features_input_dir, ignore_errors=True)
