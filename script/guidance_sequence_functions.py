@@ -248,6 +248,36 @@ def check_DNA_seq(input_DNA, DNA_input_name, ter_mark, table_codon_index, is_dna
 
     return ans
 
+_IUPAC_EXPANSION = {
+    'A': ['A'], 'C': ['C'], 'G': ['G'], 'T': ['T'], 'U': ['T'],
+    'R': ['A', 'G'], 'Y': ['C', 'T'], 'S': ['G', 'C'],
+    'W': ['A', 'T'], 'K': ['G', 'T'], 'M': ['A', 'C'],
+    'B': ['C', 'G', 'T'], 'D': ['A', 'G', 'T'],
+    'H': ['A', 'C', 'T'], 'V': ['A', 'C', 'G'],
+    'N': ['A', 'C', 'G', 'T'],
+}
+
+def _translate_codon(codon, codon_table_obj):
+    """Translate one codon, handling IUPAC ambiguous bases.
+
+    Expands each ambiguous base to all possible nucleotides, translates every
+    combination, and returns the single amino acid if all combinations agree,
+    or 'X' if they produce different amino acids (matching Bioperl behaviour).
+    Raises TranslationError only for truly untranslatable unambiguous codons.
+    """
+    bases = [_IUPAC_EXPANSION.get(b.upper(), [b.upper()]) for b in codon]
+    translations = set()
+    for b1 in bases[0]:
+        for b2 in bases[1]:
+            for b3 in bases[2]:
+                try:
+                    aa = str(Seq(b1 + b2 + b3).translate(table=codon_table_obj))
+                    translations.add(aa)
+                except Exception:
+                    translations.add('X')
+    return translations.pop() if len(translations) == 1 else 'X'
+
+
 def translate_sequence(DNA_sequence, DNA_sequence_name, codon_table_index, x_flag, x_codonfile):
     codon_table_obj = CodonTable.unambiguous_dna_by_id[int(codon_table_index)]
     seq_length = len(DNA_sequence)
@@ -259,8 +289,7 @@ def translate_sequence(DNA_sequence, DNA_sequence_name, codon_table_index, x_fla
         if codon == '---':
             AA = '-'
         else:
-            AA = str(Seq(codon).translate(table=codon_table_obj))
-            # if the AA is X we print the codon to a file and later inform the user
+            AA = _translate_codon(codon, codon_table_obj)
             if AA == "X":
                 x_flag = "yes"
                 with open(x_codonfile, "a") as x_codon:
