@@ -111,15 +111,15 @@ class GuidanceState:
             
         else:
     
-            try: 
-                
+            try:
+
                 wd = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, jobId)
-                
+
+                if not os.path.exists(wd):
+                    raise Exception('GuidanceState.__init__: jobId does not exist', 'system')
+
                 job_logger = get_job_logger(jobId)
                 job_logger.info(f'{"#" * 100}\nGuidanceState.__init__: jobId = {jobId}, wd = {wd}')
-                
-                if not os.path.exists (wd):
-                    raise Exception ('GuidanceState.__init__: jobId does not exist', 'system')
                 
                 form_path = os.path.join( wd, 'FORM.json')
                 with open (form_path, 'r') as f:
@@ -195,9 +195,12 @@ class GuidanceState:
                 form['MAFFT_maxiterate'] = cgi_form['maxiterate']
             
             if dict_key_defined_not_empty('pair', cgi_form):
-                form['MAFFT_refinement'] = cgi_form['pair'] 
+                form['MAFFT_refinement'] = cgi_form['pair']
             else:
                 form['MAFFT_refinement'] =''
+
+            # Checkbox: only present in form when checked; default False when absent
+            form['disable_convergence'] = dict_key_defined_not_empty('disable_convergence', cgi_form)
                 
             if dict_key_defined_not_empty('RERUN_SAME_SEQ', cgi_form):
                 form['RERUN_SEQ_ONLY'] = cgi_form['RERUN_SAME_SEQ']
@@ -241,7 +244,7 @@ class GuidanceState:
             var['userName'] = CONSTS.ADMIN_USER_NAME
             var['userPass'] = CONSTS.ADMIN_PASSWORD
             var['IsSPAM']=0
-            var['proc_num']=1
+            var['proc_num']=8
             if dict_key_defined_not_empty( 'LongestSeq', var):
                 var['LongestSeq']=str(var['LongestSeq'])
 

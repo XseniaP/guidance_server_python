@@ -257,11 +257,20 @@ def results(process_id):
     if job_state == State.Running:
     
         if GuidanceState.job_ended(process_id):
-            guidance_state.update_state(State.Finished)
-            job_state = State.Finished
+            # errors.txt is written by exit_on_error() when the job aborts on a user error.
+            # If it exists the process exited via error, not normal completion.
+            errors_file = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id, 'errors.txt')
+            if os.path.exists(errors_file):
+                with open(errors_file) as _ef:
+                    error_content = _ef.read().strip()
+                guidance_state.update_state(state=State.Crashed, error_msg=error_content, error_type='user')
+                job_state = State.Crashed
+            else:
+                guidance_state.update_state(State.Finished)
+                job_state = State.Finished
         else:
             job_state_man = manager.get_guidance_job_state(process_id)
-            if job_state_man == None or job_state_man == State.Crashed: 
+            if job_state_man == None or job_state_man == State.Crashed:
                 guidance_state.update_state(State.Crashed)
                 job_state = State.Crashed
             

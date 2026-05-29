@@ -5,6 +5,8 @@ from guidance_scoring_and_visualization import calculate_sp_scores, check_conver
     calculate_sp_scores_convergence, add_scores_to_dict
 import uuid
 import sys
+import re
+import subprocess
 import multiprocessing as mp
 from time_decorator import timeit
 from multiprocessing.sharedctypes import Value, Array
@@ -17,8 +19,9 @@ from multiprocessing import Process, Manager, Lock
 
 #@timeit
 def run_hot_internal(args_library, op_vals_arr_ref, ep_vals_arr_ref, countTrees, tree_good_BranchLength, Branch):
-    HOT_COS_GUIDANCE2_cmd = f"cd {args_library.WorkingDir}; python3 {HOT_GUIDANCE2_PROGRAM} {args_library.dataset}_{countTrees} {args_library.HoT_MSA_Program}"
-    print(HOT_COS_GUIDANCE2_cmd)
+    # cwd=WorkingDir replaces the shell "cd WorkingDir;" prefix;
+    # stdout= replaces the ">> COS.std" shell redirect.
+    HOT_COS_GUIDANCE2_cmd = f"python3 {HOT_GUIDANCE2_PROGRAM} {args_library.dataset}_{countTrees} {args_library.HoT_MSA_Program}"
 
     if args_library.Seq_Type in ["AminoAcids", "Codons"]:
         HOT_COS_GUIDANCE2_cmd += " aa"
@@ -38,9 +41,21 @@ def run_hot_internal(args_library, op_vals_arr_ref, ep_vals_arr_ref, countTrees,
         # HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param} -GAPOPEN={op_vals_arr_ref[countTrees]}"
         HOT_COS_GUIDANCE2_cmd += f" --- {args_library.align_param}"
 
-    HOT_COS_GUIDANCE2_cmd += " >> COS.std"
+    print(HOT_COS_GUIDANCE2_cmd)
 
-    os.system(HOT_COS_GUIDANCE2_cmd)
+    cos_std_path = os.path.join(args_library.WorkingDir, "COS.std")
+    with open(cos_std_path, "a") as cos_std:
+        result = subprocess.run(
+            HOT_COS_GUIDANCE2_cmd,
+            shell=True,
+            cwd=args_library.WorkingDir,
+            stdout=cos_std,
+            stderr=cos_std,
+        )
+
+    if result.returncode != 0:
+        raise RuntimeError(f"HOT command failed (rc={result.returncode}): {HOT_COS_GUIDANCE2_cmd}")
+
     return HOT_COS_GUIDANCE2_cmd
 
 #@timeit
@@ -63,112 +78,114 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
         if countTrees >= args_library.Bootstraps:
             break
 
-        Branch = RandomBranches[countTrees]
+        try:
+            Branch = RandomBranches[countTrees]
 
-        if args_library.MSA_Program == "MAFFT":
-            if 'addfragments' in args_library.align_param:
-                tree = f"{args_library.prune_BootStrap_Dir}tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}CORE.rooted"
-            else:
-                tree = f"{args_library.BootStrap_Dir}tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}.rooted"
+            if args_library.MSA_Program == "MAFFT":
+                if 'addfragments' in args_library.align_param:
+                    tree = f"{args_library.prune_BootStrap_Dir}tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}CORE.rooted"
+                else:
+                    tree = f"{args_library.BootStrap_Dir}tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}.rooted"
 
-        elif args_library.MSA_Program == "CLUSTALO":
-            tree = f"{args_library.BootStrap_Dir}nonUniqueTrees/tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}.rooted"
+            elif args_library.MSA_Program == "CLUSTALO":
+                tree = f"{args_library.BootStrap_Dir}nonUniqueTrees/tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}.rooted"
 
-        else: # PRANK
-            tree = f"{args_library.BootStrap_Dir}nonUniqueTrees/tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}"
+            else: # PRANK
+                tree = f"{args_library.BootStrap_Dir}nonUniqueTrees/tree_{countTrees}/{args_library.dataset}.{args_library.MSA_Program}.iqtree.tree_{countTrees}"
 
-        if args_library.MSA_Program == "PRANK":
-            if 'iterate' in args_library.align_param:
-                args_library.align_param = args_library.align_param.replace(r'\-iterate=\d+', '')
-                log_file.write("[WARNING] -iterate argument is ignored for the perturbed alignments stage\n")
-                print("[WARNING] -iterate argument is ignored when reconstructing the perturbed alignments\n")
-            if 'once' not in args_library.align_param:
-                args_library.align_param += " -once"
+            if args_library.MSA_Program == "PRANK":
+                if 'iterate' in args_library.align_param:
+                    args_library.align_param = re.sub(r'-iterate=\d+', '', args_library.align_param).strip()
+                    log_file.write("[WARNING] -iterate argument is ignored for the perturbed alignments stage\n")
+                    print("[WARNING] -iterate argument is ignored when reconstructing the perturbed alignments\n")
+                if 'once' not in args_library.align_param:
+                    args_library.align_param += " -once"
 
-        tree_good_BranchLength = f"{tree}.GoodBranchLength"
-        reformat_trees_branch_length(tree, tree_good_BranchLength)
+            tree_good_BranchLength = f"{tree}.GoodBranchLength"
+            reformat_trees_branch_length(tree, tree_good_BranchLength)
 
-        HOT_COS_GUIDANCE2_cmd = run_hot_internal(args_library, op_vals_arr_ref, ep_vals_arr_ref, countTrees, tree_good_BranchLength, Branch)
-        log_file.write(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
-        print(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
+            HOT_COS_GUIDANCE2_cmd = run_hot_internal(args_library, op_vals_arr_ref, ep_vals_arr_ref, countTrees, tree_good_BranchLength, Branch)
+            log_file.write(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
+            print(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
 
-        # pertubed_aln = []
-
-        if args_library.NumOfSeq > 2:
             local_dataset = f"{args_library.dataset}_{countTrees}_cos_"
             pathname = os.path.join(
                 f"{args_library.WorkingDir}", f"{local_dataset}{args_library.HoT_MSA_Program}/b[01]*.fasta")
             pertubed_aln = glob.glob(pathname)
 
-        else:
-            local_dataset = f"{args_library.dataset}_{countTrees}_cos_"
-            pathname = os.path.join(
-                f"{args_library.WorkingDir}", f"{local_dataset}{args_library.HoT_MSA_Program}/b[01]*.fasta")
-            pertubed_aln = glob.glob(pathname)
+            if not pertubed_aln:
+                raise RuntimeError(f"HOT produced no output files for tree {countTrees} (pattern: {pathname})")
 
-        shuffled = random.sample(pertubed_aln, len(pertubed_aln))
+            n_to_use = min(len(pertubed_aln), Num_of_Aln_from_HoT_per_Run)
+            if n_to_use < Num_of_Aln_from_HoT_per_Run:
+                log_file.write(f"[WARNING] tree {countTrees}: HOT produced {len(pertubed_aln)} files, expected {Num_of_Aln_from_HoT_per_Run}, using {n_to_use}\n")
+                print(f"[WARNING] tree {countTrees}: HOT produced {len(pertubed_aln)} files, expected {Num_of_Aln_from_HoT_per_Run}, using {n_to_use}")
 
-        for j in range(Num_of_Aln_from_HoT_per_Run):
-            aln = shuffled[j]
-            base = os.path.basename(aln).split(".fasta")[0]
+            shuffled = random.sample(pertubed_aln, len(pertubed_aln))
+
+            for j in range(n_to_use):
+                aln = shuffled[j]
+                base = os.path.basename(aln).split(".fasta")[0]
+
+                if args_library.PROGRAM == "GUIDANCE2":
+                    cp_from = os.path.join(args_library.WorkingDir, f"{args_library.dataset}_{countTrees}_cos_{args_library.HoT_MSA_Program}", f"{base}.fasta")
+                    cp_to = os.path.join(args_library.Scoring_Alignments_Dir, f"{base}_tree_{countTrees}_OP_{op_vals_arr_ref[countTrees]}_Split_{Branch}.fasta")
+                elif args_library.PROGRAM == "GUIDANCE3_HOT":
+                    cp_from = os.path.join(args_library.WorkingDir, f"{args_library.dataset}_{countTrees}_cos_{args_library.HoT_MSA_Program}", f"{base}.fasta")
+                    cp_to = os.path.join(args_library.Scoring_Alignments_Dir, f"{base}_tree_{countTrees}_OP_{op_vals_arr_ref[countTrees]}_EP_{ep_vals_arr_ref[countTrees]}_Split_{Branch}.fasta")
+                else:
+                    continue
+
+                shutil.copy(cp_from, cp_to)
 
             if args_library.PROGRAM == "GUIDANCE2":
-                cp_from = f"{args_library.WorkingDir}{args_library.dataset}_{countTrees}_cos_{args_library.HoT_MSA_Program}/{base}.fasta"
-                cp_to = f"{args_library.Scoring_Alignments_Dir}{base}_tree_{countTrees}_OP_{op_vals_arr_ref[countTrees]}_Split_{Branch}.fasta"
-                cmd = f"cp {cp_from} {cp_to}"
+                mv_src = os.path.join(args_library.WorkingDir, f"{args_library.dataset}_{countTrees}_cos_{args_library.HoT_MSA_Program}")
+                mv_dst = os.path.join(args_library.BootStrap_Dir, f"{args_library.dataset}_cos_{args_library.HoT_MSA_Program}_tree_{countTrees}_OP_{op_vals_arr_ref[countTrees]}_Split_{Branch}")
             elif args_library.PROGRAM == "GUIDANCE3_HOT":
-                cmd = f"cp {args_library.WorkingDir}{args_library.dataset}_{countTrees}_cos_{args_library.HoT_MSA_Program}/{base}.fasta {args_library.Scoring_Alignments_Dir}{base}_tree_{countTrees}_OP_{op_vals_arr_ref[countTrees]}_EP_{ep_vals_arr_ref[countTrees]}_Split_{Branch}.fasta"
+                mv_src = os.path.join(args_library.WorkingDir, f"{args_library.dataset}_{countTrees}_cos_{args_library.HoT_MSA_Program}")
+                mv_dst = os.path.join(args_library.BootStrap_Dir, f"{args_library.dataset}_cos_{args_library.HoT_MSA_Program}_tree_{countTrees}_OP_{op_vals_arr_ref[countTrees]}EP_{ep_vals_arr_ref[countTrees]}_Split_{Branch}")
+            else:
+                mv_src = mv_dst = None
 
-            os.system(cmd)
+            if mv_src and mv_dst:
+                shutil.move(mv_src, mv_dst)
 
-        cmd = ""
-
-        if args_library.PROGRAM == "GUIDANCE2":
-            cmd = f"mv {args_library.WorkingDir}{args_library.dataset}_{countTrees}_cos_{args_library.HoT_MSA_Program} {args_library.BootStrap_Dir}{args_library.dataset}_cos_{args_library.HoT_MSA_Program}_tree_{countTrees}_OP_{op_vals_arr_ref[countTrees]}_Split_{Branch}"
-        elif args_library.PROGRAM == "GUIDANCE3_HOT":
-            cmd = f"mv {args_library.WorkingDir}{args_library.dataset}_{countTrees}_cos_{args_library.HoT_MSA_Program} {args_library.BootStrap_Dir}{args_library.dataset}_cos_{args_library.HoT_MSA_Program}_tree_{countTrees}_OP_{op_vals_arr_ref[countTrees]}EP_{ep_vals_arr_ref[countTrees]}_Split_{Branch}"
-
-        os.system(cmd)
-
-
-        # check convergence starting from the 20th tree (starting from 80 MSAs)
-        # if countTrees != 0:
-        if args_library.input_type != "msa":
-            if countTrees >= 20:
-            # if countTrees >= 101: #TODO - to remove convergence
+            # check convergence starting from the 20th tree (starting from 80 MSAs)
+            if not getattr(args_library, 'disable_convergence', False) and countTrees >= 20:
                 # check the convergence only for every nth tree
-                if args_library.proc_num >=2 or (args_library.proc_num == 1 and countTrees % 3 == 0):
-                # if countTrees % 1 == 0:
+                if args_library.proc_num >= 2 or (args_library.proc_num == 1 and countTrees % 3 == 0):
                     try:
-                        alt_msas = calculate_sp_scores_convergence(args_library, countTrees)
+                        # Serialize only the FS read: calculate_sp_scores_convergence reads
+                        # Scoring_Alignments_Dir while other processes are still copying into it.
+                        # add_scores_to_dict and check_convergence manage their own thread safety.
+                        with lock:
+                            alt_msas = calculate_sp_scores_convergence(args_library, countTrees)
                         add_scores_to_dict(args_library, epsilon, countTrees, lock)
-                        os.system(
-                            f'rm {os.path.join(args_library.WorkingDir, args_library.Output_Prefix + f"_tree_{countTrees}_*.scr")}')
+                        for scr_file in glob.glob(os.path.join(args_library.WorkingDir, f"{args_library.Output_Prefix}_tree_{countTrees}_*.scr")):
+                            os.unlink(scr_file)
                         convergence = check_convergence(args_library, epsilon)
-                        print(
-                                f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
+                        print(f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
                     except Exception as e:
                         log_file.write(f"failed to calculate scores for convergence of proc num {proc}\ttree num {tree_num} \t# of alternative MSAs {alt_msas} error {e}\n")
                         print(f"failed to calculate scores for convergence of proc num {proc}\ttree num {tree_num} \t# of alternative MSAs {alt_msas} \n")
             if convergence == 1:
-                # print(f"run_HOT_COS_GUIDANCE2 converged at tree #{alt_msas}\n")
-                # if alt_msas < args_library.convergence:
-                #     with lock:
-                #         args_library.convergence = alt_msas
-                #         args_library.count_convergence.value += 1
                 with lock:
-                    # args_library.convergence = alt_msas
                     args_library.count_convergence.value += 1
-                if args_library.proc_num > 2:
+                # With a single process there is no parallelism to coordinate,
+                # so break on the first detection. With multiple processes, require
+                # at least 2 to independently agree before stopping any worker.
+                convergence_threshold = 1 if args_library.proc_num == 1 else 2
+                if args_library.count_convergence.value >= convergence_threshold:
                     print(f'.done {proc}', flush=True)
                     break
-                else:
-                    if args_library.count_convergence.value >= 2:
-                        print(f'.done {proc}', flush=True)
-                        break
+
+        except Exception as e:
+            log_file.write(f"[ERROR] proc {proc} tree {countTrees} failed, skipping: {e}\n")
+            print(f"[ERROR] proc {proc} tree {countTrees} failed, skipping: {e}")
+            continue
 
     # end of child // end of process
-    sys.exit(0)
+    return
 
 
 #@timeit
@@ -562,8 +579,22 @@ def run_guidance2(args_library):
     processes = [Process(target=run_hot_process_on_tree, args=(args_library, epsilon, proc, RandomBranches, op_vals_arr_ref, ep_vals_arr_ref, Num_of_Aln_from_HoT_per_Run, lock)) for proc in range(args_library.proc_num)]
     for process in processes:
         process.start()
+
+    # Use a generous timeout to catch truly hung processes (e.g. deadlock) without
+    # killing legitimate long runs on large datasets. Configurable via args_library.hot_timeout.
+    timeout_per_worker = getattr(args_library, 'hot_timeout', 48 * 3600)  # default: 48 hours
     for process in processes:
-        process.join()
+        process.join(timeout=timeout_per_worker)
+        if process.is_alive():
+            print(f"[WARNING] Worker process {process.pid} timed out after {timeout_per_worker}s, terminating")
+            log_file.write(f"[WARNING] Worker process {process.pid} timed out after {timeout_per_worker}s, terminating\n")
+            process.terminate()
+            process.join(timeout=10)
+            if process.is_alive():
+                print(f"[WARNING] Worker process {process.pid} did not terminate, killing")
+                log_file.write(f"[WARNING] Worker process {process.pid} did not terminate, killing\n")
+                process.kill()
+                process.join()
 
     # this is the number of alternative MSAs produced at the end
     alt_msas = len(os.listdir(args_library.Scoring_Alignments_Dir))

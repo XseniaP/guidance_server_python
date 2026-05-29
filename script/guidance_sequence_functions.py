@@ -248,6 +248,36 @@ def check_DNA_seq(input_DNA, DNA_input_name, ter_mark, table_codon_index, is_dna
 
     return ans
 
+_IUPAC_EXPANSION = {
+    'A': ['A'], 'C': ['C'], 'G': ['G'], 'T': ['T'], 'U': ['T'],
+    'R': ['A', 'G'], 'Y': ['C', 'T'], 'S': ['G', 'C'],
+    'W': ['A', 'T'], 'K': ['G', 'T'], 'M': ['A', 'C'],
+    'B': ['C', 'G', 'T'], 'D': ['A', 'G', 'T'],
+    'H': ['A', 'C', 'T'], 'V': ['A', 'C', 'G'],
+    'N': ['A', 'C', 'G', 'T'],
+}
+
+def _translate_codon(codon, codon_table_obj):
+    """Translate one codon, handling IUPAC ambiguous bases.
+
+    Expands each ambiguous base to all possible nucleotides, translates every
+    combination, and returns the single amino acid if all combinations agree,
+    or 'X' if they produce different amino acids (matching Bioperl behaviour).
+    Raises TranslationError only for truly untranslatable unambiguous codons.
+    """
+    bases = [_IUPAC_EXPANSION.get(b.upper(), [b.upper()]) for b in codon]
+    translations = set()
+    for b1 in bases[0]:
+        for b2 in bases[1]:
+            for b3 in bases[2]:
+                try:
+                    aa = str(Seq(b1 + b2 + b3).translate(table=codon_table_obj))
+                    translations.add(aa)
+                except Exception:
+                    translations.add('X')
+    return translations.pop() if len(translations) == 1 else 'X'
+
+
 def translate_sequence(DNA_sequence, DNA_sequence_name, codon_table_index, x_flag, x_codonfile):
     codon_table_obj = CodonTable.unambiguous_dna_by_id[int(codon_table_index)]
     seq_length = len(DNA_sequence)
@@ -259,8 +289,7 @@ def translate_sequence(DNA_sequence, DNA_sequence_name, codon_table_index, x_fla
         if codon == '---':
             AA = '-'
         else:
-            AA = str(Seq(codon).translate(table=codon_table_obj))
-            # if the AA is X we print the codon to a file and later inform the user
+            AA = _translate_codon(codon, codon_table_obj)
             if AA == "X":
                 x_flag = "yes"
                 with open(x_codonfile, "a") as x_codon:
@@ -1140,10 +1169,16 @@ def create_tar_archives(args_library):
                 tar.add(alt_msa, arcname=os.path.basename(alt_msa))
 
         # for the webserver leave this directory open so we can create SuperMSA
-        os.system(f"cp -r {alt_msas_dir} {args_library.WorkingDir}{args_library.Output_Prefix}_AlternativeMSA/")
+        alt_msa_dest = os.path.join(args_library.WorkingDir, f"{args_library.Output_Prefix}_AlternativeMSA")
+        os.makedirs(alt_msa_dest, exist_ok=True)
+        for f in glob.glob(os.path.join(alt_msas_dir, "*.fasta")):
+            shutil.copy(f, alt_msa_dest)
         # list the default and alternative MSAs
-        args_library.List_Of_Alternative_MSAs = f"{args_library.WorkingDir}List_Of_Default_and_AltMSAs.txt"
-        os.system(f"ls -1 {args_library.WorkingDir}{args_library.Alignment_File_With_Names} {args_library.WorkingDir}{args_library.Output_Prefix}_AlternativeMSA/*.fasta > {args_library.List_Of_Alternative_MSAs}")
+        args_library.List_Of_Alternative_MSAs = os.path.join(args_library.WorkingDir, "List_Of_Default_and_AltMSAs.txt")
+        with open(args_library.List_Of_Alternative_MSAs, "w") as _list_f:
+            default_with_names = os.path.join(args_library.WorkingDir, args_library.Alignment_File_With_Names)
+            alt_fasta_list = sorted(glob.glob(os.path.join(alt_msa_dest, "*.fasta")))
+            _list_f.write("\n".join([default_with_names] + alt_fasta_list) + "\n")
 
     if args_library.PROGRAM in ["GUIDANCE", "GUIDANCE2", "GUIDANCE3"]:
         # Tar and remove the BP dir
@@ -1189,16 +1224,28 @@ def select_best_msa(args_library):
     all_msas_dir = os.path.join(features_input_dir, "all_msas")
     os.makedirs(all_msas_dir, exist_ok=True)
 
-    for f in glob.glob(os.path.join(alt_msas_dir, "*.fasta")):
-        shutil.copy(f, all_msas_dir)
+    def _copy_stripped(src, dst_dir_or_file):
+        """Copy a FASTA file stripping blank lines — features_for_msas crashes on empty lines."""
+        dst = dst_dir_or_file if not os.path.isdir(dst_dir_or_file) else os.path.join(dst_dir_or_file, os.path.basename(src))
+        with open(src) as _in, open(dst, "w") as _out:
+            for line in _in:
+                if line.strip():
+                    _out.write(line)
+
+    alt_fasta_files = glob.glob(os.path.join(alt_msas_dir, "*.fasta"))
+    if not alt_fasta_files:
+        # cp -r with trailing slash puts source as subdirectory when dest already exists
+        alt_fasta_files = glob.glob(os.path.join(alt_msas_dir, "wNames", "*.fasta"))
+    for f in alt_fasta_files:
+        _copy_stripped(f, all_msas_dir)
 
     # The executable requires a reference MSA named *_TRUE.fas to compute distance features.
     # Copy the default aligner MSA under its original name (as a scored candidate) and as
     # MSA_TRUE.fas (as the reference required by the executable).
     default_msa_basename = os.path.basename(default_msa)
     if os.path.exists(default_msa):
-        shutil.copy(default_msa, os.path.join(all_msas_dir, default_msa_basename))
-        shutil.copy(default_msa, os.path.join(all_msas_dir, TRUE_MSA_FILENAME))
+        _copy_stripped(default_msa, os.path.join(all_msas_dir, default_msa_basename))
+        _copy_stripped(default_msa, os.path.join(all_msas_dir, TRUE_MSA_FILENAME))
     else:
         print(f"[select_best_msa] Default MSA not found at {default_msa}, skipping best MSA selection")
         shutil.rmtree(features_input_dir, ignore_errors=True)
@@ -1346,6 +1393,6 @@ def select_best_msa(args_library):
 
     if args_library.isServer == 1:
         update_progress(f"{args_library.WorkingDir}{args_library.progress_report}",
-                        "Finished running the model and selecting the best MSA")
+                        "Running the model and selecting the best MSA")
 
     shutil.rmtree(features_input_dir, ignore_errors=True)
