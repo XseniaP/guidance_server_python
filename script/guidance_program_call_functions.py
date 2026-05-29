@@ -151,34 +151,33 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
                 shutil.move(mv_src, mv_dst)
 
             # check convergence starting from the 20th tree (starting from 80 MSAs)
-            if args_library.input_type != "msa":
-                if countTrees >= 20:
-                    # check the convergence only for every nth tree
-                    if args_library.proc_num >= 2 or (args_library.proc_num == 1 and countTrees % 3 == 0):
-                        try:
-                            # Serialize only the FS read: calculate_sp_scores_convergence reads
-                            # Scoring_Alignments_Dir while other processes are still copying into it.
-                            # add_scores_to_dict and check_convergence manage their own thread safety.
-                            with lock:
-                                alt_msas = calculate_sp_scores_convergence(args_library, countTrees)
-                            add_scores_to_dict(args_library, epsilon, countTrees, lock)
-                            for scr_file in glob.glob(os.path.join(args_library.WorkingDir, f"{args_library.Output_Prefix}_tree_{countTrees}_*.scr")):
-                                os.unlink(scr_file)
-                            convergence = check_convergence(args_library, epsilon)
-                            print(f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
-                        except Exception as e:
-                            log_file.write(f"failed to calculate scores for convergence of proc num {proc}\ttree num {tree_num} \t# of alternative MSAs {alt_msas} error {e}\n")
-                            print(f"failed to calculate scores for convergence of proc num {proc}\ttree num {tree_num} \t# of alternative MSAs {alt_msas} \n")
-                if convergence == 1:
-                    with lock:
-                        args_library.count_convergence.value += 1
-                    # With a single process there is no parallelism to coordinate,
-                    # so break on the first detection. With multiple processes, require
-                    # at least 2 to independently agree before stopping any worker.
-                    convergence_threshold = 1 if args_library.proc_num == 1 else 2
-                    if args_library.count_convergence.value >= convergence_threshold:
-                        print(f'.done {proc}', flush=True)
-                        break
+            if countTrees >= 20:
+                # check the convergence only for every nth tree
+                if args_library.proc_num >= 2 or (args_library.proc_num == 1 and countTrees % 3 == 0):
+                    try:
+                        # Serialize only the FS read: calculate_sp_scores_convergence reads
+                        # Scoring_Alignments_Dir while other processes are still copying into it.
+                        # add_scores_to_dict and check_convergence manage their own thread safety.
+                        with lock:
+                            alt_msas = calculate_sp_scores_convergence(args_library, countTrees)
+                        add_scores_to_dict(args_library, epsilon, countTrees, lock)
+                        for scr_file in glob.glob(os.path.join(args_library.WorkingDir, f"{args_library.Output_Prefix}_tree_{countTrees}_*.scr")):
+                            os.unlink(scr_file)
+                        convergence = check_convergence(args_library, epsilon)
+                        print(f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
+                    except Exception as e:
+                        log_file.write(f"failed to calculate scores for convergence of proc num {proc}\ttree num {tree_num} \t# of alternative MSAs {alt_msas} error {e}\n")
+                        print(f"failed to calculate scores for convergence of proc num {proc}\ttree num {tree_num} \t# of alternative MSAs {alt_msas} \n")
+            if convergence == 1:
+                with lock:
+                    args_library.count_convergence.value += 1
+                # With a single process there is no parallelism to coordinate,
+                # so break on the first detection. With multiple processes, require
+                # at least 2 to independently agree before stopping any worker.
+                convergence_threshold = 1 if args_library.proc_num == 1 else 2
+                if args_library.count_convergence.value >= convergence_threshold:
+                    print(f'.done {proc}', flush=True)
+                    break
 
         except Exception as e:
             log_file.write(f"[ERROR] proc {proc} tree {countTrees} failed, skipping: {e}\n")

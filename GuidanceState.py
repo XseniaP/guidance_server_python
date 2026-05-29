@@ -241,7 +241,7 @@ class GuidanceState:
             var['userName'] = CONSTS.ADMIN_USER_NAME
             var['userPass'] = CONSTS.ADMIN_PASSWORD
             var['IsSPAM']=0
-            var['proc_num']=1
+            var['proc_num']=8
             if dict_key_defined_not_empty( 'LongestSeq', var):
                 var['LongestSeq']=str(var['LongestSeq'])
 

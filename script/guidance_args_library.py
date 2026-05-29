@@ -45,7 +45,7 @@ class Library:
         self.rooting_type = "BioPerl"
         self.BBL = "NO"
         self.GapPenDist = "UNIF"
-        self.proc_num = 1
+        self.proc_num = 2
         self.userMSA_File = ""
         self.PROGRAM = "GUIDANCE2"
         self.Bootstraps = 100
@@ -174,8 +174,8 @@ class Library:
                             help='Specify a unique name for the Dataset - will be used as prefix to outputs. Default=MSA.')
         parser.add_argument('--MSA_Param', dest='align_param', type=str, default="",
                             help='Specify the parameters for the alignment program. To pass parameter containing - in it, add \\ before each - e.g. \\-F for PRANK')
-        parser.add_argument('--proc_num', dest='proc_num', type=int, default=8,
-                            help='Specify num of processors to use. Default=8.')
+        parser.add_argument('--proc_num', dest='proc_num', type=int, default=2,
+                            help='Specify num of processors to use. Default=2.')
 
         ### EXPERIMENTAL FEATURES.... MOST ACTIVE ONLY LOCAL
         parser.add_argument('--RootingType', dest='rooting_type', choices=['BioPerl', 'MidPoint'],
