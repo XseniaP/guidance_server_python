@@ -111,15 +111,15 @@ class GuidanceState:
             
         else:
     
-            try: 
-                
+            try:
+
                 wd = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, jobId)
-                
+
+                if not os.path.exists(wd):
+                    raise Exception('GuidanceState.__init__: jobId does not exist', 'system')
+
                 job_logger = get_job_logger(jobId)
                 job_logger.info(f'{"#" * 100}\nGuidanceState.__init__: jobId = {jobId}, wd = {wd}')
-                
-                if not os.path.exists (wd):
-                    raise Exception ('GuidanceState.__init__: jobId does not exist', 'system')
                 
                 form_path = os.path.join( wd, 'FORM.json')
                 with open (form_path, 'r') as f:
