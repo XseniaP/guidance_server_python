@@ -46,6 +46,7 @@ class Library:
         self.BBL = "NO"
         self.GapPenDist = "UNIF"
         self.proc_num = 2
+        self.disable_convergence = False
         self.userMSA_File = ""
         self.PROGRAM = "GUIDANCE2"
         self.Bootstraps = 100
@@ -132,6 +133,8 @@ class Library:
                             help='Specify the type of input provided (optional): seq, re_align or msa. Default is seq.')
         parser.add_argument('--bootstraps', type=int, dest='Bootstraps', default=100,
                             help='Specify the number of bootstrap iterations. Default is 100.')
+        parser.add_argument('--disableConvergence', dest='disable_convergence', action='store_true', default=False,
+                            help='Disable convergence stopping criterion so the exact number of bootstraps is always run.')
         parser.add_argument('--genCode', type=int, dest='CodonTable', default=1,
                             choices=[1, 15, 6, 10, 2, 5, 3, 13, 9, 14, 4],
                             help='Specify the codon table. Default is 1 (Nuclear Standard).\n'

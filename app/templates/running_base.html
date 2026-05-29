@@ -97,6 +97,9 @@
 
                 {% if form['PROGRAM'] == 'GUIDANCE2' %}
                 Number of alternative guide-trees: {{form['Bootstraps']}}<br>
+                {% if form.get('disable_convergence') %}
+                Convergence: disabled (exact {{form['Bootstraps']}} alternative MSAs will be generated)<br>
+                {% endif %}
                 {% endif %}
 
                 Method: {{form['PROGRAM']}}<br>

@@ -195,9 +195,12 @@ class GuidanceState:
                 form['MAFFT_maxiterate'] = cgi_form['maxiterate']
             
             if dict_key_defined_not_empty('pair', cgi_form):
-                form['MAFFT_refinement'] = cgi_form['pair'] 
+                form['MAFFT_refinement'] = cgi_form['pair']
             else:
                 form['MAFFT_refinement'] =''
+
+            # Checkbox: only present in form when checked; default False when absent
+            form['disable_convergence'] = dict_key_defined_not_empty('disable_convergence', cgi_form)
                 
             if dict_key_defined_not_empty('RERUN_SAME_SEQ', cgi_form):
                 form['RERUN_SEQ_ONLY'] = cgi_form['RERUN_SAME_SEQ']

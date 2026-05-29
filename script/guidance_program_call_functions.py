@@ -151,7 +151,7 @@ def run_hot_process_on_tree(args_library, epsilon, proc, RandomBranches,op_vals_
                 shutil.move(mv_src, mv_dst)
 
             # check convergence starting from the 20th tree (starting from 80 MSAs)
-            if countTrees >= 20:
+            if not getattr(args_library, 'disable_convergence', False) and countTrees >= 20:
                 # check the convergence only for every nth tree
                 if args_library.proc_num >= 2 or (args_library.proc_num == 1 and countTrees % 3 == 0):
                     try:

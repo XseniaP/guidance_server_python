@@ -95,7 +95,7 @@
     {% for remove_column in remove_columns_list %}
     <ul>
         <li>
-            <A HREF="{{var['run_number']}}/{{var['dataset']}}.{{form['MSA_Program']}}.Without_low_SP_Col.{{remove_column}}"
+            <A HREF="{{var['run_number']}}/{{var['dataset']}}.{{form['MSA_Program']}}.Without_low_SP_Col.{{remove_column}}.With_Names"
                TARGET=_blank>The MSA after the removal of unreliable columns (below {{remove_column}})</A>
             <font size=-1> (see list of removed columns <A href="{{var['run_number']}}/{{var['SeqsFile']}}.{{var['dataset']}}.{{form['MSA_Program']}}.Removed_Col.{{remove_column}}"
                                                            target=_blank>here</A>)</font>

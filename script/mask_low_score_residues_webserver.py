@@ -81,11 +81,12 @@ with open(seq_names_index, "r") as seq_index:
         name, seq_id = line.strip().split("\t")
         id_names[seq_id] = name
 
-# Write masked sequences to output file
+# Write masked sequences to output file using original sequence names
 with open(out_file, "w") as out:
     for i, seq_chars in enumerate(seqs):
         seq = "".join(seq_chars)
-        seq_record = SeqRecord(Seq(seq), id=ids[i], description='')
+        original_name = id_names.get(ids[i], ids[i])
+        seq_record = SeqRecord(Seq(seq), id=original_name, description='')
         SeqIO.write(seq_record, out, "fasta")
 
 os.chmod(out_file, 0o664)
