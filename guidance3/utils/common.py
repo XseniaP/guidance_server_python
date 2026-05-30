@@ -234,121 +234,77 @@ def send_mail_on_error(config):
                 f"send_mail: The message was not sent successfully. system returned: {email_system_return.stdout}\n")
 
 def subtract_time_from_now(begin_time_str, time_str):
-    begin_time_str += " " + time_str
+    """Return elapsed time string since begin_time_str + time_str.
 
-    match = re.match(r'(\d+):(\d+):(\d+) (\d+)-(\d+)-(\d+)', begin_time_str)
-    if match:
-        hour, minute, second, day, month, year = match.groups()
-
-    date1_dict = {'Year': year, 'Month': month, 'Day': day, 'Hour': hour, 'Minute': minute, 'Second': second}
-    date2_dict = {'Year': '', 'Month': '', 'Day': '', 'Hour': '', 'Minute': '', 'Second': ''}
-    convert_current_time(date2_dict)
-
-    time_difference = compare_time(date1_dict, date2_dict)
-
-    if "error" in time_difference[0]:
-        return time_difference[0]
-    else:
-        return time_difference[1]
+    begin_time_str is expected in the format 'HH:MM:SS' and time_str in 'DD-MM-YYYY',
+    producing a combined string 'HH:MM:SS DD-MM-YYYY' that is parsed and compared
+    against the current time.
+    """
+    combined = f"{begin_time_str} {time_str}"
+    match = re.match(r'(\d+):(\d+):(\d+) (\d+)-(\d+)-(\d+)', combined)
+    if not match:
+        return f'error: could not parse time string: {combined}\n'
+    hour, minute, second, day, month, year = match.groups()
+    try:
+        begin = datetime(int(year), int(month), int(day), int(hour), int(minute), int(second))
+    except ValueError as e:
+        return f'error: invalid date/time values: {e}\n'
+    delta = datetime.now() - begin
+    total_seconds = int(delta.total_seconds())
+    if total_seconds < 0:
+        return 'error: begin time is in the future\n'
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, secs = divmod(remainder, 60)
+    return f"{str(hours).zfill(2)}:{str(minutes).zfill(2)}:{str(secs).zfill(2)}"
 
 
 def compare_time(time1_dict, time2_dict):
-    days_each_month = {'01': 31, '02': 28, '03': 31, '04': 30, '05': 31, '06': 30,
-                       '07': 31, '08': 31, '09': 30, '10': 31, '11': 30, '12': 31}
-    # time_difference = 0
-    # no_of_days_passed = 0
+    """Compare two time dictionaries and return elapsed time string.
 
-    if time1_dict['Month'] == time2_dict['Month']:  # same month
-        if time1_dict['Day'] == time2_dict['Day']:  # same day
-            if time2_dict['Hour'] >= time1_dict['Hour']:  # compare hour: h2 > h1
-                time_difference = calculate_time_difference(time1_dict['Hour'], time2_dict['Hour'],
-                                                            time1_dict['Minute'], time2_dict['Minute'],
-                                                            time1_dict['Second'], time2_dict['Second'], 0)
-            else:
-                return f'error: H1 is: {time1_dict["Hour"]}, H2 is: {time2_dict["Hour"]}. It is the same day, so it is impossible that H1 > H2 \n'
-        else:  # different day
-            if time2_dict['Day'] >= time1_dict['Day']:
-                no_of_days_passed = time2_dict['Day'] - time1_dict['Day']
-                time_difference = calculate_time_difference(time1_dict['Hour'], time2_dict['Hour'],
-                                                            time1_dict['Minute'], time2_dict['Minute'],
-                                                            time1_dict['Second'], time2_dict['Second'],
-                                                            no_of_days_passed)
-            else:
-                return f'error: D1 is: {time1_dict["Day"]}, D2 is: {time2_dict["Day"]}. it is impossible in the same month that D1>D2 \n'
-    else:  # different month
-        if time2_dict['Month'] - time1_dict['Month'] > 1 or time2_dict['Month'] - time1_dict['Month'] < 0:
-            return f'error: M1 is: {time1_dict["Month"]}, M2 is: {time2_dict["Month"]}. The program doesnt allow a difference bigger than 1 month.\n'
-        else:  # 1 month difference
-            no_of_days_passed = time2_dict['Day'] + days_each_month[time1_dict['Month']] - time1_dict['Day']
-            time_difference = calculate_time_difference(time1_dict['Hour'], time2_dict['Hour'], time1_dict['Minute'],
-                                                        time2_dict['Minute'], time1_dict['Second'],
-                                                        time2_dict['Second'], no_of_days_passed)
-
-    return ("yes", time_difference)
+    Each dict has keys: Year, Month, Day, Hour, Minute, Second (string or int values).
+    Returns ("yes", elapsed_str) on success or an error string on failure.
+    """
+    try:
+        t1 = datetime(
+            int(time1_dict['Year']), int(time1_dict['Month']), int(time1_dict['Day']),
+            int(time1_dict['Hour']), int(time1_dict['Minute']), int(time1_dict['Second'])
+        )
+        t2 = datetime(
+            int(time2_dict['Year']), int(time2_dict['Month']), int(time2_dict['Day']),
+            int(time2_dict['Hour']), int(time2_dict['Minute']), int(time2_dict['Second'])
+        )
+    except (ValueError, KeyError) as e:
+        return f'error: invalid time dict values: {e}\n'
+    delta = t2 - t1
+    total_seconds = int(delta.total_seconds())
+    if total_seconds < 0:
+        return f'error: t1 is after t2\n'
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, secs = divmod(remainder, 60)
+    elapsed = f"{str(hours).zfill(2)}:{str(minutes).zfill(2)}:{str(secs).zfill(2)}"
+    return ("yes", elapsed)
 
 
 def convert_current_time(date_dictionary):
+    """Populate date_dictionary with the current date/time components."""
     current_time = datetime.now()
-    # 2023 - 12 - 25 16: 19:38.993586
-    # 2023 12 25 16
-
     date_dictionary['Year'] = current_time.year
-    date_dictionary['Month'] = convert_num(current_time.month)
-    date_dictionary['Day'] = convert_num(current_time.day)
-    date_dictionary['Hour'] = convert_num(current_time.hour)
-    date_dictionary['Minute'] = convert_num(current_time.minute)
-    date_dictionary['Second'] = convert_num(current_time.second)
+    date_dictionary['Month'] = current_time.month
+    date_dictionary['Day'] = current_time.day
+    date_dictionary['Hour'] = current_time.hour
+    date_dictionary['Minute'] = current_time.minute
+    date_dictionary['Second'] = current_time.second
 
 
-def calculate_time_difference(hour1, hour2, minute1, minute2, second1, second2, days_passed):
-    reduce_minute = "no"
-    reduce_hour = "no"
-    reduce_day = "no"
+def calculate_time_difference(begin_time_str):
+    """Return human-readable elapsed time since begin_time_str (format: 'DD/MM/YYYY HH:MM:SS')."""
+    begin = datetime.strptime(begin_time_str, '%d/%m/%Y %H:%M:%S')
+    delta = datetime.now() - begin
+    hours, remainder = divmod(int(delta.total_seconds()), 3600)
+    minutes, seconds = divmod(remainder, 60)
+    days = delta.days
+    return f"{days}d {hours}h {minutes}m {seconds}s" if days > 0 else f"{hours}h {minutes}m {seconds}s"
 
-    # Seconds
-    if second2 >= second1:
-        seconds_passed = second2 - second1
-    else:
-        seconds_passed = 60 + second2 - second1
-        reduce_minute = "yes"
-
-    # Minutes
-    if minute2 >= minute1:
-        minutes_passed = minute2 - minute1
-    else:
-        minutes_passed = 60 + minute2 - minute1
-        reduce_hour = "yes"
-
-    if reduce_minute == "yes":
-        if minutes_passed == 0:
-            minutes_passed = 59
-        else:
-            minutes_passed -= 1
-
-    # Hours
-    if hour2 >= hour1:
-        hours_passed = hour2 - hour1
-    else:
-        hours_passed = 24 + hour2 - hour1
-        reduce_day = "yes"
-
-    if reduce_hour == "yes":
-        if hours_passed == 0:
-            hours_passed = 23
-        else:
-            hours_passed -= 1
-
-    # Days
-    if days_passed > 0:
-        if reduce_day == "yes":
-            days_passed -= 1
-        hours_passed += 24 * days_passed
-
-    hours_passed = str(hours_passed).zfill(2)
-    minutes_passed = str(minutes_passed).zfill(2)
-    seconds_passed = str(seconds_passed).zfill(2)
-
-    return f"{hours_passed}:{minutes_passed}:{seconds_passed}"
 
 def convert_num(input_num):
     if input_num < 10:

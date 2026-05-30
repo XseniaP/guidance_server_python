@@ -45,13 +45,17 @@ def run_hot_internal(config, op_vals_arr_ref, ep_vals_arr_ref, countTrees, tree_
 
     cos_std_path = os.path.join(config.WorkingDir, "COS.std")
     with open(cos_std_path, "a") as cos_std:
-        result = subprocess.run(
-            HOT_COS_GUIDANCE2_cmd,
-            shell=True,
-            cwd=config.WorkingDir,
-            stdout=cos_std,
-            stderr=cos_std,
-        )
+        try:
+            result = subprocess.run(
+                HOT_COS_GUIDANCE2_cmd,
+                shell=True,
+                cwd=config.WorkingDir,
+                stdout=cos_std,
+                stderr=cos_std,
+                timeout=7200,
+            )
+        except subprocess.TimeoutExpired:
+            raise RuntimeError(f"Command timed out after 7200s: {HOT_COS_GUIDANCE2_cmd}")
 
     if result.returncode != 0:
         raise RuntimeError(f"HOT command failed (rc={result.returncode}): {HOT_COS_GUIDANCE2_cmd}")
@@ -166,8 +170,11 @@ def run_hot_process_on_tree(config, epsilon, proc, RandomBranches,op_vals_arr_re
                         convergence = check_convergence(config, epsilon)
                         print(f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
                     except Exception as e:
-                        log_file.write(f"failed to calculate scores for convergence of proc num {proc}\ttree num {tree_num} \t# of alternative MSAs {alt_msas} error {e}\n")
-                        print(f"failed to calculate scores for convergence of proc num {proc}\ttree num {tree_num} \t# of alternative MSAs {alt_msas} \n")
+                        log_file.write(f"[WARNING] Convergence check failed for proc num {proc}\ttree num {tree_num} \t# of alternative MSAs {alt_msas} error {e}\n")
+                        print(f"[WARNING] Convergence check failed for proc num {proc}\ttree num {tree_num} \t# of alternative MSAs {alt_msas} — convergence will not be verified for this iteration\n")
+                        # Do not re-raise: a failed convergence check means we cannot confirm
+                        # convergence yet, but the pipeline can continue sampling more trees.
+                        # Convergence is a stopping criterion, not a hard requirement per iteration.
             if convergence == 1:
                 with lock:
                     config.count_convergence.value += 1
@@ -273,10 +280,11 @@ def run_guidance(config):
                 log_file.write(f"TOTAL SEQ IN CORE ALN: {config.NumOfSeq}")
 
                 for line in CORE_ALN:
-                    if match := re.match(r'^>_R_(.*)', line):
+                    match = re.match(r'^>_R_(.*)', line)
+                    if match is not None:
                         NEW_CORE_ALN.write(f">{match.group(1)}")
                         log_file.write(f"[NOTICE] MAFFT REVERSE SEQUENCE {match.group(1)} in the CORE ALIGNMENT\n")
-                    elif match := re.match(r'^>', line):
+                    elif re.match(r'^>', line):
                         NEW_CORE_ALN.write(line + "\n")
                     else:
                         NEW_CORE_ALN.write(line + "\n")
@@ -413,8 +421,8 @@ def run_guidance3(config):
     if str(config.BBL).upper() == "YES":
         log_file.write(
             f"Guidance::pullOutBPtrees_BBL({config.WorkingDir}, {config.dataset}, {config.Bootstraps}, {config.MSA_Program});\n")
-        ans = pull_out_bp_trees_bbl(config.WorkingDir, config.dataset, config.Bootstraps,
-                                    config.MSA_Program)
+        ans = pull_out_bp_trees(config.WorkingDir, config.dataset, config.Bootstraps,
+                                config.MSA_Program, use_bbl=True)
         if ans[0] != "ok":
             exit_on_error("sys_error", f"Guidance::pullOutBPtrees_BBL: {' '.join(ans)}\n")
         if config.MSA_Program != "MAFFT":
@@ -501,6 +509,9 @@ def run_guidance3(config):
 
     config.MSA_Depth = calculate_msa_depth(config.WorkingDir + config.Alignment_File, config)
     # Sample OP
+    # EP_DistFile is only valid for MAFFT + GUIDANCE3_HOT; initialise to None so that
+    # non-MAFFT paths that reach the GapPenDist==EMP branch do not reference an undefined name.
+    EP_DistFile = None
     if (config.MSA_Program == "MAFFT" and config.PROGRAM == "GUIDANCE3"):
         OP_DistFile = MAFFT_OP_DIST
         # OP_DistFile = MAFFT_OP_DIST_0_25
@@ -538,9 +549,13 @@ def run_guidance3(config):
             log_file.write(
                 f"Sample op according to empiric distribution: Guidance::SampleFromEmpiricDistribution({OP_DistFile},{OutOP},{config.Bootstraps})\n")
             op_vals_arr_ref = sample_from_empirical_distribution(OP_DistFile, OutOP, config.Bootstraps)
-            log_file.write(
-                f"Sample ep according to empiric distribution: Guidance::SampleFromEmpiricDistribution({EP_DistFile},{OutEP},{config.Bootstraps})\n")
-            ep_vals_arr_ref = sample_from_empirical_distribution(EP_DistFile, OutEP, config.FORM['Bootstraps'])
+            if EP_DistFile:
+                log_file.write(
+                    f"Sample ep according to empiric distribution: Guidance::SampleFromEmpiricDistribution({EP_DistFile},{OutEP},{config.Bootstraps})\n")
+                ep_vals_arr_ref = sample_from_empirical_distribution(EP_DistFile, OutEP, config.Bootstraps)
+            else:
+                log_file.write(
+                    "[WARNING] EP_DistFile is not defined for this MSA program/mode combination; skipping EP empirical sampling\n")
         if config.GapPenDist.upper() == "UNIF":
             log_file.write(
                 f"Sample op according to uniform distribution: Guidance::SampleFromUniformDist(0,6,{OutOP},{config.Bootstraps})\n")

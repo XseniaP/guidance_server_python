@@ -232,8 +232,6 @@ class RunConfig:
             self.GapPenDist = "UNIF"
         elif self.GapPenDist == "" and self.PROGRAM == "GUIDANCE3_HOT":
             self.GapPenDist = "UNIF"
-        elif self.GapPenDist == "" and self.PROGRAM == "GUIDANCE3":
-            self.GapPenDist = "UNIF"
 
         if self.PROGRAM == "GUIDANCE3":
             self.overview_URL = "http://guidance.tau.ac.il/ver2/overview.php"
@@ -556,15 +554,15 @@ class RunConfig:
 
                     if self.Seq_Type == "Nucleotides":
                         if self.MSA_Program == "MAFFT":
-                            convert_fs_to_lower_case(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}.WithCodesName"))
+                            convert_case(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}.WithCodesName"), 'lower')
                         elif self.MSA_Program == "PRANK":
-                            convert_fs_to_upper_case(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}.WithCodesName"))
+                            convert_case(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}.WithCodesName"), 'upper')
                         elif self.MSA_Program == "CLUSTALO":
-                            convert_fs_to_upper_case(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}.WithCodesName"))
+                            convert_case(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}.WithCodesName"), 'upper')
                         elif self.MSA_Program == "MUSCLE":
-                            convert_fs_to_upper_case(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}.WithCodesName"))
+                            convert_case(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}.WithCodesName"), 'upper')
                         elif self.MSA_Program == "PAGAN":
-                            convert_fs_to_upper_case(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}.WithCodesName"))
+                            convert_case(os.path.join(f"{self.WorkingDir}",f"{self.Alignment_File}.WithCodesName"), 'upper')
 
                     if os.path.getsize(
                             f"{self.WorkingDir}{self.Alignment_File}.WithCodesName") == 0 or not os.path.exists(
@@ -697,7 +695,7 @@ class RunConfig:
         # IF CODONS TRANSLATE TO AA
         if self.Seq_Type == "Codons":
             ans = []
-            if self.PROGRAM == "GUIDANCE3" or self.PROGRAM in ["GUIDANCE3", "GUIDANCE3_HOT"]:
+            if self.PROGRAM in ["GUIDANCE3", "GUIDANCE3_HOT"]:
                 with open(self.OutLogFile, "a") as logFile:
                     logFile.write(
                         f"Translating DNA to AA: codonAlign::translate_DNA_to_AA('{self.WorkingDir}{self.codded_seq_fileName_Codons}', '{self.WorkingDir}{self.codded_seq_fileName}', '{self.CodonTable}', '{self.WorkingDir}{self.TranslateErrors}', '{self.WorkingDir}{self.output_page}', {self.DNA_AA}, '', '', seqNum);\n")
