@@ -123,13 +123,13 @@ def remove_low_sp_sites_consider_z(msa_file, sp_file, out_file, cutoff, z_cutoff
     mean, std = calculate_mean_and_std(sp_file, 2)
 
     with open(sp_file, 'r') as in_file, open(out_file, 'w') as out_file:
-        if pos_removed_file != "" or pos_removed_file != None:
+        if pos_removed_file != "" and pos_removed_file != None:
             with open(pos_removed_file, 'w') as removed_pos:
                 num_removed_pos = 0
                 for line in in_file:
                     match = re.match(r'\s*(\d+)\s+(\d+(\.\d+)?)', line)
                     if match:
-                        site_num, site_score = map(float, match.groups())
+                        site_num, site_score = int(match.group(1)), float(match.group(2))
                         z_score = "NaN" if std == 0 else (site_score - mean) / std
 
                         if z_score != "NaN" and z_score < z_cutoff:
@@ -341,6 +341,7 @@ def create_html_graph(CSV_File, OUT, X_LABLE):
     #      2. HTML OUTPUT
     #      3. X Lable (OPTIONAL)
     ############################################################################################
+    _BLUE_GIF = "/guidance/static/images/blue.gif"
     try:
         # with open(Out, "a") as OUT, open(CSV_File) as DATA:
         with open(CSV_File) as DATA:
@@ -378,23 +379,19 @@ def create_html_graph(CSV_File, OUT, X_LABLE):
                     if data[0] == 1:  # The First Point, plot also the Y bar
                         OUT.write(";border-left: 1px solid black")
                     OUT.write(
-                        ";'><img title=\"{}:{}\" src=\"https://taux.evolseq.net/guidance/static/images/blue.gif\" width=\"{}\" height=\"{}\" border=\"1\"></td>\n".format(
-                            data[0], data[1], BarWidth, float(data[1]) * scale))
+                        f";'><img title=\"{data[0]}:{data[1]}\" src=\"{_BLUE_GIF}\" width=\"{BarWidth}\" height=\"{float(data[1]) * scale}\" border=\"1\"></td>\n")
                     last_x = int(data[0])
                 elif data[1] != "NaN":
                     while (int(data[0]) - last_x) != 1:
                         OUT.write(
-                            "<td valign = bottom style = 'border-bottom: 1px solid black;'><img src=\"https://taux.evolseq.net/guidance/static/images/blue.gif\" width=\"{}\" height=\"0\" border=\"0\"></td>\n".format(
-                                BarWidth))
+                            f"<td valign = bottom style = 'border-bottom: 1px solid black;'><img src=\"{_BLUE_GIF}\" width=\"{BarWidth}\" height=\"0\" border=\"0\"></td>\n")
                         last_x += 1
                     OUT.write(
-                        "<td valign = bottom style = 'border-bottom: 1px solid black;'><img title=\"{}:{}\" src=\"https://taux.evolseq.net/guidance/static/images/blue.gif\" width=\"{}\" height=\"{}\" border=\"1\"></td>\n".format(
-                            data[0], data[1], BarWidth, float(data[1]) * scale))
+                        f"<td valign = bottom style = 'border-bottom: 1px solid black;'><img title=\"{data[0]}:{data[1]}\" src=\"{_BLUE_GIF}\" width=\"{BarWidth}\" height=\"{float(data[1]) * scale}\" border=\"1\"></td>\n")
                     last_x = int(data[0])
                 elif data[1] == "NaN":
                     OUT.write(
-                        "<td valign = bottom style = 'border-bottom: 1px solid black;'><img title=\"{}:{}\" src=\"https://taux.evolseq.net/guidance/static/images/blue.gif\" width=\"{}\" height=\"{}\" border=\"1\"></td>\n".format(
-                            data[0], data[1], BarWidth, float(data[1]) * scale))
+                        f"<td valign = bottom style = 'border-bottom: 1px solid black;'><img title=\"{data[0]}:{data[1]}\" src=\"{_BLUE_GIF}\" width=\"{BarWidth}\" height=\"{float(data[1]) * scale}\" border=\"1\"></td>\n")
                     last_x = int(data[0])
 
             OUT.write("</tr>\n")
@@ -455,7 +452,7 @@ def remove_low_sp_seq(msa_file, seq_sp_file, out_file, cutoff, removed_seq_file,
                 seq, seq_name = None, None
 
                 if seq_type.upper() == "BYSEQNAME":
-                    seq = "".join(msa_hash_ref[seq_id-1])
+                    seq = "".join(msa_hash_ref[int(seq_id)-1])
                     seq_name = seq_id
 
                 elif seq_type.upper() == "BYROWNUM":
@@ -805,13 +802,18 @@ def calculate_sp_scores(config):
             with open(config.OutLogFile, "a") as log_file:
                 log_file.write(msg)
 
-    subprocess.call(cmd, shell=True)
+    try:
+        subprocess.run(cmd, shell=True, timeout=600)
+    except subprocess.TimeoutExpired:
+        raise RuntimeError(f"Command timed out after 600s: {cmd}")
 
     if not os.path.exists(f"{config.WorkingDir}{config.Output_Prefix}_res_pair_res.scr") or os.path.getsize(
             f"{config.WorkingDir}{config.Output_Prefix}_res_pair_res.scr") == 0:
         for i in range(3):
             try:
-                subprocess.call(cmd, shell=True)
+                subprocess.run(cmd, shell=True, timeout=600)
+            except subprocess.TimeoutExpired:
+                raise RuntimeError(f"Command timed out after 600s: {cmd}")
             except Exception as e:
                 with open(config.OutLogFile, "a") as log_file:
                     log_file.write(f"Failed to calculate final scores {e}\n")
@@ -1102,21 +1104,21 @@ def remove_sequences_sp_and_z_score(config):
                 f"{config.WorkingDir}{removed_low_sp_z_seq}"
             )
         if os.path.getsize(f"{config.WorkingDir}{seq_file_without_low_sp_z_seq}") > 0:
-            ans = codes2name_fasta_from1(f"{config.WorkingDir}{config.seq_file_without_low_sp_z_seq}",
+            ans = codes2name_fasta_from1(f"{config.WorkingDir}{seq_file_without_low_sp_z_seq}",
                                          f"{config.WorkingDir}{config.code_fileName}",
-                                         f"{config.WorkingDir}{config.seq_file_without_low_sp_z_seq_with_names}")
+                                         f"{config.WorkingDir}{seq_file_without_low_sp_z_seq_with_names}")
             if ans[0] != "OK":
                 exit_on_error("sys_error",
-                              f"Guidance::codes2nameFastaFrom1: Guidance::codes2nameFastaFrom1(\"{config.WorkingDir}{config.seq_file_without_low_sp_z_seq}\",\"{config.WorkingDir}{config.code_fileName}\",\"{config.WorkingDir}{config.seq_file_without_low_sp_z_seq_with_names}\") failed:" + " ".join(
+                              f"Guidance::codes2nameFastaFrom1: Guidance::codes2nameFastaFrom1(\"{config.WorkingDir}{seq_file_without_low_sp_z_seq}\",\"{config.WorkingDir}{config.code_fileName}\",\"{config.WorkingDir}{seq_file_without_low_sp_z_seq_with_names}\") failed:" + " ".join(
                                   ans) + "\n", config)
 
-        if os.path.getsize(f"{config.WorkingDir}{config.removed_low_sp_z_seq}") > 0:
-            ans = codes2name_fasta_from1(f"{config.WorkingDir}{config.removed_low_sp_z_seq}",
+        if os.path.getsize(f"{config.WorkingDir}{removed_low_sp_z_seq}") > 0:
+            ans = codes2name_fasta_from1(f"{config.WorkingDir}{removed_low_sp_z_seq}",
                                          f"{config.WorkingDir}{config.code_fileName}",
-                                         f"{config.WorkingDir}{config.removed_low_sp_z_seq_with_names}")
+                                         f"{config.WorkingDir}{removed_low_sp_z_seq_with_names}")
             if ans[0] != "OK":
                 exit_on_error("sys_error",
-                              f"Guidance::codes2nameFastaFrom1: Guidance::codes2nameFastaFrom1(\"{config.WorkingDir}{config.removed_low_sp_z_seq}\",\"{config.WorkingDir}{config.code_fileName}\",\"{config.WorkingDir}{config.removed_low_sp_z_seq_with_names}\") failed:" + " ".join(
+                              f"Guidance::codes2nameFastaFrom1: Guidance::codes2nameFastaFrom1(\"{config.WorkingDir}{removed_low_sp_z_seq}\",\"{config.WorkingDir}{config.code_fileName}\",\"{config.WorkingDir}{removed_low_sp_z_seq_with_names}\") failed:" + " ".join(
                                   ans) + "\n", config)
 
 
@@ -1256,7 +1258,10 @@ def calculate_sp_scores_convergence(config, countTrees):
         print(f"calculating SP scores for tree # {countTrees}: {cmd}\n")
     if os.path.exists(f"{config.Scoring_Alignments_Dir}/.DS_Store"):
         os.remove(f"{config.Scoring_Alignments_Dir}/.DS_Store")
-    subprocess.call(cmd, shell=True)
+    try:
+        subprocess.run(cmd, shell=True, timeout=600)
+    except subprocess.TimeoutExpired:
+        raise RuntimeError(f"Command timed out after 600s: {cmd}")
     alt_msas = len(os.listdir(config.Scoring_Alignments_Dir))
     if not os.path.exists(f"{config.WorkingDir}{config.Output_Prefix + f'_tree_{countTrees}'}_res_pair_res.scr") or os.path.getsize(
             f"{config.WorkingDir}{config.Output_Prefix + f'_tree_{countTrees}'}_res_pair_res.scr") == 0:

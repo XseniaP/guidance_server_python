@@ -29,14 +29,14 @@ class State(Enum):
         }[self]
 
 # constants to use when sending e-mails using the server admin's email address.
-ADMIN_EMAIL = 'evolseq@gmail.com' #'TAU Evolseq <evolseq@tauex.tau.ac.il>'
-DEV_EMAIL = 'josefspr@gmail.com'
-SMTP_SERVER = 'smtp.gmail.com:587' #'mxout.tau.ac.il'
-ADMIN_USER_NAME = 'evolseq'
-ADMIN_PASSWORD = 'yipnqomnsofhytqp'
+ADMIN_EMAIL = 'evolseq@gmail.com' #'TAU Evolseq <evolseq@tauex.tau.ac.il>' #TODO: Josef move the credentials to dot-env
+DEV_EMAIL = 'josefspr@gmail.com' #TODO: Josef move the credentials to dot-env
+SMTP_SERVER = 'smtp.gmail.com:587' #'mxout.tau.ac.il' #TODO: Josef move the credentials to dot-env
+ADMIN_USER_NAME = 'evolseq' #TODO: Josef move the credentials to dot-env
+ADMIN_PASSWORD = '' #TODO: Josef move the password to dot-env
 SEND_EMAIL_DIR_IBIS = '/home/josefspr/bioseq/bioSequence_scripts_and_constants/sendEmail'
 
-OWNER_EMAIL = 'josefspr@gmail.com'
+OWNER_EMAIL = 'josefspr@gmail.com' #TODO: Josef move the credentials to dot-env
 
 # general variables Ksenia
 # __file__ is guidance3/constants.py; BIN_DIR is the project root two levels up

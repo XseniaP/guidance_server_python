@@ -61,7 +61,10 @@ def ConcatMSAs(process_id):
         OutHTML = os.path.join(working_dir, CONSTS.RESULT_WEBPAGE_NAME)
 
         cmd = f"python3 {CONSTS.CONCAT_SCRIPT} {MSA_List} {OutPath} {str(NumOfMSAs)} NO YES {OutHTML}"
-        subprocess.run(cmd, shell=True)
+        try:
+            subprocess.run(cmd, shell=True, timeout=300)
+        except subprocess.TimeoutExpired:
+            raise RuntimeError(f"Command timed out after 300s: {cmd}")
         return redirect(url_for('results', _anchor='remove_seq', process_id = process_id))
 
 @app.route(PREFIX + '/remove_seq/<process_id>', methods=['GET', 'POST'])
@@ -70,7 +73,10 @@ def remove_seq(process_id):
     if request.method == 'POST':
 
         cmd = f"python3 {CONSTS.REMOVE_SEQ_SCRIPT} {request.form['VARS_json']} {request.form['FORM_json']} {request.form['Seq_Cutoff']}"
-        subprocess.run(cmd, shell=True)
+        try:
+            subprocess.run(cmd, shell=True, timeout=300)
+        except subprocess.TimeoutExpired:
+            raise RuntimeError(f"Command timed out after 300s: {cmd}")
         return redirect(url_for('results', _anchor='remove_seq', process_id = process_id))
 
 @app.route(PREFIX + '/remove_pos/<process_id>', methods=['GET', 'POST'])
@@ -79,7 +85,10 @@ def remove_pos(process_id):
     if request.method == 'POST':
 
         cmd = f"python3 {CONSTS.REMOVE_POS_SCRIPT} {request.form['VARS_json']} {request.form['Col_Cutoff']}"
-        subprocess.run(cmd, shell=True)
+        try:
+            subprocess.run(cmd, shell=True, timeout=300)
+        except subprocess.TimeoutExpired:
+            raise RuntimeError(f"Command timed out after 300s: {cmd}")
         return redirect(url_for('results', _anchor='remove_pos', process_id = process_id))
 
 @app.route(PREFIX + '/mask/<process_id>', methods=['GET', 'POST'])
@@ -88,7 +97,10 @@ def mask(process_id):
     if request.method == 'POST':
 
         cmd = f"python3 {CONSTS.MASK_SCRIPT} {request.form['VARS_json']} {request.form['type_a']} {request.form['cutoff']}"
-        subprocess.run(cmd, shell=True)
+        try:
+            subprocess.run(cmd, shell=True, timeout=300)
+        except subprocess.TimeoutExpired:
+            raise RuntimeError(f"Command timed out after 300s: {cmd}")
         return redirect(url_for('results', _anchor='masks', process_id = process_id))
         
 @app.route(PREFIX + '/update_html_ext/<process_id>')
@@ -140,6 +152,7 @@ def process_state(process_id):
     if job_state == None:
         return redirect(url_for('error', error_type=UI_CONSTS.UI_Errors.UNKNOWN_PROCESS_ID.name))
         
+    guidance_state = None
     try:
         guidance_state = GuidanceState(jobId = process_id)
     except:
@@ -147,9 +160,8 @@ def process_state(process_id):
         logger.info (log_msg)
         if job_logger:
             job_logger.info(log_msg)
-        # KSENIA
         kwargs = {
-            "var": guidance_state.var,
+            "var": guidance_state.var if guidance_state else {},
         }
         return render_template('error_page.html', error_text=CONSTS.SYS_ERROR_MSG, **kwargs)
     
@@ -236,6 +248,7 @@ def results(process_id):
         }
         return render_template('error_page.html', error_text=f"Job does not exist", **kwargs)
     
+    guidance_state = None
     try:
         guidance_state = GuidanceState(jobId = process_id)
     except:
@@ -245,9 +258,9 @@ def results(process_id):
             job_logger.info (log_msg)
 
         kwargs = {
-            "var": guidance_state.var,
+            "var": guidance_state.var if guidance_state else {},
         }
-        
+
         return render_template('error_page.html', error_text=CONSTS.SYS_ERROR_MSG, **kwargs)
 
     # if running check if job ended
@@ -268,7 +281,14 @@ def results(process_id):
         else:
             job_state_man = manager.get_guidance_job_state(process_id)
             if job_state_man == None or job_state_man == State.Crashed:
-                guidance_state.update_state(State.Crashed)
+                # Check if errors.txt was written by exit_on_error() for a user error
+                errors_file = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id, 'errors.txt')
+                if os.path.exists(errors_file):
+                    with open(errors_file) as _ef:
+                        error_content = _ef.read().strip()
+                    guidance_state.update_state(state=State.Crashed, error_msg=error_content, error_type='user')
+                else:
+                    guidance_state.update_state(State.Crashed)
                 job_state = State.Crashed
             
     # if jobs did not finish or is not an error redirect to process_state

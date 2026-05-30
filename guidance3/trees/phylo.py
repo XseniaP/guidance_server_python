@@ -49,18 +49,70 @@ def calculate_msa_depth(inMSA, config):
     return msa_depth
 
 
-# NEED TO UPDATE FOR IQTREE
-#@timeit
-def pull_out_bp_trees_bbl(no_bp_dir, dataset, bp_repeats, aln_prog):
-    """Pulls out all the Bootstrap trees (after Binary Branch Lengths (BBL) optimization) into the BP directory.
-    Pulls out the original tree (that was done on the complete MSA file)
+def _collect_unique_trees(tree_file, tree_dir, bp_dir, dataset, aln_prog, tool_suffix,
+                          count_unique, num_repeats):
+    """Compare *tree_file* against all previously accepted unique trees and either
+    register it as a new unique tree or increment the repeat counter of the
+    matching existing one.
 
+    Args:
+        tree_file: path to the newly written bootstrap-tree file
+        tree_dir: directory that contains tree_file (used for the topology-result file)
+        bp_dir: root BP directory where unique-tree sub-directories live
+        dataset: dataset name (used to build unique-tree filenames)
+        aln_prog: alignment program name (used to build unique-tree filenames)
+        tool_suffix: file-suffix fragment that distinguishes the tool, e.g.
+                     ``"semphy"`` or ``"iqtree"``
+        count_unique: current number of accepted unique trees (int)
+        num_repeats: list tracking repeat counts for each unique tree (mutated in-place)
+
+    Returns:
+        Updated ``count_unique`` value (int).
+    """
+    for i in range(count_unique):
+        unique_tree_file = f"{bp_dir}tree_{i}/{dataset}.{aln_prog}.{tool_suffix}.tree_{i}"
+        is_equal_topology_res_file = f"{tree_dir}isEqualTopology.{i}.std"
+        is_equal_topology_command = f"{isEqualTopologyProg} {tree_file} {unique_tree_file}"
+        is_equal_topology = os.system(is_equal_topology_command)
+
+        with open(is_equal_topology_res_file, 'w') as out_equal_top_file:
+            out_equal_top_file.write(str(is_equal_topology))
+
+        if is_equal_topology == 1:
+            num_repeats[i] += 1
+            return count_unique
+        elif is_equal_topology == 2:
+            print(f"Skipping ERROR in isEqualTopology of {tree_file} and {unique_tree_file}")
+            continue
+
+    # No matching unique tree found — register this one as a new unique tree.
+    num_repeats.append(1)
+    unique_tree_dir = f"{bp_dir}tree_{count_unique}/"
+    if not os.path.exists(unique_tree_dir):
+        os.mkdir(unique_tree_dir)
+    unique_tree_file = f"{unique_tree_dir}{dataset}.{aln_prog}.{tool_suffix}.tree_{count_unique}"
+    shutil.copy(tree_file, unique_tree_file)
+    return count_unique + 1
+
+
+#@timeit
+def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog, config=None, use_bbl=False):
+    """Pulls out all the Bootstrap trees into the BP directory.
+    Pulls out the original tree (that was done on the complete MSA file).
+
+    When *use_bbl* is ``True`` the function reads semphy BBL output (the
+    legacy ``pull_out_bp_trees_bbl`` behaviour).  When ``False`` (default) it
+    reads IQ-Tree ``.boottrees`` output.
 
           Args:
             no_bp_dir: the folder in which BP dir is located, this is a working directory
             dataset: name of the dataset, default name is "MSA"
-            bp_repeats: number of bootstrap trees produces
+            bp_repeats: number of bootstrap trees produced
             aln_prog: multiple sequence alignment program
+            config: the object with the program paths, arguments and constants
+                    (required when use_bbl=False, ignored when use_bbl=True)
+            use_bbl: when True, parse semphy BBL log output instead of IQ-Tree
+                     boottrees (default: False)
 
           Returns:
             ["ok"] in case of success when align program is MAFFT
@@ -71,205 +123,114 @@ def pull_out_bp_trees_bbl(no_bp_dir, dataset, bp_repeats, aln_prog):
     if not no_bp_dir.endswith("/"):
         no_bp_dir += "/"
 
-    semphy_log_file = f"{no_bp_dir}BP/{dataset}.{aln_prog}.semphy.out"
     bp_dir = f"{no_bp_dir}BP/"
-
-    if os.path.exists(f"{no_bp_dir}{dataset}.{aln_prog}.semphy.tree"):
-        os.remove(f"{no_bp_dir}{dataset}.{aln_prog}.semphy.tree")
-
     if not os.path.exists(bp_dir):
         os.mkdir(bp_dir)
 
+    make_unique = aln_prog != "MAFFT"
+
     non_unique_trees_dir = ""
-    if aln_prog != "MAFFT":
+    if make_unique:  # BUILT ALIGNMENT ONLY FOR UNIQUE TREES
         non_unique_trees_dir = f"{bp_dir}nonUniqueTrees/"
         if not os.path.exists(non_unique_trees_dir):
             os.mkdir(non_unique_trees_dir)
 
-    make_unique_trees = "yes" if aln_prog != "MAFFT" else "no"
+    count_trees = 0
+    count_unique = 0
+    num_repeats = []
 
-    tree_line = ""
-    read_reconstructed_tree = False
+    if use_bbl:
+        # --- semphy / BBL path ---
+        tool_suffix = "semphy"
 
-    with open(semphy_log_file, 'r') as log_file:
-        count_trees = 0
-        count_unique_trees = 0
-        num_repeats = []
+        semphy_log_file = f"{bp_dir}{dataset}.{aln_prog}.semphy.out"
 
-        if aln_prog != "MAFFT":
-            make_unique_trees = "yes"
-        else:
-            make_unique_trees = "no"
+        existing_semphy_tree = f"{no_bp_dir}{dataset}.{aln_prog}.semphy.tree"
+        if os.path.exists(existing_semphy_tree):
+            os.remove(existing_semphy_tree)
 
-        for line in log_file:
-            if line.startswith("# Finished tree reconstruction."):
-                _ = next(log_file)
-                _ = next(log_file)
-                _ = next(log_file)
-                tree_line = next(log_file)
-                tree_file = f"{no_bp_dir}{dataset}.{aln_prog}.semphy.tree"
+        tree_line = ""
+        read_reconstructed_tree = False
 
-                with open(tree_file, 'w') as out_file:
-                    out_file.write(tree_line)
+        with open(semphy_log_file, 'r') as log_file:
+            for line in log_file:
+                if line.startswith("# Finished tree reconstruction."):
+                    _ = next(log_file)
+                    _ = next(log_file)
+                    _ = next(log_file)
+                    tree_line = next(log_file)
+                    tree_file = f"{no_bp_dir}{dataset}.{aln_prog}.semphy.tree"
 
-                tree_line = ""
-                read_reconstructed_tree = True
-            elif ((" # Tree after BBL." in line or "The reconsructed tree:" in line) and read_reconstructed_tree):
-                _ = next(log_file) if " # Tree after BBL." in line else None
-                tree_line = next(log_file)
+                    with open(tree_file, 'w') as out_file:
+                        out_file.write(tree_line)
 
-                if make_unique_trees == "no":
+                    tree_line = ""
+                    read_reconstructed_tree = True
+                elif ((" # Tree after BBL." in line or "The reconsructed tree:" in line) and read_reconstructed_tree):
+                    _ = next(log_file) if " # Tree after BBL." in line else None
+                    tree_line = next(log_file)
+
+                    if not make_unique:
+                        tree_dir = f"{bp_dir}/tree_{count_trees}/"
+                    else:
+                        tree_dir = f"{non_unique_trees_dir}/tree_{count_trees}/"
+
+                    if not os.path.exists(tree_dir):
+                        os.mkdir(tree_dir)
+
+                    tree_file = f"{tree_dir}{dataset}.{aln_prog}.{tool_suffix}.tree_{count_trees}"
+                    count_trees += 1
+
+                    with open(tree_file, 'w') as out_file:
+                        out_file.write(tree_line)
+
+                    if make_unique:
+                        count_unique = _collect_unique_trees(
+                            tree_file, tree_dir, bp_dir, dataset, aln_prog,
+                            tool_suffix, count_unique, num_repeats,
+                        )
+
+    else:
+        # --- IQ-Tree boottrees path ---
+        tool_suffix = "iqtree"
+
+        iqtree_boottrees_file = f"{bp_dir}{config.Alignment_File}.boottrees"
+        # iqtree_boottrees_file = f"{bp_dir}{dataset}.{aln_prog}.aln.boottrees"
+        print(f"iqtree boottrees file: {iqtree_boottrees_file}\n")
+
+        with open(iqtree_boottrees_file, 'r') as boottrees_file:
+            for my_tree in boottrees_file:
+                if aln_prog == "MAFFT":
                     tree_dir = f"{bp_dir}/tree_{count_trees}/"
-                else:
+                else:  # CHECK UNIQUE TREE ONLY NOT FOR MAFFT
                     tree_dir = f"{non_unique_trees_dir}/tree_{count_trees}/"
 
                 if not os.path.exists(tree_dir):
                     os.mkdir(tree_dir)
 
-                tree_file = f"{tree_dir}{dataset}.{aln_prog}.semphy.tree_{count_trees}"
+                tree_file = f"{tree_dir}{dataset}.{aln_prog}.{tool_suffix}.tree_{count_trees}"
+
+                try:
+                    with open(tree_file, 'w') as out_file:
+                        out_file.write(my_tree)
+                except Exception as e:
+                    return f"can't open file {tree_file}"
                 count_trees += 1
 
-                with open(tree_file, 'w') as out_file:
-                    out_file.write(tree_line)
+                if make_unique:
+                    count_unique = _collect_unique_trees(
+                        tree_file, tree_dir, bp_dir, dataset, aln_prog,
+                        tool_suffix, count_unique, num_repeats,
+                    )
 
-                if make_unique_trees == "yes":
-                    for i in range(count_unique_trees):
-                        unique_tree_file = f"{bp_dir}tree_{i}/{dataset}.{aln_prog}.semphy.tree_{i}"
-                        is_equal_topology_res_file = f"{tree_dir}isEqualTopology.{i}.std"
-                        is_equal_topology_command = f"{isEqualTopologyProg} {tree_file} {unique_tree_file}"
-                        is_equal_topology = os.system(is_equal_topology_command)
+    if count_trees != bp_repeats:
+        return f"ERROR: dataset: {dataset} \t count_trees: {count_trees} while it should be {bp_repeats}\n"
 
-                        with open(is_equal_topology_res_file, 'w') as out_equal_top_file:
-                            out_equal_top_file.write(str(is_equal_topology))
-
-                        if is_equal_topology == 1:
-                            num_repeats[i] += 1
-                            break
-                        elif is_equal_topology == 2:
-                            print(f"Skipping ERROR in isEqualTopology of {tree_file} and {unique_tree_file}")
-                            continue
-
-                    else:
-                        num_repeats.append(1)
-                        unique_tree_dir = f"{bp_dir}tree_{count_unique_trees}/"
-                        if not os.path.exists(unique_tree_dir):
-                            os.mkdir(unique_tree_dir)
-
-                        unique_tree_file = f"{unique_tree_dir}{dataset}.{aln_prog}.semphy.tree_{count_unique_trees}"
-                        shutil.copy(tree_file, unique_tree_file)
-                        count_unique_trees += 1
-
-        if count_trees != bp_repeats:
-            return f"ERROR: dataset: {dataset} \t count_trees: {count_trees} while it should be {bp_repeats}\n"
-
-        if make_unique_trees == "yes":
-            num_repeats_file = f"{bp_dir}numRepeats"
-            with open(num_repeats_file, 'w') as out_num_repeats:
-                out_num_repeats.write(" ".join(map(str, num_repeats)))
-
-            return "ok", count_unique_trees, num_repeats
-        else:
-            return ["ok"]
-
-#@timeit
-def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog, config):
-    """Pulls out all the Bootstrap trees into the BP directory.
-    Pulls out the original tree (that was done on the complete MSA file)
-
-          Args:
-            no_bp_dir: the folder in which BP dir is located, this is a working directory
-            dataset: name of the dataset, default name is "MSA"
-            bp_repeats: number of bootstrap trees produces
-            aln_prog: multiple sequence alignement program
-            config: the object with the program paths, arguments and constants
-
-          Returns:
-            ["ok"] in case of success when align program is MAFFT
-            or a tuple "ok", count_unique_trees, num_repeats in case when align program is not MAFFT
-            an error in case if number of trees produces is not equal to a number of bootstrap trees (parameter) requested
-          """
-
-    make_unique = ""
-
-    if not no_bp_dir.endswith("/"):
-        no_bp_dir += "/"
-
-    bp_dir = f"{no_bp_dir}BP/"
-    if not os.path.exists(bp_dir):
-        os.mkdir(bp_dir)
-
-    non_unique_trees_dir = ""
-    if aln_prog != "MAFFT":  # BUILT ALIGNMENT ONLY FOR UNIQUE TREES
-        non_unique_trees_dir = f"{bp_dir}nonUniqueTrees/"
-        if not os.path.exists(non_unique_trees_dir):
-            os.mkdir(non_unique_trees_dir)
-        make_unique = "yes"
-    else:
-        make_unique = "no"
-
-    iqtree_boottrees_file = f"{bp_dir}{config.Alignment_File}.boottrees"
-    # iqtree_boottrees_file = f"{bp_dir}{dataset}.{aln_prog}.aln.boottrees"
-    print(f"iqtree boottrees file: {iqtree_boottrees_file}\n")
-
-    with (open(iqtree_boottrees_file, 'r') as boottrees_file):
-
-        count = 0
-        count_unqique = 0
-        num_repeats = []
-
-        for my_tree in boottrees_file:
-            if aln_prog == "MAFFT":
-                tree_dir = f"{bp_dir}/tree_{count}/"
-            else:  # CHECK UNIQUE TREE ONLY NOT FOR MAFFT
-                tree_dir = f"{non_unique_trees_dir}/tree_{count}/"
-
-            if not os.path.exists(tree_dir):
-                os.mkdir(tree_dir)
-
-            tree_file = f"{tree_dir}{dataset}.{aln_prog}.iqtree.tree_{count}"
-
-            try:
-                with open(tree_file, 'w') as out_file:
-                    out_file.write(my_tree)
-            except Exception as e:
-                return f"can't open file {tree_file}"
-            count += 1
-
-            if make_unique == "yes":
-                i = 0
-                while i < count_unqique:
-                    unique_tree_file = f"{bp_dir}/tree_{i}/{dataset}.{aln_prog}.iqtree.tree_{i}"
-                    is_equal_topology_res_file = tree_dir + "isEqualTopology." + str(i) + ".std"
-                    is_equal_topology_command = isEqualTopologyProg + " " + tree_file + " " + unique_tree_file
-                    is_equal_topology = os.system(is_equal_topology_command)
-                    # with open(is_equal_topology_res_file, 'w') as out_equal_top:
-                    #     out_equal_top.write(str(is_equal_topology) + "\n")
-                    if is_equal_topology == 1:
-                        num_repeats[i] += 1
-                        break
-                    if is_equal_topology == 2:
-                        print("skipping ERROR in isEqualTopology of", tree_file, "and", unique_tree_file)
-                        continue
-                    i += 1
-                if i == count_unqique:
-                    num_repeats.append(1)
-                    unique_trees_dir = f"{bp_dir}/tree_{count_unqique}/"
-                    if not os.path.exists(unique_trees_dir):
-                        os.system("mkdir " + unique_trees_dir)
-                    unique_tree_file = unique_trees_dir + dataset + "." + aln_prog + ".iqtree.tree_" + str(count_unqique)
-                    os.system("cp " + tree_file + " " + unique_tree_file)
-                    count_unqique += 1
-
-
-    if count != bp_repeats:
-        return f"ERROR: dataset: {dataset} \t count_trees: {count} while it should be {bp_repeats}\n"
-
-    if aln_prog != "MAFFT":
-        num_repeats_file = bp_dir + "/"+ "numRepeats"
+    if make_unique:
+        num_repeats_file = f"{bp_dir}numRepeats"
         with open(num_repeats_file, 'w') as out_num_repeats:
             out_num_repeats.write(" ".join(map(str, num_repeats)))
-        return "ok", count_unqique, num_repeats
-
+        return "ok", count_unique, num_repeats
     else:
         return ["ok"]
 
@@ -295,8 +256,12 @@ def root_BP_trees(bsDir, dataset, orig_prog, bp_repeats, suffix=None, rooting_ty
                 # remove_node_support(tree_file)  # TODO testing this for FastTree
                 root_tree(tree_file, rooted_tree_file)
             elif rooting_type.upper() == "MIDPOINT":
-                subprocess.run(["R", "--slave", "--no-save", "--no-restore", "--no-environ", "--silent",
-                                "--args", tree_file, rooted_tree_file, "<", MidPoint_Rooting_R], shell=True)
+                _r_cmd = ["R", "--slave", "--no-save", "--no-restore", "--no-environ", "--silent",
+                          "--args", tree_file, rooted_tree_file, "<", MidPoint_Rooting_R]
+                try:
+                    subprocess.run(_r_cmd, shell=True, timeout=300)
+                except subprocess.TimeoutExpired:
+                    raise RuntimeError(f"Command timed out after 300s: {_r_cmd}")
 
             # Reading the rooted tree and processing it
             with open(rooted_tree_file, "r") as infile:
@@ -382,39 +347,43 @@ def root_tree(in_tree, out_tree):
 def remove_node_support(tree_file, min_branch_length=1e-6): #TODO testing this for FastTree tree
     backup_file = f"{tree_file}.backup"
     shutil.copy(tree_file, backup_file)
-    # Step 1: Read and clean support values
-    with open(tree_file) as f:
-        tree_str = f.read()
+    try:
+        # Step 1: Read and clean support values
+        with open(tree_file) as f:
+            tree_str = f.read()
 
-    # Remove internal node support values (e.g. )0.95:)
-    tree_str_cleaned = re.sub(r'\)([0-9.eE\-]+):', r'):', tree_str)
+        # Remove internal node support values (e.g. )0.95:)
+        tree_str_cleaned = re.sub(r'\)([0-9.eE\-]+):', r'):', tree_str)
 
-    # Step 2: Load tree into Biopython for branch length fixing
-    tree = Phylo.read(StringIO(tree_str_cleaned), "newick")
+        # Step 2: Load tree into Biopython for branch length fixing
+        tree = Phylo.read(StringIO(tree_str_cleaned), "newick")
 
-    # Set root branch length to None (avoids ":0.000000;" at the end)
-    if tree.root.branch_length is not None:
-        tree.root.branch_length = None
+        # Set root branch length to None (avoids ":0.000000;" at the end)
+        if tree.root.branch_length is not None:
+            tree.root.branch_length = None
 
-    # Step 3: Update small branch lengths
-    for node in tree.find_clades():
-        if node is tree.root:
-            continue  # Skip root
-        if node.branch_length is not None:
-            node.branch_length = float("{:.6f}".format(max(node.branch_length, min_branch_length)))
+        # Step 3: Update small branch lengths
+        for node in tree.find_clades():
+            if node is tree.root:
+                continue  # Skip root
+            if node.branch_length is not None:
+                node.branch_length = float("{:.6f}".format(max(node.branch_length, min_branch_length)))
 
-    # Step 4: Output cleaned tree back to file
-    with open(tree_file, "w") as f:
-        Phylo.write(tree, f, "newick", format_branch_length='%0.6f')
+        # Step 4: Output cleaned tree back to file
+        with open(tree_file, "w") as f:
+            Phylo.write(tree, f, "newick", format_branch_length='%0.6f')
 
-    with open(tree_file) as f:
-        tree_output = f.read()
+        with open(tree_file) as f:
+            tree_output = f.read()
 
-    # Remove ":0.000;" at end if present
-    tree_output = re.sub(r':0\.0+;$', ';', tree_output)
+        # Remove ":0.000;" at end if present
+        tree_output = re.sub(r':0\.0+;$', ';', tree_output)
 
-    with open(tree_file, "w") as f:
-        f.write(tree_output)
+        with open(tree_file, "w") as f:
+            f.write(tree_output)
+    finally:
+        if os.path.exists(backup_file):
+            os.remove(backup_file)
 
 #@timeit
 def reformat_trees_branch_length(in_tree, out_tree):
@@ -591,7 +560,10 @@ def Bootstrap_Trees(config):
 
     with open(f'{config.OutLogFile}', "a") as log_file:
         log_file.write(f"Bootstrap_Trees: {cmd}\n")
-    subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    try:
+        subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, timeout=7200)
+    except subprocess.TimeoutExpired:
+        raise RuntimeError(f"Command timed out after 7200s: {cmd}")
 
     tree_files = os.path.join(f"{config.WorkingDir}", f"{config.Alignment_File}.*")
     for file in glob.glob(tree_files):

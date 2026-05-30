@@ -737,13 +737,16 @@ def codes2name_fasta_from1(aln_with_codes, codes_file, aln_with_names):
         for line in in_file:
             line = line.strip()
             if line.startswith('>'):
+                seq_id = line[1:]
                 match = re.match(r'>(seq[0-9]+)$', line)
                 if match:
-                    out_file.write(f'>{codes[match.group(1)]}\n')
+                    name = codes.get(match.group(1), seq_id)
+                    out_file.write(f'>{name}\n')
                 else:
                     match = re.match(r'^>([0-9]+)', line)
                     if match:
-                        out_file.write(f'>{codes[match.group(1)]}\n')
+                        name = codes.get(match.group(1), seq_id)
+                        out_file.write(f'>{name}\n')
                     else:
                         out_file.write(f'{line}\n')
             else:
@@ -784,7 +787,11 @@ def extract_seq_from_MSA(in_msa, seq_file, config):
         exit_on_error('sys_error', f"extract_seq_from_MSA:Can't open {e.filename}: {str(e)}", config)
 
 
-def convert_fs_to_lower_case(file_path):
+def convert_case(file_path, case):
+    """Convert all sequence characters in a FASTA file to upper or lower case.
+
+    case: 'upper' or 'lower'
+    """
     try:
         with open(file_path, 'r') as file:
             file_content = file.readlines()
@@ -794,27 +801,20 @@ def convert_fs_to_lower_case(file_path):
                 if line.startswith('>'):
                     out_file.write(line)
                 else:
-                    out_file.write(line.lower())
+                    out_file.write(line.upper() if case == 'upper' else line.lower())
         return None  # Success
     except OSError as e:
-        return f"convert_fs_to_lower_case: Fail to open {e.filename} : {str(e)}"
+        return f"convert_case: Failed to open {e.filename} : {str(e)}"
+
+
+# Backward-compatible wrappers kept for callers outside the guidance3 package.
+def convert_fs_to_lower_case(file_path):
+    return convert_case(file_path, 'lower')
+
 
 #@timeit
 def convert_fs_to_upper_case(file_path):
-    try:
-        with open(file_path, 'r') as file:
-            file_content = file.readlines()
-
-        with open(file_path, 'w') as out_file:
-            for line in file_content:
-                if line.startswith('>'):
-                    out_file.write(line)
-                else:
-                    out_file.write(line.upper())
-
-        return None  # Success
-    except OSError as e:
-        return f"convert_fs_to_upper_case: Failed to open {e.filename} : {str(e)}"
+    return convert_case(file_path, 'upper')
 
 
 def names_according_cos(file_path):
@@ -874,7 +874,10 @@ def align(config):
 
             with open(config.OutLogFile, "a") as log_file:
                 log_file.write(f"Core Align: {cmd}/n")
-            subprocess.run(cmd, shell=True, check=True)
+            try:
+                subprocess.run(cmd, shell=True, check=True, timeout=7200)
+            except subprocess.TimeoutExpired:
+                raise RuntimeError(f"Command timed out after 7200s: {cmd}")
 
             if not os.path.exists(
                     f"{config.WorkingDir}{config.Core_Alignment_File}") or os.path.getsize(
@@ -899,7 +902,10 @@ def align(config):
 
         with open(config.OutLogFile, "a") as log_file:
             log_file.write(f"Align: {cmd}\n")
-        subprocess.run(cmd, shell=True, check=True)
+        try:
+            subprocess.run(cmd, shell=True, check=True, timeout=7200)
+        except subprocess.TimeoutExpired:
+            raise RuntimeError(f"Command timed out after 7200s: {cmd}")
 
     elif config.MSA_Program == "MAFFT_LINSI":
         # align with mafft
@@ -911,28 +917,38 @@ def align(config):
 
         with open(config.OutLogFile, "a") as log_file:
             log_file.write(f"Align: {cmd}\n")
-        subprocess.run(cmd, shell=True, check=True)
+        try:
+            subprocess.run(cmd, shell=True, check=True, timeout=7200)
+        except subprocess.TimeoutExpired:
+            raise RuntimeError(f"Command timed out after 7200s: {cmd}")
 
     elif config.MSA_Program == "PAGAN":
         cmd = ""
         RoughTree_MAFFT = "RoughTree_MAFFT_globalpair.tree"
 
         # build estimated tree with mafft
-        subprocess.run(
-            f"{config.mafft_prog} --retree 0 --treeout --globalpair --reorder {config.WorkingDir}{config.codded_seq_fileName} >/dev/null",
-            shell=True, check=True)
+        _mafft_tree_cmd = f"{config.mafft_prog} --retree 0 --treeout --globalpair --reorder {config.WorkingDir}{config.codded_seq_fileName} >/dev/null"
+        try:
+            subprocess.run(_mafft_tree_cmd, shell=True, check=True, timeout=7200)
+        except subprocess.TimeoutExpired:
+            raise RuntimeError(f"Command timed out after 7200s: {_mafft_tree_cmd}")
 
         # fix the tree (add semicolon and remove the ___)
-        subprocess.run(
-            f"mv {config.WorkingDir}{config.codded_seq_fileName}.tree {config.WorkingDir}{RoughTree_MAFFT}",
-            shell=True, check=True)
+        _mv_cmd = f"mv {config.WorkingDir}{config.codded_seq_fileName}.tree {config.WorkingDir}{RoughTree_MAFFT}"
+        try:
+            subprocess.run(_mv_cmd, shell=True, check=True, timeout=7200)
+        except subprocess.TimeoutExpired:
+            raise RuntimeError(f"Command timed out after 7200s: {_mv_cmd}")
         fix_mafft_rough_tree(f"{config.WorkingDir}{RoughTree_MAFFT}")
 
         # pagan cmd
         cmd = f"{config.pagan_prog} --seqfile {config.WorkingDir}{config.codded_seq_fileName} --treefile {config.WorkingDir}{RoughTree_MAFFT} --outfile {config.WorkingDir}{config.Alignment_File}"
         with open(config.OutLogFile, "a") as log_file:
             log_file.write(f"Align: {cmd}\n")
-        subprocess.run(cmd, shell=True, check=True)
+        try:
+            subprocess.run(cmd, shell=True, check=True, timeout=7200)
+        except subprocess.TimeoutExpired:
+            raise RuntimeError(f"Command timed out after 7200s: {cmd}")
 
         os.rename(f"{config.WorkingDir}{config.Alignment_File}.fas",
                   f"{config.WorkingDir}{config.Alignment_File}")
@@ -973,7 +989,10 @@ def align(config):
         if not os.path.exists(
                 f"{config.WorkingDir}{config.Alignment_File}.2.fas"):  # Just to save time
 
-            subprocess.run(cmd, shell=True, check=True)
+            try:
+                subprocess.run(cmd, shell=True, check=True, timeout=7200)
+            except subprocess.TimeoutExpired:
+                raise RuntimeError(f"Command timed out after 7200s: {cmd}")
 
         if PRANK_VERSION == "121218":  # The output file now named best.fas
 
@@ -1003,7 +1022,10 @@ def align(config):
         with open(config.OutLogFile, "a") as log_file:
             log_file.write(f"Align: {cmd}\n")
 
-        subprocess.run(cmd, shell=True, check=True)
+        try:
+            subprocess.run(cmd, shell=True, check=True, timeout=7200)
+        except subprocess.TimeoutExpired:
+            raise RuntimeError(f"Command timed out after 7200s: {cmd}")
 
         # convert_msa_format(f"{config.WorkingDir}{config.Alignment_File}", "clustal",
         #                               f"{config.WorkingDir}{config.Alignment_File}.fs", "fasta")
@@ -1031,7 +1053,10 @@ def align(config):
 
         with open(config.OutLogFile, "a") as log_file:
             log_file.write(f"MUSCLE Align: {cmd}\n")
-        subprocess.run(cmd, shell=True, check=True)
+        try:
+            subprocess.run(cmd, shell=True, check=True, timeout=7200)
+        except subprocess.TimeoutExpired:
+            raise RuntimeError(f"Command timed out after 7200s: {cmd}")
 
         if config.Align_Order == "as_input":
             with open(config.OutLogFile, "a") as log_file:
@@ -1315,7 +1340,10 @@ def select_best_msa(config):
     # Run feature extraction
     features_cmd = [FEATURES_EXTRACTION_PROG, config_path]
     print(f"[select_best_msa] Running: {' '.join(features_cmd)}")
-    result = subprocess.run(features_cmd, capture_output=True, text=True)
+    try:
+        result = subprocess.run(features_cmd, capture_output=True, text=True, timeout=600)
+    except subprocess.TimeoutExpired:
+        raise RuntimeError(f"Command timed out after 600s: {features_cmd}")
     if result.stdout:
         print(result.stdout)
     if result.returncode != 0:
@@ -1354,7 +1382,10 @@ def select_best_msa(config):
         "--no-metrics",
     ]
     print(f"[select_best_msa] Running: {' '.join(predict_cmd)}")
-    result = subprocess.run(predict_cmd, capture_output=True, text=True)
+    try:
+        result = subprocess.run(predict_cmd, capture_output=True, text=True, timeout=600)
+    except subprocess.TimeoutExpired:
+        raise RuntimeError(f"Command timed out after 600s: {predict_cmd}")
     print(result.stdout)
     if result.returncode != 0:
         print(f"[select_best_msa] Prediction script failed (rc={result.returncode}):\n{result.stderr}")

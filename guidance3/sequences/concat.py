@@ -3,6 +3,7 @@ import os
 import sys
 import random
 from os.path import basename
+from Bio import SeqIO
 
 
 def _print_to_output(msg, output_file):
@@ -13,22 +14,16 @@ def update_msa_hash(msa_file, msa_ref, first_msa):
     if first_msa is None or first_msa == "":
         first_msa = "No"
     msa_order = []
-    with open(msa_file) as f:
-        fasta_line = f.readline()
-        while fasta_line:
-            header = fasta_line[1:].strip()
-            fasta_line = f.readline()
-            seq = ""
-            while fasta_line and fasta_line[0] != ">":
-                seq += fasta_line.strip()
-                fasta_line = f.readline()
-            if header in msa_ref:
-                msa_ref[header] += seq
-            else:
-                if first_msa != "Yes":
-                    sys.exit(f"[ERROR] sequence '{header}' is missing in some MSAs — no missing data allowed.\n")
-                msa_ref[header] = seq
-                msa_order.append(header)
+    for rec in SeqIO.parse(msa_file, "fasta"):
+        header = rec.id
+        seq = str(rec.seq)
+        if header in msa_ref:
+            msa_ref[header] += seq
+        else:
+            if first_msa != "Yes":
+                sys.exit(f"[ERROR] sequence '{header}' is missing in some MSAs — no missing data allowed.\n")
+            msa_ref[header] = seq
+            msa_order.append(header)
     if first_msa == "Yes":
         return msa_ref, msa_order
     return msa_ref
