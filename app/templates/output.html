@@ -156,14 +156,14 @@
 
     {% endif %}
 
-    {% if form['PROGRAM'] == 'GUIDANCE2' %}
+    {% if form['PROGRAM'] == 'GUIDANCE3' %}
 
 </ul>
 <ul>
     <li>
         <form enctype="multipart/form-data" action="/guidance/ConcatMSAs/{{var['run_number']}}" method="post">
             <font color=red face="Comic Sans MS">New feature </font> - Create a <b>SuperMSA</b> by concatenating the
-            base MSA and {{var['SuperMSA_selection']|safe}} alternative MSAs computed by GUIDANCE2 <input type="hidden"
+            base MSA and {{var['SuperMSA_selection']|safe}} alternative MSAs computed by GUIDANCE3 <input type="hidden"
                                                                                                           name="run_num"
                                                                                                           value="{{var['run_number']}}"/>
             <input class="btn btn-outline-primary btn-outline-primary-small"  type="submit" value="Create SuperMSA"/></form>
@@ -223,7 +223,7 @@
 
 <br>
 <center><h2 style="text-align:left;"><font color="red">{{var['error_msg']}}:</font><br>Please try to re-run your job or
-    <a href="mailto:{[var['admin_email']}}?subject='Guidance Run Number {{var['run_number']}}'">contact us</a> for
+    <a href="mailto:{{admin_email}}?subject='Guidance Run Number {{var['run_number']}}'">contact us</a> for
     further information</h2></center<br><br>
 
 {% endif %}
@@ -232,9 +232,13 @@
     <div class="row">
         <div class="col-sm-2"></div>
         <div class="col-sm-9 main-form overview-container">
+            {% if errors_file_exists %}
                 <A style="font-size: 20px" HREF="{{var['run_number']}}/errors.txt" TARGET=results_Colored>List of errors encountered</A><br>
-            <br>
-            Please review the errors, adjust your input and try to re-run your job
+                <br>
+                Please review the errors, adjust your input and try to re-run your job
+            {% else %}
+                Please try to re-run your job. If the problem persists, contact us at the link above.
+            {% endif %}
         </div>
     </div>
 {% endif %}

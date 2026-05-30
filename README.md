@@ -1,4 +1,4 @@
-### Guidance2.0.3_Beta_Version
+### GUIDANCE3
 
 #### Local run on MacOS-arm64 or Ubuntu Linux
 
@@ -40,9 +40,7 @@ RECAPTCHA_SECRET_KEY = ''
 These keys are loaded by **dotenv** from the __init__.py file.  
 ________________________________________________
 
-OPI
-
-* The **./script/programs** folder has multiple subfolders with the .cpp programs' source code which require platform-specific builds to be performed. Build for MacOS and Linux are located in this folder for the following programs:
+* The **./script/programs** folder has multiple subfolders with the .cpp programs' source code which require platform-specific builds to be performed. Builds for MacOS and Linux are located in this folder for the following programs:
   - semphy  
   - removeTaxa  
   - msa_set_score  
@@ -50,101 +48,128 @@ OPI
   - iqtree
   - clustalo (ClustalOmega)
 
-Each program makefile is located in this program subfolder accordingly. The existing executables in the folders are built for MacOS-arm64 (M1) and Ubuntu Linux accordingly, if this is not the platform you are working on, they should be deleted and replaced with the executables which you build on your platform using the makefiles, paths should be updated in the SharedConst.py file.
+Each program's makefile is located in its subfolder. The existing executables are built for MacOS-arm64 (M1) and Ubuntu Linux. If you are on a different platform, delete them, build replacements using the makefiles, and update the paths in **SharedConsts.py**.
 
 
-#### To Run Guidance2.0.3 Beta Version:
+#### Command-line usage
 
-*Simple example* of running the program from the command line:
+The canonical entry point is `guidance3/pipeline/main.py`. The legacy wrapper `script/guidance_main.py` delegates to it and is used by the web server internally.
+
+*Simple example* — amino-acid sequences, GUIDANCE3 algorithm, 100 bootstraps, 8 CPUs:
 
 `cd <base_directory_of_the_project>`
 
-`**python3** **script/guidance_main.py** --seqFile <path_to_the_fasta_file_with_sequences> --msaProgram MAFFT --seqType aa --outDir <path_to_the_output_directory> --program GUIDANCE2 --bootstraps 100 --proc_num 8`
+`python3 guidance3/pipeline/main.py --seqFile <path_to_fasta> --msaProgram MAFFT --seqType aa --outDir <path_to_output_dir> --program GUIDANCE3 --bootstraps 100 --proc_num 8`
 
-After you finished working with the conda virtual environment on Linux/Ubuntu please **deactivate** the environment by running the following command line:
+After you finish working with the conda environment on Linux/Ubuntu, deactivate it:
 
 `conda deactivate`
 
-In this sample run, it is assumed that the input is amino-acids (aa) sequences, 100 bootstrap trees are created, and 8 CPUs are used   
-The '--seqType' should be changed to 'nuc' in case of nucleotides.
+The `--seqType` should be changed to `nuc` for nucleotides or `codon` for codon-aware analysis.
 
--h option can be used at any time to see the full list of program options (listed below)
+Use `-h` at any time to print the full option list.
 
-#### Guidance2.1 Beta Version Options:
+#### GUIDANCE3 Options
 
- -h, --help            show this help message and exit
- 
+**Required:**
+
   --seqFile USRSEQ_FILE
-                        Specify the sequence file (required).
-                        
-  --msaProgram {MAFFT,PRANK,CLUSTALO,MUSCLE,PAGAN}
-                        Specify the MSA program (Required). <MAFFT|PRANK|CLUSTALO|MUSCLE|PAGAN>. Default=""
-                        
+                        Specify the sequence file.
+
+  --msaProgram {MAFFT,MAFFT_LINSI,PRANK,CLUSTALO,MUSCLE,PAGAN}
+                        Specify the MSA program. Default=""
+
   --seqType {aa,nuc,codon}
-                        Specify the sequence type: aa, nuc, or codon (Required
-                        
-  --outDir OUTDIR       Specify the full path to the output directory (required).
-  
-  --program {GUIDANCE,HoT,GUIDANCE2}
-                        Specify the program to run (optional): GUIDANCE, HoT or GUIDANCE2. Default is GUIDANCE2.
-                        
+                        Specify the sequence type: aa, nuc, or codon.
+
+  --outDir OUTDIR       Specify the full path to the output directory.
+
+**Algorithm:**
+
+  --program {HoT,GUIDANCE3}
+                        Specify the algorithm to run. Default is GUIDANCE3.
+
   --inputType {seq,re_align,msa}
-                        Specify the type of input provided (optional): seq, re_align or msa. Default is seq.
-                        
+                        Specify the type of input provided: seq (unaligned sequences), re_align (re-align an existing MSA), or msa (evaluate a
+                        user-provided MSA without re-aligning). Default is seq.
+
   --bootstraps BOOTSTRAPS
-                        Specify the number of bootstrap iterations. Default is 100.
-                        
-  --genCode {1,15,6,10,2,5,3,13,9,14,4}
-                        Specify the codon table. Default is 1 (Nuclear Standard). <option value=1> Nuclear Standard, <option value=15> Nuclear
-                        Blepharisma, <option value=6> Nuclear Ciliate, <option value=10> Nuclear Euplotid, <option value=2> Mitochondria
-                        Vertebrate, <option value=5> Mitochondria Invertebrate, <option value=3> Mitochondria Yeast, <option value=13> Mitochondria
-                        Ascidian <option value=9> Mitochondria Echinoderm <option value=14> Mitochondria Flatworm <option value=4> Mitochondria
-                        Protozoan
-                        
-  --outOrder {aligned,as_input}
-                        Specify the output order (optional). Default is aligned.
-                        
-  --msaFile USERMSA_FILE
-                        Specify the MSA file (optional). Not recommended, see documentation online guidance.tau.ac.il. Default=None
-                        
+                        Number of bootstrap iterations. Default is 100.
+
+  --disableConvergence
+                        Disable the convergence stopping criterion. When set, GUIDANCE3 always runs the exact number of bootstraps specified by
+                        --bootstraps rather than stopping early when scores stabilise. Useful for reproducibility or debugging.
+
+  --proc_num PROC_NUM   Number of processors to use. Default=2.
+
+**Filtering thresholds:**
+
   --seqCutoff SP_SEQ_CUTOFF
-                        Specify confidence cutoff between 0 to 1. Default is 0.6.
-                        
+                        Confidence cutoff for sequence removal (0–1). Sequences scored below this value are removed. Default is 0.6.
+
   --colCutoff SP_COL_CUTOFF
-                        Specify confidence cutoff between 0 to 1. Default is 0.93.
-                        
+                        Confidence cutoff for column removal (0–1). Columns scored below this value are removed. Default is 0.93.
+
   --Z_Seq_Cutoff Z_SEQ_CUTOFF
-                        Specify Z score as additional criteria to filter sequences. EXPERIMENTAL. Default is NA (not active).
-                        
+                        Z-score threshold as an additional criterion to filter sequences. EXPERIMENTAL. Default is NA (not active).
+
   --Z_Col_Cutoff Z_COL_CUTOFF
-                        Specify Z score as additional criteria to filter position. EXPERIMENTAL. Default is NA (not active).
-                        
-  --mafft MAFFT_PROG    Specify path to mafft executable. Default=mafft.
-  
-  --prank PRANK_PROG    Specify path to prank executable. Default=prank.
-  
-  --clustalo CLUSTALW_PROG
-                        Specify path to clustalo executable. Default=clustalo.
-                        
-  --muscle MUSCLE_PROG  Specify path to muscle executable. Default=muscle.
-  
-  --pagan PAGAN_PROG    Specify path to pagan executable. Default=pagan.
-  
-  --ruby RUBY_PROG      Specify path to ruby executable. Default=ruby.
-  
-  --dataset DATASET     Specify a unique name for the Dataset - will be used as prefix to outputs. Default=MSA.
-  
+                        Z-score threshold as an additional criterion to filter columns. EXPERIMENTAL. Default is NA (not active).
+
+**Output:**
+
+  --outOrder {aligned,as_input}
+                        Order of sequences in output: aligned (default) or as_input.
+
+  --dataset DATASET     Prefix used for all output file names. Default=MSA.
+
+  --msaFile USERMSA_FILE
+                        Provide an existing MSA file instead of computing one (use with --inputType msa). Default=None.
+
+**Codon options:**
+
+  --genCode {1,15,6,10,2,5,3,13,9,14,4}
+                        Genetic code table. Default is 1 (Nuclear Standard).
+                        1  = Nuclear Standard
+                        15 = Nuclear Blepharisma
+                        6  = Nuclear Ciliate
+                        10 = Nuclear Euplotid
+                        2  = Mitochondria Vertebrate
+                        5  = Mitochondria Invertebrate
+                        3  = Mitochondria Yeast
+                        13 = Mitochondria Ascidian
+                        9  = Mitochondria Echinoderm
+                        14 = Mitochondria Flatworm
+                        4  = Mitochondria Protozoan
+
+**MSA program parameters:**
+
   --MSA_Param ALIGN_PARAM
-                        Specify the parameters for the alignment program. To pass parameter containing - in it, add \ before each - e.g. \-F for
-                        PRANK
-                        
-  --proc_num PROC_NUM   Specify num of processors to use. Default=1.
-  
+                        Parameters to pass to the MSA program. To include a flag with a leading `-`, prefix it with `\`, e.g. `\-F` for PRANK.
+
+  --outOrder {aligned,as_input}
+                        Output sequence order. Default is aligned.
+
+**Advanced / alignment program paths:**
+
+  --mafft MAFFT_PROG    Path to mafft executable. Default=mafft.
+
+  --prank PRANK_PROG    Path to prank executable. Default=prank.
+
+  --clustalo CLUSTALW_PROG
+                        Path to clustalo executable. Default=clustalo.
+
+  --muscle MUSCLE_PROG  Path to muscle executable. Default=muscle.
+
+  --pagan PAGAN_PROG    Path to pagan executable. Default=pagan.
+
+  --ruby RUBY_PROG      Path to ruby executable (required by PAGAN). Default=ruby.
+
   --RootingType {BioPerl,MidPoint}
-                        Specify Rooting Type: BioPerl or MidPoint. Default=BioPerl
-                        
-  --BBL {YES,NO}        Specify if to do branch length optimization (BBL): YES or NO. Default=NO
-  
+                        Guide-tree rooting method. Default=BioPerl.
+
+  --BBL {YES,NO}        Perform branch-length optimisation on guide trees. Default=NO.
+
   --GapPenDist {UNIF,EMP}
-                        Specify if to sample gap penalties from uniform (UNIF) or empirical (EMP) distribution. Default = UNIF => RELEVANT ONLY FOR
-                        GUIDANCE 2
+                        Distribution from which gap penalties are sampled: uniform (UNIF) or empirical (EMP). Default=UNIF.
+                        Relevant only for GUIDANCE3.

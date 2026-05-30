@@ -74,7 +74,7 @@
                   <div class="mb-3">
                     <label for="PROGRAM" class="form-label">Select algorithm</label>
                       <select name="PROGRAM" id="PROGRAM" class="form-select" onchange="javascript:toggle_Algorithm_Options()">
-                    <option value="GUIDANCE2">GUIDANCE2</option>
+                    <option value="GUIDANCE3">GUIDANCE3</option>
 <!--			        <option value="GUIDANCE">GUIDANCE</option>-->
                     <option value="HoT">HoT</option>
 				</select>
@@ -83,7 +83,7 @@
 
                 <div id="GUIDANCE_WARN" class="alert-class">
                     <div  class="alert alert-warning text-center" role="alert">
-                    <b>GUIDANCE</b> is not suitable for alignments of very few sequences.<br>As a rule of thumb, use <b>GUIDANCE2</b> or <b>HoT</b> for less than 8 sequences.
+                    <b>GUIDANCE</b> is not suitable for alignments of very few sequences.<br>As a rule of thumb, use <b>GUIDANCE3</b> or <b>HoT</b> for less than 8 sequences.
                     </div>
                 </div>
 
@@ -244,13 +244,13 @@
                 <div id="BOOTSTRAP">
 <!--                    <B>Number of bootstrap repeats</B>&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE="TEXT" NAME="Bootstraps" VALUE="100" SIZE=4></br>-->
                     <div class="input-group mb-3">
-                        <span class="input-group-text">Number of bootstrap repeats</span>
+                        <span class="input-group-text">Number of alternative guide-trees</span>
                         <input type="text" name="Bootstraps" value="100" size=4 class="form-control">
                     </div>
                     <div class="form-check mb-3" id="DISABLE_CONVERGENCE">
                         <input class="form-check-input" type="checkbox" name="disable_convergence" id="disable_convergence" value="1">
                         <label class="form-check-label" for="disable_convergence">
-                            Disable convergence &mdash; always generate the exact number of alternative MSAs specified above
+                            Disable convergence &mdash; always generate 4 alternative alignments per guide-tree (N &times; 4 total, where N is the number of guide-trees specified above), instead of stopping early when scores stabilise
                         </label>
                     </div>
                 </div>

@@ -48,7 +48,7 @@
         <!-- main content area -->
         <div class="col-sm-9 main-form overview-container">
 
-            <h1 class="overview-headline" align=center><br> GUIDANCE2 Job Status</h1>
+            <h1 class="overview-headline" align=center><br> GUIDANCE3 Job Status</h1>
             <div class="alert-class">
                 {% if job_state == 'RUNNING' %}
                 <div class="alert alert-warning text-center" role="alert">
@@ -95,10 +95,10 @@
                 Number of bootstrap repeats: {{form['Bootstraps']}}<br>
                 {% endif %}
 
-                {% if form['PROGRAM'] == 'GUIDANCE2' %}
+                {% if form['PROGRAM'] == 'GUIDANCE3' %}
                 Number of alternative guide-trees: {{form['Bootstraps']}}<br>
                 {% if form.get('disable_convergence') %}
-                Convergence: disabled (exact {{form['Bootstraps']}} alternative MSAs will be generated)<br>
+                Convergence: disabled ({{form['Bootstraps']}} guide-trees &times; 4 = {{form['Bootstraps']|int * 4}} alternative alignments will be generated)<br>
                 {% endif %}
                 {% endif %}
 
