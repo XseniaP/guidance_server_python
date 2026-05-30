@@ -15,7 +15,7 @@ def update_msa_hash(msa_file, msa_ref, first_msa):
         first_msa = "No"
     msa_order = []
     for rec in SeqIO.parse(msa_file, "fasta"):
-        header = rec.id
+        header = rec.description  # full header after ">", matching original manual reader
         seq = str(rec.seq)
         if header in msa_ref:
             msa_ref[header] += seq
