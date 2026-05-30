@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "guidance3"
+version = "3.0.0"
+description = "GUIDANCE3 – confidence scoring for multiple sequence alignments"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "Ksenia Polonsky", email = "ksenia.polonsky@gmail.com" },
+]
+keywords = ["bioinformatics", "multiple sequence alignment", "confidence score", "phylogenetics"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Intended Audience :: Science/Research",
+]
+dependencies = [
+    "biopython>=1.83",
+    "numpy>=1.26",
+    "scipy>=1.12",
+    "matplotlib>=3.8",
+    "pandas>=2.2",
+    "scikit-learn>=1.4",
+    "dendropy>=4.6",
+]
+
+[project.optional-dependencies]
+web = [
+    "flask>=3.0",
+    "flask-wtf>=1.2",
+    "apscheduler>=3.10",
+]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+]
+
+[project.scripts]
+guidance3            = "guidance3.pipeline.main:main"
+guidance3-hot        = "guidance3.hot_cos.main:main"
+guidance3-concat-msa = "guidance3.sequences.concat:main"
+guidance3-predict    = "guidance3.dl_model.scripts.predict_pretrained_main:main"
+guidance3-mask       = "guidance3.sequences.filters:mask_residues_main"
+guidance3-remove-pos = "guidance3.sequences.filters:remove_pos_main"
+guidance3-remove-seq = "guidance3.sequences.filters:remove_seq_main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["guidance3*"]
+
+[tool.setuptools.package-data]
+"guidance3" = ["data/**/*", "programs/**/*"]
+"guidance3.dl_model" = ["input/**/*", "environment_uni.yml", "environment.yml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
