@@ -168,7 +168,7 @@ class GuidanceState:
             
             if form['Redirect_From_MAFFT'] == '0':
                 form['FASTA_Seqs_Text'] = cgi_form['FASTA_txt']
-            form['CALLING_SERVER']= 'GUIDANCE2'
+            form['CALLING_SERVER']= 'GUIDANCE3'
             form['Run_Number'] = var['run_number']
             
             if dict_key_defined_not_empty('MAFFT_OUT_RUN_NEMBER', cgi_form):
@@ -468,7 +468,7 @@ class GuidanceState:
                 form['userMSA_File'] = 'Alignment from MAFFT'
                 
                 if 'qinsi' in var['align_param']:
-                    error =  "GuidanceState.update_state(Init): We are sorry but Q-INS-i methodology is currently not supported by GUIDANCE2. Sorry for the inconvenience.<br>"
+                    error =  "GuidanceState.update_state(Init): We are sorry but Q-INS-i methodology is currently not supported by GUIDANCE3. Sorry for the inconvenience.<br>"
                     raise Exception ( error, "user")
 
                 matches = re.findall('(allowshift)|(unalignlevel)|(leavegappyregion)|(regtable2seq)|(adjustdirection)|(dash)', var['align_param'])
@@ -476,8 +476,8 @@ class GuidanceState:
                     args = ''
                     for arg in matches:
                         args = args + ' ' + arg
-                    job_logger.info( f"We are sorry but '$arg' option of MAFFT is currently not supported by GUIDANCE2. Sorry for the inconvenience.\nPARAMS: {var['align_param']}")
-                    error =  f"GuidanceState.update_state(Init): We are sorry but $arg option of MAFFT is currently not supported by GUIDANCE2. Sorry for the inconvenience. Please feel free to <a href=\"mailto:evolseq\@taux.tau.ac.il\?subject=GUIDANCE2\%20Run\%20Number\%20{var['run_number']}\">contact us</a> about it<br>"
+                    job_logger.info( f"We are sorry but '$arg' option of MAFFT is currently not supported by GUIDANCE3. Sorry for the inconvenience.\nPARAMS: {var['align_param']}")
+                    error =  f"GuidanceState.update_state(Init): We are sorry but $arg option of MAFFT is currently not supported by GUIDANCE3. Sorry for the inconvenience. Please feel free to <a href=\"mailto:evolseq\@taux.tau.ac.il\?subject=GUIDANCE3\%20Run\%20Number\%20{var['run_number']}\">contact us</a> about it<br>"
                     raise Exception ( error, "user")
         
                 # unify case of input file
@@ -492,9 +492,9 @@ class GuidanceState:
                         if ans != 'OK':
                             raise Exception ( ans, "system")
                             
-                else:# GUIDANCE2 or HoT
+                else:# GUIDANCE3 or HoT
                     if  form['Seq_Type'] == "Nucleotides":
-                        ans = convert_fs_to_upper_case(os.path.join(var["WorkingDir"],var["Alignment_File"])) # HoT and GUIDANCE2 ALWAYS OUTPUT NUC MSA IN UPPER CASE
+                        ans = convert_fs_to_upper_case(os.path.join(var["WorkingDir"],var["Alignment_File"])) # HoT and GUIDANCE3 ALWAYS OUTPUT NUC MSA IN UPPER CASE
                         if ans != 'OK':
                             raise Exception ( ans, "system")
                             
@@ -546,7 +546,7 @@ class GuidanceState:
             var['Alignment_File_With_Names']= f"{var['run_number']}/{var['Alignment_File']}.With_Names"
             if form['PROGRAM'] == "GUIDANCE" or form['PROGRAM'] == "HoT":
                 var['Output_Prefix']=f"{var['dataset']}.{form['MSA_Program']}.Guidance"
-            elif form['PROGRAM'] == "GUIDANCE2":
+            elif form['PROGRAM'] == "GUIDANCE3":
                 var['Output_Prefix']=f"{var['dataset']}.{form['MSA_Program']}.Guidance2"
             var['Seq_Scores']= f"{var['run_number']}/{var['Output_Prefix']}_res_pair_seq.scr_with_Names"
         
@@ -655,7 +655,7 @@ class GuidanceState:
                         <br>'''
                         
             var['List_Of_Alternative_MSAs'] = os.path.join( var['WorkingDir'], 'List_Of_Default_and_AltMSAs.txt')
-            if form['PROGRAM'] == 'GUIDANCE2':
+            if form['PROGRAM'] == 'GUIDANCE3':
                 var['SuperMSA_selection'] = print_SuperMSA_selection(var['List_Of_Alternative_MSAs'])
             
         elif state == State.Error or state == State.Crashed:
@@ -767,8 +767,8 @@ class GuidanceState:
                 # raise Exception ( error, "user")
                 errors += error + " user "
             
-            if var['NumOfSeq'] < 3  and form['PROGRAM'] == "GUIDANCE2":
-                error = f"Only {var['NumOfSeq']} sequences were provided, however at least 3 sequences are requiered for GUIDANCE2.<br>You can run HoT algorithm instead."
+            if var['NumOfSeq'] < 3  and form['PROGRAM'] == "GUIDANCE3":
+                error = f"Only {var['NumOfSeq']} sequences were provided, however at least 3 sequences are requiered for GUIDANCE3.<br>You can run HoT algorithm instead."
                 # raise Exception ( error, "user")
                 errors += error + " user "
                 
@@ -959,7 +959,7 @@ class GuidanceState:
         if form['Redirect_From_MAFFT'] == '1':
             caller = 'FROM_MAFFT_SERVER'
         else:
-            caller = 'GUIDANCE2'
+            caller = 'GUIDANCE3'
         
         hostname = socket.gethostname()    
         user_ip = socket.gethostbyname(hostname)

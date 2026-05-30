@@ -81,7 +81,7 @@ function toggle_Algorithm_Options(){
 		show_MSA_programs_GUIDANCE2_HOT.style.display = 'none';
 		show_MSA_programs_GUIDANCE.style.display='block';
 	}
-	if(chosen_algorithm == 'GUIDANCE2'){
+	if(chosen_algorithm == 'GUIDANCE3'){
 		show_bootstrap.style.display = 'block';
 		show_order.style.display = 'block';
 		show_guidance_warn.style.display = 'none';

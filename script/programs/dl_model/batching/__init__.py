@@ -1,2 +1,0 @@
-# batching module initialization file
-
