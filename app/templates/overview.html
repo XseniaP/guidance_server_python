@@ -248,6 +248,27 @@
             As a rule of thumb, we recommend to use HoT for data sets of less than 8 sequences because of the typically small number of bootstrap trees for such cases
             -->
 
+            <a NAME="DL"></a>
+            <h2><b>Deep learning-based MSA selection (GUIDANCE3)</b></h2>
+            <p class="overview-text"><br>
+                While the GUIDANCE2 and HoT scores assess the reliability of a given alignment, they cannot determine
+                which of several alternative alignments is the most accurate. Most widely used MSA methods optimize the
+                sum-of-pairs (SoP) score, yet the alignment with the optimal SoP score often does not correspond to the
+                most accurate alignment when compared to a reference.
+                <br><br>
+                GUIDANCE3 addresses this limitation by incorporating a deep learning model that integrates a collection
+                of MSA features to identify the best alignment from the set of alternatives generated during the
+                bootstrap procedure. The model takes as input the full set of alternative MSAs produced from the same
+                unaligned sequences and predicts their relative ranking with respect to alignment accuracy. Across
+                simulated and empirical datasets, this approach more accurately identifies the top-ranking MSA than the
+                SoP score and several widely used alignment programs. Using simulations, selecting MSAs based on this
+                model has also been shown to lead to more accurate phylogenetic reconstructions.
+                <br><br>
+                The deep learning model is available both through the GUIDANCE3 web server and as a standalone CLI tool
+                (<kbd>guidance3-predict</kbd>), which accepts a folder of alternative MSAs and returns the predicted
+                best alignment together with a ranked list of all alternatives.
+            </p>
+
             <A NAME="running"></A>
             <h2><b>Running time</b></h2>
             <p class="overview-text"><br>Running time depends on the dataset size (number and length of
@@ -284,7 +305,18 @@
 
 
             <dl class="row" style="margin-left: 1px">
+                <a NAME="BestMSA"></a>
+                <dt class="col-sm-3">Best MSA <span style="color: #2e7d32; font-size: 0.75em; font-weight: bold; border: 1px solid #2e7d32; border-radius: 3px; padding: 1px 5px;">GUIDANCE3</span></dt>
+                <dd class="col-sm-9">The alignment predicted by the deep learning model to be the most accurate
+                    among the alternative MSAs generated during the bootstrap procedure. Unlike the SoP score, which
+                    measures internal self-consistency, the deep learning model integrates multiple MSA features to
+                    rank alternatives by their proximity to a true reference alignment. This MSA is recommended for
+                    downstream analyses such as phylogenetic reconstruction. See the
+                    <a href="#DL">Methodology</a> section for details.
+                </dd>
+
                 <a NAME="graphic"></a>
+                <br>
                 <dt class="col-sm-3">MSA colored according to the confidence score</dt>
                 <dd class="col-sm-9">This link is the main link for the GUIDANCE output, which is a projection of the
                     confidence scores of
