@@ -11,7 +11,9 @@
 pip install git+https://github.com/XseniaP/guidance_server_python.git
 ```
 
-That's it. All Python dependencies and bundled binaries (iqtree, msa_set_score, etc.) are installed automatically. The CLI detects your platform and uses the correct executables.
+All Python dependencies and bundled binaries (iqtree, msa_set_score, etc.) are installed automatically. The CLI detects your platform and uses the correct executables.
+
+> **Installation time:** expect **15–30 minutes** on a typical connection. TensorFlow (~500 MB) and PyTorch (~400 MB) are large downloads. The install is a one-time cost.
 
 > **Note:** PyPI release coming soon — `pip install guidance3` will be the install path once published.
 
