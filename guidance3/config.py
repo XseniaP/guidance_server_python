@@ -717,6 +717,6 @@ class RunConfig:
 
             if ans[0] != "ok":
                 if ans[0] == "user":
-                    exit_on_error("user_error", " ".join(ans[1]), self)
+                    exit_on_error("user_error", ans[1], self)
                 elif ans[0] == "sys":
-                    exit_on_error("sys_error", " ".join(ans), self)
+                    exit_on_error("sys_error", ans[1], self)

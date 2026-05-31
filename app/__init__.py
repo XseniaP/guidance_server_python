@@ -196,7 +196,13 @@ def process_state(process_id):
     
     # update state only if crashed or finished
     if job_state == State.Crashed:
-        guidance_state.update_state(state = job_state, error_msg = 'System error', error_type = 'system')
+        errors_file = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id, 'errors.txt')
+        if os.path.exists(errors_file):
+            with open(errors_file) as _ef:
+                error_content = _ef.read().strip()
+            guidance_state.update_state(state=State.Crashed, error_msg=error_content, error_type='user')
+        else:
+            guidance_state.update_state(state=job_state, error_msg='System error', error_type='system')
     elif job_state == State.Finished:
         
         # check if GuidanceState should be updated

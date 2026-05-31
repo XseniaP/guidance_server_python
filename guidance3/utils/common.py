@@ -153,23 +153,11 @@ def exit_on_error(which_error, error_msg, config):
                     output_file.write(line)
 
         try:
-            f = open(f'{config.WorkingDir}/errors.txt', "w")
-            f.write(error_msg.replace("<br>", "\n"))
-            f.close()
-        except:
-            error = f"Validate_Seqs:Can't open {f} for writing"
-            return 'sys_error', error
-            # # return errors
-            # # if "user" in errors:
-            # #     raise Exception(errors, "user")
-            # # else:
-            # #     raise Exception(errors, "system")
-
-            # output_file.write(
-            #         f"<hr> <h4 class=footer><p align='center'>\nQuestions and comments are welcome! Please <span class=\"admin_link\"><a href=\"mailto:bioSequence@tauex.tau.ac.il?subject=GUIDANCE%20Run%20Number%20{config.run_number}\">contact us</a></span></p></h4>\n<div id=\"bottom_links\"> <!-- links before the footer --><span class=\"bottom_link\"> <a href=\"{config.home_URL}\" target=\"_blank\">Home</a> &nbsp;|&nbsp;<a href=\"{config.overview_URL}\" target=\"_blank\">Overview</a> &nbsp;|&nbsp;<a href=\"{config.gallery_URL}\" target=\"_blank\">Gallery</a> &nbsp;|&nbsp;<a href=\"/credits.html\" target=\"_blank\">Credits</a> </span> <br /> </div>")
-            #
-            # output_file.write("</body>\n")
-            # output_file.write("</html>\n")
+            with open(f'{config.WorkingDir}/errors.txt', "w") as f:
+                f.write(error_msg.replace("<br>", "\n"))
+        except Exception as e:
+            with open(f'{config.OutLogFile}', "a") as log_file:
+                log_file.write(f"Could not write errors.txt: {e}\n")
 
         if config.user_mail != "": #TODO change on the server
             send_mail_on_error(config)
@@ -198,7 +186,7 @@ def exit_on_error(which_error, error_msg, config):
         if os.path.exists(f"{config.Output_Prefix}_BP_Dir.tar.gz"):
             os.system(f"rm -r -f {config.BootStrap_Dir}")
 
-    sys.exit()
+    sys.exit(1)
 
 
 def send_mail_on_error(config):
@@ -226,12 +214,15 @@ def send_mail_on_error(config):
         log_file.write(f"MESSAGE:{email_message}\nCOMMAND:{cmd}\n")
         os.chdir(f'{config.send_email_dir}')
         # Execute the command
-        email_system_return = subprocess.run(cmd, capture_output=True, text=True)
-
-        # Check if the email was sent successfully
-        if 'successfully' not in email_system_return.stdout:
-            log_file.write(
-                f"send_mail: The message was not sent successfully. system returned: {email_system_return.stdout}\n")
+        try:
+            email_system_return = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+            if 'successfully' not in email_system_return.stdout:
+                log_file.write(
+                    f"send_mail: The message was not sent successfully. system returned: {email_system_return.stdout}\n")
+        except subprocess.TimeoutExpired:
+            log_file.write("send_mail: timed out after 30s — SMTP server may be unreachable\n")
+        except Exception as e:
+            log_file.write(f"send_mail: failed — {e}\n")
 
 def subtract_time_from_now(begin_time_str, time_str):
     """Return elapsed time string since begin_time_str + time_str.
