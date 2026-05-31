@@ -134,8 +134,9 @@ def translate_DNA_to_AA(input_file, output_file, codon_table_index, x_codonfile,
     ter_mark_found = ""
     print_last_stop_codon = "no"
 
-    print(CodonTable.unambiguous_dna_by_id.keys())
     codonTable = CodonTable.unambiguous_dna_by_id[int(codon_table_index)]
+
+    all_errors = []
 
     with open(output_file, "w") as out_AA, open(x_codonfile, "w") as x_codon:
         x_codon.write("<html><table width=50%>\n<tr><td>Sequence Name<\/td><td>Codon Position<\/td><td>Codon<\/td><\/tr>\n")
@@ -155,7 +156,8 @@ def translate_DNA_to_AA(input_file, output_file, codon_table_index, x_codonfile,
             legal_DNA = check_DNA_seq(DNASequence, DNASequenceName, ter_mark_found, codon_table_index, "no")
             if legal_DNA[0] != "yes":
                 if legal_DNA[0] == "no":
-                    return "user", legal_DNA[1]
+                    all_errors.append(legal_DNA[1])
+                    continue
                 elif legal_DNA[0] == "fix":
                     if print_last_stop_codon == "no":
                         with open(output_html, "a") as html_out:
@@ -164,7 +166,8 @@ def translate_DNA_to_AA(input_file, output_file, codon_table_index, x_codonfile,
                     DNASequence = DNASequence[:-3]
 
             if '-' in DNASequence:
-                return "user", "You have chosen to upload a DNA file which is not codon-aligned. Despite that, the sign '-' (which stands for a gap) was found in your input file in sequence \"{DNASequenceName}\".<br>\nIf your file is codon-aligned, please use the second box for DNA codon-aligned sequences.<br>\nOtherwise, please remove '-' signs from your input file and resubmit your query."
+                all_errors.append(f"You have chosen to upload a DNA file which is not codon-aligned. Despite that, the sign '-' (which stands for a gap) was found in your input file in sequence \"{DNASequenceName}\".<br>\nIf your file is codon-aligned, please use the second box for DNA codon-aligned sequences.<br>\nOtherwise, please remove '-' signs from your input file and resubmit your query.")
+                continue
 
             xFlag, AASeq = translate_sequence(DNASequence, DNASequenceName, codon_table_index, xFlag, x_codonfile)
 
@@ -180,15 +183,19 @@ def translate_DNA_to_AA(input_file, output_file, codon_table_index, x_codonfile,
             if ref_seq_name is not None:
                 for i in range(len(ref_seq_name)):
                     if ref_seq_name[i] is not None and DNASequenceName == ref_seq_name[i]:
-                        return "user", f"The Sequence name \"{DNASequenceName}\" appears in your DNA input file more than once. Please make sure that each sequence name in your input files is unique and re-submit your query.\n"
-
-                ref_seq_name.append(DNASequenceName)
+                        all_errors.append(f"The Sequence name \"{DNASequenceName}\" appears in your DNA input file more than once. Please make sure that each sequence name in your input files is unique and re-submit your query.")
+                        break
+                else:
+                    ref_seq_name.append(DNASequenceName)
 
             if out_name_format == "SEQNUM":
                 seq_num = f"seq{counter - 1:04d}"
                 out_AA.write(f">{seq_num}\n{AASeq}\n")
             else:
                 out_AA.write(f">{counter}\n{AASeq}\n")
+
+    if all_errors:
+        return "user", "\n".join(all_errors)
 
     with open(x_codonfile, "a") as x_codon:
         x_codon.write("<\/table><\/html>\n")
@@ -212,41 +219,35 @@ def translate_DNA_to_AA(input_file, output_file, codon_table_index, x_codonfile,
 # output: "yes" if all tests are OK, otherwise - a string that describes the input problem
 
 def check_DNA_seq(input_DNA, DNA_input_name, ter_mark, table_codon_index, is_dna_aligned):
-    ans = ("yes", "yes")
     codon_table_obj = CodonTable.unambiguous_dna_by_id[int(table_codon_index)]
     seq_length = len(input_DNA)
 
     if seq_length % 3 != 0:
         if ter_mark == "yes":     # in case an earlier * sign was cut from the sequence, we inform the user
             ter_mark = "(without the last * sign)"
-        ans = ("no", f"The sequence {DNA_input_name} {ter_mark} is of length {seq_length}, which is not divisible by 3.")
-        return ans
+        return ("no", f"The sequence {DNA_input_name} {ter_mark} is of length {seq_length}, which is not divisible by 3.")
 
+    errors = []
     i = 0
     while i < seq_length - 2:
         codon = input_DNA[i:i + 3]
 
-        # if (not codon_table_obj.is_unknown_codon(codon) and codon_table_obj.is_ter_codon(codon)) or '*' in codon:
-        #     if i <= seq_length - 6:
-        #         ans = ("no", f"A Stop codon, \"{codon}\", was found in sequence {DNA_input_name} in position {i + 1}. Please verify that there are no internal stop-codons in your sequences.")
-        #         return ans
-
-        if ((
-                    codon not in codon_table_obj.forward_table and codon in codon_table_obj.stop_codons) or "*" in codon) and i <= seq_length - 6:
-            ans = ["no",
-                   f"A Stop codon ,\"{codon}\", was found in sequence {DNA_input_name} in position {i + 1}. Please verify that there are no internal stop-codons in your sequences.\n"]
-            return ans
+        if ((codon not in codon_table_obj.forward_table and codon in codon_table_obj.stop_codons) or "*" in codon) and i <= seq_length - 6:
+            errors.append(f"A Stop codon ,\"{codon}\", was found in sequence {DNA_input_name} in position {i + 1}.")
 
         elif i == seq_length - 3 and '-' in codon:
             pass
         # in case the DNA input file was aligned, we ask the user to remove stop codons from the end of the sequences, as some of his seuqneces might have stop codons and some are not - and we don't want to delete it for him (to decide for him whether to remove, or to put a gap etc.)
         elif is_dna_aligned == "yes" and i == seq_length - 3 and codon in codon_table_obj.stop_codons:
-            ans = ("no", f"Please remove the Stop Codon \"{codon}\" from your sequence {DNA_input_name}.")
-            return ans
+            errors.append(f"Please remove the Stop Codon \"{codon}\" from your sequence {DNA_input_name}.")
 
         i += 3
 
-    return ans
+    if errors:
+        errors.append("Please verify that there are no internal stop-codons in your sequences.")
+        return ("no", "\n".join(errors))
+
+    return ("yes", "yes")
 
 _IUPAC_EXPANSION = {
     'A': ['A'], 'C': ['C'], 'G': ['G'], 'T': ['T'], 'U': ['T'],
@@ -1338,19 +1339,21 @@ def select_best_msa(config):
         json.dump(features_cfg, f, indent=4)
 
     # Run feature extraction
+    print(f"[5/7] Extracting features for {len(models_list)} alternative MSAs...")
     features_cmd = [FEATURES_EXTRACTION_PROG, config_path]
-    print(f"[select_best_msa] Running: {' '.join(features_cmd)}")
+    if config.verbose:
+        print(f"[select_best_msa] Running: {' '.join(features_cmd)}")
     try:
         result = subprocess.run(features_cmd, capture_output=True, text=True, timeout=600)
     except subprocess.TimeoutExpired:
         raise RuntimeError(f"Command timed out after 600s: {features_cmd}")
-    if result.stdout:
+    if result.stdout and config.verbose:
         print(result.stdout)
     if result.returncode != 0:
         print(f"[select_best_msa] features_for_msas failed (rc={result.returncode}):\n{result.stderr}")
         shutil.rmtree(features_input_dir, ignore_errors=True)
         return
-    elif result.stderr:
+    elif result.stderr and config.verbose:
         print(f"[select_best_msa] features_for_msas stderr:\n{result.stderr}")
 
     features_file = os.path.join(config.WorkingDir, "unified_stats_all_msas.csv")
@@ -1381,12 +1384,15 @@ def select_best_msa(config):
         "--out-dir", pred_out_dir,
         "--no-metrics",
     ]
-    print(f"[select_best_msa] Running: {' '.join(predict_cmd)}")
+    print(f"[6/7] Running DL model to select best MSA...")
+    if config.verbose:
+        print(f"[select_best_msa] Running: {' '.join(predict_cmd)}")
     try:
         result = subprocess.run(predict_cmd, capture_output=True, text=True, timeout=600)
     except subprocess.TimeoutExpired:
         raise RuntimeError(f"Command timed out after 600s: {predict_cmd}")
-    print(result.stdout)
+    if config.verbose:
+        print(result.stdout)
     if result.returncode != 0:
         print(f"[select_best_msa] Prediction script failed (rc={result.returncode}):\n{result.stderr}")
         shutil.rmtree(features_input_dir, ignore_errors=True)
@@ -1430,7 +1436,9 @@ def select_best_msa(config):
 
     best_msa_dst = os.path.join(config.WorkingDir, f"{config.Output_Prefix}_BestMSA.fasta")
     shutil.copy(best_msa_src, best_msa_dst)
-    print(f"[select_best_msa] Best MSA saved: {best_msa_dst} (file: {best_code}, score: {best_score:.6f})")
+    print(f"[6/7] Best MSA selected: {best_code} (predicted score: {best_score:.6f}) → {best_msa_dst}")
+    with open(config.OutLogFile, "a") as log_file:
+        log_file.write(f"select_best_msa: best MSA = {best_code} (predicted score: {best_score:.6f}), saved to {best_msa_dst}\n")
 
     shutil.rmtree(features_input_dir, ignore_errors=True)
     _progress_done()

@@ -62,6 +62,7 @@ guidance3/dl_model/scripts/explain_features.py
 guidance3/dl_model/scripts/optuna_tune.py
 guidance3/dl_model/scripts/pickbest_main.py
 guidance3/dl_model/scripts/plot_features_importance.py
+guidance3/dl_model/scripts/predict_best_msa_main.py
 guidance3/dl_model/scripts/predict_pretrained_main.py
 guidance3/dl_model/scripts/regressor.py
 guidance3/dl_model/scripts/run_experiment_main.py
@@ -83,6 +84,7 @@ guidance3/pipeline/alignment.py
 guidance3/pipeline/main.py
 guidance3/pipeline/scoring.py
 guidance3/programs/linux/clustalo
+guidance3/programs/linux/features_for_msas
 guidance3/programs/linux/isEqualTree
 guidance3/programs/linux/msa_set_score
 guidance3/programs/linux/removeTaxa

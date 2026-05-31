@@ -15,6 +15,7 @@ class RunConfig:
     def __init__(self):
         self.bin_dir = BIN_DIR
         self.isServer = 0
+        self.verbose = False
         self.input_type = "seq"
         self.outDir = ""
         self.stored_data_file = ""
@@ -56,35 +57,45 @@ class RunConfig:
         self.usrSeq_File = ""
         self.MSA_Program = ""
         self.server_output = ""
-        self.usage_ = "USAGE: --seqFile <seqFile> --msaProgram <MAFFT|PRANK|CLUSTALO> --seqType <aa|nuc|codon> --outDir <full path outDir> \
-    Optional parameters: \
-  --program <HoT|GUIDANCE3> default=GUIDANCE3 \
-  --disableConvergence disable convergence stopping criterion (run exact number of bootstraps) \
-  --bootstraps <number of bootstrap iterations> default=100 \
-  --genCode <option value> default=1 \
-                <option value=1>  Nuclear Standard \
-                <option value=15> Nuclear Blepharisma \
-           	    <option value=6>  Nuclear Ciliate \
-                <option value=10> Nuclear Euplotid \
-                <option value=2>  Mitochondria Vertebrate \
-                <option value=5>  Mitochondria Invertebrate \
-                <option value=3>  Mitochondria Yeast \
-                <option value=13> Mitochondria Ascidian \
-                <option value=9>  Mitochondria Echinoderm \
-                <option value=14> Mitochondria Flatworm \
-                <option value=4>  Mitochondria Protozoan \
-  --outOrder <aligned|as_input> default=aligned \
-  --msaFile <msaFile> - not recommended, see documentation online guidance.tau.ac.il \
-  --seqCutoff <confidence cutoff between 0 to 1> default=0.6 \
-  --colCutoff <confidence cutoff between 0 to 1> default=0.93 \
-  --Z_Seq_Cutoff <Z score as additional criteria to filter sequences> EXPERIMENTAL, default=NA (not active) \
-  --Z_Col_Cutoff <Z score as additional criteria to filter position> EXPERIMENTAL, default=NA (not active) \
-  --mafft <path to mafft executable> default=mafft \
-  --prank <path to prank executable> default=prank \
-  --clustalw <path to clustalw executable> default=clustalw \
-  --dataset Unique name for the Dataset - will be used as prefix to outputs (default=MSA) \
-  --MSA_Param passing parameters for the alignment program. To pass parameter containning '-' in it, add \\ before each '-' e.g. \\-F for PRANK \
-  --proc_num <num of processors to use> default=1"
+        self.usage_ = (
+            "USAGE: guidance3 --seqFile <seqFile> --msaProgram <MAFFT|PRANK>"
+            " --seqType <aa|nuc|codon> --outDir <full path to output dir>\n"
+            "\nRequired parameters:\n"
+            "  --seqFile      Input sequence file (FASTA format)\n"
+            "  --msaProgram   Alignment program: MAFFT | PRANK\n"
+            "  --seqType      Sequence type: aa | nuc | codon\n"
+            "  --outDir       Full path to output directory\n"
+            "\nOptional parameters:\n"
+            "  --program <GUIDANCE|HoT|GUIDANCE3>  Scoring method. default=GUIDANCE3\n"
+            "  --inputType <seq|re_align|msa>      Input type. default=seq\n"
+            "  --bootstraps <int>                  Number of bootstrap iterations. default=100\n"
+            "  --disableConvergence                Disable convergence stopping criterion (run exact number of bootstraps)\n"
+            "  --proc_num <int>                    Number of parallel processors. default=2\n"
+            "  --genCode <int>                     Genetic code table index (codon mode only). default=1\n"
+            "      1=Nuclear Standard, 2=Mitochondria Vertebrate, 3=Mitochondria Yeast,\n"
+            "      4=Mitochondria Protozoan, 5=Mitochondria Invertebrate, 6=Nuclear Ciliate,\n"
+            "      9=Mitochondria Echinoderm, 10=Nuclear Euplotid, 13=Mitochondria Ascidian,\n"
+            "      14=Mitochondria Flatworm, 15=Nuclear Blepharisma\n"
+            "  --outOrder <aligned|as_input>       Output sequence order. default=aligned\n"
+            "  --msaFile <path>                    Pre-computed MSA file (re_align/msa input modes)\n"
+            "  --seqCutoff <0-1>                   Sequence confidence cutoff for removal. default=0.6\n"
+            "  --colCutoff <0-1>                   Column confidence cutoff for removal. default=0.93\n"
+            "  --Z_Seq_Cutoff <float|NA>           Z-score cutoff for sequence filtering. EXPERIMENTAL, default=NA\n"
+            "  --Z_Col_Cutoff <float|NA>           Z-score cutoff for column filtering. EXPERIMENTAL, default=NA\n"
+            "  --MSA_Param <string>                Extra parameters passed to the alignment program.\n"
+            "                                      Prefix each '-' with '\\' e.g. \\-F for PRANK\n"
+            "  --dataset <string>                  Prefix for output file names. default=MSA\n"
+            "  --RootingType <BioPerl|MidPoint>    Tree rooting method. default=MidPoint\n"
+            "  --BBL <YES|NO>                      Branch length optimisation. default=NO\n"
+            "  --GapPenDist <UNIF|EMP>             Gap penalty distribution: uniform or empirical. default=UNIF\n"
+            "  --mafft <path>                      Path to mafft executable. default=mafft\n"
+            "  --prank <path>                      Path to prank executable. default=prank\n"
+            "  --clustalo <path>                   Path to clustalo executable. default=clustalo\n"
+            "  --muscle <path>                     Path to muscle executable. default=muscle\n"
+            "  --pagan <path>                      Path to pagan executable. default=pagan\n"
+            "  --ruby <path>                       Path to ruby executable. default=ruby\n"
+            "  --verbose                           Print detailed progress and commands to stdout\n"
+        )
 
 
     def check_and_set_input_and_output_variables(self, arguments):
@@ -187,6 +198,8 @@ class RunConfig:
         parser.add_argument('--GapPenDist', dest='GapPenDist', choices=['UNIF', 'EMP'], default='UNIF',
                             type=str,
                             help='Specify if to sample gap penalties from uniform (UNIF) or empirical (EMP) distribution. Default = UNIF => RELEVANT ONLY FOR GUIDANCE 2')
+        parser.add_argument('--verbose', dest='verbose', action='store_true', default=False,
+                            help='Print detailed progress and command information to stdout. Default=False')
 
         # Parse the command-line arguments
         args = parser.parse_args()
@@ -222,7 +235,8 @@ class RunConfig:
         if not self.outDir.endswith("/"):
             self.outDir += "/"
 
-        print(f"outDir: {self.outDir}\n")
+        if self.verbose:
+            print(f"outDir: {self.outDir}\n")
         self.WorkingDir = self.outDir
 
         if not os.path.exists(self.outDir):

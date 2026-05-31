@@ -201,9 +201,7 @@ def print_colored_alignment_with_css(in_msa_file, out_html_file, scores_file, co
     except Exception as e:
         sys.exit(f"Can't open {in_msa_file}: {e}\n")
 
-    alignment.verbose = True  # HAIM COMMNET
-    # Otherwise, bioperl adds sequence start/stop values
-    set_displayname_flat(alignment)  # HAIM COMMENT
+    set_displayname_flat(alignment)
     ans = check_msa_licit_and_size(in_msa_file, "fasta", "no")
     if ans[0] == "OK":
         msa_depth = ans[1]
@@ -438,8 +436,7 @@ def remove_low_sp_seq(msa_file, seq_sp_file, out_file, cutoff, removed_seq_file,
     elif seq_type.upper() == "BYROWNUM":
         aln = AlignIO.read(msa_file, "fasta")
         # aln = in_handle[0]
-        aln.verbose = True  # HAIM COMMENT
-        set_displayname_flat(aln)  # HAIM COMMENT
+        set_displayname_flat(aln)
 
     with open(seq_sp_file, "r") as seq_sp_scores, open(out_file, "w") as out, open(removed_seq_file,
                                                                                    "w") as removed_seq:
@@ -585,7 +582,6 @@ def make_Jalview_Color_MSA(inMsaFile, scoresFile, outJalviewFeaturesFile, codesF
             alignment = AlignIO.read(inMsaFile, "fasta")
         except Exception as e:
             sys.exit(f"Can't open {inMsaFile}: {e}\n")
-        alignment.verbose = True
         set_displayname_flat(alignment)
         ans = check_msa_licit_and_size(inMsaFile, "fasta", "no")
         if ans[0] == "OK":
@@ -783,7 +779,8 @@ def calculate_sp_scores(config):
 
     with open(config.OutLogFile, "a") as log_file:
         log_file.write(f"calculating SP scores: {cmd}\n")
-        print(f"calculating SP scores: {cmd}\n")
+        if config.verbose:
+            print(f"calculating SP scores: {cmd}\n")
 
     if os.path.exists(f"{config.Scoring_Alignments_Dir}/.DS_Store"):
         os.remove(f"{config.Scoring_Alignments_Dir}/.DS_Store")
@@ -1255,7 +1252,8 @@ def calculate_sp_scores_convergence(config, countTrees):
         cmd = f"{config.msa_set_score_prog}   {os.path.join(config.WorkingDir, config.Alignment_File)}   {os.path.join(config.WorkingDir, config.Output_Prefix + f'_tree_{countTrees}')}   -d {config.Scoring_Alignments_Dir}"
     with open(config.OutLogFile, "a") as log_file:
         log_file.write(f"calculating SP scores for tree # {countTrees}: {cmd}\n")
-        print(f"calculating SP scores for tree # {countTrees}: {cmd}\n")
+        if config.verbose:
+            print(f"calculating SP scores for tree # {countTrees}: {cmd}\n")
     if os.path.exists(f"{config.Scoring_Alignments_Dir}/.DS_Store"):
         os.remove(f"{config.Scoring_Alignments_Dir}/.DS_Store")
     try:

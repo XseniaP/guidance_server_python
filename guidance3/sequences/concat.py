@@ -1,4 +1,6 @@
 """SuperMSA concatenation utility — concatenate a list of MSAs into one."""
+import argparse
+import glob
 import os
 import sys
 import random
@@ -33,24 +35,51 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
 
-    if len(argv) < 3:
-        sys.exit("USAGE: <MSA_LIST> <OUT_ALN> [Num_Of_Aln] [Shuffle YES|NO] [isWebServer YES|NO] [outHTML]\n")
+    # New argparse interface: guidance3-concat-msa --msas-dir <dir> --n <N> --out-file <file>
+    if len(argv) > 1 and argv[1].startswith("--"):
+        p = argparse.ArgumentParser(
+            description="Concatenate N randomly sampled MSAs from a folder into a super-MSA."
+        )
+        p.add_argument("--msas-dir", required=True, help="Folder containing alternative MSA .fasta files.")
+        p.add_argument("--n",        required=True, type=int, help="Number of MSAs to concatenate (sampled at random).")
+        p.add_argument("--out-dir",  required=True, help="Output directory. Writes concatenated_msa.fasta inside it.")
+        args = p.parse_args(argv[1:])
 
-    msa_list = argv[1]
-    out_msa = argv[2]
-    num_of_aln_to_concat = int(argv[3]) if len(argv) > 3 else None
-    shuffle = argv[4].upper() if len(argv) > 4 else "NO"
-    is_web_server = argv[5].upper() if len(argv) > 5 else "NO"
-    out_html = argv[6] if len(argv) > 6 and is_web_server == "YES" else ""
+        fasta_files = sorted(glob.glob(os.path.join(args.msas_dir, "*.fasta")))
+        if not fasta_files:
+            sys.exit(f"No .fasta files found in: {args.msas_dir}")
+        if args.n > len(fasta_files):
+            sys.exit(f"--n ({args.n}) exceeds number of available MSAs ({len(fasta_files)})")
 
-    with open(msa_list) as f:
-        msa_files = [line.strip() for line in f.readlines()]
+        os.makedirs(args.out_dir, exist_ok=True)
+        msa_files = random.sample(fasta_files, args.n)
+        out_msa = os.path.join(args.out_dir, "concatenated_msa.fasta")
+        num_of_aln_to_concat = args.n
+        is_web_server = "NO"
+        out_html = ""
 
-    if shuffle == "YES":
-        random.shuffle(msa_files)
+    # Legacy positional interface used by the web server:
+    # <MSA_LIST> <OUT_ALN> [Num_Of_Aln] [Shuffle YES|NO] [isWebServer YES|NO] [outHTML]
+    else:
+        if len(argv) < 3:
+            sys.exit("USAGE: guidance3-concat-msa --msas-dir <dir> --n <N> --out-file <file>\n"
+                     "       (legacy) <MSA_LIST> <OUT_ALN> [Num_Of_Aln] [Shuffle YES|NO]\n")
 
-    if num_of_aln_to_concat is None:
-        num_of_aln_to_concat = len(msa_files)
+        msa_list = argv[1]
+        out_msa = argv[2]
+        num_of_aln_to_concat = int(argv[3]) if len(argv) > 3 else None
+        shuffle = argv[4].upper() if len(argv) > 4 else "NO"
+        is_web_server = argv[5].upper() if len(argv) > 5 else "NO"
+        out_html = argv[6] if len(argv) > 6 and is_web_server == "YES" else ""
+
+        with open(msa_list) as f:
+            msa_files = [line.strip() for line in f.readlines()]
+
+        if shuffle == "YES":
+            random.shuffle(msa_files)
+
+        if num_of_aln_to_concat is None:
+            num_of_aln_to_concat = len(msa_files)
 
     new_msa, msa_order = {}, []
     for i in range(num_of_aln_to_concat):
