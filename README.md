@@ -3,19 +3,21 @@
 > **Supported platforms: macOS (arm64 / Intel) and Linux (x86-64) only.**
 > Windows is not supported — the bundled compiled binaries are not available for Windows.
 
-#### Installation — CLI (recommended)
+---
 
-The quickest way to get the `guidance3` command available system-wide:
+#### Installation — CLI
 
 ```bash
-git clone https://github.com/XseniaP/guidance_server_python.git
-cd guidance_server_python
-pip install -e .
+pip install git+https://github.com/XseniaP/guidance_server_python.git
 ```
 
-All Python dependencies are installed automatically. Executables for MacOS and Linux are bundled inside the package — the CLI detects your platform and uses the correct ones.
+That's it. All Python dependencies and bundled binaries (iqtree, msa_set_score, etc.) are installed automatically. The CLI detects your platform and uses the correct executables.
 
-*Simple example* — amino-acid sequences, GUIDANCE3 algorithm, 100 bootstraps, 8 CPUs:
+> **Note:** PyPI release coming soon — `pip install guidance3` will be the install path once published.
+
+---
+
+#### Quick start
 
 ```bash
 guidance3 --seqFile <path_to_fasta> --msaProgram MAFFT --seqType aa \
@@ -23,9 +25,7 @@ guidance3 --seqFile <path_to_fasta> --msaProgram MAFFT --seqType aa \
           --bootstraps 100 --proc_num 8
 ```
 
-Use `-h` at any time to print the full option list.
-
-The `--seqType` should be changed to `nuc` for nucleotides or `codon` for codon-aware analysis.
+Use `--seqType nuc` for nucleotides or `--seqType codon` for codon-aware analysis. Run `guidance3 -h` for the full option list.
 
 ---
 
@@ -63,6 +63,25 @@ conda deactivate
 
 ---
 
+#### Development / Contributing
+
+To work on the code itself:
+
+```bash
+git clone https://github.com/XseniaP/guidance_server_python.git
+cd guidance_server_python
+pip install -e .
+```
+
+The `-e` (editable) flag means changes to the source are reflected immediately without reinstalling. You can also run the pipeline directly without installing:
+
+```bash
+python3 guidance3/pipeline/main.py --seqFile <fasta> --msaProgram MAFFT --seqType aa \
+        --outDir <outDir> --program GUIDANCE3 --bootstraps 100 --proc_num 8
+```
+
+---
+
 #### Platform notes
 
 Executables for the following programs are bundled for both MacOS-arm64 (M1) and Ubuntu Linux:
@@ -73,16 +92,7 @@ Each program's source and makefile are in `./script/programs/<program>/`. If you
 
 ---
 
-#### Command-line usage
-
-All commands below become available after `pip install -e .`. Without pip install you can run the main pipeline directly from the project root:
-
-```bash
-python3 guidance3/pipeline/main.py --seqFile <fasta> --msaProgram MAFFT --seqType aa \
-        --outDir <outDir> --program GUIDANCE3 --bootstraps 100 --proc_num 8
-```
-
----
+#### Command-line reference
 
 **`guidance3`** — main pipeline
 
