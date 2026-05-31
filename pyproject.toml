@@ -19,13 +19,33 @@ classifiers = [
     "Intended Audience :: Science/Research",
 ]
 dependencies = [
-    "biopython>=1.83",
+    # Scientific stack
     "numpy>=1.26",
-    "scipy>=1.12",
-    "matplotlib>=3.8",
+    "scipy",
     "pandas>=2.2",
+    "matplotlib>=3.8",
     "scikit-learn>=1.4",
+    "joblib",
+    "tqdm",
+    "pyyaml",
+    "seaborn",
+    "pillow>=10.2",
+    "mpld3",
+    # Bioinformatics
+    "biopython>=1.83",
     "dendropy>=4.6",
+    "bio>=1.6",
+    "biothings-client",
+    "gprofiler-official",
+    "mygene",
+    # Deep learning
+    "tensorflow>=2.17",
+    "keras>=3.5",
+    "torch",
+    "torchvision",
+    "torchtext",
+    "transformers",
+    "shap",
 ]
 
 [project.optional-dependencies]
@@ -43,7 +63,7 @@ dev = [
 guidance3            = "guidance3.pipeline.main:main"
 guidance3-hot        = "guidance3.hot_cos.main:main"
 guidance3-concat-msa = "guidance3.sequences.concat:main"
-guidance3-predict    = "guidance3.dl_model.scripts.predict_pretrained_main:main"
+guidance3-predict    = "guidance3.dl_model.scripts.predict_best_msa_main:main"
 guidance3-mask       = "guidance3.sequences.filters:mask_residues_main"
 guidance3-remove-pos = "guidance3.sequences.filters:remove_pos_main"
 guidance3-remove-seq = "guidance3.sequences.filters:remove_seq_main"
@@ -54,7 +74,7 @@ include = ["guidance3*"]
 
 [tool.setuptools.package-data]
 "guidance3" = ["data/**/*", "programs/**/*"]
-"guidance3.dl_model" = ["input/**/*", "environment_uni.yml", "environment.yml"]
+"guidance3.dl_model" = ["input/**/*", "environment_uni.yml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

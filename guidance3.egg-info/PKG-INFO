@@ -10,13 +10,30 @@ Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
 Classifier: Intended Audience :: Science/Research
 Requires-Python: >=3.9
 Description-Content-Type: text/markdown
-Requires-Dist: biopython>=1.83
 Requires-Dist: numpy>=1.26
-Requires-Dist: scipy>=1.12
-Requires-Dist: matplotlib>=3.8
+Requires-Dist: scipy
 Requires-Dist: pandas>=2.2
+Requires-Dist: matplotlib>=3.8
 Requires-Dist: scikit-learn>=1.4
+Requires-Dist: joblib
+Requires-Dist: tqdm
+Requires-Dist: pyyaml
+Requires-Dist: seaborn
+Requires-Dist: pillow>=10.2
+Requires-Dist: mpld3
+Requires-Dist: biopython>=1.83
 Requires-Dist: dendropy>=4.6
+Requires-Dist: bio>=1.6
+Requires-Dist: biothings-client
+Requires-Dist: gprofiler-official
+Requires-Dist: mygene
+Requires-Dist: tensorflow>=2.17
+Requires-Dist: keras>=3.5
+Requires-Dist: torch
+Requires-Dist: torchvision
+Requires-Dist: torchtext
+Requires-Dist: transformers
+Requires-Dist: shap
 Provides-Extra: web
 Requires-Dist: flask>=3.0; extra == "web"
 Requires-Dist: flask-wtf>=1.2; extra == "web"
@@ -27,74 +44,88 @@ Requires-Dist: pytest-cov>=5.0; extra == "dev"
 
 ### GUIDANCE3
 
-#### Local run on MacOS-arm64 or Ubuntu Linux
+#### Installation — CLI (recommended)
 
-**Prerequisites:**
+The quickest way to get the `guidance3` command available system-wide:
 
-* Download or clone the project directory from GitHub
-* Install all prerequisites by creating a conda environment using the **environment.yml** file provided in the project directory
+```bash
+git clone https://github.com/XseniaP/guidance_server_python.git
+cd guidance_server_python
+pip install -e .
+```
 
-**Using environment.yml**
-
-`git clone https://github.com/XseniaP/guidance_server_python.git`
-
-`cd guidance_server_python`
-
-`conda config --add channels conda-forge`
-
-`conda config --add channels bioconda`
-
-`conda config --add channels defaults`
-
-`conda env create -f environment.yml`
-
-`conda activate Guidance_py_env`
-
-`export PYTHONPATH=$(pwd)`
-
-`python app/__init__.py`   OR    `python3 app/__init__.py`
-
-
-Details behind the .yml environment: the environment installs all dependencies, including MAFFT v7.525, prank v.170427, and pip dependencies.
-Other required programs' executables (for both Linux and MacOS) are located in the **./script/programs** folder. No changes are required if either Linux or MacOS is used to run the web server.
-
-The SECRET_KEY, RECAPTCHA_SITE_KEY, and RECAPTCHA_SECRET_KEY should be saved in **.env** file in the **./app** folder in the following format:
-
-SECRET_KEY = '' <br>
-RECAPTCHA_SITE_KEY = '' <br>
-RECAPTCHA_SECRET_KEY = ''
-
-These keys are loaded by **dotenv** from the __init__.py file.  
-________________________________________________
-
-* The **./script/programs** folder has multiple subfolders with the .cpp programs' source code which require platform-specific builds to be performed. Builds for MacOS and Linux are located in this folder for the following programs:
-  - semphy  
-  - removeTaxa  
-  - msa_set_score  
-  - isEqualTree  
-  - iqtree
-  - clustalo (ClustalOmega)
-
-Each program's makefile is located in its subfolder. The existing executables are built for MacOS-arm64 (M1) and Ubuntu Linux. If you are on a different platform, delete them, build replacements using the makefiles, and update the paths in **SharedConsts.py**.
-
-
-#### Command-line usage
-
-The canonical entry point is `guidance3/pipeline/main.py`. The legacy wrapper `script/guidance_main.py` delegates to it and is used by the web server internally.
+All Python dependencies are installed automatically. Executables for MacOS and Linux are bundled inside the package — the CLI detects your platform and uses the correct ones.
 
 *Simple example* — amino-acid sequences, GUIDANCE3 algorithm, 100 bootstraps, 8 CPUs:
 
-`cd <base_directory_of_the_project>`
+```bash
+guidance3 --seqFile <path_to_fasta> --msaProgram MAFFT --seqType aa \
+          --outDir <path_to_output_dir> --program GUIDANCE3 \
+          --bootstraps 100 --proc_num 8
+```
 
-`python3 guidance3/pipeline/main.py --seqFile <path_to_fasta> --msaProgram MAFFT --seqType aa --outDir <path_to_output_dir> --program GUIDANCE3 --bootstraps 100 --proc_num 8`
-
-After you finish working with the conda environment on Linux/Ubuntu, deactivate it:
-
-`conda deactivate`
+Use `-h` at any time to print the full option list.
 
 The `--seqType` should be changed to `nuc` for nucleotides or `codon` for codon-aware analysis.
 
-Use `-h` at any time to print the full option list.
+---
+
+#### Installation — Web server / full conda environment
+
+Required if you want to run the web server, or need GPU/CUDA support for the DL model.
+
+```bash
+git clone https://github.com/XseniaP/guidance_server_python.git
+cd guidance_server_python
+conda config --add channels conda-forge
+conda config --add channels bioconda
+conda config --add channels defaults
+conda env create -f environment.yml
+conda activate guidance3
+export PYTHONPATH=$(pwd)
+python app/__init__.py
+```
+
+The SECRET_KEY, RECAPTCHA_SITE_KEY, and RECAPTCHA_SECRET_KEY should be saved in a **.env** file in the **./app** folder:
+
+```
+SECRET_KEY = ''
+RECAPTCHA_SITE_KEY = ''
+RECAPTCHA_SECRET_KEY = ''
+```
+
+These keys are loaded by **dotenv** from `app/__init__.py`.
+
+After you finish working with the conda environment, deactivate it:
+
+```bash
+conda deactivate
+```
+
+---
+
+#### Platform notes
+
+Executables for the following programs are bundled for both MacOS-arm64 (M1) and Ubuntu Linux:
+
+- msa_set_score, semphy, removeTaxa, isEqualTree, iqtree, clustalo (ClustalOmega)
+
+Each program's source and makefile are in `./script/programs/<program>/`. If you are on a different platform, build replacements using the makefiles and update the paths in **SharedConsts.py**.
+
+---
+
+#### Command-line usage
+
+All commands below become available after `pip install -e .`. Without pip install you can run the main pipeline directly from the project root:
+
+```bash
+python3 guidance3/pipeline/main.py --seqFile <fasta> --msaProgram MAFFT --seqType aa \
+        --outDir <outDir> --program GUIDANCE3 --bootstraps 100 --proc_num 8
+```
+
+---
+
+**`guidance3`** — main pipeline
 
 #### GUIDANCE3 Options
 
@@ -103,7 +134,7 @@ Use `-h` at any time to print the full option list.
   --seqFile USRSEQ_FILE
                         Specify the sequence file.
 
-  --msaProgram {MAFFT,MAFFT_LINSI,PRANK,CLUSTALO,MUSCLE,PAGAN}
+  --msaProgram {MAFFT,PRANK}
                         Specify the MSA program. Default=""
 
   --seqType {aa,nuc,codon}
@@ -200,3 +231,56 @@ Use `-h` at any time to print the full option list.
   --GapPenDist {UNIF,EMP}
                         Distribution from which gap penalties are sampled: uniform (UNIF) or empirical (EMP). Default=UNIF.
                         Relevant only for GUIDANCE3.
+
+---
+
+**`guidance3-predict`** — select the best MSA from a folder of alternatives using the bundled DL model
+
+```bash
+guidance3-predict \
+  --msas-dir  <path/to/folder_with_alternative_msas> \
+  --seq-type  aa \
+  --out-dir   <output_dir>
+```
+
+Use `--seq-type nuc` for nucleotide sequences. The command handles everything internally: feature extraction, model loading (bundled pretrained weights), prediction, and output. The best MSA is written to `<out-dir>/best_msa.fasta`. Add `--verbose` for detailed progress.
+
+The alternative MSAs folder should contain `.fasta` files — typically the `BP/GUIDANCE3_MSA/` sub-directory produced by a `guidance3` run, or any set of MSAs you want to rank.
+
+---
+
+**`guidance3-remove-pos`** — filter columns below a confidence cutoff
+
+```bash
+guidance3-remove-pos \
+  --MSA        <path/to/MSA.fasta> \
+  --Scores     <path/to/MSA_res_pair_col.scr> \
+  --FilterdMSA <path/to/output_filtered.fasta> \
+  --Cutoff     0.93 \
+  --RemovedPos <path/to/removed_columns.txt>
+```
+
+**`guidance3-remove-seq`** — filter sequences below a confidence cutoff
+
+```bash
+guidance3-remove-seq \
+  --MSA        <path/to/MSA.fasta> \
+  --Scores     <path/to/MSA_res_pair_seq.scr> \
+  --FilterdSeq <path/to/output_filtered.fasta> \
+  --Cutoff     0.6 \
+  --RemovedSeq <path/to/removed_sequences.txt>
+```
+
+Score files (`_res_pair_col.scr`, `_res_pair_seq.scr`) are produced by `guidance3` in the output directory.
+
+---
+
+**`guidance3-concat-msa`** — concatenate N randomly sampled MSAs from a folder into a super-MSA
+
+```bash
+guidance3-concat-msa --msas-dir <path/to/alternative_msas> --n 20 --out-dir <output_dir>
+```
+
+Writes the result to `<output_dir>/concatenated_msa.fasta`.
+
+Picks `--n` MSAs at random from the folder and concatenates them column-wise. All MSAs must contain the same set of sequences.

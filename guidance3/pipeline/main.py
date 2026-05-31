@@ -46,10 +46,9 @@ def main(argv=None):
         import traceback
         msg = traceback.format_exc()
         sys.stderr.write(msg)
-        if getattr(config, 'WorkingDir', None):
-            errors_path = os.path.join(config.WorkingDir, 'errors.txt')
-            with open(errors_path, 'w') as ef:
-                ef.write(f"Unhandled error:\n{msg}")
+        if getattr(config, 'OutLogFile', None):
+            with open(config.OutLogFile, 'a') as lf:
+                lf.write(f"\nUnhandled exception:\n{msg}\n")
         sys.exit(1)
 
 
@@ -69,6 +68,7 @@ def _run(config):
     elif config.PROGRAM in ["GUIDANCE3", "GUIDANCE3_HOT"]:
         run_guidance3(config)
 
+    print(f"[4/7] Calculating SP scores and confidence scores...")
     calculate_sp_scores(config)
     modify_score_files_for_codons_and_server(config)
     remove_sites(config)
@@ -81,7 +81,9 @@ def _run(config):
     if config.PROGRAM == "GUIDANCE3":
         select_best_msa(config)
     flag_that_finished_ok(config)
-    print(config)
+    print(f"[7/7] All steps completed successfully.")
+    if config.verbose:
+        print(config)
     if config.isServer == 1:
         prepare_rerun_parameters(config)
         send_finish_email_to_user(config)

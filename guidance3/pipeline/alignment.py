@@ -41,7 +41,8 @@ def run_hot_internal(config, op_vals_arr_ref, ep_vals_arr_ref, countTrees, tree_
         # HOT_COS_GUIDANCE2_cmd += f" --- {config.align_param} -GAPOPEN={op_vals_arr_ref[countTrees]}"
         HOT_COS_GUIDANCE2_cmd += f" --- {config.align_param}"
 
-    print(HOT_COS_GUIDANCE2_cmd)
+    if config.verbose:
+        print(HOT_COS_GUIDANCE2_cmd)
 
     cos_std_path = os.path.join(config.WorkingDir, "COS.std")
     with open(cos_std_path, "a") as cos_std:
@@ -77,7 +78,8 @@ def run_hot_process_on_tree(config, epsilon, proc, RandomBranches,op_vals_arr_re
         convergence = 0
 
         countTrees = proc + config.proc_num * tree_num
-        print(f"proc num {proc}\ttree num {tree_num} --> global tree index {countTrees}\n")
+        if config.verbose:
+            print(f"proc num {proc}\ttree num {tree_num} --> global tree index {countTrees}\n")
 
         if countTrees >= config.Bootstraps:
             break
@@ -110,7 +112,8 @@ def run_hot_process_on_tree(config, epsilon, proc, RandomBranches,op_vals_arr_re
 
             HOT_COS_GUIDANCE2_cmd = run_hot_internal(config, op_vals_arr_ref, ep_vals_arr_ref, countTrees, tree_good_BranchLength, Branch)
             log_file.write(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
-            print(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
+            if config.verbose:
+                print(f"run_HOT_COS_GUIDANCE2: {HOT_COS_GUIDANCE2_cmd}\n")
 
             local_dataset = f"{config.dataset}_{countTrees}_cos_"
             pathname = os.path.join(
@@ -168,7 +171,8 @@ def run_hot_process_on_tree(config, epsilon, proc, RandomBranches,op_vals_arr_re
                         for scr_file in glob.glob(os.path.join(config.WorkingDir, f"{config.Output_Prefix}_tree_{countTrees}_*.scr")):
                             os.unlink(scr_file)
                         convergence = check_convergence(config, epsilon)
-                        print(f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
+                        if config.verbose:
+                            print(f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
                     except Exception as e:
                         log_file.write(f"[WARNING] Convergence check failed for proc num {proc}\ttree num {tree_num} \t# of alternative MSAs {alt_msas} error {e}\n")
                         print(f"[WARNING] Convergence check failed for proc num {proc}\ttree num {tree_num} \t# of alternative MSAs {alt_msas} — convergence will not be verified for this iteration\n")
@@ -183,7 +187,8 @@ def run_hot_process_on_tree(config, epsilon, proc, RandomBranches,op_vals_arr_re
                 # at least 2 to independently agree before stopping any worker.
                 convergence_threshold = 1 if config.proc_num == 1 else 2
                 if config.count_convergence.value >= convergence_threshold:
-                    print(f'.done {proc}', flush=True)
+                    if config.verbose:
+                        print(f'.done {proc}', flush=True)
                     break
 
         except Exception as e:
@@ -397,6 +402,7 @@ def run_guidance3(config):
 
     # Align
     ##############
+    print(f"[1/7] Creating base MSA with {config.MSA_Program}...")
     if config.userMSA_File == "" or config.userMSA_File is None:  # align if user did not supply alignment
         align(config)
         # HOT ASSUME THAT THE SEQUENCES ARE ALL UPPER CASE, SO WE CONVERT THE ALN TO UPPER CASE
@@ -406,12 +412,15 @@ def run_guidance3(config):
     else:
         convert_fs_to_upper_case(
             f"{config.WorkingDir}{config.Alignment_File}")
+    print(f"[1/7] Base MSA created: {config.Alignment_File}")
 
     # TO DO: handle the adjustdirection
 
     # BootStrap Trees
     ##################
+    print(f"[2/7] Generating {config.Bootstraps} bootstrap trees...")
     Bootstrap_Trees(config)
+    print(f"[2/7] Bootstrap trees done.")
 
     # pull out the trees
     ######################
@@ -580,6 +589,7 @@ def run_guidance3(config):
     os.mkdir(config.Scoring_Alignments_Dir)
 
     #Run HoT to create alternative MSAs
+    print(f"[3/7] Creating alternative MSAs ({config.Bootstraps} bootstraps, {config.proc_num} parallel processes)...")
     countTrees = 0
     epsilon = 0.0006
     manager = Manager()
@@ -627,15 +637,10 @@ def run_guidance3(config):
     # aln_count = len(os.listdir(config.Scoring_Alignments_Dir))
     # expected_count = Num_of_Aln_from_HoT_per_Run * config.Bootstraps
     # expected_count = (config.convergence) * Num_of_Aln_from_HoT_per_Run
-    print(f"the convergence final number is {config.convergence}")
-    # if aln_count < expected_count:
-    #     exit_on_error("sys_error",
-    #                   f"run_Guidance2: Only {aln_count} alignments were created on {config.Scoring_Alignments_Dir} while expecting {expected_count}\n", config)
-    # else:
-    #     print("\nSUCCESS!\n")
-    # print(config.mean_res_pair_score)
-    # print(config.mean_col_score)
-    print("\nSUCCESS!\n")
+    print(f"[3/7] Alternative MSAs created: {alt_msas} alignments generated.")
+    if config.verbose:
+        print(f"the convergence final number is {config.convergence}")
+        print("\nSUCCESS!\n")
 
 #@timeit
 def run_hot(config):
@@ -716,9 +721,11 @@ def run_hot(config):
                 os.system(cmd)
 
             if config.Align_Order == "as_input":
-                print(f"MSA_parser::sort_alignment({config.WorkingDir}{config.Alignment_File},fasta);\n")
+                if config.verbose:
+                    print(f"MSA_parser::sort_alignment({config.WorkingDir}{config.Alignment_File},fasta);\n")
                 ans = sort_alignment(f"{config.WorkingDir}{config.Alignment_File}", "fasta")
-                print("".join(ans))
+                if config.verbose:
+                    print("".join(ans))
                 config.Alignment_File_NOT_SORTED = config.Alignment_File
                 config.Alignment_File = config.Alignment_File + ".Sorted"
 

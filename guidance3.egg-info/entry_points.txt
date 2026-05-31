@@ -3,6 +3,6 @@ guidance3 = guidance3.pipeline.main:main
 guidance3-concat-msa = guidance3.sequences.concat:main
 guidance3-hot = guidance3.hot_cos.main:main
 guidance3-mask = guidance3.sequences.filters:mask_residues_main
-guidance3-predict = guidance3.dl_model.scripts.predict_pretrained_main:main
+guidance3-predict = guidance3.dl_model.scripts.predict_best_msa_main:main
 guidance3-remove-pos = guidance3.sequences.filters:remove_pos_main
 guidance3-remove-seq = guidance3.sequences.filters:remove_seq_main

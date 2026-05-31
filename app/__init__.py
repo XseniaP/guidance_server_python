@@ -200,7 +200,7 @@ def process_state(process_id):
         if os.path.exists(errors_file):
             with open(errors_file) as _ef:
                 error_content = _ef.read().strip()
-            guidance_state.update_state(state=State.Crashed, error_msg=error_content, error_type='user')
+            guidance_state.update_state(state=State.Crashed, error_msg='User Input Error', error_type='user')
         else:
             guidance_state.update_state(state=job_state, error_msg='System error', error_type='system')
     elif job_state == State.Finished:
@@ -279,7 +279,7 @@ def results(process_id):
             if os.path.exists(errors_file):
                 with open(errors_file) as _ef:
                     error_content = _ef.read().strip()
-                guidance_state.update_state(state=State.Crashed, error_msg=error_content, error_type='user')
+                guidance_state.update_state(state=State.Crashed, error_msg='User Input Error', error_type='user')
                 job_state = State.Crashed
             else:
                 guidance_state.update_state(State.Finished)
@@ -292,7 +292,7 @@ def results(process_id):
                 if os.path.exists(errors_file):
                     with open(errors_file) as _ef:
                         error_content = _ef.read().strip()
-                    guidance_state.update_state(state=State.Crashed, error_msg=error_content, error_type='user')
+                    guidance_state.update_state(state=State.Crashed, error_msg='User Input Error', error_type='user')
                 else:
                     guidance_state.update_state(State.Crashed)
                 job_state = State.Crashed

@@ -196,7 +196,8 @@ def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog, config=None, use
 
         iqtree_boottrees_file = f"{bp_dir}{config.Alignment_File}.boottrees"
         # iqtree_boottrees_file = f"{bp_dir}{dataset}.{aln_prog}.aln.boottrees"
-        print(f"iqtree boottrees file: {iqtree_boottrees_file}\n")
+        if config.verbose:
+            print(f"iqtree boottrees file: {iqtree_boottrees_file}\n")
 
         with open(iqtree_boottrees_file, 'r') as boottrees_file:
             for my_tree in boottrees_file:
