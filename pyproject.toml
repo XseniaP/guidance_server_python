@@ -39,6 +39,7 @@ dependencies = [
     "gprofiler-official",
     "mygene",
     # Deep learning
+    "requests",
     "tensorflow>=2.17",
     "keras>=3.5",
     "torch",
