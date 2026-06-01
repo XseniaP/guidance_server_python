@@ -1299,12 +1299,11 @@ def add_scores_to_dict(config, epsilon, countTrees, lock):
 
 #@timeit
 def check_convergence(config, epsilon):
-    score1, score2 = 10 * epsilon, 10 * epsilon
-    if len(config.mean_col_score)>1 and len(config.mean_res_pair_score)>1:
-        score1 = abs(config.mean_col_score[-1] - config.mean_col_score[-2])
-        score2 = abs(config.mean_res_pair_score[-1] - config.mean_res_pair_score[-2])
-
-    if score1 <= epsilon and score2 <= epsilon:
-        return 1
-    else:
+    if len(config.mean_col_score) < 3 or len(config.mean_res_pair_score) < 3:
         return 0
+    col = config.mean_col_score
+    rp  = config.mean_res_pair_score
+    if (abs(col[-1] - col[-2]) <= epsilon and abs(col[-2] - col[-3]) <= epsilon and
+            abs(rp[-1] - rp[-2]) <= epsilon and abs(rp[-2] - rp[-3]) <= epsilon):
+        return 1
+    return 0
