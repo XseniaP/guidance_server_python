@@ -79,7 +79,7 @@ def _run(config):
     make_jalview(config)
     create_tar_archives(config)
     dl_ok = True
-    if config.PROGRAM == "GUIDANCE3":
+    if config.PROGRAM == "GUIDANCE3" and not getattr(config, 'skip_dl', False):
         dl_ok = select_best_msa(config)
     flag_that_finished_ok(config)
     if dl_ok:
