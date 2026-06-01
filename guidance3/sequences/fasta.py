@@ -1344,9 +1344,11 @@ def select_best_msa(config):
     if config.verbose:
         print(f"[select_best_msa] Running: {' '.join(features_cmd)}")
     try:
-        result = subprocess.run(features_cmd, capture_output=True, text=True, timeout=600)
+        result = subprocess.run(features_cmd, capture_output=True, text=True, timeout=3600)
     except subprocess.TimeoutExpired:
-        raise RuntimeError(f"Command timed out after 600s: {features_cmd}")
+        print(f"[select_best_msa] Feature extraction timed out after 3600s, skipping DL selection")
+        shutil.rmtree(features_input_dir, ignore_errors=True)
+        return False
     if result.stdout and config.verbose:
         print(result.stdout)
     if result.returncode != 0:
@@ -1388,9 +1390,12 @@ def select_best_msa(config):
     if config.verbose:
         print(f"[select_best_msa] Running: {' '.join(predict_cmd)}")
     try:
-        result = subprocess.run(predict_cmd, capture_output=True, text=True, timeout=600)
+        result = subprocess.run(predict_cmd, capture_output=True, text=True, timeout=3600)
     except subprocess.TimeoutExpired:
-        raise RuntimeError(f"Command timed out after 600s: {predict_cmd}")
+        print(f"[select_best_msa] Prediction script timed out after 3600s, skipping DL selection")
+        shutil.rmtree(features_input_dir, ignore_errors=True)
+        _progress_done()
+        return False
     if config.verbose:
         print(result.stdout)
     if result.returncode != 0:
