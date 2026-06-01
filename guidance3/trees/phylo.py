@@ -544,12 +544,11 @@ def Bootstrap_Trees(config):
     if config.Seq_Type in ["AminoAcids", "Codons"]:
         if msa_depth > 150:  # use JC for distance estimation
             cmd = (f"{config.iqtree_prog} -s {config.WorkingDir}{config.Alignment_File} -m JTT -bo {config.Bootstraps} -nt {config.proc_num} -v -st AA -n 0 -fast")
-            print(cmd + "\n")
-
         else:  # use JTT for distance estimation
             cmd = (
                 f"{config.iqtree_prog} -s {config.WorkingDir}{config.Alignment_File} -m JTT -bo {config.Bootstraps} -st AA -n 0 -fast")
-            print(cmd + "\n")
+    if config.verbose:
+        print(cmd + "\n")
 
     elif config.Seq_Type == "Nucleotides":
         if msa_depth > 150:  # use JC for distance estimation

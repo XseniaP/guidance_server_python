@@ -1248,7 +1248,7 @@ def select_best_msa(config):
     if not os.path.isdir(alt_msas_dir):
         print("[select_best_msa] Alternative MSA directory not found, skipping")
         _progress_done()
-        return
+        return False
 
     # Build temp input structure: features_input/all_msas/
     # The executable requires a parent dir containing one subfolder with all MSA files.
@@ -1281,7 +1281,7 @@ def select_best_msa(config):
     else:
         print(f"[select_best_msa] Default MSA not found at {default_msa}, skipping best MSA selection")
         shutil.rmtree(features_input_dir, ignore_errors=True)
-        return
+        return False
 
     # Write config_features.json — parameters differ by sequence type
     is_nucleotide = (config.Seq_Type == "Nucleotides")
@@ -1352,7 +1352,7 @@ def select_best_msa(config):
     if result.returncode != 0:
         print(f"[select_best_msa] features_for_msas failed (rc={result.returncode}):\n{result.stderr}")
         shutil.rmtree(features_input_dir, ignore_errors=True)
-        return
+        return False
     elif result.stderr and config.verbose:
         print(f"[select_best_msa] features_for_msas stderr:\n{result.stderr}")
 
@@ -1360,7 +1360,7 @@ def select_best_msa(config):
     if not os.path.exists(features_file):
         print(f"[select_best_msa] Features file not found: {features_file}, skipping")
         shutil.rmtree(features_input_dir, ignore_errors=True)
-        return
+        return False
 
     # Add code1 column required by the prediction pipeline.
     # code1 == run_id for all rows — identifies the job group.
@@ -1397,21 +1397,21 @@ def select_best_msa(config):
         print(f"[select_best_msa] Prediction script failed (rc={result.returncode}):\n{result.stderr}")
         shutil.rmtree(features_input_dir, ignore_errors=True)
         _progress_done()
-        return
+        return False
 
     pred_file = os.path.join(pred_out_dir, "prediction_pretrained_0_mode1_dseq_from_true.csv")
     if not os.path.exists(pred_file):
         print(f"[select_best_msa] Predictions file not found: {pred_file}, skipping")
         shutil.rmtree(features_input_dir, ignore_errors=True)
         _progress_done()
-        return
+        return False
 
     preds = pd.read_csv(pred_file)
     if preds.empty or "predicted_score" not in preds.columns or "code" not in preds.columns:
         print("[select_best_msa] Predictions CSV missing expected columns, skipping")
         shutil.rmtree(features_input_dir, ignore_errors=True)
         _progress_done()
-        return
+        return False
 
     alt_preds = preds[
         (preds["code"] != TRUE_MSA_FILENAME) &
@@ -1421,7 +1421,7 @@ def select_best_msa(config):
         print("[select_best_msa] No alternative MSA predictions found, skipping")
         shutil.rmtree(features_input_dir, ignore_errors=True)
         _progress_done()
-        return
+        return False
 
     best_row = alt_preds.loc[alt_preds["predicted_score"].idxmin()]
     best_code = str(best_row["code"])
@@ -1432,7 +1432,7 @@ def select_best_msa(config):
         print(f"[select_best_msa] Best MSA file '{best_code}' not found in {all_msas_dir}, skipping")
         shutil.rmtree(features_input_dir, ignore_errors=True)
         _progress_done()
-        return
+        return False
 
     best_msa_dst = os.path.join(config.WorkingDir, f"{config.Output_Prefix}_BestMSA.fasta")
     shutil.copy(best_msa_src, best_msa_dst)
@@ -1442,3 +1442,4 @@ def select_best_msa(config):
 
     shutil.rmtree(features_input_dir, ignore_errors=True)
     _progress_done()
+    return True

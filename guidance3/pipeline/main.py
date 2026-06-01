@@ -78,10 +78,14 @@ def _run(config):
     remove_sequences_sp_and_z_score(config)
     make_jalview(config)
     create_tar_archives(config)
+    dl_ok = True
     if config.PROGRAM == "GUIDANCE3":
-        select_best_msa(config)
+        dl_ok = select_best_msa(config)
     flag_that_finished_ok(config)
-    print(f"[7/7] All steps completed successfully.")
+    if dl_ok:
+        print(f"[7/7] All steps completed successfully.")
+    else:
+        print(f"[7/7] Core steps completed successfully. DL model step was skipped or failed (see above).")
     if config.verbose:
         print(config)
     if config.isServer == 1:
