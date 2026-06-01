@@ -48,6 +48,7 @@ class RunConfig:
         self.GapPenDist = "UNIF"
         self.proc_num = 2
         self.disable_convergence = False
+        self.skip_dl = False
         self.userMSA_File = ""
         self.PROGRAM = "GUIDANCE3"
         self.Bootstraps = 100
@@ -70,6 +71,7 @@ class RunConfig:
             "  --inputType <seq|re_align|msa>      Input type. default=seq\n"
             "  --bootstraps <int>                  Number of bootstrap iterations. default=100\n"
             "  --disableConvergence                Disable convergence stopping criterion (run exact number of bootstraps)\n"
+            "  --skipDL                            Skip the deep learning best-MSA selection step\n"
             "  --proc_num <int>                    Number of parallel processors. default=2\n"
             "  --genCode <int>                     Genetic code table index (codon mode only). default=1\n"
             "      1=Nuclear Standard, 2=Mitochondria Vertebrate, 3=Mitochondria Yeast,\n"
@@ -144,6 +146,8 @@ class RunConfig:
                             help='Specify the number of bootstrap iterations. Default is 100.')
         parser.add_argument('--disableConvergence', dest='disable_convergence', action='store_true', default=False,
                             help='Disable convergence stopping criterion so the exact number of bootstraps is always run.')
+        parser.add_argument('--skipDL', dest='skip_dl', action='store_true', default=False,
+                            help='Skip the deep learning best-MSA selection step.')
         parser.add_argument('--genCode', type=int, dest='CodonTable', default=1,
                             choices=[1, 15, 6, 10, 2, 5, 3, 13, 9, 14, 4],
                             help='Specify the codon table. Default is 1 (Nuclear Standard).\n'
