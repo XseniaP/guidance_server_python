@@ -161,10 +161,10 @@ def run_hot_process_on_tree(config, epsilon, proc, RandomBranches,op_vals_arr_re
             if not getattr(config, 'disable_convergence', False) and countTrees >= 20:
                 # check the convergence only for every nth tree
                 if config.proc_num >= 2 or (config.proc_num == 1 and countTrees % 3 == 0):
+                    alt_msas = 0
                     try:
-                        # Serialize only the FS read: calculate_sp_scores_convergence reads
-                        # Scoring_Alignments_Dir while other processes are still copying into it.
-                        # add_scores_to_dict and check_convergence manage their own thread safety.
+                        # Serialize: calculate_sp_scores_convergence reads Scoring_Alignments_Dir
+                        # and updates shared incremental state while other processes may copy files.
                         with lock:
                             alt_msas = calculate_sp_scores_convergence(config, countTrees)
                         add_scores_to_dict(config, epsilon, countTrees, lock)
@@ -597,6 +597,10 @@ def run_guidance3(config):
     config.mean_res_pair_score = manager.list()
     config.mean_col_score = manager.list()
     config.count_convergence = manager.Value('i', 0)
+    config.incremental_scored_files = manager.list()
+    config.incremental_total_nalt    = manager.Value('d', 0.0)
+    config.incremental_total_raw_col = manager.Value('d', 0.0)
+    config.incremental_total_raw_rp  = manager.Value('d', 0.0)
     # this config.convergence value might be unnecessary at the end and can be removed
     config.convergence = config.Bootstraps * Num_of_Aln_from_HoT_per_Run
 

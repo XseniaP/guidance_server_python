@@ -1215,7 +1215,7 @@ def calculate_sp_scores_convergence(config, countTrees):
     elif config.PROGRAM == "GUIDANCE3":
         config.Output_Prefix = f"{config.dataset}.{config.MSA_Program}.Guidance2"
 
-    cmd = ""
+    # Determine reference MSA (codon case: translate to protein first)
     if config.userMSA_File != "" and config.Seq_Type == "Codons":
         config.Alignment_File_translated_from_user_codon_alignmet = f"{config.Alignment_File}.TranslatedProt"
         with open(config.OutLogFile, "a") as log_file:
@@ -1228,17 +1228,15 @@ def calculate_sp_scores_convergence(config, countTrees):
             "XCodonsFromALN.html", config
         )
         if ans[0] != "OK":
-            exit_on_error("user_error", ans, config)  # error
-        elif ans[1] != "":  # warning
-            if config.is_server == 1:  # server
+            exit_on_error("user_error", ans, config)
+        elif ans[1] != "":
+            if config.is_server == 1:
                 with open(config.output_page, "a") as output_file:
                     output_file.write(
                         f"<br><b><font color=\"red\" size4=>Warning:</b></font><font size=\"4\"> {ans[1]}</font>\n")
+            print(f"Warning: {ans[1]}\n")
+            with open(config.OutLogFile, "a") as log_file:
                 log_file.write(f"Warning: {ans[1]}\n")
-            else:
-                print(f"Warning: {ans[1]}\n")
-                with open(config.OutLogFile, "a") as log_file:
-                    log_file.write(f"Warning: {ans[1]}\n")
         if os.path.getsize(
                 os.path.join(f"{config.WorkingDir}",
                              f"{config.Alignment_File_translated_from_user_codon_alignmet}")) == 0 or not os.path.exists(
@@ -1246,26 +1244,87 @@ def calculate_sp_scores_convergence(config, countTrees):
                 f"{config.WorkingDir}", f"{config.Alignment_File_translated_from_user_codon_alignmet}")):
             exit_on_error("sys_error",
                           f"{config.WorkingDir}{config.Alignment_File_translated_from_user_codon_alignmet} does not exist/empty\n", config)
-        # cmd = f"{config.msa_set_score_prog}   {os.path.join(config.WorkingDir, config.Alignment_File_translated_from_user_codon_alignmet)}   {os.path.join(config.WorkingDir, config.Output_Prefix) + f'_tree_{countTrees}'}   -d {config.Scoring_Alignments_Dir}  >  {config.WorkingDir}{config.dataset}.{config.MSA_Program}.msa_set_score.std"
-        cmd = f"{config.msa_set_score_prog}   {os.path.join(config.WorkingDir, config.Alignment_File_translated_from_user_codon_alignmet)}   {os.path.join(config.WorkingDir, config.Output_Prefix) + f'_tree_{countTrees}'}   -d {config.Scoring_Alignments_Dir}"
+        ref_msa = os.path.join(config.WorkingDir, config.Alignment_File_translated_from_user_codon_alignmet)
     else:
-        cmd = f"{config.msa_set_score_prog}   {os.path.join(config.WorkingDir, config.Alignment_File)}   {os.path.join(config.WorkingDir, config.Output_Prefix + f'_tree_{countTrees}')}   -d {config.Scoring_Alignments_Dir}"
-    with open(config.OutLogFile, "a") as log_file:
-        log_file.write(f"calculating SP scores for tree # {countTrees}: {cmd}\n")
-        if config.verbose:
-            print(f"calculating SP scores for tree # {countTrees}: {cmd}\n")
+        ref_msa = os.path.join(config.WorkingDir, config.Alignment_File)
+
     if os.path.exists(f"{config.Scoring_Alignments_Dir}/.DS_Store"):
         os.remove(f"{config.Scoring_Alignments_Dir}/.DS_Store")
+
+    # --- Incremental scoring: score only alt MSAs not yet processed ---
+    all_fasta = sorted(f for f in os.listdir(config.Scoring_Alignments_Dir) if f.endswith(".fasta"))
+    already_scored = set(config.incremental_scored_files)
+    new_files = [f for f in all_fasta if f not in already_scored]
+
+    if not new_files:
+        with open(config.OutLogFile, "a") as log_file:
+            log_file.write(f"[incremental] no new alt MSAs at tree {countTrees}, skipping msa_set_score\n")
+        return len(all_fasta)
+
+    # Write file list and run msa_set_score on the batch only.
+    # Use _tree_{countTrees}_batch prefix so the glob in alignment.py cleans up the output.
+    batch_prefix = os.path.join(config.WorkingDir, f"{config.Output_Prefix}_tree_{countTrees}_batch")
+    file_list_path = f"{batch_prefix}.list"
+    with open(file_list_path, "w") as fl:
+        for fname in new_files:
+            fl.write(os.path.join(config.Scoring_Alignments_Dir, fname) + "\n")
+
+    cmd = f"{config.msa_set_score_prog}   {ref_msa}   {batch_prefix}   -f {file_list_path}"
+    with open(config.OutLogFile, "a") as log_file:
+        log_file.write(f"[incremental] SP scores tree #{countTrees} ({len(new_files)} new MSAs): {cmd}\n")
+    if config.verbose:
+        print(f"[incremental] SP score check tree #{countTrees}: {len(new_files)} new MSAs\n")
+
     try:
         subprocess.run(cmd, shell=True, timeout=600)
     except subprocess.TimeoutExpired:
-        raise RuntimeError(f"Command timed out after 600s: {cmd}")
-    alt_msas = len(os.listdir(config.Scoring_Alignments_Dir))
-    if not os.path.exists(f"{config.WorkingDir}{config.Output_Prefix + f'_tree_{countTrees}'}_res_pair_res.scr") or os.path.getsize(
-            f"{config.WorkingDir}{config.Output_Prefix + f'_tree_{countTrees}'}_res_pair_res.scr") == 0:
-        exit_on_error("sys_error",
-                      f"{config.WorkingDir}{config.Output_Prefix + f'_tree_{countTrees}'}_res_pair_res.scr does not exist/empty\n",
-                      config)
+        if os.path.exists(file_list_path):
+            os.unlink(file_list_path)
+        raise RuntimeError(f"msa_set_score timed out after 600s: {cmd}")
+
+    if os.path.exists(file_list_path):
+        os.unlink(file_list_path)
+
+    # Parse mean scores and alt count from the batch _msa.scr output.
+    # C++ format: "#N_ALT <n>" on its own line, then "#MEAN_RES_PAIR_SCORE <rp>  #MEAN_COL_SCORE <col>"
+    batch_msa_scr = f"{batch_prefix}_msa.scr"
+    batch_col, batch_rp, batch_nalt = None, None, len(new_files)
+    if os.path.exists(batch_msa_scr):
+        with open(batch_msa_scr) as f:
+            for line in f:
+                if "#N_ALT" in line and "#MEAN" not in line:
+                    try:
+                        batch_nalt = int(line.strip().split()[1])
+                    except (IndexError, ValueError):
+                        pass
+                elif "#MEAN_RES_PAIR_SCORE" in line:
+                    parts = line.strip().split()
+                    try:
+                        batch_rp = float(parts[1])
+                        batch_col = float(parts[3])
+                    except (IndexError, ValueError):
+                        pass
+                    break
+
+    if batch_col is None or batch_rp is None:
+        raise RuntimeError(f"Could not parse batch scores from {batch_msa_scr}")
+
+    # Accumulate weighted totals (caller holds the lock, so these updates are serialized)
+    config.incremental_total_nalt.value    += batch_nalt
+    config.incremental_total_raw_col.value += batch_col * batch_nalt
+    config.incremental_total_raw_rp.value  += batch_rp  * batch_nalt
+    config.incremental_scored_files.extend(new_files)
+
+    total_nalt   = config.incremental_total_nalt.value
+    combined_col = config.incremental_total_raw_col.value / total_nalt
+    combined_rp  = config.incremental_total_raw_rp.value  / total_nalt
+
+    # Write combined scores in the format add_scores_to_dict expects:
+    # "#MEAN_RES_PAIR_SCORE <rp> #MEAN_COL_SCORE <col>" — split()[1]=rp, split()[3]=col
+    combined_msa_scr = os.path.join(config.WorkingDir, f"{config.Output_Prefix}_tree_{countTrees}_msa.scr")
+    with open(combined_msa_scr, "w") as f:
+        f.write(f"#MEAN_RES_PAIR_SCORE {combined_rp} #MEAN_COL_SCORE {combined_col} #N_ALT {int(total_nalt)}\n")
+
     if config.PROGRAM == "HoT":
         with open(f"{os.path.join(config.WorkingDir, config.Alignment_File)}", "r") as orig_align, open(
                 f"{os.path.join(config.WorkingDir, config.Alignment_File)}.NEW", "w") as new_align:
@@ -1277,13 +1336,12 @@ def calculate_sp_scores_convergence(config, countTrees):
                         new_align.write(">1\n")
                 else:
                     new_align.write(line)
-                    # new_align.write(line.upper())
         os.rename(f"{os.path.join(config.WorkingDir, config.Alignment_File)}",
                   f"{config.WorkingDir}{config.Alignment_File}.ORIG")
         os.rename(f"{os.path.join(config.WorkingDir, config.Alignment_File)}.NEW",
                   f"{config.WorkingDir}{config.Alignment_File}")
 
-    return alt_msas
+    return len(all_fasta)
 
 #@timeit
 def add_scores_to_dict(config, epsilon, countTrees, lock):

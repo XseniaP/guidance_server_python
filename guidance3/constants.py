@@ -129,7 +129,8 @@ DL_MODEL_NUC_SCALER_PATH = os.path.join(_PACKAGE_DIR, 'dl_model', 'input', 'nucl
 if platform.system() == 'Darwin':
     # Force arm64 slice — the webserver may run under Rosetta (x86_64), but numpy/TF are arm64-only.
     # Use sys.executable so venv/conda environments are respected.
-    DL_MODEL_PYTHON = ['arch', '-arm64', sys.executable]
+    # DL_MODEL_PYTHON = ['arch', '-arm64', sys.executable]
+    DL_MODEL_PYTHON = ['arch', '-arm64', '/Library/Frameworks/Python.framework/Versions/3.10/bin/python3']
 else:
     DL_MODEL_PYTHON = os.environ.get('GUIDANCE_DL_PYTHON', sys.executable).split()
 
