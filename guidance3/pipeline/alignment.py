@@ -182,14 +182,13 @@ def run_hot_process_on_tree(config, epsilon, proc, RandomBranches,op_vals_arr_re
             if convergence == 1:
                 with lock:
                     config.count_convergence.value += 1
-                # With a single process there is no parallelism to coordinate,
-                # so break on the first detection. With multiple processes, require
-                # at least 2 to independently agree before stopping any worker.
-                convergence_threshold = 1 if config.proc_num == 1 else 2
-                if config.count_convergence.value >= convergence_threshold:
-                    if config.verbose:
-                        print(f'.done {proc}', flush=True)
-                    break
+            # The shared mean_col_score list aggregates all processes' batches, so
+            # 3 consecutive converged entries already represent a joint signal.
+            # Any single detection is sufficient — threshold is always 1.
+            if config.count_convergence.value >= 1:
+                if config.verbose:
+                    print(f'.done {proc}', flush=True)
+                break
 
         except Exception as e:
             log_file.write(f"[ERROR] proc {proc} tree {countTrees} failed, skipping: {e}\n")
