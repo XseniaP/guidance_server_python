@@ -699,9 +699,9 @@ class GuidanceState:
                     job_logger.info (f'validate_Seqs({var["WorkingDir"]},{var["SeqsFile"]},{form["Seq_Type"]}, False):\n')
                     ans = InputValidator.validate_Seqs( var['WorkingDir'], var['SeqsFile'] , form['Seq_Type'] , False)
                     var['LongestSeq'] = InputValidator.get_max_seq_length(os.path.join( var['WorkingDir'], var['SeqsFile']))
-                else: 
+                else:
                     job_logger.info (f'validate_Seqs({var["WorkingDir"]},{var["SeqsFile_Codons"]},{form["Seq_Type"]},False ):\n')
-                    ans = InputValidator.validate_Seqs( var["WorkingDir"], var['SeqsFile_Codons'] , form['Seq_Type'] , False)
+                    ans = InputValidator.validate_Seqs( var["WorkingDir"], var['SeqsFile_Codons'] , form['Seq_Type'] , False, form.get('CodonTable', 1))
                     var['LongestSeq'] = InputValidator.get_max_seq_length(os.path.join( var["WorkingDir"], var['SeqsFile_Codons']))
                     
                 job_logger.info(f'return: {join_list(ans)}\n')

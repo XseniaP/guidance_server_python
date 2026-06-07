@@ -392,7 +392,7 @@ class RunConfig:
                     ans = validate_seqs(self.WorkingDir, self.SeqsFile, self.Seq_Type, "No", "")
                 else:
                     log_file.write(f"Guidance::validate_Seqs({self.WorkingDir}{self.SeqsFile_Codons}, {self.Seq_Type}, No): \n")
-                    ans = validate_seqs(self.WorkingDir, self.SeqsFile_Codons, self.Seq_Type, "No","")
+                    ans = validate_seqs(self.WorkingDir, self.SeqsFile_Codons, self.Seq_Type, "No", self.CodonTable)
 
                 if ans[0] == "sys_error":
                     exit_on_error('sys_error', ans[1], self)

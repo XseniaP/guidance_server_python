@@ -345,6 +345,10 @@ def validate_seqs(working_dir, input_file, seq_type, msa, codon_table):
                             if '-' in seq:
                                 # return f"Sequence named '{seq_name}' contains a gap character '-' which is illegal when sequences are submitted to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option<br>"
                                 errors += f"A sequence named '{seq_name}' contains a gap character '-', which is illegal when sequences are submitted to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option\n"
+                            if seq_type == "Codons" and codon_table:
+                                ans_codon = validate_seq_in_codon_align(seq, seq_name, codon_table)
+                                if ans_codon != "OK":
+                                    errors += ans_codon
 
                         if seq.endswith('*'):
                             warning = "Star character (*) were removed from the end of the sequences\n"
@@ -394,6 +398,10 @@ def validate_seqs(working_dir, input_file, seq_type, msa, codon_table):
                     if '-' in seq:
                         # return f"Sequence named '{seq_name}' contains a gap character '-' which is illegal when sequences are submitted to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option<br>"
                         errors += f"A sequence named '{seq_name}' contains a gap character '-', which is illegal when sequences are submitted to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option\n"
+                    if seq_type == "Codons" and codon_table:
+                        ans_codon = validate_seq_in_codon_align(seq, seq_name, codon_table)
+                        if ans_codon != "OK":
+                            errors += ans_codon
 
                 ans = validate_single_seq(seq_name, seq, seq_type)
                 if ans[0] == "OK":
