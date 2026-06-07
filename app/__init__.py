@@ -47,6 +47,80 @@ app.config['RECAPTCHA_SECRET_KEY'] = os.getenv('RECAPTCHA_SECRET_KEY')
 recaptcha = ReCaptcha(app) # Create a ReCaptcha object by passing in 'app' as parameter
 process_id2update = []
 
+# DL prediction — models loaded lazily on first request, then cached
+_dl_models = {}
+_dl_scalers = {}
+_dl_lock = __import__('threading').Lock()
+
+def _get_dl_model_and_scaler(is_nucleotide: bool):
+    import sys
+    _project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if _project_root not in sys.path:
+        sys.path.insert(0, _project_root)
+
+    from guidance3.constants import (
+        DL_MODEL_PATH, DL_MODEL_SCALER_PATH,
+        DL_MODEL_NUC_PATH, DL_MODEL_NUC_SCALER_PATH,
+    )
+    from guidance3.dl_model.pipeline.pretrained_predictor import _load_model, _load_scaler
+
+    key = "nuc" if is_nucleotide else "aa"
+    if key not in _dl_models:
+        with _dl_lock:
+            if key not in _dl_models:
+                model_path  = DL_MODEL_NUC_PATH  if is_nucleotide else DL_MODEL_PATH
+                scaler_path = DL_MODEL_NUC_SCALER_PATH if is_nucleotide else DL_MODEL_SCALER_PATH
+                logger.info(f"[dl_predict] Loading {key} model...")
+                _dl_models[key]  = _load_model(model_path)
+                _dl_scalers[key] = _load_scaler(scaler_path, "rank")
+                logger.info(f"[dl_predict] {key} model ready.")
+    return _dl_models[key], _dl_scalers[key]
+
+
+@app.route(PREFIX + '/dl_predict', methods=['POST'])
+def dl_predict():
+    import sys
+    _project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if _project_root not in sys.path:
+        sys.path.insert(0, _project_root)
+
+    from guidance3.dl_model.config.config import DataConfig, FeatureConfig
+    from guidance3.dl_model.config.constants import CODE_COL
+    from guidance3.dl_model.data_processing.io import read_features
+    from guidance3.dl_model.data_processing.preprocess import DatasetPreprocessor
+    from guidance3.dl_model.data_processing.features_selector import FeatureSelector
+
+    data = request.get_json(force=True)
+    if not data or "features_file" not in data:
+        return jsonify({"error": "missing 'features_file' field"}), 400
+
+    features_file = data["features_file"]
+    is_nucleotide = bool(data.get("is_nucleotide", False))
+
+    if not os.path.exists(features_file):
+        return jsonify({"error": f"features_file not found: {features_file}"}), 400
+
+    try:
+        model, scaler = _get_dl_model_and_scaler(is_nucleotide)
+
+        data_cfg = DataConfig(features_file=features_file, true_score_name="dseq_from_true",
+                              test_size=0.0, predict_mode=True)
+        feat_cfg = FeatureConfig(mode=1, remove_correlated_features=False, corr_threshold=0.90,
+                                 scaler_type_features="rank", scaler_type_labels="rank")
+
+        df = read_features(features_file)
+        df = DatasetPreprocessor(data_cfg).preprocess(df)
+        FeatureSelector(feat_cfg, target_col="dseq_from_true").select(df)
+        X_scaled = scaler.transform(df).astype("float64")
+        y_pred = model.predict(X_scaled, verbose=0).reshape(-1).astype("float64")
+
+        predictions = [{"code": code, "predicted_score": float(score)}
+                       for code, score in zip(df[CODE_COL].tolist(), y_pred)]
+        return jsonify({"predictions": predictions})
+    except Exception as e:
+        logger.error(f"[dl_predict] error: {e}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route(PREFIX + '/ConcatMSAs/<process_id>', methods=['GET', 'POST'])
 def ConcatMSAs(process_id):
