@@ -75,6 +75,10 @@ class InputValidator:
                                             if re.search('[-]', seq):
                                                 # return f"Seq: named '{seq_name}' contain a gap character '-' which is illegal when sequences are submited to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option<br>"
                                                 errors += f"Seq: named '{seq_name}' contain a gap character '-' which is illegal when sequences are submited to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option<br>"
+                                            if seqType == "Codons" and codonTable:
+                                                ans_codon = self.validate_seq_in_CodonAlign(seq, seq_name, codonTable)
+                                                if ans_codon != 'OK':
+                                                    errors += ans_codon
                                         # check for star characters
                                         if re.search('\*+', seq):
                                             seq = re.sub('\*+', '', seq)
@@ -127,6 +131,10 @@ class InputValidator:
                                 if m:
                                     seq = re.sub (m.group(1), '', seq)
                                     warning = "Gap characters (-) were removed from the end of the sequences"
+                                if seqType == "Codons" and codonTable:
+                                    ans_codon = self.validate_seq_in_CodonAlign(seq, seq_name, codonTable)
+                                    if ans_codon != 'OK':
+                                        errors += ans_codon
                             if re.search('\*+', seq):
                                 seq = re.sub ('\*+', '', seq)
                                 warning = "Star character (*) were removed from the end of the sequences"
