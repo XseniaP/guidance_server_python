@@ -18,7 +18,7 @@ class FeatureSelector:
         self.target_col = target_col
 
     def select(self, df: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]:
-        y = df[self.target_col]
+        y = df[self.target_col] if self.target_col in df.columns else pd.Series(dtype=float)
 
         if self.cfg.mode == 1:
             drop = [c for c in self.DROP_COLS if c in df.columns]

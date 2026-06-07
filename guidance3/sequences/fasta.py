@@ -1220,6 +1220,88 @@ def create_tar_archives(config):
         shutil.rmtree(os.path.join(config.WorkingDir, config.HoT_MSAs_Dir), ignore_errors=True)
 
 
+def _run_dl_prediction(features_file, is_nucleotide, predict_cmd, pred_out_dir,
+                       features_input_dir, config):
+    """Run DL prediction via HTTP service (if available) or subprocess fallback.
+
+    Returns a DataFrame with 'code' and 'predicted_score' columns, or None on failure.
+    """
+    import json as _json
+    import urllib.request
+    import urllib.error
+    import pandas as pd
+
+    service_url = os.environ.get("GUIDANCE_DL_SERVICE_URL", "").rstrip("/")
+
+    if service_url:
+        if config.verbose:
+            print(f"[select_best_msa] Trying DL service at {service_url}/predict ...")
+        try:
+            payload = _json.dumps({"features_file": features_file,
+                                   "is_nucleotide": is_nucleotide}).encode()
+            req = urllib.request.Request(
+                f"{service_url}/guidance/dl_predict",
+                data=payload,
+                headers={"Content-Type": "application/json"},
+            )
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                body = _json.loads(resp.read())
+            preds_list = body.get("predictions", [])
+            if preds_list:
+                if config.verbose:
+                    print(f"[select_best_msa] DL service returned {len(preds_list)} predictions")
+                preds_df = pd.DataFrame(preds_list)
+                os.makedirs(pred_out_dir, exist_ok=True)
+                pred_file = os.path.join(pred_out_dir, "prediction_pretrained_0_mode1_dseq_from_true.csv")
+                preds_df.to_csv(pred_file, index=False)
+                return preds_df
+            err = body.get("error", "empty predictions")
+            print(f"[select_best_msa] DL service returned no predictions ({err}), falling back to subprocess")
+        except urllib.error.URLError as e:
+            reason = getattr(e, 'reason', e)
+            if 'timed out' in str(reason).lower():
+                print(f"[select_best_msa] DL service timed out, falling back to subprocess")
+            else:
+                print(f"[select_best_msa] DL service unavailable ({reason}), falling back to subprocess")
+        except Exception as e:
+            print(f"[select_best_msa] DL service error ({e}), falling back to subprocess")
+
+    # Subprocess fallback
+    if config.verbose:
+        print(f"[select_best_msa] Running: {' '.join(predict_cmd)}")
+    _project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    _dl_env = {**os.environ,
+               'PYTHONPATH': _project_root + (os.pathsep + os.environ['PYTHONPATH']
+                                              if os.environ.get('PYTHONPATH') else '')}
+    try:
+        result = subprocess.run(predict_cmd, capture_output=True, text=True,
+                                timeout=3600, env=_dl_env)
+    except subprocess.TimeoutExpired:
+        print(f"[select_best_msa] Prediction script timed out after 3600s, skipping DL selection")
+        shutil.rmtree(features_input_dir, ignore_errors=True)
+        return None
+    if config.verbose:
+        print(result.stdout)
+    if result.returncode != 0:
+        print(f"[select_best_msa] Prediction script failed (rc={result.returncode}):\n{result.stderr}")
+        shutil.rmtree(features_input_dir, ignore_errors=True)
+        return None
+
+    pred_file = os.path.join(pred_out_dir, "prediction_pretrained_0_mode1_dseq_from_true.csv")
+    if not os.path.exists(pred_file):
+        print(f"[select_best_msa] Predictions file not found: {pred_file}, skipping")
+        shutil.rmtree(features_input_dir, ignore_errors=True)
+        return None
+
+    preds = pd.read_csv(pred_file)
+    if preds.empty or "predicted_score" not in preds.columns or "code" not in preds.columns:
+        print("[select_best_msa] Predictions CSV missing expected columns, skipping")
+        shutil.rmtree(features_input_dir, ignore_errors=True)
+        return None
+
+    return preds
+
+
 def select_best_msa(config):
     """Extract features from all alternative MSAs and use the pretrained DL model to select the best one."""
     import pandas as pd
@@ -1232,6 +1314,7 @@ def select_best_msa(config):
         DL_MODEL_NUC_PATH,
         DL_MODEL_NUC_SCALER_PATH,
         DL_MODEL_PYTHON,
+        BIN_DIR,
     )
 
     TRUE_MSA_FILENAME = "MSA_TRUE.fas"
@@ -1339,7 +1422,9 @@ def select_best_msa(config):
         json.dump(features_cfg, f, indent=4)
 
     # Run feature extraction
-    print(f"[5/7] Extracting features for {len(models_list)} alternative MSAs...")
+    n_alt_msas = sum(1 for f in os.listdir(all_msas_dir)
+                     if f.endswith(".fasta") and f != TRUE_MSA_FILENAME)
+    print(f"[5/7] Extracting features for {n_alt_msas} alternative MSAs...")
     features_cmd = [FEATURES_EXTRACTION_PROG, config_path]
     if config.verbose:
         print(f"[select_best_msa] Running: {' '.join(features_cmd)}")
@@ -1370,6 +1455,14 @@ def select_best_msa(config):
     features_df = pd.read_csv(features_file)
     features_df.insert(1, "code1", run_id)
     features_df.dropna(axis=1, how="all", inplace=True)
+    # Drop benchmark-only columns (distance from true MSA — meaningless in production).
+    benchmark_cols = [c for c in ["ssp_from_true", "dseq_from_true", "dpos_from_true"]
+                      if c in features_df.columns]
+    if benchmark_cols:
+        features_df.drop(columns=benchmark_cols, inplace=True)
+    # Drop the aggregate "all_msas" row produced by the C++ extractor.
+    first_col = features_df.columns[0]
+    features_df = features_df[features_df[first_col] != "all_msas"]
     features_df.to_csv(features_file, index=False)
 
     # Run DL model prediction
@@ -1387,34 +1480,11 @@ def select_best_msa(config):
         "--no-metrics",
     ]
     print(f"[6/7] Running DL model to select best MSA...")
-    if config.verbose:
-        print(f"[select_best_msa] Running: {' '.join(predict_cmd)}")
-    try:
-        result = subprocess.run(predict_cmd, capture_output=True, text=True, timeout=3600)
-    except subprocess.TimeoutExpired:
-        print(f"[select_best_msa] Prediction script timed out after 3600s, skipping DL selection")
-        shutil.rmtree(features_input_dir, ignore_errors=True)
-        _progress_done()
-        return False
-    if config.verbose:
-        print(result.stdout)
-    if result.returncode != 0:
-        print(f"[select_best_msa] Prediction script failed (rc={result.returncode}):\n{result.stderr}")
-        shutil.rmtree(features_input_dir, ignore_errors=True)
-        _progress_done()
-        return False
-
-    pred_file = os.path.join(pred_out_dir, "prediction_pretrained_0_mode1_dseq_from_true.csv")
-    if not os.path.exists(pred_file):
-        print(f"[select_best_msa] Predictions file not found: {pred_file}, skipping")
-        shutil.rmtree(features_input_dir, ignore_errors=True)
-        _progress_done()
-        return False
-
-    preds = pd.read_csv(pred_file)
-    if preds.empty or "predicted_score" not in preds.columns or "code" not in preds.columns:
-        print("[select_best_msa] Predictions CSV missing expected columns, skipping")
-        shutil.rmtree(features_input_dir, ignore_errors=True)
+    preds = _run_dl_prediction(
+        features_file, is_nucleotide, predict_cmd, pred_out_dir,
+        features_input_dir, config,
+    )
+    if preds is None:
         _progress_done()
         return False
 

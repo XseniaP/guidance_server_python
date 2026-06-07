@@ -45,12 +45,16 @@ def run_hot_internal(config, op_vals_arr_ref, ep_vals_arr_ref, countTrees, tree_
         print(HOT_COS_GUIDANCE2_cmd)
 
     cos_std_path = os.path.join(config.WorkingDir, "COS.std")
+    _hot_env = {**os.environ,
+                'PYTHONPATH': CONST.BIN_DIR + (os.pathsep + os.environ['PYTHONPATH']
+                                               if os.environ.get('PYTHONPATH') else '')}
     with open(cos_std_path, "a") as cos_std:
         try:
             result = subprocess.run(
                 HOT_COS_GUIDANCE2_cmd,
                 shell=True,
                 cwd=config.WorkingDir,
+                env=_hot_env,
                 stdout=cos_std,
                 stderr=cos_std,
                 timeout=7200,
