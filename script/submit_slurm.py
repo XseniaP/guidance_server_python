@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 
 import requests
+import os
 from os.path import normpath, basename
 
 current_user = "guidance"
-api_key = "qRod8IvPZi7vNpEgip01m3bqSQTtaOi1zuVUuIfXoBjIvIS8FpHpSzb0d9hqxNFOPGU"
+api_key = os.environ.get("SLURM_API_KEY")
 
 # Job submission endpoint
 job_submit_url = "https://saw.tau.ac.il/slurmapi/job/submit/"
