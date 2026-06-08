@@ -28,13 +28,14 @@ USER_FILE_NAME = '' # not used by guidance
 MAX_NUMBER_PROCESS = 10
 TIME_OF_STREAMING_UPDATE_REQUEST_BEFORE_DELETING_IT_SEC = 1200
 
-app = Flask(__name__, static_url_path='/guidance/static')
+app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 
 # Ksenia
-# app.config['APPLICATION_ROOT'] = '/'
-app.config['APPLICATION_ROOT'] = '/guidance'
-PREFIX = "/guidance"
+app.config['APPLICATION_ROOT'] = '/'
+PREFIX = ""
+#app.config['APPLICATION_ROOT'] = '/guidance'
+#PREFIX = "/guidance"
 # Ksenia
 
 # all keys should be located in file .env due to security considerations
@@ -121,7 +122,6 @@ def dl_predict():
         logger.error(f"[dl_predict] error: {e}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
-
 @app.route(PREFIX + '/ConcatMSAs/<process_id>', methods=['GET', 'POST'])
 def ConcatMSAs(process_id):
 
@@ -176,7 +176,7 @@ def mask(process_id):
         except subprocess.TimeoutExpired:
             raise RuntimeError(f"Command timed out after 300s: {cmd}")
         return redirect(url_for('results', _anchor='masks', process_id = process_id))
-        
+
 @app.route(PREFIX + '/update_html_ext/<process_id>')
 def update_html_ext(process_id):
 
@@ -234,6 +234,7 @@ def process_state(process_id):
         logger.info (log_msg)
         if job_logger:
             job_logger.info(log_msg)
+        
         kwargs = {
             "var": guidance_state.var if guidance_state else {},
         }
@@ -435,7 +436,7 @@ def results(process_id):
         if m:
             if m.group(1) not in super_msa_list:
                 super_msa_list.append(m.group(1))
-
+    
     # best MSA selected by the pretrained DL model
     best_msa_file = ''
     dataset = guidance_state.var.get('dataset', 'MSA')
@@ -443,9 +444,7 @@ def results(process_id):
     candidate_best_msa = f"{dataset}.{msa_program}.Guidance2_BestMSA.fasta"
     if os.path.exists(os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id, candidate_best_msa)):
         best_msa_file = candidate_best_msa
-
     sleep(3)
-
     errors_file = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id, 'errors.txt')
     kwargs = {
         "reload_interval": CONSTS.RELOAD_INTERVAL,
@@ -460,12 +459,9 @@ def results(process_id):
         "super_msa_list": super_msa_list,
         "best_msa_file": best_msa_file,
         "errors_file_exists": os.path.exists(errors_file),
-        "admin_email": CONSTS.ADMIN_EMAIL,
+        "admin_email": CONSTS.ADMIN_EMAIL,                                       
     }
-
-    #
-    return render_template('output.html', **kwargs) #TODO - testing removing cache
-
+    return render_template('output.html', **kwargs)
     # response = make_response(render_template('output.html', **kwargs))
     # response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
     # response.headers['Pragma'] = 'no-cache'
@@ -509,10 +505,14 @@ def show_log_file(show_file):
 @app.route(PREFIX + '/testpost', methods=['GET', 'POST'])
 def testpost():
     if request.method == 'POST':
-    	return render_template('posted.html')
+        return render_template('posted.html')
     else:
-    	return render_template('testpost.html')
-    	
+        return render_template('testpost.html', txt='aaa')
+
+@app.route(PREFIX + '/posted', methods=['GET', 'POST'])	
+def posted():
+    return render_template('posted.html',msg="testing")
+
 @app.route(PREFIX + '/error/<error_type>')
 def error(error_type):
     # checking if error_type exists in error enum
@@ -529,11 +529,11 @@ def error(error_type):
 @app.route(PREFIX + '/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
-    	
+	
         new_process_id = get_new_process_id() #manager.get_new_process_id() # JS commented out
         job_logger = None
-        logger.info (f'new_process_id = {new_process_id}')
-        
+        logger.info (f'new_process_id = {new_process_id}')   
+
         # add to daily runs
         #daily_page = os.path.join( CONSTS.WEBSERVER_LOGS_DIR, 'daily_runs', new_process_id)
         #open(daily_page, 'a').close()
@@ -551,11 +551,11 @@ def home():
             if 'no_captcha' not in request.form.keys(): 
                 if not recaptcha.verify():
                     raise Exception ("Run failed to pass I'm not a robot test", "user")
-                
+            
             # create Job Manager instance
             guidance_state = GuidanceState(jobId = new_process_id, form = request.form, files = request.files)
             job_logger = get_job_logger(new_process_id)
-                
+
             # upload files
             guidance_state.upload_files()
             msg = guidance_state.update_state(state = State.Init)
@@ -563,6 +563,7 @@ def home():
                 warning_messages = warning_messages + msg
             
             # validate input
+            job_logger.info(f'validating data')
             status, msg = guidance_state.validateInput()
             job_logger.info(f'validated data, status = {status}')
             # KSENIA added **kwargs
@@ -586,8 +587,8 @@ def home():
                 kwargs = {
                     "var": guidance_state.var,
                 }
-                render_template('error_page.html', error_text=msg, **kwargs)  # change
-                raise Exception(status, "system")
+                render_template('error_page.html', error_text=msg, **kwargs)          
+                raise Exception (status, "system")
             
             #return render_template('posted.html', msg = 'stored')
             
@@ -642,9 +643,9 @@ def home():
         if 'norun' not in request.form['JOB_TITLE']:
             #man_results = manager.add_guidance_process(new_process_id, email_address, request.form['JOB_TITLE'])
             working_dir = os.path.join ( CONSTS.WEBSERVER_RESULTS_DIR, new_process_id)
-            returnVal = GuidanceJobSubmitter.submit_job(working_dir, email_address)
+            returnVal = GuidanceJobSubmitter.submit_job(working_dir, email_address, 'daily_test' in request.form['JOB_TITLE'])
             if returnVal == 0:
-            	return            
+                return            
             man_results = True
         else:
             man_results = False
@@ -671,7 +672,7 @@ def home():
         return redirect(url_for('process_state', process_id=new_process_id))
         
     else:
-        return render_template('home.html', FASTA_txt='') # JS daily_test = 'yes'
+        return render_template('home.html', FASTA_txt='', recaptcha_site_key=app.config['RECAPTCHA_SITE_KEY']) # JS daily_test = 'yes'
 
 @app.route(PREFIX + '/rerun/<process_id>/<seqFile>', methods=['GET'])
 def rerun( process_id, seqFile):
@@ -780,7 +781,11 @@ def page_not_found(e):
 @app.route(PREFIX + "/about")
 def about():
     return render_template('about.html')
-    
+
+@app.route(PREFIX + "/home_captcha")
+def home_captcha():
+    return render_template('home_captcha.html', recaptcha_site_key=app.config['RECAPTCHA_SITE_KEY'])
+
 @app.route(PREFIX + '/run/<int:index>', methods=['GET', 'POST'])
 def run(index):
     
@@ -951,5 +956,6 @@ def daily_test():
 if __name__ == "__main__":
     # to see in the browser use http://127.0.0.1:5000/guidance/
     # app.run(debug=True)
-    app.config['APPLICATION_ROOT'] = '/guidance'  # Ksenia
+    # app.config['APPLICATION_ROOT'] = '/guidance'  # Ksenia
+    app.config['APPLICATION_ROOT'] = '/'
     app.run(debug=True, port=3000)     # Ksenia

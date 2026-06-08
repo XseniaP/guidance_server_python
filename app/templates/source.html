@@ -20,40 +20,31 @@
             <!--    1. <a href="#download">Downloading and compiling GUIDANCE.</a><br>-->
             <!--    2. <a href="#run">Running GUIDANCE<br></a><br>-->
 
-            <h1 class="overview-headline"><br>Downloading GUIDANCE</h1><br>
+            <h1 class="overview-headline"><br>Downloading and compiling GUIDANCE</h1><br>
 
-            <h2><b>1. GUIDANCE3 (current release)</b></h2><br>
+            <p class="overview-text"> The following instructions should work right out of the box for
+                UNIX-like systems. Mac should also work in principle, but is not yet
+                supported. Windows will require some additional work, such as setting up a cygwin environment.<br></p>
+            <br>
 
-            <ul>
-                <dl class="row" style="margin-left: 1px">
-                    <br>
-                    <dt class="col-sm-4">
-                        <a class="d-flex" style="text-decoration-line: none"
-                           href="https://github.com/XseniaP/guidance_server_python" target="_blank">
-                            <span style="color: limegreen; font-size: 20px"
-                                  class="material-symbols-outlined">sell</span>
-                            <div class="ml-2">
-                                <div class="d-flex">
-                                    <span class="css-truncate css-truncate-target text-bold mr-2"
-                                          style="max-width: none; margin-left: 5px"> guidance.v3.0 </span>
-                                    <span title="Latest" data-view-component="true"
-                                          class="border flex-shrink-0 latest-tag"> Latest </span>
-                                </div>
-                                <div style="font-size: 13px; color: gray; font-weight: normal">
-                                    2025
-                                </div>
-                            </div>
-                        </a>
-                    </dt>
-                    <dd class="col-sm-8">GUIDANCE3 release — see the
-                        <a href="https://github.com/XseniaP/guidance_server_python" target="_blank">README</a>
-                        for installation and usage instructions (pip install and CLI options).
-                    </dd>
-                </dl>
-            </ul>
+            <h2><b>1. Download </b>
+                <!--                the <a href="{{url_for('static',filename='download/guidance.v2.02.tar.gz')}}"-->
+                <!--                                           onclick="ga('send', 'event', 'Download', 'Downloaded', 'guidance.v2.02.tar.gz download');">GUIDANCE-->
+                <!--                source code</a>.-->
+            </h2><br>
 
-            <h2><b>2. Download older versions of GUIDANCE</b></h2><br>
+            <!--            <ul><b>-->
 
+            <!--            <span style="color: limegreen" class="material-symbols-outlined">sell</span>-->
+            <!--                <div class="ml-2 min-width-0">-->
+            <!--                  <div class="d-flex">-->
+            <!--                    <span class="css-truncate css-truncate-target text-bold mr-2" style="max-width: none;">guidance.v2.02</span>-->
+            <!--                    <span title="Label: Latest" data-view-component="true" class="Label Label&#45;&#45;success flex-shrink-0">-->
+            <!--                      Latest-->
+            <!--                    </span>-->
+            <!--                  </div>-->
+            <!--                <div class="text-small color-fg-muted"><relative-time datetime="2023-11-28T20:33:23Z" class="no-wrap" title="Nov 28, 2023, 3:33 PM EST">Nov 28, 2023</relative-time></div>-->
+            <!--                </div>-->
             <ul>
                 <dl class="row" style="margin-left: 1px">
                     <br>
@@ -68,6 +59,9 @@
                                 <div class="d-flex">
                                     <span class="css-truncate css-truncate-target text-bold mr-2"
                                           style="max-width: none; margin-left: 5px"> guidance.v2.02 </span>
+                                    <span title="Latest" data-view-component="true"
+                                          class="border flex-shrink-0 latest-tag"> Latest </span>
+                                    <!--                                <span class="border border-success"></span>-->
                                 </div>
                                 <div style="font-size: 13px; color: gray; font-weight: normal">
                                     <relative-time datetime="2023-11-28T20:33:23Z" class="no-wrap"
@@ -77,7 +71,7 @@
                             </div>
                         </a>
                     </dt>
-                    <dd class="col-sm-8">GUIDANCE2 — last release of the previous version</dd>
+                    <dd class="col-sm-8">The latest version of GUIDANCE2</dd>
                 </dl>
             </ul>
 
@@ -422,12 +416,7 @@
             <!--                support more optional alignment parameters</b></ul>-->
 
 
-            <h1 class="overview-headline"><br>Installing older GUIDANCE versions</h1><br>
-            <p class="overview-text">The following instructions apply to the older tar.gz releases above.
-                For GUIDANCE3, see the <a href="https://github.com/XseniaP/guidance_server_python" target="_blank">README</a>.</p>
-            <br>
-
-            <h2> 1. <b>Unzip and untar the files:</b></h2>
+            <h2> 2. <b>Unzip and untar the files:</b></h2>
             <br>
             <!--            <pre class="language-css"><code class="language-css">-->
             <pre class="language-css code-wrap">
@@ -441,7 +430,7 @@
             <!--            <code> tar -xzvf guidance.v2.02.tar.gz </code><br>-->
             <br>This will create a directory named guidance.v2.02<br>
 
-            <h2> 2. <b>Make:</b></h2>
+            <h2> 3. <b>Make:</b></h2>
             <br>
             <pre class="language-css code-wrap">
                 <code class="code-style">
@@ -453,7 +442,7 @@
             <!--            <pre class="language-css"><code>make</code></pre>-->
 
 
-            <h2> 3. <b>Check if you have the desired alignment program(s) installed:</b></h2><br>
+            <h2> 4. <b>Check if you have the desired alignment program(s) installed:</b></h2><br>
             <ul>
                 <li><b>MAFFT:</b> Type <kbd>mafft</kbd> and check that you have version 6.712 or newer.</li>
                 <ul>
@@ -476,7 +465,7 @@
                     </ul>
             </ul>
 
-            <h2><b>4. GUIDANCE also uses Perl, BioPerl and Ruby:</b></h2><br>
+            <h2><b>5. GUIDANCE also uses Perl, BioPerl and Ruby:</b></h2><br>
             <ul>
                 <li>Type <kbd>perl -v</kbd> and check that you Perl installed.</li>
                 <ul>
@@ -499,7 +488,7 @@
             For any problems - please <a
                 href="mailto:evolseq@tauex.tau.ac.il?subject=GUIDANCE2%20source" target="_blank">contact us</a><br>
 
-            GUIDANCE3 source code on <a href="https://github.com/XseniaP/guidance_server_python" target="_blank">GitHub</a><br><br>
+            Guidance Source Code in <a href="https://github.com/HaimAshk/GUIDANCE">Github</a><br><br>
 
 
             <h1 class="overview-headline"><br>Running GUIDANCE</h1><br>
