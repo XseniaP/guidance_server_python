@@ -18,25 +18,9 @@ from InputValidator import InputValidator
 from utils import *
 
 InputValidator = InputValidator()
-# Bin = os.path.dirname(sys.argv[0])
-# BIN_DIR = os.path.dirname(Bin)
-
-# if os.path.exists('/home/josefspr/bioseq'):  # remote run
-#     sys.path.insert(0, '/home/josefspr/bioseq/guidance/guidance.v2.02/www/Guidance')
-#     sys.path.insert(1, '/home/josefspr/bioseq/bioSequence_scripts_and_constants')
-# else:
-#     sys.path.insert(0, '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/Guidance')
-#     # sys.path.insert(0, sys.path.join(BIN_DIR, '')
-#     sys.path.insert(1, '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/bioSequence_scripts_and_constants')
-#     # sys.path.insert(1, '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/bioSequence_scripts_and_constants')
-
 import SharedConsts as CONSTS  
 
-#from /home/josefspr/bioseq/bioSequence_scripts_and_constants/
-#from email_sender import send_email  
-#def send_email(smtp_server, sender, receiver, subject, content):
-#    return
-                   
+
 class GuidanceState:
 
     def __init__(self, jobId: str, form: dict = None, files = [], isRequest = True):
@@ -77,11 +61,8 @@ class GuidanceState:
                 var['run_url'] = results_url + '/'
                 var['output_page'] = CONSTS.RESULT_WEBPAGE_NAME
                 var['run_number'] = jobId
-                # KSENIA
-                # var['errors_file'] = f"results/{var['run_number']}/errors.txt"
                 job_logger.info('testing4')
-                # var['code_fileName'] = 'Seqs.Codes'
-                
+
                 # write paramters to log file
                 peek_form(form, files, job_logger) 
                 
