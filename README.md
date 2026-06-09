@@ -94,7 +94,17 @@ Each program's source and makefile are in `./script/programs/<program>/`. If you
 
 ---
 
-#### Third-party tools & citations
+#### Citations
+
+If you use GUIDANCE3 in your research, please cite:
+
+- **GUIDANCE2** — Sela I, Ashkenazy H, Katoh K, Pupko T (2015) GUIDANCE2: accurate detection of unreliable alignment regions accounting for the uncertainty of multiple parameters. *Nucleic Acids Res* 43:W7–W14. https://doi.org/10.1093/nar/gkv318
+- **GUIDANCE** — Penn O, Privman E, Ashkenazy H, Landan G, Graur D, Pupko T (2010) GUIDANCE: a web server for assessing alignment confidence scores. *Nucleic Acids Res* 38:W23–W28. https://doi.org/10.1093/nar/gkq443
+- **HoT** — Landan G, Graur D (2007) Heads or tails: a simple reliability measure for multiple sequence alignments. *Mol Biol Evol* 24:1380–1391. https://doi.org/10.1093/molbev/msm060
+
+---
+
+#### Third-party tools
 
 GUIDANCE3 relies on the following external tools. Please cite them alongside GUIDANCE3 when using this software in your research.
 
