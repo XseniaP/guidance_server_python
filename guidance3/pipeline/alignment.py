@@ -720,6 +720,11 @@ def run_hot(config):
                     OUTPUT.write(
                     "<?php\n\tif (file_exists('MSA_STATUS.txt'))\n\t{\n\t\t$fil = fopen('MSA_STATUS.txt', r);\n\t\t$dat = fread($fil, filesize('MSA_STATUS.txt'));\n\t\techo \"$dat\";\n\tfclose($fil);\n\t}\n?>\n")
 
+            if config.isServer == 1:
+                update_progress(f"{config.WorkingDir}{config.progress_report}", "Generating the base alignment")
+                update_progress(f"{config.WorkingDir}{config.progress_report}", "Constructing guide tree")
+                update_progress(f"{config.WorkingDir}{config.progress_report}", "Started generating alternative alignments")
+
             os.system(cmd)
 
             if not os.path.exists(f"{config.WorkingDir}{config.Alignment_File}"):
@@ -751,6 +756,10 @@ def run_hot(config):
             # if os.path.exists(f"{config.WorkingDir}{config.Alignment_File}"):
             #     convert_fs_to_upper_case(f"{config.WorkingDir}{config.Alignment_File}")
             config.Scoring_Alignments_Dir = f"{config.WorkingDir}{config.HoT_MSAs_Dir}"
+            if config.isServer == 1:
+                alt_msas = len([f for f in os.listdir(config.Scoring_Alignments_Dir) if f.endswith(".fasta")]) if os.path.exists(config.Scoring_Alignments_Dir) else 0
+                update_progress(f"{config.WorkingDir}{config.progress_report}",
+                                f"Finished generating {alt_msas} alternative alignments")
     except Exception as e:
         sys.exit("run_hot() Error: " + str(e) + "\n")
 
