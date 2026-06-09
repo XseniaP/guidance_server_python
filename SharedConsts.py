@@ -73,7 +73,7 @@ MAFFT_OP_DIST_0_25 = os.path.join(SCRIPTS_DIR, 'balibase.mafft_7123_mafft.op2.Di
 MAFFT_EP_DIST_0_25 = os.path.join(SCRIPTS_DIR, 'balibase.mafft_7123_mafft.ep2.Dist20bins.txt')
 HOT_GUIDANCE2_PROGRAM = os.path.join(SCRIPTS_DIR, 'hot_cos_main.py')
 MIDPOINT_ROOTING_R = os.path.join(SCRIPTS_DIR, 'programs', 'MidPoint_Rooting.R')
-MSA_Score_CSS = "https://taux.evolseq.net/guidance/static/css/MSA_Colored.NEW.EM.css"
+MSA_Score_CSS = "https://taux.evolseq.net/static/css/MSA_Colored.NEW.EM.css"
 MidPoint_Rooting_R = os.path.join(SCRIPTS_DIR, 'programs', 'MidPoint_Rooting.R')
 
 if platform.system()=='Darwin': # macOS platform
