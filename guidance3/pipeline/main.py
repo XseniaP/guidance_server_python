@@ -34,6 +34,10 @@ RESULTS = os.path.join(BIN_DIR, "results/Guidance")
 
 
 def main(argv=None):
+    import platform
+    if platform.system() == "Windows":
+        sys.exit("GUIDANCE3 does not support Windows. Please use Linux or macOS.")
+
     if argv is None:
         argv = sys.argv
 
