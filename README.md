@@ -86,11 +86,11 @@ python3 guidance3/pipeline/main.py --seqFile <fasta> --msaProgram MAFFT --seqTyp
 
 #### Platform notes
 
-Executables for the following programs are bundled for both MacOS-arm64 (M1) and Ubuntu Linux:
+Pre-compiled binaries for the following programs are bundled under `guidance3/programs/mac/` and `guidance3/programs/linux/`:
 
-- msa_set_score, semphy, removeTaxa, isEqualTree, iqtree, clustalo (ClustalOmega)
+- msa_set_score, removeTaxa, isEqualTree, features_for_msas, iqtree (IQ-TREE 2), clustalo (Clustal Omega)
 
-Each program's source and makefile are in `./script/programs/<program>/`. If you are on a different platform, build replacements using the makefiles and update the paths in **SharedConsts.py**.
+The CLI detects your platform at runtime and uses the correct executables automatically. If you are on an unsupported platform, you will need to obtain the binaries from the respective upstream projects and update the paths in **SharedConsts.py**.
 
 ---
 
