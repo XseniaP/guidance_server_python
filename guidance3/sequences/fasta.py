@@ -302,132 +302,104 @@ def translate_sequence(DNA_sequence, DNA_sequence_name, codon_table_index, x_fla
     return x_flag, AA_seq
 
 def validate_seqs(working_dir, input_file, seq_type, msa, codon_table):
+    # Normalize CLI short names to the legacy strings used in comparisons below
+    _TYPE_MAP = {'aa': 'AminoAcids', 'nuc': 'Nucleotides', 'codon': 'Codons'}
+    seq_type = _TYPE_MAP.get(seq_type, seq_type)
+
+    input_path = os.path.join(working_dir, input_file)
+    fixed_path = input_path + ".FIXED"
+
+    # ── Pass 1: read & validate (no writing yet) ──────────────────────────────
     try:
-        with open(os.path.join(working_dir, input_file), 'r') as infile, open(
-                os.path.join(working_dir, input_file) + ".FIXED", 'w') as outfile:
-            seq = ""
-            seq_name = ""
-            seq_length = 0
-            warning = ""
-            counter = 0
-            errors = ""
+        with open(input_path, 'r') as infile:
+            raw_lines = infile.readlines()
+    except IOError as e:
+        return 'sys_error', f"validate_seqs: Can't open input file {input_path}: {e}\n"
 
-            for line in infile:
-                line = line.strip()
+    seq = ""
+    seq_name = ""
+    seq_length = 0
+    warning = ""
+    counter = 0
+    errors = ""
+    valid_seqs = []  # (name, seq) pairs that passed all checks
 
-                if line != "" and not line.startswith('>'):
-                    seq += line
-                    # seq += line.upper()
-
-                elif line.startswith('>'):
-                    # validate prev seq
-                    if seq == "" and seq_name != "":
-                        # return f"The sequence named '{seq_name}' is missing<br>"
-                        errors += f"The sequence named '{seq_name}' is missing newline before the sequence \n"
-
-                    if seq != "" and seq_name != "":
-                        # validate seq according to type
-                        if msa == "Yes":  # Make sure alignment length equal
-                            seq_length = len(seq) if seq_length == 0 else seq_length
-                            if len(seq) != seq_length:
-                                # return f"The sequences of the provided MSA are not properly aligned. For example, the sequence: '{seq_name}' does not align with others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only<br>"
-                                errors += f"The sequences of the provided MSA are not properly aligned. For example, the sequence: '{seq_name}' does not align with others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only\n"
-
-                            if seq_type == "Codons":
-                                ans = validate_seq_in_codon_align(seq, seq_name, codon_table)
-                                if ans != "OK":
-                                    # return ans
-                                    errors += ans
-                        if msa == "No":
-                            if seq.endswith('-'):
-                                seq = seq.rstrip('-')
-                                warning = "Gap characters (-) were removed from the end of the sequences"
-                            if '-' in seq:
-                                # return f"Sequence named '{seq_name}' contains a gap character '-' which is illegal when sequences are submitted to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option<br>"
-                                errors += f"A sequence named '{seq_name}' contains a gap character '-', which is illegal when sequences are submitted to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option\n"
-                            if seq_type == "Codons" and codon_table:
-                                ans_codon = validate_seq_in_codon_align(seq, seq_name, codon_table)
-                                if ans_codon != "OK":
-                                    errors += ans_codon
-
-                        if seq.endswith('*'):
-                            warning = "Star character (*) were removed from the end of the sequences\n"
-
-                        ans = validate_single_seq(seq_name, seq, seq_type)
-                        if ans[0] == "OK":
-                            outfile.write(f">{seq_name}\n")
-                            outfile.write(f"{seq}\n")
-                            # outfile.write(f"{seq.upper()}\n")
-                            counter += 1
-                        else:
-                            # return ans
-                            errors += ans
-
-                    # Start new seq
-                    if re.match(r'^>(.*)', line):
-                        seq_name = re.match(r'^>(.*)', line).group(1)
-                        seq_name = seq_name.strip()
-
-                        if seq_name == "":
-                            seq_num = counter + 1
-                            # return f"Seq number {seq_num} has no sequence name; Please fix and resubmit<br>"
-                            errors += f"Seq number {seq_num} has no sequence name; Please fix and resubmit\n"
-                        else:
-                            # seq_name = re.match(r'^>(.*)', line).group(1)  # Commented out since it's already assigned above
-                            seq = ""
-
-            # validate last sequence
-            if seq == "" and seq_name != "":
-                # return f"The sequence named '{seq_name}' is missing<br>"
-                errors += f"The sequence named '{seq_name}' is missing newline before the sequence <br>"
-            else:
-                if msa == "Yes":
-                    seq_length = len(seq) if seq_length == 0 else seq_length
-                    if len(seq) != seq_length:
-                        # return f"The sequences of the provided MSA are not properly aligned. For example, the sequence: '{seq_name}' does not align with others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only<br>"
-                        errors += f"The sequences of the provided MSA are not properly aligned. For example, the sequence: '{seq_name}' does not align with others. Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only\n"
-                    if seq_type == "Codons":
-                        ans = validate_seq_in_codon_align(seq, seq_name, codon_table)
-                        if ans != "OK":
-                            # return ans
-                            errors += ans
-                if msa == "No":
-                    if seq.endswith('-'):
-                        seq = seq.rstrip('-')
-                        warning = "Gap characters (-) were removed from the end of the sequences"
-                    if '-' in seq:
-                        # return f"Sequence named '{seq_name}' contains a gap character '-' which is illegal when sequences are submitted to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option<br>"
-                        errors += f"A sequence named '{seq_name}' contains a gap character '-', which is illegal when sequences are submitted to GUIDANCE. If you intended to submit an alignment, please upload the file using the 'Upload MSA file for evaluation' option\n"
-                    if seq_type == "Codons" and codon_table:
-                        ans_codon = validate_seq_in_codon_align(seq, seq_name, codon_table)
-                        if ans_codon != "OK":
-                            errors += ans_codon
-
-                ans = validate_single_seq(seq_name, seq, seq_type)
-                if ans[0] == "OK":
-                    outfile.write(f">{seq_name}\n")
-                    outfile.write(f"{seq}\n")
-                    # outfile.write(f"{seq.upper()}\n")
-                    counter += 1
-                else:
-                    # return ans
+    def _validate_one(seq_name, seq):
+        nonlocal errors, warning, counter
+        if msa == "Yes":
+            nonlocal seq_length
+            seq_length = len(seq) if seq_length == 0 else seq_length
+            if len(seq) != seq_length:
+                errors += (f"The sequences of the provided MSA are not properly aligned. "
+                           f"For example, the sequence: '{seq_name}' does not align with others. "
+                           f"Please fix the alignment and run GUIDANCE again or provide GUIDANCE sequences only\n")
+            if seq_type == "Codons":
+                ans = validate_seq_in_codon_align(seq, seq_name, codon_table)
+                if ans != "OK":
                     errors += ans
-            # outfile.close()
-            # infile.close()
-            if errors != "":
-                try:
-                    f = open(f'{working_dir}/errors.txt', "w")
-                    f.write(errors.replace("<br>", "\n"))
-                    f.close()
-                except:
-                    error = f"validate_seqs:Can't open {f} for writing\n"
-                    return 'sys_error', error
-                return errors
-            return "OK", warning, input_file + ".FIXED", str(counter)
-    except Exception as e:
-        # raise RuntimeError(f"validate_seqs:Can't open {working_dir}{infile} : {e}\n")
-        error = f"validate_seqs:Can't open {working_dir}{infile} : {e}\n"
-        return 'sys_error', error
+        if msa == "No":
+            if seq.endswith('-'):
+                seq = seq.rstrip('-')
+                warning = "Gap characters (-) were removed from the end of the sequences"
+            if '-' in seq:
+                errors += (f"A sequence named '{seq_name}' contains a gap character '-', which is illegal "
+                           f"when sequences are submitted to GUIDANCE. If you intended to submit an alignment, "
+                           f"please upload the file using the 'Upload MSA file for evaluation' option\n")
+            if seq_type == "Codons" and codon_table:
+                ans_codon = validate_seq_in_codon_align(seq, seq_name, codon_table)
+                if ans_codon != "OK":
+                    errors += ans_codon
+        if seq.endswith('*'):
+            warning = "Star character (*) were removed from the end of the sequences\n"
+        ans = validate_single_seq(seq_name, seq, seq_type)
+        if ans[0] == "OK":
+            valid_seqs.append((seq_name, seq))
+            counter += 1
+        else:
+            errors += ans
+        return seq  # return possibly-stripped seq
+
+    for line in raw_lines:
+        line = line.strip()
+        if line != "" and not line.startswith('>'):
+            seq += line
+        elif line.startswith('>'):
+            if seq == "" and seq_name != "":
+                errors += f"The sequence named '{seq_name}' is missing newline before the sequence \n"
+            if seq != "" and seq_name != "":
+                seq = _validate_one(seq_name, seq)
+            m = re.match(r'^>(.*)', line)
+            if m:
+                seq_name = m.group(1).strip()
+                if seq_name == "":
+                    errors += f"Seq number {counter + 1} has no sequence name; Please fix and resubmit\n"
+                else:
+                    seq = ""
+
+    # validate last sequence
+    if seq == "" and seq_name != "":
+        errors += f"The sequence named '{seq_name}' is missing newline before the sequence <br>"
+    elif seq_name != "":
+        _validate_one(seq_name, seq)
+
+    # ── Return validation errors without touching the FIXED file ──────────────
+    if errors:
+        try:
+            with open(os.path.join(working_dir, 'errors.txt'), 'w') as ef:
+                ef.write(errors.replace("<br>", "\n"))
+        except IOError:
+            pass  # errors.txt is informational only; don't mask the real error
+        return errors
+
+    # ── Pass 2: write FIXED only after validation passed ─────────────────────
+    try:
+        with open(fixed_path, 'w') as outfile:
+            for sname, sseq in valid_seqs:
+                outfile.write(f">{sname}\n{sseq}\n")
+    except IOError as e:
+        return 'sys_error', f"validate_seqs: Can't write output file {fixed_path}: {e}\n"
+
+    return "OK", warning, input_file + ".FIXED", str(counter)
 
 
 def validate_single_seq(seq_name, seq, seq_type):
@@ -442,8 +414,6 @@ def validate_single_seq(seq_name, seq, seq_type):
     if re.search(r'[^ABRNDCQEGHILKMFPSTWYVXZabrndcqeghilkmfpstwyvxz-]', seq) and seq_type == "AminoAcids":
         return f"Seq: '{seq_name}' contained the character '{re.search(r'[^ABRNDCQEGHILKMFPSTWYVXZabrndcqeghilkmfpstwyvxz-]', seq).group(0)}', which is not a standard Amino Acid\n"
 
-    # ----------- Amit -------------
-
     if re.search(r'[^ACGTRYWSMKHBVDNUXacgtrywsmkhbvdnux-]', seq) and seq_type != "AminoAcids":
         wrong_char = re.search(r'[^ACGTRYWSMKHBVDNUXacgtrywsmkhbvdnux-]', seq).group(0)
         if re.search(r'[Uu]', seq) and seq_type == "Nucleotides":
@@ -452,7 +422,6 @@ def validate_single_seq(seq_name, seq, seq_type):
     if re.search(r'[Uu]', seq) and seq_type == "Nucleotides":
         return "Currently GUIDANCE does not accept 'U's in nucleotide sequences, you may consider replacing the 'U's by 'T's and re-submit.\n"
 
-    # ----------- Amit -------------
     return ["OK"]
 
 

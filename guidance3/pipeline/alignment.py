@@ -163,7 +163,7 @@ def run_hot_process_on_tree(config, epsilon, proc, RandomBranches,op_vals_arr_re
 
             # check convergence starting from the 20th tree (starting from 80 MSAs)
             if not getattr(config, 'disable_convergence', False) and countTrees >= 20:
-                # check the convergence only for every nth tree
+                # check the convergence only for every 3rd tree with 1 process
                 if config.proc_num >= 2 or (config.proc_num == 1 and countTrees % 3 == 0):
                     alt_msas = 0
                     try:
@@ -174,7 +174,7 @@ def run_hot_process_on_tree(config, epsilon, proc, RandomBranches,op_vals_arr_re
                         add_scores_to_dict(config, epsilon, countTrees, lock)
                         for scr_file in glob.glob(os.path.join(config.WorkingDir, f"{config.Output_Prefix}_tree_{countTrees}_*.scr")):
                             os.unlink(scr_file)
-                        convergence = check_convergence(config, epsilon)
+                        convergence = check_convergence(config, epsilon, lock)
                         if config.verbose:
                             print(f"convergence of proc num {proc}\ttree num {tree_num} --> global tree index {countTrees} is {convergence} \n")
                     except Exception as e:
