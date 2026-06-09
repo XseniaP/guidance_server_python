@@ -1,7 +1,7 @@
 ### GUIDANCE3
 
 > **Supported platforms: macOS (arm64 / Intel) and Linux (x86-64) only.**
-> Windows is not supported — the bundled compiled binaries are not available for Windows.
+> Windows is not supported — no Windows wheel is published on PyPI and the bundled compiled binaries are not available for Windows.
 
 ---
 
@@ -91,6 +91,33 @@ Executables for the following programs are bundled for both MacOS-arm64 (M1) and
 - msa_set_score, semphy, removeTaxa, isEqualTree, iqtree, clustalo (ClustalOmega)
 
 Each program's source and makefile are in `./script/programs/<program>/`. If you are on a different platform, build replacements using the makefiles and update the paths in **SharedConsts.py**.
+
+---
+
+#### Third-party tools & citations
+
+GUIDANCE3 relies on the following external tools. Please cite them alongside GUIDANCE3 when using this software in your research.
+
+**Bundled binaries** (installed automatically with `pip install guidance3`):
+
+- **IQ-TREE 2** — phylogenetic tree inference  
+  Minh BQ, Schmidt HA, Chernomor O, Schrempf D, Woodhams MD, von Haeseler A, Lanfear R (2020) IQ-TREE 2: New Models and Methods for Phylogenetic Inference. *Mol Biol Evol* 37:1530–1534. https://doi.org/10.1093/molbev/msaa015
+
+- **Clustal Omega** — multiple sequence alignment  
+  Sievers F, Wilm A, Dineen D, Gibson TJ, Karplus K, Li W, Lopez R, McWilliam H, Remmert M, Söding J, Thompson JD, Higgins DG (2011) Fast, scalable generation of high-quality protein multiple sequence alignments using Clustal Omega. *Mol Syst Biol* 7:539. https://doi.org/10.1038/msb.2011.75
+
+**External tools** (must be installed separately via conda or your system package manager):
+
+- **MAFFT** — multiple sequence alignment  
+  Katoh K, Standley DM (2013) MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability. *Mol Biol Evol* 30:772–780. https://doi.org/10.1093/molbev/mst010
+
+- **PRANK** — phylogeny-aware multiple sequence alignment  
+  Löytynoja A (2014) Phylogeny-aware alignment with PRANK. *Methods Mol Biol* 1079:155–170. https://doi.org/10.1007/978-1-62703-646-7_10
+
+**Key Python libraries:**
+
+- **Biopython** — Cock PJ et al. (2009) Biopython: freely available Python tools for computational molecular biology and bioinformatics. *Bioinformatics* 25:1422–1423. https://doi.org/10.1093/bioinformatics/btp163
+- **DendroPy** — Sukumaran J, Holder MT (2010) DendroPy: A Python library for phylogenetic computing. *Bioinformatics* 26:1569–1571. https://doi.org/10.1093/bioinformatics/btq228
 
 ---
 
