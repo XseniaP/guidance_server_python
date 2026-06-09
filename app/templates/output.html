@@ -162,7 +162,7 @@
 <ul>
     <li>
         <form enctype="multipart/form-data" action="/guidance/ConcatMSAs/{{var['run_number']}}" method="post">
-            <font color=red face="Comic Sans MS">New feature </font> - Create a <b>SuperMSA</b> by concatenating the
+            Create a <b>SuperMSA</b> by concatenating the
             base MSA and {{var['SuperMSA_selection']|safe}} alternative MSAs computed by GUIDANCE3 <input type="hidden"
                                                                                                           name="run_num"
                                                                                                           value="{{var['run_number']}}"/>
@@ -194,7 +194,7 @@
 
 {% if best_msa_file %}
 <ul>
-    <li><A HREF="{{var['run_number']}}/{{best_msa_file}}" TARGET=_blank><b>Best MSA</b> selected by the pretrained model (minimum predicted distance score)<br></A>
+    <li><font color=red face="Comic Sans MS">New feature </font> - <A HREF="{{var['run_number']}}/{{best_msa_file}}" TARGET=_blank><b>Best MSA</b> selected by the pretrained model (minimum predicted distance score)<br></A>
     </li>
 </ul>
 {% endif %}
