@@ -62,7 +62,7 @@
                 alignments. It can only be used to evaluate one given alignment by a certain alignment program and
                 identify columns where this aligner is less confident relative to other columns in the same alignment.
                 <br><br>GUIDANCE is also not appropriate to evaluate an alignment produced by a different approach from
-                the ones supported in GUIDANCE (MAFFT, MUSCLE, PRANK, PAGAN and CLUSTALW). For example, you should not
+                the ones supported in GUIDANCE (MAFFT, PRANK and Clustal Omega). For example, you should not
                 run GUIDANCE on an alignment produced by T-COFFEE. Also, do not upload to GUIDANCE an alignment that you
                 corrected manually, even if it was originally produced by one of the supported aligners. Similarly,
                 alignments that used special features (e.g. MAFFT alignment that uses RNA structure information) cannot
@@ -101,10 +101,10 @@
                             href="#REF5">[6]</a>.
                 </dd>
                 <br>
-                <dt class="col-sm-5">The preferred methodology for quantifying MSA uncertainty: GUIDANCE2 or
+                <dt class="col-sm-5">The preferred methodology for quantifying MSA uncertainty: GUIDANCE3 or
                     HoT.
                 </dt>
-                <dd class="col-sm-7">The default is GUIDANCE2, which tend to outperform other methods.</dd>
+                <dd class="col-sm-7">The default is GUIDANCE3, which tend to outperform other methods.</dd>
             </dl>
 
 
@@ -172,7 +172,7 @@
             <a NAME="meth1"></a>
             <h1 class="overview-headline"><br>Methodology</h1>
             <a NAME="GUIDANCE"></a>
-            <h2><br> <b>What are the GUIDANCE2 and GUIDANCE scores?</b></h2>
+            <h2><br> <b>What are the GUIDANCE scores?</b></h2>
             <br>
             <p class="overview-text">GUIDANCE scores reflect the robustness of an alignment to perturbations.<br><br>
                 For this goal, a standard MSA is first generated, hereby termed "base
@@ -282,8 +282,9 @@
                 to shorten the running time. HoT running time depends on the number of
                 branches in the guide tree, which increases linearly with the number of
                 sequences. Zorro, TCS, ALiScore, TrimAl and NOISY were run on a pre-calculated MSA.
-                <br>Please note that the stand-alone versions of GUIDANCE and GUIDANCE2 support parallel computing,
-                thus a significant reduction in running times is possible.</p>
+                <br>Please note that the stand-alone version of GUIDANCE3 supports parallel computing and early convergence stopping,
+                thus a significant reduction in running times is possible. In addition, GUIDANCE3 uses IQ-TREE for guide-tree inference
+                (replacing SEMPHY used in GUIDANCE2), which natively supports multi-threading and further improves running time.</p>
 
             <img class="image-container" src="{{url_for('static',filename='images/fig2.png')}}"><br>
             <!--<img src="fig_method.server-1.gif" width="600" height="450"><br>-->
