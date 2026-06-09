@@ -105,7 +105,7 @@ MIDPOINT_ROOTING_R = os.path.join(_DATA_DIR, 'MidPoint_Rooting.R')
 MidPoint_Rooting_R = MIDPOINT_ROOTING_R
 FEATURES_EXTRACTION_MATRIX_DIR = os.path.join(_DATA_DIR, 'features_extraction', 'input_config_files')
 
-MSA_Score_CSS = "/guidance/static/css/MSA_Colored.NEW.EM.css"
+MSA_Score_CSS = "/static/css/MSA_Colored.NEW.EM.css"
 
 # Compiled binaries — inside the guidance3 package, platform-selected
 MSA_SET_SCORE = os.path.join(_PROGS_DIR, 'msa_set_score')

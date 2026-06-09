@@ -339,7 +339,7 @@ def create_html_graph(CSV_File, OUT, X_LABLE):
     #      2. HTML OUTPUT
     #      3. X Lable (OPTIONAL)
     ############################################################################################
-    _BLUE_GIF = "/guidance/static/images/blue.gif"
+    _BLUE_GIF = "/static/images/blue.gif"
     try:
         # with open(Out, "a") as OUT, open(CSV_File) as DATA:
         with open(CSV_File) as DATA:
