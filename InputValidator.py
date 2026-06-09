@@ -12,6 +12,8 @@ if os.path.exists('/home/josefspr/bioseq'):  # remote run
 import SharedConsts as CONSTS
 from utils import *
 
+_VALID_NUC = frozenset('ACGTURYSWKMBDHVNX')
+
 class InputValidator:
     def __init__(self):
         return
@@ -164,6 +166,8 @@ class InputValidator:
             AASeq = AASeq + AA
             i = i + 3
 
+        if '?' in AASeq:
+            return f"Sequence: '{seqName}' contains non-DNA characters - did you submit amino acid sequences as Codons? Please select the correct sequence type and resubmit\n"
         if '*' in AASeq:
             return f"Sequence: '{seqName}' contains a stop codon, please remove all stop codons (from all sequences) and submit to GUIDANCE again\n"
         return 'OK'
@@ -171,11 +175,15 @@ class InputValidator:
     def translate_codon(self, table, codon):
 
         codon = codon.upper()
+        if not all(c in _VALID_NUC for c in codon):
+            return '?'  # truly non-DNA character (e.g. amino acid-specific: E, F, L, Q, P)
         if codon in table.stop_codons:
             return '*'
-        else:
+        elif codon in table.forward_table:
             return table.forward_table[codon]
-        
+        else:
+            return 'X'  # valid IUPAC ambiguous codon - not an error
+
     def countSeq(self, seqFile):
         numSeqs = 0
         try:
