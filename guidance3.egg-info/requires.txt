@@ -15,6 +15,7 @@ bio>=1.6
 biothings-client
 gprofiler-official
 mygene
+requests
 tensorflow>=2.17
 keras>=3.5
 torch

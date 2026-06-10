@@ -27,6 +27,7 @@ Requires-Dist: bio>=1.6
 Requires-Dist: biothings-client
 Requires-Dist: gprofiler-official
 Requires-Dist: mygene
+Requires-Dist: requests
 Requires-Dist: tensorflow>=2.17
 Requires-Dist: keras>=3.5
 Requires-Dist: torch
@@ -44,19 +45,26 @@ Requires-Dist: pytest-cov>=5.0; extra == "dev"
 
 ### GUIDANCE3
 
-#### Installation — CLI (recommended)
+> **Supported platforms: macOS (arm64 / Intel) and Linux (x86-64) only.**
+> Windows is not supported — the bundled compiled binaries are not available for Windows.
 
-The quickest way to get the `guidance3` command available system-wide:
+---
+
+#### Installation — CLI
 
 ```bash
-git clone https://github.com/XseniaP/guidance_server_python.git
-cd guidance_server_python
-pip install -e .
+pip install git+https://github.com/XseniaP/guidance_server_python.git
 ```
 
-All Python dependencies are installed automatically. Executables for MacOS and Linux are bundled inside the package — the CLI detects your platform and uses the correct ones.
+All Python dependencies and bundled binaries (iqtree, msa_set_score, etc.) are installed automatically. The CLI detects your platform and uses the correct executables.
 
-*Simple example* — amino-acid sequences, GUIDANCE3 algorithm, 100 bootstraps, 8 CPUs:
+> **Installation time:** expect **15–30 minutes** on a typical connection. TensorFlow (~500 MB) and PyTorch (~400 MB) are large downloads. The install is a one-time cost.
+
+> **Note:** PyPI release coming soon — `pip install guidance3` will be the install path once published.
+
+---
+
+#### Quick start
 
 ```bash
 guidance3 --seqFile <path_to_fasta> --msaProgram MAFFT --seqType aa \
@@ -64,9 +72,7 @@ guidance3 --seqFile <path_to_fasta> --msaProgram MAFFT --seqType aa \
           --bootstraps 100 --proc_num 8
 ```
 
-Use `-h` at any time to print the full option list.
-
-The `--seqType` should be changed to `nuc` for nucleotides or `codon` for codon-aware analysis.
+Use `--seqType nuc` for nucleotides or `--seqType codon` for codon-aware analysis. Run `guidance3 -h` for the full option list.
 
 ---
 
@@ -104,6 +110,25 @@ conda deactivate
 
 ---
 
+#### Development / Contributing
+
+To work on the code itself:
+
+```bash
+git clone https://github.com/XseniaP/guidance_server_python.git
+cd guidance_server_python
+pip install -e .
+```
+
+The `-e` (editable) flag means changes to the source are reflected immediately without reinstalling. You can also run the pipeline directly without installing:
+
+```bash
+python3 guidance3/pipeline/main.py --seqFile <fasta> --msaProgram MAFFT --seqType aa \
+        --outDir <outDir> --program GUIDANCE3 --bootstraps 100 --proc_num 8
+```
+
+---
+
 #### Platform notes
 
 Executables for the following programs are bundled for both MacOS-arm64 (M1) and Ubuntu Linux:
@@ -114,16 +139,7 @@ Each program's source and makefile are in `./script/programs/<program>/`. If you
 
 ---
 
-#### Command-line usage
-
-All commands below become available after `pip install -e .`. Without pip install you can run the main pipeline directly from the project root:
-
-```bash
-python3 guidance3/pipeline/main.py --seqFile <fasta> --msaProgram MAFFT --seqType aa \
-        --outDir <outDir> --program GUIDANCE3 --bootstraps 100 --proc_num 8
-```
-
----
+#### Command-line reference
 
 **`guidance3`** — main pipeline
 
@@ -246,32 +262,6 @@ guidance3-predict \
 Use `--seq-type nuc` for nucleotide sequences. The command handles everything internally: feature extraction, model loading (bundled pretrained weights), prediction, and output. The best MSA is written to `<out-dir>/best_msa.fasta`. Add `--verbose` for detailed progress.
 
 The alternative MSAs folder should contain `.fasta` files — typically the `BP/GUIDANCE3_MSA/` sub-directory produced by a `guidance3` run, or any set of MSAs you want to rank.
-
----
-
-**`guidance3-remove-pos`** — filter columns below a confidence cutoff
-
-```bash
-guidance3-remove-pos \
-  --MSA        <path/to/MSA.fasta> \
-  --Scores     <path/to/MSA_res_pair_col.scr> \
-  --FilterdMSA <path/to/output_filtered.fasta> \
-  --Cutoff     0.93 \
-  --RemovedPos <path/to/removed_columns.txt>
-```
-
-**`guidance3-remove-seq`** — filter sequences below a confidence cutoff
-
-```bash
-guidance3-remove-seq \
-  --MSA        <path/to/MSA.fasta> \
-  --Scores     <path/to/MSA_res_pair_seq.scr> \
-  --FilterdSeq <path/to/output_filtered.fasta> \
-  --Cutoff     0.6 \
-  --RemovedSeq <path/to/removed_sequences.txt>
-```
-
-Score files (`_res_pair_col.scr`, `_res_pair_seq.scr`) are produced by `guidance3` in the output directory.
 
 ---
 

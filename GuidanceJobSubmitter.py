@@ -1,16 +1,21 @@
 import pathlib
 import subprocess
 import os
+import sys
 from SharedConsts import EMAIL_CONSTS
 # from script.config import EMAIL_CONSTS
 import SharedConsts as CONSTS
 # import script.config as CONSTS
-from utils import logger, get_job_logger, send_email
+from utils import logger, get_job_logger
+
+sys.path.append('/guidance/guidance_server_python/script/')
+from submit_slurm import submit_job_to_Q
+from email_sender import send_email
 
 class GuidanceJobSubmitter:
     
     @staticmethod
-    def submit_job(working_dir, run_parameters):
+    def submit_job(working_dir, run_parameters, is_daily_test=False):
         
         job_id = str(pathlib.Path(working_dir).stem)
         parameters = f"{os.path.join(working_dir, 'VARS.json')} {os.path.join(working_dir, 'FORM.json')}"
@@ -21,12 +26,15 @@ class GuidanceJobSubmitter:
 
         # a simple command when using shebang header (#!) in q_submitter_power.py
         # replace by JS
-        submission_cmd = f'cd {working_dir}; python3 {CONSTS.MAIN_SCRIPT} {parameters} > {os.path.join(working_dir, "std.out")}'
-
+        submission_cmd = f'cd {working_dir}\n python3 {CONSTS.MAIN_SCRIPT} {parameters} > {os.path.join(working_dir, "std.out")}'
+        to_email = run_parameters
+        email_cmd = f"python3 {CONSTS.EMAIL_SCRIPT} {CONSTS.SMTP_SERVER} {CONSTS.ADMIN_EMAIL} {to_email} --subject {EMAIL_CONSTS.FINISHED_TITLE} --content '{EMAIL_CONSTS.FINISHED_CONTENT.format(results_url=CONSTS.WEBSERVER_RESULTS_URL_EXT, process_id=job_id)}'"
+        if is_daily_test:
+            write_daily_test_cmd = f"python {CONSTS.WRITE_DAILY_TEST_SCRIPT} {CONSTS.DAILY_TEST_DIR} {job_id}"
+            submission_cmd = f'{submission_cmd}\n {write_daily_test_cmd}'
         #terminal_cmd = f'/opt/pbs/bin/qsub {str(temp_script_path)}'
         
-        to_email = run_parameters
-        # send_email(CONSTS.SMTP_SERVER, CONSTS.ADMIN_EMAIL,
+        #send_email(CONSTS.SMTP_SERVER, CONSTS.ADMIN_EMAIL,
         #                to_email, subject=EMAIL_CONSTS.INIT_TITLE,
         #                content= EMAIL_CONSTS.INIT_CONTENT.format(results_url=CONSTS.WEBSERVER_PROCESS_STATE_URL_EXT, process_id=job_id))
         # send_email(CONSTS.SMTP_SERVER, CONSTS.ADMIN_EMAIL,
@@ -34,12 +42,23 @@ class GuidanceJobSubmitter:
         #                content= EMAIL_CONSTS.INIT_CONTENT.format(results_url=CONSTS.WEBSERVER_PROCESS_STATE_URL_EXT, process_id=job_id))
         pid = os.fork()
         if pid == 0:
-            print(submission_cmd)
-            job_run_output = subprocess.run(submission_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            #print(submission_cmd)
+            #logger.info(f'submission_cmd={submission_cmd}')
+            job_logger = get_job_logger(job_id)
+            if job_logger:
+                job_logger.info(f'submission_cmd={submission_cmd}')
+            #job_run_output = subprocess.run(submission_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            try:
+                job_run_output = submit_job_to_Q( working_dir, submission_cmd)
+            except:
+                if job_logger:
+                    job_logger.info('submit_job_to_Q failed')
+            if job_logger:
+                job_logger.info(f'process id ={job_run_output}')
             # print(job_run_output.stdout)
                       
             # check return code and raise exception if failed
-            if job_run_output.returncode != 0:
+            if not job_run_output:
                 error = f'submit job {job_id} failed:{job_run_output.returncode}'
                 logger.error(error)
                 job_logger = get_job_logger(job_id)
@@ -55,8 +74,12 @@ class GuidanceJobSubmitter:
                        CONSTS.ADMIN_EMAIL, subject=EMAIL_CONSTS.CRASHED_TITLE,
                        content= EMAIL_CONSTS.CRASHED_CONTENT.format(results_url=CONSTS.WEBSERVER_RESULTS_URL_EXT, process_id=job_id))
             else:
-                send_email(CONSTS.SMTP_SERVER, CONSTS.ADMIN_EMAIL, to_email,
-                     subject=EMAIL_CONSTS.FINISHED_TITLE, content= EMAIL_CONSTS.FINISHED_CONTENT.format(results_url=CONSTS.WEBSERVER_RESULTS_URL_EXT, process_id=job_id))
+                #send_email(CONSTS.SMTP_SERVER, CONSTS.ADMIN_EMAIL, to_email,
+                #     subject=EMAIL_CONSTS.FINISHED_TITLE, content= EMAIL_CONSTS.FINISHED_CONTENT.format(results_url=CONSTS.WEBSERVER_RESULTS_URL_EXT, process_id=job_id))
+                if to_email: 
+                    send_email(CONSTS.SMTP_SERVER, CONSTS.ADMIN_EMAIL,
+                            to_email, subject=EMAIL_CONSTS.INIT_TITLE,
+                            content= EMAIL_CONSTS.INIT_CONTENT.format(results_url=CONSTS.WEBSERVER_PROCESS_STATE_URL_EXT, process_id=job_id))
             return 0 #child process
         else:
             return 1 #parent process

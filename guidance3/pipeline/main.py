@@ -30,7 +30,7 @@ import shutil
 
 Bin = os.path.dirname(sys.argv[0])
 BIN_DIR = os.path.dirname(Bin)
-RESULTS = os.path.join(BIN_DIR, "results/Guidance")
+RESULTS = os.path.join(BIN_DIR, "results")
 
 
 def main(argv=None):

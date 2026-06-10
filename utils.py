@@ -64,10 +64,23 @@ def send_email_old(smtp_server, sender, receiver, subject='', content=''):
     s = SMTP(smtp_server)
     s.send_message(msg)
     s.quit()
-
+'''
 def send_email ( smtp_server, sender, receiver, subject='', content=''):
     cmd = f'sendemail -f {sender} -t {receiver} -u \'{subject}\' -m \'{content}\' -s {CONSTS.SMTP_SERVER} -o tls=yes -xu {sender} -xp {CONSTS.ADMIN_PASSWORD}'
     os.system(cmd)
+'''
+
+def send_email(smtp_server, sender, receiver, subject='', content=''):
+    from email.mime.text import MIMEText
+    from smtplib import SMTP
+    msg = MIMEText(content)
+    msg['Subject'] = subject
+    msg['From'] = sender
+    msg['To'] = receiver
+    s = SMTP(smtp_server)
+    ans = s.send_message(msg)
+    s.quit()
+    return ans
 
 def currentTime(): 
     now = datetime.datetime.now()

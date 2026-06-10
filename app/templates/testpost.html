@@ -4,11 +4,13 @@
 
     <form name="Guidance_form"
 			  id = "Guidance_form"
-		      action="/guidance/testpost"
+		      action="/testpost"
 		      method="post"
-		      ENCTYPE="multipart/form-data"
-		      onsubmit="return validateform()">
-	<input type=submit value="Submit" id="SubmitButton">
+		      ENCTYPE="multipart/form-data">
+              
+    <textarea name="txt" id="txt" rows="6" cols="50">{{txt}}</textarea>
+    
+    <input type=submit value="Submit" id="SubmitButton">
 
     </form>
     

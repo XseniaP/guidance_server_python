@@ -97,9 +97,6 @@
 
                 {% if form['PROGRAM'] == 'GUIDANCE3' %}
                 Number of alternative guide-trees: {{form['Bootstraps']}}<br>
-                {% if form.get('disable_convergence') %}
-                Convergence: disabled ({{form['Bootstraps']}} guide-trees &times; 4 = {{form['Bootstraps']|int * 4}} alternative alignments will be generated)<br>
-                {% endif %}
                 {% endif %}
 
                 Method: {{form['PROGRAM']}}<br>

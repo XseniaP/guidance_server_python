@@ -47,7 +47,7 @@ class Job_Manager_API:
         logger.info(log_msg)
         if job_logger: 
             job_logger.info(log_msg)
-        if email_address != None:
+        if email_address != None and job_name != 'daily_test':
             if state == State.Finished:
                self.__build_and_send_mail(process_id, EMAIL_CONSTS.FINISHED_TITLE, EMAIL_CONSTS.FINISHED_CONTENT.format(results_url=CONSTS.WEBSERVER_RESULTS_URL_EXT, process_id=process_id), email_address)
                
@@ -90,7 +90,7 @@ class Job_Manager_API:
 
             self.__j_manager.add_guidance_process(process_id, email_address, job_name)
 
-            if email_address:
+            if email_address and job_name != 'daily_test':
                 self.__build_and_send_mail(process_id, EMAIL_CONSTS.INIT_TITLE, EMAIL_CONSTS.INIT_CONTENT.format(results_url=CONSTS.WEBSERVER_PROCESS_STATE_URL_EXT, process_id=process_id), email_address)
         
             return True
