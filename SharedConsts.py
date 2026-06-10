@@ -10,21 +10,21 @@ from enum import Enum
 import platform
 
 # constants to use when sending e-mails using the server admin's email address.
-ADMIN_EMAIL = 'evolseq@gmail.com' #'TAU Evolseq <evolseq@tauex.tau.ac.il>'
+ADMIN_EMAIL = 'evolseq@tauex.tau.ac.il'
 DEV_EMAIL = 'josefspr@gmail.com'
-SMTP_SERVER = 'smtp.gmail.com:587' #'mxout.tau.ac.il'
+SMTP_SERVER = 'mxout.tau.ac.il'
 ADMIN_USER_NAME = 'evolseq'
-ADMIN_PASSWORD = 'yipnqomnsofhytqp'
-SEND_EMAIL_DIR_IBIS = '/home/josefspr/bioseq/bioSequence_scripts_and_constants/sendEmail'
+ADMIN_PASSWORD = 'elana'
+SEND_EMAIL_DIR_IBIS = '/guidance/perl/'
 
 OWNER_EMAIL = 'josefspr@gmail.com'
 
 # general variables Ksenia
 script_path = os.path.abspath(__file__)
 Bin = f"{os.path.dirname(script_path)}/script" #path to the script folder
-BIN_DIR = os.path.dirname(Bin)  #main project folder
-SERVERS_RESULTS_DIR = os.path.join(BIN_DIR, 'results')
-SERVERS_LOGS_DIR = os.path.join(BIN_DIR, 'logs')
+BIN_DIR = '/guidance/guidance_server_python' #os.path.dirname(Bin)  #main project folder
+SERVERS_RESULTS_DIR = '/guidance/results' #os.path.join(BIN_DIR, 'results')
+SERVERS_LOGS_DIR = '/guidance/results/logs' #os.path.join(BIN_DIR, 'logs')
 
 RELOAD_INTERVAL = 30
 RELOAD_TAGS = f'<META HTTP-EQUIV="REFRESH" CONTENT={RELOAD_INTERVAL}>'
@@ -39,13 +39,13 @@ FAILED_STATUS_TAG = '''<H1 align=center>Pepitope Job Status Page - <font color='
 
 WEBSERVER_NAME_CAPITAL = 'Guidance'
 WEBSERVER_NAME = 'guidance'
-WEBSERVER_URL = '/guidance' #f'http://{WEBSERVER_NAME}.tau.ac.il'
-WEBSERVER_URL_EXT = 'https://taux.evolseq.net/guidance'
+WEBSERVER_URL = 'http://dev.guidance.tau.ac.il' #f'http://{WEBSERVER_NAME}.tau.ac.il'
+WEBSERVER_URL_EXT = 'http://dev.guidance.tau.ac.il'
 WEBSERVER_OLD_URL = f'http://{WEBSERVER_NAME}-old.tau.ac.il'
 WEBSERVER_TITLE = '<b>Server for a multiple sequence alignment confidence score calculation</b>'
 
-WEBSERVER_RESULTS_DIR = os.path.join(SERVERS_RESULTS_DIR, 'Guidance')
-WEBSERVER_LOGS_DIR = os.path.join(SERVERS_LOGS_DIR, 'Guidance')
+WEBSERVER_RESULTS_DIR = SERVERS_RESULTS_DIR #os.path.join(SERVERS_RESULTS_DIR, 'guidance')
+WEBSERVER_LOGS_DIR = SERVERS_LOGS_DIR #os.path.join(SERVERS_RESULTS_DIR, 'guidance', 'logs')
 WEBSERVER_HTML_DIR = f'/var/www/html/{WEBSERVER_NAME}/ver2'
 
 WEBSERVER_RESULTS_URL = os.path.join(WEBSERVER_URL, 'results')
@@ -63,6 +63,7 @@ SOURCES = '/source.php'
 
 SCRIPTS_DIR = os.path.join(BIN_DIR, 'script')
 MAIN_SCRIPT = os.path.join(SCRIPTS_DIR, 'guidance_main.py')
+EMAIL_SCRIPT = os.path.join(SCRIPTS_DIR, 'email_sender.py')
 MASK_SCRIPT = os.path.join(SCRIPTS_DIR, 'mask_low_score_residues_webserver.py')
 REMOVE_POS_SCRIPT = os.path.join(SCRIPTS_DIR, 'remove_pos_below_cutoff.py')
 REMOVE_SEQ_SCRIPT = os.path.join(SCRIPTS_DIR, 'remove_seq_below_cutoff.py')
@@ -73,7 +74,7 @@ MAFFT_OP_DIST_0_25 = os.path.join(SCRIPTS_DIR, 'balibase.mafft_7123_mafft.op2.Di
 MAFFT_EP_DIST_0_25 = os.path.join(SCRIPTS_DIR, 'balibase.mafft_7123_mafft.ep2.Dist20bins.txt')
 HOT_GUIDANCE2_PROGRAM = os.path.join(SCRIPTS_DIR, 'hot_cos_main.py')
 MIDPOINT_ROOTING_R = os.path.join(SCRIPTS_DIR, 'programs', 'MidPoint_Rooting.R')
-MSA_Score_CSS = "https://taux.evolseq.net/static/css/MSA_Colored.NEW.EM.css"
+MSA_Score_CSS = "http://dev.guidance.tau.ac.il/static/css/MSA_Colored.NEW.EM.css"
 MidPoint_Rooting_R = os.path.join(SCRIPTS_DIR, 'programs', 'MidPoint_Rooting.R')
 
 if platform.system()=='Darwin': # macOS platform
@@ -84,9 +85,6 @@ if platform.system()=='Darwin': # macOS platform
     SEMPHY_BBL = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
     CLUSTAL_OMEGA = os.path.join(BIN_DIR, 'script/programs/clustalo')
     IQTREE = os.path.join(BIN_DIR, 'script/programs/iqtree/bin/iqtree2')
-    FEATURES_EXTRACTION_PROG = os.path.join(SCRIPTS_DIR, 'programs', 'features_extraction', 'features_for_msas')
-    # Force arm64 slice — the webserver may run under Rosetta (x86_64), but numpy/TF are arm64-only
-    DL_MODEL_PYTHON = ['arch', '-arm64', '/Library/Frameworks/Python.framework/Versions/3.10/bin/python3']
 
 elif platform.system()=='Linux': # Linux platform
     MSA_SET_SCORE = os.path.join(SCRIPTS_DIR, 'programs', 'Linux','msa_set_score', 'msa_set_score')
@@ -96,17 +94,6 @@ elif platform.system()=='Linux': # Linux platform
     SEMPHY_BBL = os.path.join(BIN_DIR, 'script/programs/Linux/semphy/semphy')
     CLUSTAL_OMEGA = os.path.join(BIN_DIR, 'script/programs/Linux/clustalo')
     IQTREE = os.path.join(BIN_DIR, 'script/programs/Linux/iqtree/bin/iqtree2')
-    FEATURES_EXTRACTION_PROG = os.path.join(SCRIPTS_DIR, 'programs', 'Linux', 'features_extraction', 'features_for_msas')
-    DL_MODEL_PYTHON = os.environ.get('GUIDANCE_DL_PYTHON', sys.executable).split()
-
-FEATURES_EXTRACTION_MATRIX_DIR = os.path.join(SCRIPTS_DIR, 'programs', 'features_extraction', 'input_config_files')
-DL_MODEL_PREDICT_SCRIPT = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'scripts', 'predict_pretrained_main.py')
-# Amino-acid model
-DL_MODEL_PATH = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'input', 'orthomam_model2', 'regressor_model_0_mode1_dseq_from_true.keras')
-DL_MODEL_SCALER_PATH = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'input', 'orthomam_model2', 'scaler_0_mode1_dseq_from_true.pkl')
-# Nucleotide model
-DL_MODEL_NUC_PATH = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'input', 'nucleotides_model2', 'regressor_model_0_mode1_dseq_from_true.keras')
-DL_MODEL_NUC_SCALER_PATH = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'input', 'nucleotides_model2', 'scaler_0_mode1_dseq_from_true.pkl')
 
 MUSCLE = "muscle"
 MAFFT_GUIDANCE = "mafft"
@@ -129,7 +116,7 @@ GUIDANCE_RUNNING_JOBS = f'{EXTERAL_SCRIPTS_PATH}/guidance_running_jobs.list'
 JOB_QUEUE_NAME =  'pupkowebr@power9' #'itaym'
 
 
-SUBMISSIONS_LOG = os.path.join(SERVERS_LOGS_DIR,WEBSERVER_NAME_CAPITAL, 'guidance.logv2')
+SUBMISSIONS_LOG =  os.path.join(WEBSERVER_LOGS_DIR, 'guidance.logv2')
 RESULT_WEBPAGE_NAME = 'output.html'
 EMAIL_FILE_NAME = 'email.txt'
 
@@ -153,8 +140,8 @@ PROGRESS_BAR_TAG = '''<div class="progress"><div class="progress-bar progress-ba
 MODE_0755 = stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH
 
 DAILY_TEST_SEQUENCE = ">NC_001802.HXB2\nMQPIPIVAIVALVVAIIIAIVVWSIVIIEYRKILRQRKIDRLIDRLIERAEDSGNESEGEISALVEMGVEMGHHAPWDVDDL\n>EF637049.B\nMQSLQIVAIVALVVTAIIAIVVWSIVLIEYRKLLRQRKIDRLIDRIRERAEDSGNESEGDQEELAGLVERGHLAPWDVDDL\n>EF514700.B\nMQPLEILAIVALVVAIILAIVVWTIVFIEYKKILRQRKIDRLIDRIAERAEDSGNESEGDQEELSALVDMGHDAPWVVVDQ\n>DQ056417.C\nMLESIDYRLGVAALLLALIIAIIVWIIAYLEYRKLLRQRRIDKLIKRIRERAEDSGNESEGDIEELSTMVDVEHLRLLDVNNL\n>AY463217.C\nMVDLLAGVDYRVGVGALIIALIIAIIVWIWVYIEYRKLLRQRKIDWLIKRLREREEDSGNESEGDTEELATMVDMGHLRLLDDNNV\n>DQ011165.C\nMLNFLAGVDYRIGVGALIVGLIIAIVVWIIVYLEYRKLVKQRKIDWLIERIRERAEDSGNESEGDTEELATMVDMGHLRLLDAYDL\n>AB254142.C\nMINFAARVDYRVGVAAFTIALIIAIVVWIIVYLELVRQRKIDQLIIRIREREEDSGNESEGDIEELSTMVDMGQLRLLDGNGL\n>AY901969.C\nMVNLLEKVNLFEKVDYRLGVGALLIALVIAIIVWTIAYIEYRKLVRQRKIDWLVKRIRERAEDSGNESDGDTEELSTMVDLGHLRLLDVAEL\n>EU110088.A1\nMNQLQILAIXGLVVALILAIVVWTIVGIEYRKLLRQRRIDRLIKRISERAEDSGNESDGDTEELSQLVEMGNYNLGFDDNL\n>AB253428.A1\nMQLLEICAVVGLVVALIIAIVVWTIVGIEYKKLLKQRKIDRLVDRIRERAEDSGNESDGDREELSLLVDMGDYDLGDDNNL\n>AF457052.A1\nMLSALEICAIAGLVIALIIAIVVWTIVGIEYRRLLKQRKIDRLIERIRERAEDSGNESDGDTEELAALIEMGNYDLGDANDL\n>AF077336.F1\nMSYLLAIGIAALIVALIIAIVVWTIVYIEYKKLVRQRKINKLYKRIRERAEDSGNESEGDAEELAALGEMGPFIPGDINNL\n>DQ168575.G\nMKSLEISAIVGLIVAFIAAIVVWTIVLIEYRKIRKQKRIDKILDRIRERAEDSGNESEGDTEELATLVDMVDFEPWVGDNL\n>AY795907.D\nMQTLEILSIVALVIAAIIAIIVWTIVYIEYRKIRRQRKIDQLIDRIRERAEDSGNESEGDEEELSTLMEMGHAAPWNVADDL\n"
-WRITE_DAILY_TEST_SCRIPT = f"{Bin}/write_daily_test_flask.py"
-DAILY_TEST_DIR = "/home/josefspr/bioseq/bioSequence_scripts_and_constants/daily_tests/"
+WRITE_DAILY_TEST_SCRIPT = f"/guidance/script/write_daily_test_flask.py"
+DAILY_TEST_DIR = "/guidance/daily_tests"
 
 # from SharedConstants
 class EMAIL_CONSTS:
@@ -192,9 +179,9 @@ NEW_RUNNING_JOBS_NAME = 'NewRunning'
 FINISHED_JOBS_NAME = 'Finished'
 ERROR_JOBS_NAME = 'Error'
 WEIRD_BEHAVIOR_JOB_TO_CHECK = ''
-PATH2SAVE_PROCESS_DICT = r'SavedObjects/processes.dict'
-PATH2SAVE_WAITING_LIST = r'SavedObjects/waiting.lst'
-PATH2SAVE_PREVIOUS_DF = r'SavedObjects/previous_processes.csv'
+PATH2SAVE_PROCESS_DICT = r'/var/www/vhosts/dev.guidance.tau.ac.il/httpdocs/SavedObjects/processes.dict'
+PATH2SAVE_WAITING_LIST = r'/var/www/vhosts/dev.guidance.tau.ac.il/httpdocs/SavedObjects/waiting.lst'
+PATH2SAVE_PREVIOUS_DF = r'/var/www/vhosts/dev.guidance.tau.ac.il/httpdocs/SavedObjects/previous_processes.csv'
 
 # PBS Listener consts
 JOB_RUNNING_TIME_LIMIT_IN_HOURS = 10
@@ -213,7 +200,7 @@ SEPERATOR_FOR_MONITOR_DF = '###'
 # PATH2SAVE_MONITOR_DATA = r'/home/josefspr/results/Guidance'
 
 # KSENIA
-PATH2SAVE_MONITOR_DATA = f'{BIN_DIR}/results/Guidance'
+PATH2SAVE_MONITOR_DATA = '/guidance/results/Guidance' #f'{BIN_DIR}/results/Guidance'
 
 class UI_CONSTS:
 
