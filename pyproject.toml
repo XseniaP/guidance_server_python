@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "guidance3"
 version = "3.0.0"
-description = "GUIDANCE3 – confidence scoring for multiple sequence alignments"
+description = "GUIDANCE3 – confidence scoring for multiple sequence alignments (Linux and macOS only)"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
@@ -17,6 +17,8 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Intended Audience :: Science/Research",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
 ]
 dependencies = [
     # Scientific stack
@@ -48,6 +50,10 @@ dependencies = [
     "transformers",
     "shap",
 ]
+
+[project.urls]
+Homepage = "https://guidance.tau.ac.il"
+Repository = "https://github.com/XseniaP/guidance_server_python"
 
 [project.optional-dependencies]
 web = [

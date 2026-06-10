@@ -18,25 +18,9 @@ from InputValidator import InputValidator
 from utils import *
 
 InputValidator = InputValidator()
-# Bin = os.path.dirname(sys.argv[0])
-# BIN_DIR = os.path.dirname(Bin)
-
-# if os.path.exists('/home/josefspr/bioseq'):  # remote run
-#     sys.path.insert(0, '/home/josefspr/bioseq/guidance/guidance.v2.02/www/Guidance')
-#     sys.path.insert(1, '/home/josefspr/bioseq/bioSequence_scripts_and_constants')
-# else:
-#     sys.path.insert(0, '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/Guidance')
-#     # sys.path.insert(0, sys.path.join(BIN_DIR, '')
-#     sys.path.insert(1, '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/bioSequence_scripts_and_constants')
-#     # sys.path.insert(1, '/Users/kpolonsky/Documents/GUIDANCE-guidance.v2.02/www/bioSequence_scripts_and_constants')
-
 import SharedConsts as CONSTS  
 
-#from /home/josefspr/bioseq/bioSequence_scripts_and_constants/
-#from email_sender import send_email  
-#def send_email(smtp_server, sender, receiver, subject, content):
-#    return
-                   
+
 class GuidanceState:
 
     def __init__(self, jobId: str, form: dict = None, files = [], isRequest = True):
@@ -77,11 +61,8 @@ class GuidanceState:
                 var['run_url'] = results_url + '/'
                 var['output_page'] = CONSTS.RESULT_WEBPAGE_NAME
                 var['run_number'] = jobId
-                # KSENIA
-                # var['errors_file'] = f"results/{var['run_number']}/errors.txt"
                 job_logger.info('testing4')
-                # var['code_fileName'] = 'Seqs.Codes'
-                
+
                 # write paramters to log file
                 peek_form(form, files, job_logger) 
                 
@@ -105,21 +86,21 @@ class GuidanceState:
                 self.files = files
                 self.var = var
                 
-            except Exception as e:
-                job_logger.info(f'GuidanceState.__init__ failed, error={str(e)}')
+            except:
+            
                 raise Exception ('GuidanceState.__init__ failed', 'system')
             
         else:
     
-            try: 
-                
+            try:
+
                 wd = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, jobId)
-                
+
+                if not os.path.exists(wd):
+                    raise Exception('GuidanceState.__init__: jobId does not exist', 'system')
+
                 job_logger = get_job_logger(jobId)
                 job_logger.info(f'{"#" * 100}\nGuidanceState.__init__: jobId = {jobId}, wd = {wd}')
-                
-                if not os.path.exists (wd):
-                    raise Exception ('GuidanceState.__init__: jobId does not exist', 'system')
                 
                 form_path = os.path.join( wd, 'FORM.json')
                 with open (form_path, 'r') as f:
@@ -195,11 +176,12 @@ class GuidanceState:
                 form['MAFFT_maxiterate'] = cgi_form['maxiterate']
             
             if dict_key_defined_not_empty('pair', cgi_form):
-                form['MAFFT_refinement'] = cgi_form['pair'] 
+                form['MAFFT_refinement'] = cgi_form['pair']
             else:
                 form['MAFFT_refinement'] =''
+
             # Checkbox: only present in form when checked; default False when absent
-            form['disable_convergence'] = dict_key_defined_not_empty('disable_convergence', cgi_form)                                                                        
+            form['disable_convergence'] = dict_key_defined_not_empty('disable_convergence', cgi_form)
                 
             if dict_key_defined_not_empty('RERUN_SAME_SEQ', cgi_form):
                 form['RERUN_SEQ_ONLY'] = cgi_form['RERUN_SAME_SEQ']
@@ -685,6 +667,7 @@ class GuidanceState:
         # KSENIA
         var['errors_file'] = f"results/{var['run_number']}/errors.txt"
         errors = ""
+        error_is_system = False
         
         # validate seqs
         job_logger = logging.getLogger(var['run_number'])
@@ -699,31 +682,29 @@ class GuidanceState:
                     ans = InputValidator.validate_Seqs( var['WorkingDir'], var['SeqsFile'] , form['Seq_Type'] , False)
                     var['LongestSeq'] = InputValidator.get_max_seq_length(os.path.join( var['WorkingDir'], var['SeqsFile']))
                 else:
-                    job_logger.info (f'validate_Seqs({var["WorkingDir"]},{var["SeqsFile_Codons"]},{form["Seq_Type"]},False, {form.get('CodonTable', 1)}):\n')
+                    job_logger.info (f'validate_Seqs({var["WorkingDir"]},{var["SeqsFile_Codons"]},{form["Seq_Type"]},False ):\n')
                     ans = InputValidator.validate_Seqs( var["WorkingDir"], var['SeqsFile_Codons'] , form['Seq_Type'] , False, form.get('CodonTable', 1))
                     var['LongestSeq'] = InputValidator.get_max_seq_length(os.path.join( var["WorkingDir"], var['SeqsFile_Codons']))
                     
-                job_logger.info(f'InputValidator.validate_Seqs returns: {join_list(ans)}\n')
+                job_logger.info(f'return: {join_list(ans)}\n')
                 if ans[0] == "sys_error":
-                    errors += ans[1] + " system "
+                    errors += ans[1]
+                    error_is_system = True
                     # raise Exception(ans[1], "system")
                 elif ans[0] != 'OK':
                     # raise Exception(ans, "user")
-                    errors += ans + " user "
+                    errors += ans
                 else:
                     var['SeqsFile'] = ans[2]
                     var['NumOfSeq'] = ans[3]
-                
                     if ans[1]:
                         job_logger.warning(f'Warning: {ans[1]}. Nevertheless calculation is continued\n')
-                        
                         warning_msg = f"<br><b><font color=\"red\" size=\"3\">Warning:</b></font><font size=\"3\"> {ans[1]}; The calculation continues.</font>\n"
-                
-                    # uncommented this
-                    if form['Seq_Type'] == 'Codons':
-                       shutil.move(os.path.join( var['WorkingDir'], var['SeqsFile']), os.path.join( var['WorkingDir'], var['SeqsFile_Codons']))
+
+                # uncommented this
+                if form['Seq_Type'] == 'Codons' and ans[0] == 'OK':
+                   shutil.move(os.path.join( var['WorkingDir'], var['SeqsFile']), os.path.join( var['WorkingDir'], var['SeqsFile_Codons']))
                     
-                job_logger.info('End of Seq file provided case\n')
             else:
 
                 alignment_file = os.path.join( var['WorkingDir'], var['Alignment_File'])
@@ -751,10 +732,11 @@ class GuidanceState:
                     job_logger.info(f'return: {join_list(ans)}\n')
                     if ans[0] == "sys_error":
                         # raise Exception ( ans[1], "system")
-                        errors += ans[1] + " system "
+                        errors += ans[1]
+                        error_is_system = True
                     elif ans[0] != 'OK':
                         # raise Exception (ans, "user")
-                        errors += ans + " user "
+                        errors += ans
                     var['Alignment_File'] = ans[2]
                     var['NumOfSeq'] = ans[3]
 
@@ -763,35 +745,35 @@ class GuidanceState:
                         
                         warning_msg = f"<br><b><font color=\"red\" size=\"3\">Warning:</b></font><font size=\"3\"> {ans[1]}; The calculation continues.</font>\n"
 
-            if var['NumOfSeq'] < 4  and form['PROGRAM'] == "GUIDANCE":
+            if not errors and var['NumOfSeq'] < 4  and form['PROGRAM'] == "GUIDANCE":
                 error = f"Only {var['NumOfSeq']} sequences were provided, however at least 4 sequences are requiered for GUIDANCE.<br>You can run HoT algorithm instead."
                 # raise Exception ( error, "user")
-                errors += error + " user "
+                errors += error
             
-            if var['NumOfSeq'] < 3  and form['PROGRAM'] == "GUIDANCE3":
+            if not errors and var['NumOfSeq'] < 3  and form['PROGRAM'] == "GUIDANCE3":
                 error = f"Only {var['NumOfSeq']} sequences were provided, however at least 3 sequences are requiered for GUIDANCE3.<br>You can run HoT algorithm instead."
                 # raise Exception ( error, "user")
-                errors += error + " user "
+                errors += error
                 
-            if var['NumOfSeq'] >=300: 
+            if not errors and var['NumOfSeq'] >=300:
                 error = f"Due to limited computational resources, the web-server support analysis of up to 300 sequences. You can <a href=\"/source\"  target=\"_blank\">install and use the command-line version</a> or reduce the number of sequences and submit the job again.<br>Feel free to <a href=\"mailto:haimash\@tau.ac.il\" target=\"_blank\">contact us</a> for additional help. Sorry for the inconvenience."
                 # raise Exception ( error, "user")
-                errors += error + " user "
+                errors += error
             
-            if var['LongestSeq'] > 6000 and form['Seq_Type'] == "Codons":
+            if not errors and var['LongestSeq'] > 6000 and form['Seq_Type'] == "Codons":
                 error = f"Due to limited computational resources, the web-server support analysis of sequences no longer than 6,000 bp. You can <a href=\"/source\"  target=\"_blank\">install and use the command-line version</a> or reduce the size of sequences and submit the job again.<br>Feel free to <a href=\"mailto:haimash\@tau.ac.il\" target=\"_blank\">contact us</a> for additional help. Sorry for the inconvenience."
                 # raise Exception ( error, "user")
-                errors += error + " user "
-            
-            if var['LongestSeq'] > 6000 and form['Seq_Type'] == "Nucleotides":
+                errors += error
+
+            if not errors and var['LongestSeq'] > 6000 and form['Seq_Type'] == "Nucleotides":
                 error = f"Due to limited computational resources, the web-server support analysis of sequences no longer than 6,000 bp. You can <a href=\"/source\"  target=\"_blank\">install and  use the command-line version</a> or reduce the size of sequences and submit the job again.<br>Feel free to <a href=\"mailto:haimash\@tau.ac.il\" target=\"_blank\">contact us</a> for additional help. Sorry for the inconvenience."
                 # raise Exception ( error, "user")
-                errors += error + " user "
-                
-            if var['LongestSeq'] > 2000 and form['Seq_Type'] == "AminoAcids":
+                errors += error
+
+            if not errors and var['LongestSeq'] > 2000 and form['Seq_Type'] == "AminoAcids":
                 error = f"Due to limited computational resources, the web-server support analysis of sequences no longer than 2,000 AA. You can <a href=\"/source\"  target=\"_blank\">install and use the command-line version</a> or reduce the size of sequences and submit the job again.<br>Feel free to <a href=\"mailto:haimash\@tau.ac.il\" target=\"_blank\">contact us</a> for additional help. Sorry for the inconvenience."
                 # raise Exception ( error, "user")
-                errors += error + " user "
+                errors += error
         
         else:  # mafft case
         
@@ -801,10 +783,11 @@ class GuidanceState:
             job_logger.info(f'return: {join_list(ans)}\n')
             if ans[0] == "sys_error":
                 # raise Exception ( ans[1], "system")
-                errors += ans[1] + " system "
+                errors += ans[1]
+                error_is_system = True
             elif ans[0] != 'OK':
                 # raise Exception ( ans, "user")
-                errors += ans + " user "
+                errors += ans
             var['Alignment_File'] = ans[2]
             var['NumOfSeq'] = ans[3]
     
@@ -822,11 +805,10 @@ class GuidanceState:
             except:
                 error = f"Validate_Seqs:Can't open {f} for writing"
                 return 'sys_error', error
-            # return errors
-            if "user" in errors:
-                raise Exception(errors, "user")
-            else:
+            if error_is_system:
                 raise Exception(errors, "system")
+            else:
+                raise Exception(errors, "user")
         return 'OK', warning_msg
         
     def submit_job(self):

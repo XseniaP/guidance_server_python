@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import os
 import requests
 import os
 from os.path import normpath, basename

@@ -327,7 +327,10 @@ def print_initial_running_progress(config):
         if config.Redirect_From_MAFFT != "1":
             PROGRESS.write("<ul class=\"in_progress\"><li>Generating the base alignment</li></ul>\n")
 
-        PROGRESS.write("<ul class=\"in_progress\"><li>Constructing bootstrap guide-trees</li></ul>\n")
+        if config.PROGRAM == "HoT":
+            PROGRESS.write("<ul class=\"in_progress\"><li>Constructing guide tree</li></ul>\n")
+        else:
+            PROGRESS.write("<ul class=\"in_progress\"><li>Constructing bootstrap guide-trees</li></ul>\n")
         PROGRESS.write("<ul class=\"in_progress\"><li>Generating alternative alignments</li></ul>\n")
 
         if config.PROGRAM == "GUIDANCE":

@@ -1,7 +1,7 @@
 ### GUIDANCE3
 
 > **Supported platforms: macOS (arm64 / Intel) and Linux (x86-64) only.**
-> Windows is not supported — the bundled compiled binaries are not available for Windows.
+> Windows is not supported — no Windows wheel is published on PyPI and the bundled compiled binaries are not available for Windows.
 
 ---
 
@@ -86,11 +86,48 @@ python3 guidance3/pipeline/main.py --seqFile <fasta> --msaProgram MAFFT --seqTyp
 
 #### Platform notes
 
-Executables for the following programs are bundled for both MacOS-arm64 (M1) and Ubuntu Linux:
+Pre-compiled binaries for the following programs are bundled under `guidance3/programs/mac/` and `guidance3/programs/linux/`:
 
-- msa_set_score, semphy, removeTaxa, isEqualTree, iqtree, clustalo (ClustalOmega)
+- msa_set_score, removeTaxa, isEqualTree, features_for_msas, iqtree (IQ-TREE 2), clustalo (Clustal Omega)
 
-Each program's source and makefile are in `./script/programs/<program>/`. If you are on a different platform, build replacements using the makefiles and update the paths in **SharedConsts.py**.
+The CLI detects your platform at runtime and uses the correct executables automatically. If you are on an unsupported platform, you will need to obtain the binaries from the respective upstream projects and update the paths in **SharedConsts.py**.
+
+---
+
+#### Citations
+
+If you use GUIDANCE3 in your research, please cite:
+
+- **GUIDANCE2** — Sela I, Ashkenazy H, Katoh K, Pupko T (2015) GUIDANCE2: accurate detection of unreliable alignment regions accounting for the uncertainty of multiple parameters. *Nucleic Acids Res* 43:W7–W14. https://doi.org/10.1093/nar/gkv318
+- **GUIDANCE** — Penn O, Privman E, Ashkenazy H, Landan G, Graur D, Pupko T (2010) GUIDANCE: a web server for assessing alignment confidence scores. *Nucleic Acids Res* 38:W23–W28. https://doi.org/10.1093/nar/gkq443
+- **HoT** — Landan G, Graur D (2007) Heads or tails: a simple reliability measure for multiple sequence alignments. *Mol Biol Evol* 24:1380–1391. https://doi.org/10.1093/molbev/msm060
+
+---
+
+#### Third-party tools
+
+GUIDANCE3 relies on the following external tools. Please cite them alongside GUIDANCE3 when using this software in your research.
+
+**Bundled binaries** (installed automatically with `pip install guidance3`):
+
+- **IQ-TREE 2** — phylogenetic tree inference  
+  Minh BQ, Schmidt HA, Chernomor O, Schrempf D, Woodhams MD, von Haeseler A, Lanfear R (2020) IQ-TREE 2: New Models and Methods for Phylogenetic Inference. *Mol Biol Evol* 37:1530–1534. https://doi.org/10.1093/molbev/msaa015
+
+- **Clustal Omega** — multiple sequence alignment  
+  Sievers F, Wilm A, Dineen D, Gibson TJ, Karplus K, Li W, Lopez R, McWilliam H, Remmert M, Söding J, Thompson JD, Higgins DG (2011) Fast, scalable generation of high-quality protein multiple sequence alignments using Clustal Omega. *Mol Syst Biol* 7:539. https://doi.org/10.1038/msb.2011.75
+
+**External tools** (must be installed separately via conda or your system package manager):
+
+- **MAFFT** — multiple sequence alignment  
+  Katoh K, Standley DM (2013) MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability. *Mol Biol Evol* 30:772–780. https://doi.org/10.1093/molbev/mst010
+
+- **PRANK** — phylogeny-aware multiple sequence alignment  
+  Löytynoja A (2014) Phylogeny-aware alignment with PRANK. *Methods Mol Biol* 1079:155–170. https://doi.org/10.1007/978-1-62703-646-7_10
+
+**Key Python libraries:**
+
+- **Biopython** — Cock PJ et al. (2009) Biopython: freely available Python tools for computational molecular biology and bioinformatics. *Bioinformatics* 25:1422–1423. https://doi.org/10.1093/bioinformatics/btp163
+- **DendroPy** — Sukumaran J, Holder MT (2010) DendroPy: A Python library for phylogenetic computing. *Bioinformatics* 26:1569–1571. https://doi.org/10.1093/bioinformatics/btq228
 
 ---
 

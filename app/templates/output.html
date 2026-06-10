@@ -162,7 +162,7 @@
 <ul>
     <li>
         <form enctype="multipart/form-data" action="/ConcatMSAs/{{var['run_number']}}" method="post">
-            <font color=red face="Comic Sans MS">New feature </font> - Create a <b>SuperMSA</b> by concatenating the
+            Create a <b>SuperMSA</b> by concatenating the
             base MSA and {{var['SuperMSA_selection']|safe}} alternative MSAs computed by GUIDANCE3 <input type="hidden"
                                                                                                           name="run_num"
                                                                                                           value="{{var['run_number']}}"/>
@@ -191,9 +191,10 @@
     <li><A HREF="{{var['run_number']}}/{{var['dataset']}}.{{form['MSA_Program']}}.Guidance2_AlternativeMSA.tar.gz"> The set of alternative MSAs<br></A>
     </li>
 </ul>
+
 {% if best_msa_file %}
 <ul>
-    <li><A HREF="{{var['run_number']}}/{{best_msa_file}}" TARGET=_blank><b>Best MSA</b> selected by the pretrained model (minimum predicted distance score)<br></A>
+    <li><font color=red face="Comic Sans MS">New feature </font> - <A HREF="{{var['run_number']}}/{{best_msa_file}}" TARGET=_blank><b>Best MSA</b> selected by the pretrained model (minimum predicted distance score)<br></A>
     </li>
 </ul>
 {% endif %}
@@ -222,7 +223,7 @@
 
 <br>
 <center><h2 style="text-align:left;"><font color="red">{{var['error_msg']}}:</font><br>Please try to re-run your job or
-    <a href="mailto:{[var['admin_email']}}?subject='Guidance Run Number {{var['run_number']}}'">contact us</a> for
+    <a href="mailto:{{admin_email}}?subject='Guidance Run Number {{var['run_number']}}'">contact us</a> for
     further information</h2></center<br><br>
 
 {% endif %}
@@ -237,8 +238,9 @@
                 Please review the errors, adjust your input and try to re-run your job
             {% else %}
                 Please try to re-run your job. If the problem persists, contact us at the link above.
-            {% endif %}                                 
+            {% endif %}
         </div>
     </div>
 {% endif %}
+
 {% endblock %} 

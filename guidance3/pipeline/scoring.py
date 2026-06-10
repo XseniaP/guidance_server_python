@@ -339,7 +339,7 @@ def create_html_graph(CSV_File, OUT, X_LABLE):
     #      2. HTML OUTPUT
     #      3. X Lable (OPTIONAL)
     ############################################################################################
-    _BLUE_GIF = "/guidance/static/images/blue.gif"
+    _BLUE_GIF = "/static/images/blue.gif"
     try:
         # with open(Out, "a") as OUT, open(CSV_File) as DATA:
         with open(CSV_File) as DATA:
@@ -1215,36 +1215,34 @@ def calculate_sp_scores_convergence(config, countTrees):
     elif config.PROGRAM == "GUIDANCE3":
         config.Output_Prefix = f"{config.dataset}.{config.MSA_Program}.Guidance2"
 
-    # Determine reference MSA (codon case: translate to protein first)
+    # Determine reference MSA (codon case: translate to protein first, cached after first call)
     if config.userMSA_File != "" and config.Seq_Type == "Codons":
         config.Alignment_File_translated_from_user_codon_alignmet = f"{config.Alignment_File}.TranslatedProt"
-        with open(config.OutLogFile, "a") as log_file:
-            log_file.write(
-                f"Codon_Aln_to_AA_Aln({config.WorkingDir}{config.Alignment_File},{config.WorkingDir}{config.Alignment_File_translated_from_user_codon_alignmet},{config.CodonTable},XCodonsFromALN.html)\n")
-        ans = codon_alignment_to_aminoacids_alignment(
-            f"{config.WorkingDir}{config.Alignment_File}",
-            f"{config.WorkingDir}{config.Alignment_File_translated_from_user_codon_alignmet}",
-            config.CodonTable,
-            "XCodonsFromALN.html", config
-        )
-        if ans[0] != "OK":
-            exit_on_error("user_error", ans, config)
-        elif ans[1] != "":
-            if config.is_server == 1:
-                with open(config.output_page, "a") as output_file:
-                    output_file.write(
-                        f"<br><b><font color=\"red\" size4=>Warning:</b></font><font size=\"4\"> {ans[1]}</font>\n")
-            print(f"Warning: {ans[1]}\n")
+        translated_path = os.path.join(config.WorkingDir, config.Alignment_File_translated_from_user_codon_alignmet)
+        if not os.path.exists(translated_path) or os.path.getsize(translated_path) == 0:
             with open(config.OutLogFile, "a") as log_file:
-                log_file.write(f"Warning: {ans[1]}\n")
-        if os.path.getsize(
-                os.path.join(f"{config.WorkingDir}",
-                             f"{config.Alignment_File_translated_from_user_codon_alignmet}")) == 0 or not os.path.exists(
-            os.path.join(
-                f"{config.WorkingDir}", f"{config.Alignment_File_translated_from_user_codon_alignmet}")):
-            exit_on_error("sys_error",
-                          f"{config.WorkingDir}{config.Alignment_File_translated_from_user_codon_alignmet} does not exist/empty\n", config)
-        ref_msa = os.path.join(config.WorkingDir, config.Alignment_File_translated_from_user_codon_alignmet)
+                log_file.write(
+                    f"Codon_Aln_to_AA_Aln({config.WorkingDir}{config.Alignment_File},{translated_path},{config.CodonTable},XCodonsFromALN.html)\n")
+            ans = codon_alignment_to_aminoacids_alignment(
+                f"{config.WorkingDir}{config.Alignment_File}",
+                translated_path,
+                config.CodonTable,
+                "XCodonsFromALN.html", config
+            )
+            if ans[0] != "OK":
+                exit_on_error("user_error", ans, config)
+            elif ans[1] != "":
+                if config.is_server == 1:
+                    with open(config.output_page, "a") as output_file:
+                        output_file.write(
+                            f"<br><b><font color=\"red\" size4=>Warning:</b></font><font size=\"4\"> {ans[1]}</font>\n")
+                print(f"Warning: {ans[1]}\n")
+                with open(config.OutLogFile, "a") as log_file:
+                    log_file.write(f"Warning: {ans[1]}\n")
+            if not os.path.exists(translated_path) or os.path.getsize(translated_path) == 0:
+                exit_on_error("sys_error",
+                              f"{translated_path} does not exist/empty\n", config)
+        ref_msa = translated_path
     else:
         ref_msa = os.path.join(config.WorkingDir, config.Alignment_File)
 
@@ -1276,11 +1274,20 @@ def calculate_sp_scores_convergence(config, countTrees):
         print(f"[incremental] SP score check tree #{countTrees}: {len(new_files)} new MSAs\n")
 
     try:
-        subprocess.run(cmd, shell=True, timeout=600)
+        result = subprocess.run(cmd, shell=True, timeout=600)
     except subprocess.TimeoutExpired:
         if os.path.exists(file_list_path):
             os.unlink(file_list_path)
         raise RuntimeError(f"msa_set_score timed out after 600s: {cmd}")
+
+    if result.returncode != 0:
+        if os.path.exists(file_list_path):
+            os.unlink(file_list_path)
+        msg = f"[WARNING] msa_set_score failed (rc={result.returncode}) at tree {countTrees}, convergence check skipped\n"
+        with open(config.OutLogFile, "a") as log_file:
+            log_file.write(msg)
+        print(msg, end='')
+        raise RuntimeError(f"msa_set_score failed (rc={result.returncode}): {cmd}")
 
     if os.path.exists(file_list_path):
         os.unlink(file_list_path)
@@ -1356,12 +1363,13 @@ def add_scores_to_dict(config, epsilon, countTrees, lock):
     f.close()
 
 #@timeit
-def check_convergence(config, epsilon):
-    if len(config.mean_col_score) < 3 or len(config.mean_res_pair_score) < 3:
-        return 0
-    col = config.mean_col_score
-    rp  = config.mean_res_pair_score
-    if (abs(col[-1] - col[-2]) <= epsilon and abs(col[-2] - col[-3]) <= epsilon and
-            abs(rp[-1] - rp[-2]) <= epsilon and abs(rp[-2] - rp[-3]) <= epsilon):
+def check_convergence(config, epsilon, lock):
+    with lock:
+        if len(config.mean_col_score) < 3 or len(config.mean_res_pair_score) < 3:
+            return 0
+        col = [config.mean_col_score[-3], config.mean_col_score[-2], config.mean_col_score[-1]]
+        rp  = [config.mean_res_pair_score[-3], config.mean_res_pair_score[-2], config.mean_res_pair_score[-1]]
+    if (abs(col[2] - col[1]) <= epsilon and abs(col[1] - col[0]) <= epsilon and
+            abs(rp[2] - rp[1]) <= epsilon and abs(rp[1] - rp[0]) <= epsilon):
         return 1
     return 0
