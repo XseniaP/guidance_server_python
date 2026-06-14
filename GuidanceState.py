@@ -241,6 +241,10 @@ class GuidanceState:
                 if dict_key_defined_not_empty('Align_Order', form):
                     if form['Align_Order'] == 'aligned':
                         var['align_param'] = var['align_param'] + " --reorder"
+            elif form['MSA_Program'] == 'MAFFT_LINSI':
+                if dict_key_defined_not_empty('Align_Order', form):
+                    if form['Align_Order'] == 'aligned':
+                        var['align_param'] = var['align_param'] + " --reorder"
             elif form['MSA_Program'] == 'PRANK':
                  var['align_param'] = var['align_param'] + form['PRANK_F']
             

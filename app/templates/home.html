@@ -174,7 +174,6 @@
                     <label for="MSA_Program" class="form-label">Select the MSA algorithm</label>
                       <select name="MSA_Program" id="MSA_Program" class="form-select" onchange="javascript:toggle_MSA_Options()">
                           <option value="MAFFT">MAFFT (default)</option>
-    <!--				<option value="MAFFT_LINSI">MAFFT-LINSI  -->
                           <option value="PRANK">PRANK</option>
                           <option value="CLUSTALO">Clustal Omega</option>
                       </select>
@@ -182,7 +181,7 @@
 
                 <div class="alert-class">
                     <div  class="alert alert-warning text-center" role="alert">
-                    <b>Warning:</b> PRANK is significantly more time-consuming.  MAFFT is the fastest.
+                    <b>Warning:</b> PRANK is significantly more time-consuming. MAFFT is the fastest. Alternative MAFFT algorithms (e.g. L-INS-i: localpair + maxiterate 1000) can be configured via the Advanced MAFFT Options below — however, some are considerably slower.
                     </div>
                 </div>
             {% endif %}

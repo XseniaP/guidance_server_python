@@ -98,7 +98,6 @@ function toggle_MSA_Options(){
 	var show_MAFFT = getElement("MAFFT_OPTION");
     var show_PRANK = getElement("PRANK_OPTION");
     if(chosen_algorithm == 'MAFFT'){
-	//	alert (chosen_algorithm);
 	    show_PRANK.style.display = 'none';
       	show_MAFFT.style.display = 'block';
 	}

@@ -86,7 +86,7 @@
                 Job title:<b>{{form['JOB_TITLE']}}<br></b>
                 {{var['sequences_link']|safe}}
                 Number of sequences analyzed: {{var['NumOfSeq']}}<br>
-                MSA Algorithm: {{form['MSA_Program']}}<br>
+                MSA Algorithm: {{{'MAFFT_LINSI': 'MAFFT L-INS-i'}.get(form['MSA_Program'], form['MSA_Program'])}}<br>
                 {% if var['align_param'] != '' %}
                 Advanced Alignment Parameters: {{var['align_param']}}<br>
                 {% endif %}
