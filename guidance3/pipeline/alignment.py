@@ -30,7 +30,7 @@ def run_hot_internal(config, op_vals_arr_ref, ep_vals_arr_ref, countTrees, tree_
 
     HOT_COS_GUIDANCE2_cmd += f" {config.codded_seq_fileName} . \"\" 0 {config.HoT_MSA_Program_path} {tree_good_BranchLength} {Branch}"
 
-    if config.MSA_Program == "MAFFT":
+    if config.MSA_Program in ["MAFFT", "MAFFT_LINSI"]:
         if config.PROGRAM == "GUIDANCE3":
             HOT_COS_GUIDANCE2_cmd += f" --- {config.align_param} --op {op_vals_arr_ref[countTrees]}"
         elif config.PROGRAM == "GUIDANCE3_HOT":
@@ -91,7 +91,7 @@ def run_hot_process_on_tree(config, epsilon, proc, RandomBranches,op_vals_arr_re
         try:
             Branch = RandomBranches[countTrees]
 
-            if config.MSA_Program == "MAFFT":
+            if config.MSA_Program in ["MAFFT", "MAFFT_LINSI"]:
                 if 'addfragments' in config.align_param:
                     tree = f"{config.prune_BootStrap_Dir}tree_{countTrees}/{config.dataset}.{config.MSA_Program}.iqtree.tree_{countTrees}CORE.rooted"
                 else:
@@ -373,7 +373,7 @@ def run_guidance3(config):
 
     # INIT
     if config.MSA_Program in ["MAFFT", "MAFFT_LINSI"]:
-        config.HoT_MSA_Program = "MFT"
+        config.HoT_MSA_Program = "MFT" if config.MSA_Program == "MAFFT" else "MFM"
         config.HoT_MSA_Program_path = config.mafft_prog
         check_mafft_profile = subprocess.getoutput(f"which {config.HoT_MSA_Program_path}-profile")
         if "Command not found" in check_mafft_profile:
@@ -437,7 +437,7 @@ def run_guidance3(config):
                                 config.MSA_Program, use_bbl=True)
         if ans[0] != "ok":
             exit_on_error("sys_error", f"Guidance::pullOutBPtrees_BBL: {' '.join(ans)}\n")
-        if config.MSA_Program != "MAFFT":
+        if config.MSA_Program not in ["MAFFT", "MAFFT_LINSI"]:
             numUniqueTrees = ans[1]
             numRepeats4UniqueTree = ans[2]
     else:
@@ -447,7 +447,7 @@ def run_guidance3(config):
                                 config.MSA_Program, config)
         if ans[0] != "ok":
             exit_on_error("sys_error", f"Guidance::pullOutBPtrees: {' '.join(ans)}\n", config)
-        if config.MSA_Program != "MAFFT":
+        if config.MSA_Program not in ["MAFFT", "MAFFT_LINSI"]:
             numUniqueTrees = ans[1]
             numRepeats4UniqueTree = ans[2]
 
@@ -524,10 +524,10 @@ def run_guidance3(config):
     # EP_DistFile is only valid for MAFFT + GUIDANCE3_HOT; initialise to None so that
     # non-MAFFT paths that reach the GapPenDist==EMP branch do not reference an undefined name.
     EP_DistFile = None
-    if (config.MSA_Program == "MAFFT" and config.PROGRAM == "GUIDANCE3"):
+    if (config.MSA_Program in ["MAFFT", "MAFFT_LINSI"] and config.PROGRAM == "GUIDANCE3"):
         OP_DistFile = MAFFT_OP_DIST
         # OP_DistFile = MAFFT_OP_DIST_0_25
-    elif (config.MSA_Program == "MAFFT" and config.PROGRAM == "GUIDANCE3_HOT"):
+    elif (config.MSA_Program in ["MAFFT", "MAFFT_LINSI"] and config.PROGRAM == "GUIDANCE3_HOT"):
         OP_DistFile = MAFFT_OP_DIST_0_25
         EP_DistFile = MAFFT_EP_DIST_0_25
 
@@ -542,7 +542,7 @@ def run_guidance3(config):
                 f"Sample op according to empiric distribution: Guidance::SampelFromEmpiricDistribution({OP_DistFile},{OutOP},{config.Bootstraps})\n")
             op_vals_arr_ref = sample_from_empirical_distribution(OP_DistFile, OutOP, config.Bootstraps)
         elif config.GapPenDist.upper() == "UNIF":
-            if config.MSA_Program == "MAFFT":
+            if config.MSA_Program in ["MAFFT", "MAFFT_LINSI"]:
                 log_file.write(
                     f"Sample op according to uniform distribution: Guidance::SampleFromUniformDist(1,3,{OutOP},{config.Bootstraps})\n")
                 # according to mafft web-site defaults: http://mafft.cbrc.jp/alignment/server/index.html
@@ -666,7 +666,7 @@ def run_hot(config):
     try:
         with open(config.OutLogFile, "a") as log_file:
             if config.MSA_Program in ["MAFFT", "MAFFT_LINSI"]:
-                config.HoT_MSA_Program = "MFT"
+                config.HoT_MSA_Program = "MFT" if config.MSA_Program == "MAFFT" else "MFM"
                 config.HoT_MSA_Program_path = config.mafft_prog
                 check_mafft_profile = subprocess.getoutput(f"which {config.HoT_MSA_Program_path} -profile")
                 if "Command not found" in check_mafft_profile:

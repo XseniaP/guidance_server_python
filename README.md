@@ -11,7 +11,7 @@
 pip install git+https://github.com/XseniaP/guidance_server_python.git
 ```
 
-All Python dependencies and bundled binaries (iqtree, msa_set_score, etc.) are installed automatically. The CLI detects your platform and uses the correct executables.
+All Python dependencies and bundled binaries (iqtree, msa_set_score, etc.) are installed automatically. The Command Line Interface (CLI) detects your platform and uses the correct executables.
 
 > **Installation time:** expect **15–30 minutes** on a typical connection. TensorFlow (~500 MB) and PyTorch (~400 MB) are large downloads. The install is a one-time cost.
 
@@ -90,7 +90,7 @@ Pre-compiled binaries for the following programs are bundled under `guidance3/pr
 
 - msa_set_score, removeTaxa, isEqualTree, features_for_msas, iqtree (IQ-TREE 2), clustalo (Clustal Omega)
 
-The CLI detects your platform at runtime and uses the correct executables automatically. If you are on an unsupported platform, you will need to obtain the binaries from the respective upstream projects and update the paths in **SharedConsts.py**.
+The CLI detects your platform at runtime and uses the correct executables automatically. If you are on an unsupported platform, you will need to obtain the binaries from the respective upstream projects and update the paths in **SharedConsts.py** and **guidance3/constants.py**.
 
 ---
 
@@ -100,7 +100,8 @@ If you use GUIDANCE3 in your research, please cite:
 
 - **GUIDANCE2** — Sela I, Ashkenazy H, Katoh K, Pupko T (2015) GUIDANCE2: accurate detection of unreliable alignment regions accounting for the uncertainty of multiple parameters. *Nucleic Acids Res* 43:W7–W14. https://doi.org/10.1093/nar/gkv318
 - **GUIDANCE** — Penn O, Privman E, Ashkenazy H, Landan G, Graur D, Pupko T (2010) GUIDANCE: a web server for assessing alignment confidence scores. *Nucleic Acids Res* 38:W23–W28. https://doi.org/10.1093/nar/gkq443
-- **HoT** — Landan G, Graur D (2007) Heads or tails: a simple reliability measure for multiple sequence alignments. *Mol Biol Evol* 24:1380–1391. https://doi.org/10.1093/molbev/msm060
+- **HoT** — Landan G, Graur D (2007) Heads or tails: a simple reliability measure for multiple sequence alignments. *Mol Biol Evol* 24:1380–1391. https://doi.org/10.1093/molbev/msm060 
+- **HoT** — Landan G, Graur D (2008) Local reliability measures from sets of co-optimal multiple sequence alignments. *Pac Symp Biocomput* 13:15-24. PMID: 18229673. https://pubmed.ncbi.nlm.nih.gov/18229673/ 
 
 ---
 
@@ -108,7 +109,7 @@ If you use GUIDANCE3 in your research, please cite:
 
 GUIDANCE3 relies on the following external tools. Please cite them alongside GUIDANCE3 when using this software in your research.
 
-**Bundled binaries** (installed automatically with `pip install guidance3`):
+**Bundled binaries** (will be installed automatically with `pip install guidance3` when published):
 
 - **IQ-TREE 2** — phylogenetic tree inference  
   Minh BQ, Schmidt HA, Chernomor O, Schrempf D, Woodhams MD, von Haeseler A, Lanfear R (2020) IQ-TREE 2: New Models and Methods for Phylogenetic Inference. *Mol Biol Evol* 37:1530–1534. https://doi.org/10.1093/molbev/msaa015

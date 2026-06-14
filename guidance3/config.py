@@ -128,8 +128,8 @@ class RunConfig:
         parser.add_argument('--seqFile', dest='usrSeq_File', type=str, required=True,
                             help='Specify the sequence file (required).')
         parser.add_argument('--msaProgram', dest='MSA_Program', type=str,
-                            choices=['MAFFT', "MAFFT_LINSI", 'PRANK', 'CLUSTALO', 'MUSCLE', 'PAGAN'], required=True, default="",
-                            help='Specify the MSA program (Required). <MAFFT|MAFFT_LINSI|PRANK|CLUSTALO|MUSCLE|PAGAN>. Default=""')
+                            choices=['MAFFT', 'MAFFT_LINSI', 'PRANK', 'CLUSTALO'], required=True, default="",
+                            help='Specify the MSA program (Required). <MAFFT|MAFFT_LINSI|PRANK|CLUSTALO>. Default=""')
         parser.add_argument('--seqType', dest='Seq_Type', type=str, choices=['aa', 'nuc', 'codon'],
                             required=True, default="", help='Specify the sequence type: aa, nuc, or codon (Required')
         parser.add_argument('--outDir', required=True, dest='outDir', type=str,
@@ -233,8 +233,8 @@ class RunConfig:
 
         self.MSA_Program = self.MSA_Program.upper()
 
-        if self.MSA_Program not in ["MAFFT", "PRANK", "CLUSTALO", "MUSCLE", "PAGAN"]:
-            raise ValueError("ERROR: msaProgram should be MAFFT or PRANK or CLUSTALO or MUSCLE or PAGAN (case sensitive)\n")
+        if self.MSA_Program not in ["MAFFT", "MAFFT_LINSI", "PRANK", "CLUSTALO"]:
+            raise ValueError("ERROR: msaProgram should be MAFFT or MAFFT_LINSI or PRANK or CLUSTALO (case sensitive)\n")
 
         if not self.outDir.endswith("/"):
             self.outDir += "/"

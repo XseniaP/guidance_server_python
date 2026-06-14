@@ -27,7 +27,7 @@ def met_init_MAF(seqtype, sequencing_method, file_handler):
         sequencing_method.version = sequencing_method.version + ' ' + sequencing_method.parameters
 
     if sequencing_method.name[2:3] == 'M':
-        sequencing_method.version = sequencing_method.version + ' --localpair --maxiterate 1000' #L-INS-i
+        sequencing_method.version = sequencing_method.version + ' --localpair --maxiterate 1000' #MAFFT L-INS-i
 
     if seqtype == 0:
         sequencing_method.version = sequencing_method.version + ' --amino'

@@ -885,7 +885,7 @@ def align(config):
         except subprocess.TimeoutExpired:
             raise RuntimeError(f"Command timed out after 7200s: {cmd}")
 
-    elif config.MSA_Program == "MAFFT_LINSI":
+    elif config.MSA_Program == "MAFFT_LINSI": #MAFFT L-INS-I
         # align with mafft
         cmd = ""
         if config.Seq_Type in ["AminoAcids", "Codons"]:

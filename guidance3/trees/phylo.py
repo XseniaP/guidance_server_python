@@ -127,7 +127,7 @@ def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog, config=None, use
     if not os.path.exists(bp_dir):
         os.mkdir(bp_dir)
 
-    make_unique = aln_prog != "MAFFT"
+    make_unique = aln_prog not in ["MAFFT", "MAFFT_LINSI"]
 
     non_unique_trees_dir = ""
     if make_unique:  # BUILT ALIGNMENT ONLY FOR UNIQUE TREES
@@ -171,9 +171,9 @@ def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog, config=None, use
                     tree_line = next(log_file)
 
                     if not make_unique:
-                        tree_dir = f"{bp_dir}/tree_{count_trees}/"
+                        tree_dir = f"{bp_dir}tree_{count_trees}/"
                     else:
-                        tree_dir = f"{non_unique_trees_dir}/tree_{count_trees}/"
+                        tree_dir = f"{non_unique_trees_dir}tree_{count_trees}/"
 
                     if not os.path.exists(tree_dir):
                         os.mkdir(tree_dir)
@@ -201,10 +201,10 @@ def pull_out_bp_trees(no_bp_dir, dataset, bp_repeats, aln_prog, config=None, use
 
         with open(iqtree_boottrees_file, 'r') as boottrees_file:
             for my_tree in boottrees_file:
-                if aln_prog == "MAFFT":
-                    tree_dir = f"{bp_dir}/tree_{count_trees}/"
+                if not make_unique:
+                    tree_dir = f"{bp_dir}tree_{count_trees}/"
                 else:  # CHECK UNIQUE TREE ONLY NOT FOR MAFFT
-                    tree_dir = f"{non_unique_trees_dir}/tree_{count_trees}/"
+                    tree_dir = f"{non_unique_trees_dir}tree_{count_trees}/"
 
                 if not os.path.exists(tree_dir):
                     os.mkdir(tree_dir)
