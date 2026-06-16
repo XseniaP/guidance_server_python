@@ -313,6 +313,14 @@
                             <option value="globalpair">globalpair</option>
                         </select>
                     </div>
+                    <div class="form-text" style="color: #d6eef5;">
+                        Alternative MAFFT algorithms can be configured as follows:<br>
+                        L-INS-i: localpair + maxiterate 1000<br>
+                        G-INS-i: globalpair + maxiterate 1000<br>
+                        E-INS-i: genafpair + maxiterate 1000<br>
+                        FFT-NS-i (&ge;2 cycles): 6mer + maxiterate i (e.g. 2 or 1000)<br>
+                        Note: iterative methods are considerably slower than the default FFT-NS-2.
+                    </div>
                 </div>
 
                 <div id="PRANK_OPTION">
