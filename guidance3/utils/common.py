@@ -322,7 +322,7 @@ def print_initial_running_progress(config):
         ALT_STATUS.write("<ul class=\"in_progress\"><li>Generating alternative alignments</li></ul>\n")
 
     with open(config.WorkingDir + config.progress_report, "a") as PROGRESS:
-        PROGRESS.write("<p><font face=Verdana size=2>\n")
+        PROGRESS.write("<p>\n")
 
         if config.Redirect_From_MAFFT != "1":
             PROGRESS.write("<ul class=\"in_progress\"><li>Generating the base alignment</li></ul>\n")
@@ -343,7 +343,7 @@ def print_initial_running_progress(config):
             PROGRESS.write("<ul class=\"in_progress\"><li>Calculating GUIDANCE3 scores</li></ul>\n")
             PROGRESS.write("<ul class=\"in_progress\"><li>Running the model and selecting the best MSA</li></ul>\n")
 
-        PROGRESS.write("</font>\n")
+        PROGRESS.write("</p>\n")
 
 #@timeit
 def update_progress(progress_file, message):

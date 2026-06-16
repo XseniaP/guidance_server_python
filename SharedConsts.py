@@ -112,8 +112,8 @@ DL_MODEL_NUC_SCALER_PATH = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'in
 
 MUSCLE = "muscle"
 MAFFT_GUIDANCE = "mafft"
-PRANK_LECS = "prank"
-PRANK = "prank"
+PRANK_LECS = os.environ.get('GUIDANCE_PRANK', 'prank')
+PRANK = PRANK_LECS
 PAGAN_LECS = "/share/apps/pagan-msa/bin/pagan"
 PAGAN = 'pagan'
 RUBY = 'ruby'

@@ -31,9 +31,12 @@ def met_init_PRK(seqtype, sequencing_method, file_handler):
 def align_sequences_PRK(infile, treefile, outfile, sequencing_method, sequence, file_handler):
     """Run PRANK sequence alignment with the given configuration and input sequences and save the aligned sequences to the output file"""
 
-    command_line = f"({sequencing_method.version} -d={infile} -t={treefile} -o=prank_{outfile} -notree 2>&1) 2>&1; mv prank_{outfile}.best.fas {outfile}"
+    # Strip extension before passing as -o= base: PRANK v.150803 strips extensions itself,
+    # so "-o=prank_hot_H.fasta" produces "prank_hot_H.best.fas" not "prank_hot_H.fasta.best.fas".
+    prank_base = f"prank_{os.path.splitext(outfile)[0]}"
+    command_line = f"({sequencing_method.version} -d={infile} -t={treefile} -o={prank_base} -notree 2>&1) 2>&1; mv {prank_base}.best.fas {outfile}"
     if sequencing_method.prkver == 1:
-        command_line = f"({sequencing_method.version} -d={infile} -t={treefile} -o=prank_{outfile} 2>&1) 2>&1; mv prank_{outfile}.best.fas {outfile}"
+        command_line = f"({sequencing_method.version} -d={infile} -t={treefile} -o={prank_base} 2>&1) 2>&1; mv {prank_base}.best.fas {outfile}"
 
     rc = run_command_line(command_line, file_handler)
     if 'err' in rc.lower():
@@ -53,15 +56,17 @@ def align_sequences_PRK(infile, treefile, outfile, sequencing_method, sequence, 
 def align_profiles_PRK(pfile1, pfile2, tfile3, ofile, sequencing_method, sequence, file_handler):
     """Run PRANK profile alignment with the given configuration and input profiles and save the aligned sequences to the output file"""
 
-    command_line = f"sed 's/^>.*\$/& group_a/' {pfile1} >prank_{ofile}_inp; sed 's/^>.*\$/& group_b/' {pfile2} >>prank_{ofile}_inp"
+    # Strip extension for same reason as align_sequences_PRK: PRANK v.150803 strips extensions.
+    prank_base = f"prank_{os.path.splitext(ofile)[0]}"
+    command_line = f"sed 's/^>.*\$/& group_a/' {pfile1} >{prank_base}_inp; sed 's/^>.*\$/& group_b/' {pfile2} >>{prank_base}_inp"
     rc = run_command_line(command_line, file_handler)  # makes prank profile input
     if 'err' in rc.lower():
         log_print(0, 2, f"ERROR: prank input sed error:\n{command_line}\n---\n{rc}\n---\n", file_handler)
         cleanup(1, file_handler)
 
-    command_line = f"({sequencing_method.version} -partaligned -d=prank_{ofile}_inp -t={tfile3} -o=prank_{ofile} -notree 2>&1) 2>&1; mv prank_{ofile}.0.fas {ofile}"
+    command_line = f"({sequencing_method.version} -partaligned -d={prank_base}_inp -t={tfile3} -o={prank_base} -notree 2>&1) 2>&1; mv {prank_base}.0.fas {ofile}"
     if sequencing_method.prkver == 1:
-        command_line = f"({sequencing_method.version} -partaligned -d=prank_{ofile}_inp -t={tfile3} -o=prank_{ofile} 2>&1) 2>&1; mv prank_{ofile}.fas {ofile}"
+        command_line = f"({sequencing_method.version} -partaligned -d={prank_base}_inp -t={tfile3} -o={prank_base} 2>&1) 2>&1; mv {prank_base}.fas {ofile}"
 
     rc = run_command_line(command_line, file_handler)
     if 'err' in rc.lower():

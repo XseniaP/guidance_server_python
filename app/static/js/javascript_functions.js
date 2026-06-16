@@ -92,23 +92,29 @@ function toggle_Algorithm_Options(){
 }
 //------------------------------------
 function toggle_MSA_Options(){
-  //  alert ("toggle_MSA_Options");
 	var chosen_algorithm = window.document.Guidance_form.MSA_Program.value;
-  //  alert ("QA1:"+chosen_algorithm);
 	var show_MAFFT = getElement("MAFFT_OPTION");
     var show_PRANK = getElement("PRANK_OPTION");
+    var warn_mafft = getElement("warn_mafft");
+    var warn_prank = getElement("warn_prank");
     if(chosen_algorithm == 'MAFFT'){
 	    show_PRANK.style.display = 'none';
       	show_MAFFT.style.display = 'block';
+        if(warn_mafft) warn_mafft.style.display = 'block';
+        if(warn_prank) warn_prank.style.display = 'none';
 	}
     else if(chosen_algorithm == 'PRANK'){
 		show_PRANK.style.display = 'block';
         show_MAFFT.style.display = 'none';
+        if(warn_prank) warn_prank.style.display = 'block';
+        if(warn_mafft) warn_mafft.style.display = 'none';
 	}
 	else
 	{
 		show_PRANK.style.display = 'none';
 		show_MAFFT.style.display = 'none';
+        if(warn_mafft) warn_mafft.style.display = 'none';
+        if(warn_prank) warn_prank.style.display = 'none';
 	}
 }
 

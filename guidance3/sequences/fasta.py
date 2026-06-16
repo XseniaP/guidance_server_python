@@ -661,11 +661,13 @@ def codes2name_scoresFile_NEW(Score_File, Codes_File, MSA_File, Out):
     MSA_row_Num_to_Seq_Name = {}
     Code_Names = {}
 
-    # Read codes
+    # Read codes — store both original and lowercase keys to tolerate PRANK
+    # capitalising seq IDs (e.g. seq0000 → Seq0000) in its output alignment.
     with open(Codes_File, 'r') as codes:
         for line in codes:
             Seq_name, Code = line.strip().split("\t")
             Code_Names[Code] = Seq_name
+            Code_Names[Code.lower()] = Seq_name
 
     # Read MSA to see which seq in which row and assign the correct code name
     # MSA_Depth = None

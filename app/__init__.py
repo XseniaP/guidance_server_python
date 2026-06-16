@@ -204,6 +204,23 @@ def update_process_page(process_id):
         process_id2update.remove(process_id)
         return 'update' #UI_CONSTS.TEXT_TO_RELOAD_HTML
 
+@app.route(PREFIX + "/progress_poll/<process_id>")
+def progress_poll(process_id):
+    """Lightweight endpoint: returns progress HTML + job state for JS polling."""
+    job_state = manager.get_guidance_job_state(process_id)
+    state_str = job_state.str() if job_state else 'UNKNOWN'
+
+    progress_html = ''
+    progress_path = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id, 'ProgressReport.html')
+    msa_status_path = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id, 'MSA_STATUS.txt')
+    if os.path.exists(progress_path):
+        with open(progress_path) as f:
+            progress_html = f.read()
+        if os.path.exists(msa_status_path):
+            with open(msa_status_path) as f:
+                progress_html = progress_html.replace('REPLACE', f.read())
+    return jsonify({'state': state_str, 'progress': progress_html})
+
 #JS commented out
 manager = Job_Manager_API(MAX_NUMBER_PROCESS, app.config['UPLOAD_FOLDERS_ROOT_PATH'], USER_FILE_NAME, update_html)
        

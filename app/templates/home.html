@@ -179,9 +179,14 @@
                       </select>
                 </div>
 
-                <div class="alert-class">
-                    <div  class="alert alert-warning text-center" role="alert">
-                    <b>Warning:</b> PRANK is significantly more time-consuming. MAFFT is the fastest. Alternative MAFFT algorithms (e.g. L-INS-i: localpair + maxiterate 1000) can be configured via the Advanced MAFFT Options below — however, some are considerably slower.
+                <div class="alert-class" id="warn_prank" style="display:none">
+                    <div class="alert alert-warning text-center" role="alert">
+                    <b>Warning:</b> PRANK is significantly more time-consuming than MAFFT.
+                    </div>
+                </div>
+                <div class="alert-class" id="warn_mafft">
+                    <div class="alert alert-warning text-center" role="alert">
+                    <b>Note:</b> Alternative MAFFT algorithms (e.g. L-INS-i: localpair + maxiterate 1000) can be configured via Advanced Options below — however, some are considerably slower.
                     </div>
                 </div>
             {% endif %}
