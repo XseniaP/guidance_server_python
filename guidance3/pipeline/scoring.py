@@ -306,7 +306,7 @@ def print_colored_alignment_with_css(in_msa_file, out_html_file, scores_file, co
             # msa_colored_html.write("</body>\n</table>\n")
 
             # create_html_graph(col_scores_csv, out_html_file, x_label)
-            create_html_graph(col_scores_csv, msa_colored_html, x_label)
+            create_html_graph(col_scores_csv, msa_colored_html, x_label, total_cols=align_width)
 
             msa_colored_html.write("\n<br><b><u>Legend:</u><br><br>\nThe alignment confidence scale:</b><br>\n")
             print_color_scale(msa_colored_html, fontsize, colorstep_code)
@@ -333,11 +333,13 @@ def print_scale(file, align_width):
     file.write("\n</tr>\n")
 
 #@timeit
-def create_html_graph(CSV_File, OUT, X_LABLE):
+def create_html_graph(CSV_File, OUT, X_LABLE, total_cols=None):
     # Create an HTML BARs graph
     # GET: 1. CSV FILE (The X var is the first Col and the Y is the second, X must be sorted)
     #      2. HTML OUTPUT
     #      3. X Lable (OPTIONAL)
+    #      4. total_cols (OPTIONAL) — full alignment width; ensures trailing NaN columns
+    #         get empty cells with the bottom border line, matching the rest of the table.
     ############################################################################################
     _BLUE_GIF = "/static/images/blue.gif"
     try:
@@ -389,8 +391,16 @@ def create_html_graph(CSV_File, OUT, X_LABLE):
                     last_x = int(data[0])
                 elif data[1] == "NaN":
                     OUT.write(
-                        f"<td valign = bottom style = 'border-bottom: 1px solid black;'><img title=\"{data[0]}:{data[1]}\" src=\"{_BLUE_GIF}\" width=\"{BarWidth}\" height=\"{float(data[1]) * scale}\" border=\"1\"></td>\n")
+                        f"<td valign = bottom style = 'border-bottom: 1px solid black;'><img title=\"{data[0]}:NaN\" src=\"{_BLUE_GIF}\" width=\"{BarWidth}\" height=\"0\" border=\"0\"></td>\n")
                     last_x = int(data[0])
+
+            # Fill trailing columns with no score (NaN or absent) so the bottom border
+            # extends across the full alignment width.
+            if total_cols is not None:
+                while last_x < total_cols:
+                    OUT.write(
+                        f"<td valign = bottom style = 'border-bottom: 1px solid black;'><img src=\"{_BLUE_GIF}\" width=\"{BarWidth}\" height=\"0\" border=\"0\"></td>\n")
+                    last_x += 1
 
             OUT.write("</tr>\n")
             OUT.write("</table>\n")
