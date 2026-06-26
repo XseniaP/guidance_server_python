@@ -417,7 +417,8 @@ def run_guidance3(config):
         # HOT ASSUME THAT THE SEQUENCES ARE ALL UPPER CASE, SO WE CONVERT THE ALN TO UPPER CASE
         convert_fs_to_upper_case(
             f"{config.WorkingDir}{config.Alignment_File}")
-
+        if config.isServer == 1:
+            update_progress(f"{config.WorkingDir}{config.progress_report}", "Generating the base alignment")
     else:
         convert_fs_to_upper_case(
             f"{config.WorkingDir}{config.Alignment_File}")

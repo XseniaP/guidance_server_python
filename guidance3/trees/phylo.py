@@ -72,8 +72,11 @@ def _collect_unique_trees(tree_file, tree_dir, bp_dir, dataset, aln_prog, tool_s
     for i in range(count_unique):
         unique_tree_file = f"{bp_dir}tree_{i}/{dataset}.{aln_prog}.{tool_suffix}.tree_{i}"
         is_equal_topology_res_file = f"{tree_dir}isEqualTopology.{i}.std"
-        is_equal_topology_command = f"{isEqualTopologyProg} {tree_file} {unique_tree_file}"
-        is_equal_topology = os.system(is_equal_topology_command)
+        result = subprocess.run(
+            [isEqualTopologyProg, tree_file, unique_tree_file],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+        is_equal_topology = result.returncode
 
         with open(is_equal_topology_res_file, 'w') as out_equal_top_file:
             out_equal_top_file.write(str(is_equal_topology))

@@ -16,14 +16,16 @@
     }
 
     ul.in_progress,
-    ul.finished {
+    ul.finished,
+    ul.skipped {
         list-style: none;
         padding-left: 0;
         margin: 0;
     }
 
     ul.in_progress li,
-    ul.finished li {
+    ul.finished li,
+    ul.skipped li {
         display: flex;
         align-items: center;
         gap: 6px;
@@ -46,6 +48,20 @@
         height: 18px;
         flex-shrink: 0;
         background: url('{{url_for('static',filename="images/check_circle.svg")}}') center/contain no-repeat;
+    }
+
+    ul.skipped li {
+        color: #999;
+        font-style: italic;
+    }
+
+    ul.skipped li::before {
+        content: '';
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        background: url('{{url_for('static',filename="images/skipped_circle.svg")}}') center/contain no-repeat;
     }
 </style>
 

@@ -325,7 +325,10 @@ def print_initial_running_progress(config):
         PROGRESS.write("<p>\n")
 
         if config.Redirect_From_MAFFT != "1":
-            PROGRESS.write("<ul class=\"in_progress\"><li>Generating the base alignment</li></ul>\n")
+            if config.userMSA_File:
+                PROGRESS.write("<ul class=\"skipped\"><li>Generating the base alignment (skipped — alignment provided)</li></ul>\n")
+            else:
+                PROGRESS.write("<ul class=\"in_progress\"><li>Generating the base alignment</li></ul>\n")
 
         if config.PROGRAM == "HoT":
             PROGRESS.write("<ul class=\"in_progress\"><li>Constructing guide tree</li></ul>\n")
