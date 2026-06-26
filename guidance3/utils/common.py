@@ -365,7 +365,9 @@ def update_progress(progress_file, message):
                 progress.write(line)
             elif "Finished Calculating" in message and "Calculating" in line:
                 line = line.replace("in_progress", "finished")
-                line = line.replace("Calculating", "Finished Calculating")
+                line = line.replace("Calculating GUIDANCE3 scores", "Finished calculating GUIDANCE3 scores")
+                line = line.replace("Calculating GUIDANCE scores", "Finished calculating GUIDANCE scores")
+                line = line.replace("Calculating HoT scores", "Finished calculating HoT scores")
                 progress.write(line)
             elif "Finished running the model" in message and "Running the model" in line:
                 line = line.replace("in_progress", "finished")

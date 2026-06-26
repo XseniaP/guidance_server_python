@@ -223,17 +223,28 @@ def print_colored_alignment_with_css(in_msa_file, out_html_file, scores_file, co
 
     try:
         with open(out_html_file, "w") as msa_colored_html:
-            msa_colored_html.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n")
-            msa_colored_html.write("\"http://www.w3.org/TR/html4/strict.dtd\">\n")
-            msa_colored_html.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n")
-            msa_colored_html.write("\"http://www.w3.org/TR/html4/loose.dtd\">\n")
-            msa_colored_html.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\"\n")
-            msa_colored_html.write("\"http://www.w3.org/TR/html4/frameset.dtd\">\n")
+            msa_colored_html.write("<!DOCTYPE html>\n")
             msa_colored_html.write("<head>\n")
-            msa_colored_html.write("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=EmulateIE7\"/>\n")
-            msa_colored_html.write(f"<link rel=\"stylesheet\" type=\"text/css\" href=\"{MSA_Score_CSS}\"/>\n")
-            msa_colored_html.write("</head>\n")
-            msa_colored_html.write("<H1 align=center><u>MSA color-coded by GUIDANCE scores</u></H1>\n\n")
+            msa_colored_html.write("<meta charset='utf-8'/>\n")
+            msa_colored_html.write("<meta name='viewport' content='width=device-width, initial-scale=1'/>\n")
+            msa_colored_html.write(f"<link rel='stylesheet' type='text/css' href='{MSA_Score_CSS}'/>\n")
+            msa_colored_html.write(
+                "<style>"
+                "body{margin:0;padding:0;font-family:'Courier New',monospace;background:#fafafa;}"
+                ".msa-header{background:#fff;border-bottom:2px solid #e0e0e0;"
+                "padding:18px 24px 14px;margin-bottom:12px;}"
+                ".msa-header h1{margin:0;font-size:24px;font-weight:700;color:#222;"
+                "letter-spacing:0.01em;}"
+                ".msa-header p{margin:4px 0 0;font-size:15px;color:#666;font-family:sans-serif;}"
+                "</style>\n"
+            )
+            msa_colored_html.write("</head>\n<body>\n")
+            msa_colored_html.write(
+                "<div class='msa-header'>"
+                "<h1>MSA colored by GUIDANCE reliability scores</h1>"
+                "<p>Scores are shown as: residue coloring &nbsp;|&nbsp; column score bars (below) &nbsp;|&nbsp; per-sequence strip (left)</p>"
+                "</div>\n"
+            )
             msa_colored_html.write("<table>\n")
 
             # get Align max_seq_length
@@ -241,21 +252,13 @@ def print_colored_alignment_with_css(in_msa_file, out_html_file, scores_file, co
             align_width = alignment.get_alignment_length()
             # Align_width = len(seq.seq)
 
+            # _LABEL_STYLE is a module-level constant (shared by all axis labels)
             # Print upper Scale
             msa_colored_html.write(
-                "<tr>\n<td class=\"Score5\">&nbsp</td><td class=\"Seq_Name\">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td><td>1</td>\n")
-            i = 2
-            while i < align_width:
-                if (i % 10) == 0:
-                    digits = [char for char in str(i)]
-                    msa_colored_html.write("\n")
-                    for digit in digits:
-                        msa_colored_html.write(f"<td>{digit}</td>")
-                        i += 1
-                else:
-                    msa_colored_html.write("<td></td>")
-                    i += 1
-
+                "<tr>\n"
+                f"<td style='width:16px;min-width:16px;max-width:16px;padding:0;white-space:normal;'></td>"
+                f"<td class=\"Seq_Name\" style='text-align:center;{_LABEL_STYLE}'>Sequence</td>")
+            _write_scale_cells(msa_colored_html, align_width)
             msa_colored_html.write("\n</tr>\n")
 
             for block_start in range(0, align_width, sequence_length_for_display):
@@ -266,12 +269,18 @@ def print_colored_alignment_with_css(in_msa_file, out_html_file, scores_file, co
                     seq = alignment[i - 1]
 
                     msa_colored_html.write("<tr>\n")
-                    if seq_scores_data[str(i)] == "nan" or seq_scores_data[str(i)] == "-nan" or np.isnan(float(seq_scores_data[str(i)])):
+                    raw_seq_score = seq_scores_data[str(i)]
+                    if raw_seq_score in ('nan', '-nan') or np.isnan(float(raw_seq_score)):
                         color_class = "ScoreNaN"
+                        seq_score_tip = "N/A"
                     else:
-                        color_class = colorstep[int(9 * float(seq_scores_data[str(i)]))]
-                    # color_class = get_color_class(seq_scores_data.get(str(i), "nan"))
-                    msa_colored_html.write(f"<td class=\"{color_class}\">&nbsp</td>\n")
+                        color_class = colorstep[int(9 * float(raw_seq_score))]
+                        seq_score_tip = f"{float(raw_seq_score):.3f}"
+                    msa_colored_html.write(
+                        f"<td class=\"{color_class}\" "
+                        f"style='width:16px;min-width:16px;max-width:16px;padding:0;white-space:normal;' "
+                        f"title='Sequence score: {seq_score_tip}'></td>\n"
+                    )
 
                     if codes_file == "" or codes_file == None:
                         msa_colored_html.write(f"<td class=\"Seq_Name\">{seq.id}</td>\n")
@@ -283,18 +292,19 @@ def print_colored_alignment_with_css(in_msa_file, out_html_file, scores_file, co
 
                     for pos in range(len(seq_block)):
                         res = seq_block[pos]
+                        col_num = block_start + pos + 1
                         if res == '-':
-                            msa_colored_html.write("<td>{}</td>\n".format(res))
+                            msa_colored_html.write(f"<td title='Col {col_num}: gap'>-</td>\n")
                         else:
-                            color_class = ""
-                            # if scores_data[i][block_start + pos] == "nan":
-                            check = scores_data[str(i)][str(pos + 1)]
-                            if scores_data[str(i)][str(pos + 1)] == 'nan' or scores_data[str(i)][str(pos + 1)] == '-nan' or np.isnan(float(scores_data[str(i)][str(pos + 1)])):
+                            raw_score = scores_data[str(i)][str(col_num)]
+                            if raw_score in ('nan', '-nan') or np.isnan(float(raw_score)):
                                 color_class = "ScoreNaN"
+                                tip = f"Col {col_num}: N/A"
                             else:
-                                color_class = colorstep[int(9 * float(scores_data[str(i)][str(pos + 1)]))]
-                            # color_class = get_color_class(scores_data[i][block_start + pos])
-                            msa_colored_html.write("<td class=\"{}\">{}</td>\n".format(color_class, res))
+                                s = float(raw_score)
+                                color_class = colorstep[int(9 * s)]
+                                tip = f"Col {col_num}: {s:.3f}"
+                            msa_colored_html.write(f"<td class=\"{color_class}\" title='{tip}'>{res}</td>\n")
 
                     msa_colored_html.write("</tr>\n\n")
 
@@ -308,7 +318,7 @@ def print_colored_alignment_with_css(in_msa_file, out_html_file, scores_file, co
             # create_html_graph(col_scores_csv, out_html_file, x_label)
             create_html_graph(col_scores_csv, msa_colored_html, x_label, total_cols=align_width)
 
-            msa_colored_html.write("\n<br><b><u>Legend:</u><br><br>\nThe alignment confidence scale:</b><br>\n")
+            msa_colored_html.write("\n<br>\n")
             print_color_scale(msa_colored_html, fontsize, colorstep_code)
 
             msa_colored_html.write("</body>\n</table>\n")
@@ -318,21 +328,85 @@ def print_colored_alignment_with_css(in_msa_file, out_html_file, scores_file, co
     return ["OK"]
 
 
-def print_scale(file, align_width):
-    file.write("<tr>\n<td class=\"Score5\">&nbsp</td><td class=\"Seq_Name\"></td><td>1</td>\n")
-    i = 2
-    while i < align_width:
-        if i % 10 == 0:
-            digits = list(str(i))
-            for digit in digits:
-                file.write("\n<td>{}</td>".format(digit))
-                i += 1
+def _write_scale_cells(file, align_width):
+    """Write <td> elements for a column-number scale row.
+
+    Multi-digit numbers use a single colspan cell centered on their column so
+    "10" appears as one unit centered over column 10, not two stray digits.
+    """
+    # Build map: start_col (1-indexed) → (end_col, label_text)
+    label_map = {1: (1, '1')}
+    p = 10
+    while p <= align_width:
+        s = str(p)
+        n = len(s)
+        start = max(1, p - n // 2)          # center: shift left by half
+        end = min(align_width, start + n - 1)
+        label_map[start] = (end, s)
+        p += 10
+
+    col = 1
+    while col <= align_width:
+        if col in label_map:
+            end, text = label_map[col]
+            span = end - col + 1
+            attrs = "style='text-align:center;overflow:visible;white-space:nowrap;padding:0;'"
+            if span > 1:
+                file.write(f"<td colspan='{span}' {attrs}>{text}</td>")
+            else:
+                file.write(f"<td {attrs}>{text}</td>")
+            col = end + 1
         else:
             file.write("<td></td>")
-            i += 1
+            col += 1
+
+
+def print_scale(file, align_width):
+    file.write(
+        "<tr>\n"
+        "<td style='width:16px;min-width:16px;max-width:16px;padding:0;white-space:normal;'></td>"
+        "<td class=\"Seq_Name\"></td>"
+    )
+    _write_scale_cells(file, align_width)
     file.write("\n</tr>\n")
 
-#@timeit
+
+# Same nine-step palette as the MSA residue/sequence coloring.
+_SCORE_COLORS = ["#10C8D1","#8CFFFF","#D7FFFF","#EAFFFF","#FFFFFF",
+                 "#FCEDF4","#FAC9DE","#F07DAB","#A02560"]
+_LABEL_STYLE = "font-family:Arial,sans-serif;font-size:11px;font-weight:bold;color:#444;"
+
+
+def _score_color(score):
+    return _SCORE_COLORS[min(8, int(score * 9))]
+
+
+def _bar_cell(col_num, score, bar_width, graph_height):
+    """Return an HTML <td> for one scored bar, using the shared GUIDANCE color scale."""
+    bar_h = max(2, int(score * graph_height))
+    color = _score_color(score)
+    border = "border-left:1px solid #aaa;" if col_num == 1 else ""
+    return (
+        f"<td valign=bottom style='border-bottom:2px solid #555;padding:0 1px;{border}'>"
+        f"<div title='Col {col_num}: {score:.3f}' "
+        f"style='width:{bar_width - 2}px;height:{bar_h}px;"
+        # thin outline makes white/near-white mid-range bars visible as shapes
+        f"background:{color};border:1px solid rgba(0,0,0,0.18);border-radius:2px 2px 0 0;'>"
+        f"</div></td>\n"
+    )
+
+
+def _nan_bar_cell(col_num, bar_width):
+    """Return an HTML <td> for a column with no defined score."""
+    return (
+        f"<td valign=bottom style='border-bottom:2px solid #555;padding:0 1px;'>"
+        f"<div title='Col {col_num}: N/A' "
+        f"style='width:{bar_width - 2}px;height:3px;"
+        f"background:#C0C0C0;"
+        f"border-radius:2px 2px 0 0;'></div></td>\n"
+    )
+
+
 def create_html_graph(CSV_File, OUT, X_LABLE, total_cols=None):
     # Create an HTML BARs graph
     # GET: 1. CSV FILE (The X var is the first Col and the Y is the second, X must be sorted)
@@ -341,88 +415,117 @@ def create_html_graph(CSV_File, OUT, X_LABLE, total_cols=None):
     #      4. total_cols (OPTIONAL) — full alignment width; ensures trailing NaN columns
     #         get empty cells with the bottom border line, matching the rest of the table.
     ############################################################################################
-    _BLUE_GIF = "/static/images/blue.gif"
+    GRAPH_HEIGHT = 200  # px — full-score bar height
+    BAR_WIDTH = 15      # px — per-column cell width
     try:
-        # with open(Out, "a") as OUT, open(CSV_File) as DATA:
         with open(CSV_File) as DATA:
-            # GRAPH PROPERTIES
-            graphHeight = 200  # target height of graph
-            BarWidth = 15  # width of bars
-            maxResult = 1
-            scale = 1
             last_x = 0
 
-            # Set the scale
-            scale = graphHeight / maxResult
-
-            # SPACER BEFORE THE GRAPH
-            OUT.write(
-                "<tr><td class=\"Score5\">&nbsp</td><td class=\"Seq_Name\"></td></tr><tr><td class=\"Seq_Name\"></td></tr><tr><td class=\"Seq_Name\"></td></tr><tr><td class=\"Seq_Name\"></td></tr>\n")
-            OUT.write(
-                "<tr><td class=\"Seq_Name\"></td></tr><tr><td class=\"Seq_Name\"></td></tr><tr><td class=\"Seq_Name\"></td></tr><tr><td class=\"Seq_Name\"></td></tr>\n")
-            OUT.write(
-                "<tr><td class=\"Seq_Name\"></td></tr><tr><td class=\"Seq_Name\"></td></tr><tr><td class=\"Seq_Name\"></td></tr><tr><td class=\"Seq_Name\"></td></tr>\n")
+            # _LABEL_STYLE is a module-level constant (shared by all axis labels)
+            # Two blank rows to separate the last sequence from the bar chart
+            _strip = "<td style='width:16px;min-width:16px;max-width:16px;padding:0;white-space:normal;'></td>"
+            OUT.write(f"<tr>{_strip}<td class=\"Seq_Name\"></td></tr>\n")
+            OUT.write(f"<tr>{_strip}<td class=\"Seq_Name\"></td></tr>\n")
 
             OUT.write("<tr>\n")
             OUT.write(
-                "<td class=\"Score5\">&nbsp</td><td class=\"Seq_Name\" style = 'text-align: right'>{0}<br>SCORE</td>\n".format(
-                    X_LABLE))
+                f"<td style='width:16px;min-width:16px;max-width:16px;'></td>"
+                f"<td class='Seq_Name' style='vertical-align:bottom; padding:0 2px 0 0;'>"
+                f"<div style='display:flex; align-items:stretch; height:{GRAPH_HEIGHT}px; width:100%;'>"
+                f"<div style='flex:1;'></div>"
+                f"<div style='writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap;"
+                f"{_LABEL_STYLE} text-align:center; margin-right:8px; flex-shrink:0;'>"
+                f"{X_LABLE} Score</div>"
+                f"<div style='display:flex; flex-direction:column; justify-content:space-between; "
+                f"align-items:flex-end; {_LABEL_STYLE} line-height:1; flex-shrink:0;'>"
+                f"<span>1.0</span><span>0.5</span><span>0.0</span>"
+                f"</div>"
+                f"</div>"
+                f"</td>\n")
 
-            header = DATA.readline()
+            DATA.readline()  # skip header
 
             for line in DATA:
                 line = line.strip()
+                if not line:
+                    continue
                 data = line.split(",")
+                col_num = int(data[0])
+                score_str = data[1]
 
-                if data[1] != "NaN" and (int(data[0]) - last_x) == 1:
-                    OUT.write("<td valign = bottom style = 'border-bottom: 1px solid black")
-                    if data[0] == 1:  # The First Point, plot also the Y bar
-                        OUT.write(";border-left: 1px solid black")
-                    OUT.write(
-                        f";'><img title=\"{data[0]}:{data[1]}\" src=\"{_BLUE_GIF}\" width=\"{BarWidth}\" height=\"{float(data[1]) * scale}\" border=\"1\"></td>\n")
-                    last_x = int(data[0])
-                elif data[1] != "NaN":
-                    while (int(data[0]) - last_x) != 1:
-                        OUT.write(
-                            f"<td valign = bottom style = 'border-bottom: 1px solid black;'><img src=\"{_BLUE_GIF}\" width=\"{BarWidth}\" height=\"0\" border=\"0\"></td>\n")
-                        last_x += 1
-                    OUT.write(
-                        f"<td valign = bottom style = 'border-bottom: 1px solid black;'><img title=\"{data[0]}:{data[1]}\" src=\"{_BLUE_GIF}\" width=\"{BarWidth}\" height=\"{float(data[1]) * scale}\" border=\"1\"></td>\n")
-                    last_x = int(data[0])
-                elif data[1] == "NaN":
-                    OUT.write(
-                        f"<td valign = bottom style = 'border-bottom: 1px solid black;'><img title=\"{data[0]}:NaN\" src=\"{_BLUE_GIF}\" width=\"{BarWidth}\" height=\"0\" border=\"0\"></td>\n")
-                    last_x = int(data[0])
+                # Fill any interior gap (columns absent from CSV = NaN)
+                while col_num - last_x > 1:
+                    last_x += 1
+                    OUT.write(_nan_bar_cell(last_x, BAR_WIDTH))
 
-            # Fill trailing columns with no score (NaN or absent) so the bottom border
-            # extends across the full alignment width.
+                if score_str == "NaN":
+                    OUT.write(_nan_bar_cell(col_num, BAR_WIDTH))
+                else:
+                    OUT.write(_bar_cell(col_num, float(score_str), BAR_WIDTH, GRAPH_HEIGHT))
+                last_x = col_num
+
+            # Fill trailing columns with no score so the bottom border spans the full width.
             if total_cols is not None:
                 while last_x < total_cols:
-                    OUT.write(
-                        f"<td valign = bottom style = 'border-bottom: 1px solid black;'><img src=\"{_BLUE_GIF}\" width=\"{BarWidth}\" height=\"0\" border=\"0\"></td>\n")
                     last_x += 1
+                    OUT.write(_nan_bar_cell(last_x, BAR_WIDTH))
 
             OUT.write("</tr>\n")
+            # Scale-numbers row (1, 10, 20 …) directly under the bars
+            OUT.write(
+                f"<tr>"
+                f"<td style='width:16px;min-width:16px;max-width:16px;padding:0;white-space:normal;'></td>"
+                f"<td class='Seq_Name'></td>"
+            )
+            if total_cols is not None:
+                _write_scale_cells(OUT, total_cols)
+            OUT.write("</tr>\n")
+            # "Column Number" label row — centered under the bar area via colspan
+            OUT.write(
+                f"<tr>"
+                f"<td style='width:16px;min-width:16px;max-width:16px;padding:0;white-space:normal;'></td>"
+                f"<td class='Seq_Name'></td>"
+                f"<td colspan='10' style='text-align:center;{_LABEL_STYLE} padding-top:2px; white-space:nowrap;'>Column Number</td>"
+                f"</tr>\n"
+            )
             OUT.write("</table>\n")
-            OUT.write("<b><P align=\"center\">Column</p></b>\n")
 
     except Exception as e:
         return f"Guidance::CreateHTML_Graph: Can't open file: {e}"
 
 
 def print_color_scale(file, fontsize, colorstep_code):
+    SWATCH = "display:inline-block;width:2em;height:1.4em;vertical-align:middle;border:1px solid rgba(0,0,0,0.15);"
+    # Score9 (i=8, dark pink = confident) → Score1 (i=0, teal = uncertain), left to right
+    swatches = "".join(
+        f"<span style='{SWATCH}background:{colorstep_code[i]};'></span>"
+        for i in range(8, -1, -1)
+    )
     file.write(
-        "<table style='table-layout: auto;margin-left: 0em;margin-right: 0em;padding:1px 1px 1px 1px; margin:1px 1px 1px 1px; border-collapse: collapse;' border=0 cols=1 width=310>\n<tr><td align=center>\n<font face='Courier New' color='black' size=+1><center>\n")
-    for i in range(8, -1, -1):
-        if i == 0:
-            file.write(
-                f"<font face='Courier New' color='white' size={fontsize}><span style='background: {colorstep_code[i]};'>&nbsp;{i + 1}&nbsp;</span></font>")
-        else:
-            file.write(
-                f"<font face='Courier New' color='black' size={fontsize}><span style='background: {colorstep_code[i]};'>&nbsp;{i + 1}&nbsp;</span></font>")
-    file.write(
-        "</font></center>\n<center><table style = 'table-layout: auto;margin-left:0em;margin-right: 0em;padding:1px 1px 1px 1px; margin:1px 1px 1px 1px; border-collapse: collapse;' border=0 cols=3 width=310>\n<tr>\n<td align=left><b>Confident</b></td>\n<td align=center><b><---></b></td>\n<td align=right><b>Uncertain</b></td>\n</tr>\n</table></center>\n</td>\n</tr>\n</table>\n")
-    file.write("<left><table style = 'table-layout: auto;margin-left: 0em;margin-right:0em;padding:1px 1px 1px 1px; margin:1px 1px 1px 1px; border-collapse:collapse;' border=0 cols=2 width=100>\n<tr>\n<td align=center class=\"ScoreNaN\">&nbsp;</td><td align=left>Insufficient Data</b></td>")
+        "<div style='margin-left:16px; padding:10px 0; font-family:Arial,sans-serif; font-size:15px;'>\n"
+        "<b><u>Legend:</u></b><br><br>\n"
+        "<b>The alignment confidence scale:</b><br>\n"
+        # Row: [9-swatch block with Confident/Uncertain below] + [gray swatch + Insufficient Data]
+        "<div style='display:flex; align-items:flex-start; gap:20px; margin-top:6px;'>\n"
+        # Left block: 9 swatches + Confident ← → Uncertain label underneath
+        "<div>\n"
+        f"<div style='display:flex; gap:3px;'>{swatches}</div>\n"
+        "<div style='display:flex; justify-content:space-between; font-size:13px; color:#555; margin-top:3px;'>"
+        "<b>Confident</b><b>Uncertain</b>"
+        "</div>\n"
+        "</div>\n"
+        # Right block: gray swatch + label, vertically centered with the swatches
+        "<div style='display:flex; align-items:center; gap:6px; color:#444;'>"
+        f"<span style='{SWATCH}background:#C0C0C0;'></span>"
+        "&nbsp;Insufficient Data"
+        "</div>\n"
+        "</div>\n"
+        # Applies-to note
+        "<div style='font-size:12px; color:#777; margin-top:6px;'>"
+        "Applies to: residue coloring &nbsp;|&nbsp; column score bars &nbsp;|&nbsp; per-sequence strip (left)"
+        "</div>\n"
+        "</div>\n"
+    )
 
 #@timeit
 def remove_low_sp_seq(msa_file, seq_sp_file, out_file, cutoff, removed_seq_file, seq_type="ByRowNum"):

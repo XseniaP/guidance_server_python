@@ -276,8 +276,8 @@
                 </div>
 
                 <div id="CodonsTable">
-                    <b>Genetic Code:</b>&nbsp;&nbsp;&nbsp;
-                                <select class="input-group mb-3" name="GENCODE"> <!-- Options values are according to BioPerl -->
+                    <label class="form-label">Genetic Code:</label>
+                    <select class="form-select" name="GENCODE"> <!-- Options values are according to BioPerl -->
                                     <option value=1>Nuclear Standard
                                     <option value=15>Nuclear Blepharisma
                                     <option value=6>Nuclear Ciliate
@@ -289,10 +289,10 @@
                                     <option value=9>Mitochondria Echinoderm
                                     <option value=14>Mitochondria Flatworm
                                     <option value=4>Mitochondria Protozoan
-                                    </select><br><br>
+                                    </select>
             </div>
 
-                <div id="MAFFT_OPTION">
+                <div id="MAFFT_OPTION" style="margin-top:1rem;">
                     <label class="form-label">Advanced MAFFT Options:</label>
                      <div class="input-group mb-3">
                         <label class="input-group-text select-label" for="maxiterate">Max-Iterate</label>

@@ -683,7 +683,7 @@ def codes2name_scoresFile_NEW(Score_File, Codes_File, MSA_File, Out):
     for i in range(1, int(MSA_Depth) + 1):
         seq = aln.alignment.sequences[i - 1]
         # seq = aln[:, i - 1]
-        Seq_Name = Code_Names[seq.id]
+        Seq_Name = Code_Names.get(seq.id) or Code_Names[seq.id.lower()]
         MSA_row_Num_to_Seq_Name[i] = Seq_Name
 
     # Add names to score file
