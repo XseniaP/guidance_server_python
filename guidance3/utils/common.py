@@ -322,10 +322,13 @@ def print_initial_running_progress(config):
         ALT_STATUS.write("<ul class=\"in_progress\"><li>Generating alternative alignments</li></ul>\n")
 
     with open(config.WorkingDir + config.progress_report, "a") as PROGRESS:
-        PROGRESS.write("<p><font face=Verdana size=2>\n")
+        PROGRESS.write("<p>\n")
 
         if config.Redirect_From_MAFFT != "1":
-            PROGRESS.write("<ul class=\"in_progress\"><li>Generating the base alignment</li></ul>\n")
+            if config.userMSA_File:
+                PROGRESS.write("<ul class=\"skipped\"><li>Generating the base alignment (skipped — alignment provided)</li></ul>\n")
+            else:
+                PROGRESS.write("<ul class=\"in_progress\"><li>Generating the base alignment</li></ul>\n")
 
         if config.PROGRAM == "HoT":
             PROGRESS.write("<ul class=\"in_progress\"><li>Constructing guide tree</li></ul>\n")
@@ -343,7 +346,7 @@ def print_initial_running_progress(config):
             PROGRESS.write("<ul class=\"in_progress\"><li>Calculating GUIDANCE3 scores</li></ul>\n")
             PROGRESS.write("<ul class=\"in_progress\"><li>Running the model and selecting the best MSA</li></ul>\n")
 
-        PROGRESS.write("</font>\n")
+        PROGRESS.write("</p>\n")
 
 #@timeit
 def update_progress(progress_file, message):
@@ -365,7 +368,9 @@ def update_progress(progress_file, message):
                 progress.write(line)
             elif "Finished Calculating" in message and "Calculating" in line:
                 line = line.replace("in_progress", "finished")
-                line = line.replace("Calculating", "Finished Calculating")
+                line = line.replace("Calculating GUIDANCE3 scores", "Finished calculating GUIDANCE3 scores")
+                line = line.replace("Calculating GUIDANCE scores", "Finished calculating GUIDANCE scores")
+                line = line.replace("Calculating HoT scores", "Finished calculating HoT scores")
                 progress.write(line)
             elif "Finished running the model" in message and "Running the model" in line:
                 line = line.replace("in_progress", "finished")

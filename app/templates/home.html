@@ -179,9 +179,14 @@
                       </select>
                 </div>
 
-                <div class="alert-class">
-                    <div  class="alert alert-warning text-center" role="alert">
-                    <b>Warning:</b> PRANK is significantly more time-consuming. MAFFT is the fastest. Alternative MAFFT algorithms (e.g. L-INS-i: localpair + maxiterate 1000) can be configured via the Advanced MAFFT Options below — however, some are considerably slower.
+                <div class="alert-class" id="warn_prank" style="display:none">
+                    <div class="alert alert-warning text-center" role="alert">
+                    <b>Warning:</b> PRANK is significantly more time-consuming than MAFFT.
+                    </div>
+                </div>
+                <div class="alert-class" id="warn_mafft">
+                    <div class="alert alert-warning text-center" role="alert">
+                    <b>Note:</b> Alternative MAFFT algorithms (e.g. L-INS-i: localpair + maxiterate 1000) can be configured via Advanced Options below — however, some are considerably slower.
                     </div>
                 </div>
             {% endif %}
@@ -271,8 +276,8 @@
                 </div>
 
                 <div id="CodonsTable">
-                    <b>Genetic Code:</b>&nbsp;&nbsp;&nbsp;
-                                <select class="input-group mb-3" name="GENCODE"> <!-- Options values are according to BioPerl -->
+                    <label class="form-label">Genetic Code:</label>
+                    <select class="form-select" name="GENCODE"> <!-- Options values are according to BioPerl -->
                                     <option value=1>Nuclear Standard
                                     <option value=15>Nuclear Blepharisma
                                     <option value=6>Nuclear Ciliate
@@ -284,10 +289,10 @@
                                     <option value=9>Mitochondria Echinoderm
                                     <option value=14>Mitochondria Flatworm
                                     <option value=4>Mitochondria Protozoan
-                                    </select><br><br>
+                                    </select>
             </div>
 
-                <div id="MAFFT_OPTION">
+                <div id="MAFFT_OPTION" style="margin-top:1rem;">
                     <label class="form-label">Advanced MAFFT Options:</label>
                      <div class="input-group mb-3">
                         <label class="input-group-text select-label" for="maxiterate">Max-Iterate</label>

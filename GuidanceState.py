@@ -302,7 +302,7 @@ class GuidanceState:
                 except: 
                     error= f'GuidanceState.upload_files: can\'t open {seqsFile} for writing.'
                     raise Exception(error, "system")
-                var['IsSPAM'] = checkForSpam(seqsFile, var['WorkingDir'])
+                var['IsSPAM'] = checkForSpam(uploading_file, var['WorkingDir'])
             else:
                 # upload user seqs file and alignment file
                 try: 
@@ -669,7 +669,7 @@ class GuidanceState:
         var = self.var
         warning_msg = ''
         # KSENIA
-        var['errors_file'] = f"results/{var['run_number']}/errors.txt"
+        var['errors_file'] = f"/results/{var['run_number']}/errors.txt"
         errors = ""
         error_is_system = False
         
@@ -741,8 +741,9 @@ class GuidanceState:
                     elif ans[0] != 'OK':
                         # raise Exception (ans, "user")
                         errors += ans
-                    var['Alignment_File'] = ans[2]
-                    var['NumOfSeq'] = ans[3]
+                    else:
+                        var['Alignment_File'] = ans[2]
+                        var['NumOfSeq'] = ans[3]
 
                     if ans[0] == 'OK' and ans[1]:
                         job_logger.warning(f'Warning: {ans[1]}. Nevertheless calculation is continued\n')
@@ -792,9 +793,10 @@ class GuidanceState:
             elif ans[0] != 'OK':
                 # raise Exception ( ans, "user")
                 errors += ans
-            var['Alignment_File'] = ans[2]
-            var['NumOfSeq'] = ans[3]
-    
+            else:
+                var['Alignment_File'] = ans[2]
+                var['NumOfSeq'] = ans[3]
+
             if ans[0] == 'OK' and ans[1]:
                 job_logger.warning(f'Warning: {ans[1]}. Nevertheless calculation is continued\n')
                 warning_msg = f"<br><b><font color=\"red\" size=\"3\">Warning:</b></font><font size=\"3\"> {ans[1]}; The calculation continues.</font>\n"

@@ -10,14 +10,14 @@ from enum import Enum
 import platform
 
 # constants to use when sending e-mails using the server admin's email address.
-ADMIN_EMAIL = 'evolseq@tauex.tau.ac.il'
-DEV_EMAIL = 'josefspr@gmail.com'
-SMTP_SERVER = 'mxout.tau.ac.il'
-ADMIN_USER_NAME = 'evolseq'
-ADMIN_PASSWORD = 'elana'
+ADMIN_EMAIL = ''
+DEV_EMAIL = ''
+SMTP_SERVER = ''
+ADMIN_USER_NAME = ''
+ADMIN_PASSWORD = ''
 SEND_EMAIL_DIR_IBIS = '/guidance/perl/'
 
-OWNER_EMAIL = 'josefspr@gmail.com'
+OWNER_EMAIL = ''
 
 # general variables Ksenia
 script_path = os.path.abspath(__file__)
@@ -112,8 +112,8 @@ DL_MODEL_NUC_SCALER_PATH = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'in
 
 MUSCLE = "muscle"
 MAFFT_GUIDANCE = "mafft"
-PRANK_LECS = "prank"
-PRANK = "prank"
+PRANK_LECS = os.environ.get('GUIDANCE_PRANK', 'prank')
+PRANK = PRANK_LECS
 PAGAN_LECS = "/share/apps/pagan-msa/bin/pagan"
 PAGAN = 'pagan'
 RUBY = 'ruby'

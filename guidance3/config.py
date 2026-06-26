@@ -407,6 +407,8 @@ class RunConfig:
                 log_file.write(f"return: {ans_joined}\n")
 
             self.SeqsFile = ans[2]
+            if self.Seq_Type == "Codons":
+                self.SeqsFile_Codons = ans[2]
             self.NumOfSeq = int(ans[3])
 
         # Alignment provided

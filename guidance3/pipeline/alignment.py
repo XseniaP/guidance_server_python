@@ -391,6 +391,12 @@ def run_guidance3(config):
     elif config.MSA_Program == "PRANK":
         config.HoT_MSA_Program = "PRK"
         config.HoT_MSA_Program_path = config.prank_prog
+        check_prank = subprocess.getoutput(f"which {config.prank_prog}")
+        if not check_prank or "not found" in check_prank.lower() or "no prank" in check_prank.lower():
+            raise Exception(
+                f"prank is not found in PATH (looked for '{config.prank_prog}'). "
+                "Please install prank or set PRANK_LECS to its full path in SharedConsts.py"
+            )
 
     try:
         log_file = open(f'{config.OutLogFile}', "a")
@@ -411,7 +417,8 @@ def run_guidance3(config):
         # HOT ASSUME THAT THE SEQUENCES ARE ALL UPPER CASE, SO WE CONVERT THE ALN TO UPPER CASE
         convert_fs_to_upper_case(
             f"{config.WorkingDir}{config.Alignment_File}")
-
+        if config.isServer == 1:
+            update_progress(f"{config.WorkingDir}{config.progress_report}", "Generating the base alignment")
     else:
         convert_fs_to_upper_case(
             f"{config.WorkingDir}{config.Alignment_File}")
@@ -632,6 +639,7 @@ def run_guidance3(config):
     alt_msas = len(os.listdir(config.Scoring_Alignments_Dir))
     config.convergence = alt_msas
     log_file.write(f"run_HOT_COS_GUIDANCE2 converged at tree #{alt_msas}\n")
+    log_file.write(f"[DIAG] Scoring_Alignments_Dir={config.Scoring_Alignments_Dir}, files={os.listdir(config.Scoring_Alignments_Dir)[:10]}\n")
     log_file.close()
 
 

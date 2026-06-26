@@ -2,31 +2,33 @@
 
 {% block body_running %}
 
-        <script>
-        
-        //to listen for process updates
-        const process_id = '{{var['run_number']}}';
-        
-        setInterval(() => {
-            /*
-            var myRequest = new Request('/process_page_update/' + process_id);
-           
-            fetch(myRequest).then((response) => {
-                response.text().then((text) => {
-                    if (text == 'update') {
-                        location.reload();
-                    }
-                    else { // refresh only progress report
-                        $( "#includedContent" ).load(window.location.href + " #includedContent" );
-                    }
-                });
-            });
-	    */
-	    
-	    location.reload();
-	    
-        } ,parseInt('30')*1000)
-        
-        </script> 
-    
-{% endblock %} 
+<script>
+const process_id = '{{var['run_number']}}';
+const pollUrl = '{{ url_for("progress_poll", process_id="PLACEHOLDER") }}'.replace('PLACEHOLDER', process_id);
+
+async function pollProgress() {
+    try {
+        const res = await fetch(pollUrl);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        // Update progress content in-place (no page flash)
+        const el = document.getElementById('includedContent');
+        if (el && data.progress) {
+            el.innerHTML = data.progress;
+        }
+
+        // Full reload when job finishes or crashes to show result links
+        if (data.state === 'FINISHED' || data.state === 'CRASHED' || data.state === 'ERROR') {
+            location.reload();
+        }
+    } catch (e) {}
+}
+
+setInterval(pollProgress, 5000);
+
+// Fallback full reload every 2 minutes in case something is missed
+setInterval(() => location.reload(), 120000);
+</script>
+
+{% endblock %}

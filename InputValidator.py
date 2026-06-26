@@ -37,9 +37,19 @@ class InputValidator:
         warning = ''
         errors = ""
         valid_seqs = []  # (name, seq) pairs that passed all checks
+        stop_codon_stripped = False
 
         def _validate_one(seq_name, seq):
-            nonlocal errors, warning, counter, seq_length
+            nonlocal errors, warning, counter, seq_length, stop_codon_stripped
+            # Auto-strip a terminal stop codon from codon sequences before any validation.
+            # Databases commonly include them and manually removing them from many sequences is impractical.
+            # Only the last codon is stripped; internal stop codons are still rejected below.
+            if seqType == "Codons" and codonTable and len(seq) >= 3:
+                last_codon = seq[-3:].upper()
+                codon_table_obj = CodonTable.generic_by_id[int(codonTable)]
+                if last_codon in codon_table_obj.stop_codons:
+                    seq = seq[:-3]
+                    stop_codon_stripped = True
             if isMSA:
                 if seq_length == 0:
                     seq_length = len(seq)
@@ -120,6 +130,9 @@ class InputValidator:
         except IOError:
             return 'sys_error', f"Validate_Seqs:Can't open {seqFilePath_fixed} for writing"
 
+        if stop_codon_stripped:
+            stop_warn = "Terminal stop codons were automatically removed from all codon sequences."
+            warning = f"{warning} {stop_warn}".strip() if warning else stop_warn
         return 'OK', warning, seqFile_fixed, counter
 
     def validate_single_seq(self, seqName, seq, seqType):
