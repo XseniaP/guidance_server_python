@@ -323,9 +323,19 @@ def validate_seqs(working_dir, input_file, seq_type, msa, codon_table):
     counter = 0
     errors = ""
     valid_seqs = []  # (name, seq) pairs that passed all checks
+    stop_codon_stripped = False
 
     def _validate_one(seq_name, seq):
-        nonlocal errors, warning, counter
+        nonlocal errors, warning, counter, stop_codon_stripped
+        # Auto-strip a terminal stop codon from codon sequences before any validation.
+        # Databases commonly include them and manually removing them from many sequences is impractical.
+        # Only the last codon is stripped; internal stop codons are still rejected below.
+        if seq_type == "Codons" and codon_table and len(seq) >= 3:
+            last_codon = seq[-3:].upper()
+            codon_table_obj = CodonTable.unambiguous_dna_by_id[int(codon_table)]
+            if last_codon in codon_table_obj.stop_codons:
+                seq = seq[:-3]
+                stop_codon_stripped = True
         if msa == "Yes":
             nonlocal seq_length
             seq_length = len(seq) if seq_length == 0 else seq_length
@@ -399,6 +409,9 @@ def validate_seqs(working_dir, input_file, seq_type, msa, codon_table):
     except IOError as e:
         return 'sys_error', f"validate_seqs: Can't write output file {fixed_path}: {e}\n"
 
+    if stop_codon_stripped:
+        stop_warn = "Terminal stop codons were automatically removed from all codon sequences."
+        warning = f"{warning} {stop_warn}".strip() if warning else stop_warn
     return "OK", warning, input_file + ".FIXED", str(counter)
 
 
