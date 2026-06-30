@@ -839,6 +839,35 @@ def names_according_cos(file_path):
     except OSError as e:
         return f"names_according_cos: Failed to open {e.filename} - {str(e)}"
 
+def _normalize_prank_seq_ids(infile, outfile):
+    """Lowercase seq IDs in outfile only if PRANK changed their case relative to infile."""
+    if not os.path.exists(outfile):
+        return
+    with open(outfile, 'r') as f:
+        content = f.read()
+    if not re.search(r'^>[A-Z]', content, re.MULTILINE):
+        return
+    input_ids = set()
+    with open(infile, 'r') as f:
+        for line in f:
+            if line.startswith('>'):
+                parts = line[1:].split()
+                if parts:
+                    input_ids.add(parts[0])
+    prank_changed = any(
+        parts[0] != parts[0].lower() and parts[0].lower() in input_ids
+        for line in content.split('\n')
+        if line.startswith('>')
+        for parts in [line[1:].split()]
+        if parts
+    )
+    if not prank_changed:
+        return
+    normalized = re.sub(r'^>([A-Z])', lambda m: '>' + m.group(1).lower(), content, flags=re.MULTILINE)
+    with open(outfile, 'w') as f:
+        f.write(normalized)
+
+
 #@timeit
 def align(config):
     # ---------------------------------------------
@@ -996,6 +1025,11 @@ def align(config):
 
             shutil.copy(f"{config.WorkingDir}{config.Alignment_File}.2.fas",
                         f"{config.WorkingDir}{config.Alignment_File}")
+
+        _normalize_prank_seq_ids(
+            f"{config.WorkingDir}{config.codded_seq_fileName}",
+            f"{config.WorkingDir}{config.Alignment_File}"
+        )
 
         if config.Align_Order == "as_input":
             sort_alignment(f"{config.WorkingDir}{config.Alignment_File}", "fasta")
