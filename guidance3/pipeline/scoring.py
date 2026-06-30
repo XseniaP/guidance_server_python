@@ -193,6 +193,7 @@ def print_colored_alignment_with_css(in_msa_file, out_html_file, scores_file, co
                     for line in codes_file:
                         seq_name, code = line.strip().split('\t')
                         code_names[code] = seq_name
+                        code_names[code.lower()] = seq_name
             except Exception as e:
                 return f"Guidance::printColoredAlignment Can't open the Codes file: '{codes_file}' {e}"
 
@@ -689,6 +690,7 @@ def make_Jalview_Color_MSA(inMsaFile, scoresFile, outJalviewFeaturesFile, codesF
                         # seq_name, code = line.split('\t')
                         seq_name, code = line.strip().split('\t')
                         code_names[code] = seq_name
+                        code_names[code.lower()] = seq_name
 
         # Read MSA
         try:
