@@ -90,7 +90,7 @@ def make_guide_tree_PRK(infile, treefile, sequencing_method, sequence, file_hand
         command_line = f"({sequencing_method.version} -d={infile} -o=prank_gdt -showtree 2>&1) 2>&1; mv prank_gdt.best.fas hot_H{sequence.file_extensions[0]}; mv prank_gdt.best.dnd {treefile}"
     rc = run_command_line(command_line, file_handler)  # produces input.fasta.tree and hot_H.fasta
     if 'err' in rc.lower():
-        log_print(0, 2, f"ERROR: prank error:\n{command_line}\n---\n{rc}\n---\n")
+        log_print(0, 2, f"ERROR: prank error:\n{command_line}\n---\n{rc}\n---\n", file_handler)
         cleanup(1, file_handler)
     rtime = re.findall(r"\nreal ([0-9\.]+).*\nuser ([0-9\.]+).*\nsys ([0-9\.]+)", rc)
     with open(file_handler.time_file, "a") as timefile:

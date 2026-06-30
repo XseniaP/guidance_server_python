@@ -38,6 +38,7 @@ class Tree_:
         # nwstr = re.sub(r';*$', ';', nwstr)
         nwstr = re.sub(r';+$', ';', nwstr)
         nwstr = nwstr.replace(' ', '')
+        nwstr = nwstr.lower()  # normalize leaf names to match in.fasta (seq0000, not Seq0000)
         self.subtrees = {'tree': nwstr}
 
         nwstr = nwstr.rstrip('\n')
