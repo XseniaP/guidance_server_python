@@ -5,6 +5,40 @@ import sys
 from .logger import log_print, cleanup, write_to_file, run_command_line, debug
 
 
+def _normalize_prank_output(infile, outfile):
+    """Lowercase seq IDs in outfile only if PRANK changed their case relative to infile.
+    Compares the first word of each '>' header: if PRANK capitalized an ID that was
+    lowercase in the input (e.g. seq0000 → Seq0000), restores lowercase throughout
+    the output.  If PRANK kept all names as-is, the file is not touched."""
+    if not os.path.exists(outfile):
+        return
+    with open(outfile, 'r') as f:
+        content = f.read()
+    if not re.search(r'^>[A-Z]', content, re.MULTILINE):
+        return  # output has no uppercase-starting IDs — nothing to do
+    # Collect input IDs (first word after '>')
+    input_ids = set()
+    with open(infile, 'r') as f:
+        for line in f:
+            if line.startswith('>'):
+                parts = line[1:].split()
+                if parts:
+                    input_ids.add(parts[0])
+    # Detect if PRANK capitalized any input ID (e.g. seq0000 → Seq0000)
+    prank_changed = False
+    for line in content.split('\n'):
+        if line.startswith('>'):
+            parts = line[1:].split()
+            if parts and parts[0] != parts[0].lower() and parts[0].lower() in input_ids:
+                prank_changed = True
+                break
+    if not prank_changed:
+        return
+    normalized = re.sub(r'^>([A-Z])', lambda m: '>' + m.group(1).lower(), content, flags=re.MULTILINE)
+    with open(outfile, 'w') as f:
+        f.write(normalized)
+
+
 # adjusted for prank v.170427: prank interface change, output file naming assumed as per this version
 def met_init_PRK(seqtype, sequencing_method, file_handler):
     sequencing_method.version = f"{sequencing_method.path}"
@@ -43,6 +77,8 @@ def align_sequences_PRK(infile, treefile, outfile, sequencing_method, sequence, 
         log_print(0, 2, f"ERROR: prank error:\n{command_line}\n---\n{rc}\n---\n", file_handler)
         cleanup(1, file_handler)
 
+    _normalize_prank_output(infile, outfile)
+
     rtime = re.findall(r"\nreal ([0-9\.]+).*\nuser ([0-9\.]+).*\nsys ([0-9\.]+)", rc)
     with open(file_handler.time_file, "a") as timefile:
         timefile.write(f"{outfile} {','.join(rtime)}\n")
@@ -73,6 +109,8 @@ def align_profiles_PRK(pfile1, pfile2, tfile3, ofile, sequencing_method, sequenc
         log_print(0, 2, f"ERROR: prank error:\n{command_line}\n---\n{rc}\n---\n", file_handler)
         cleanup(1, file_handler)
 
+    _normalize_prank_output(pfile1, ofile)
+
     rtime = re.findall(r"\nreal ([0-9\.]+).*\nuser ([0-9\.]+).*\nsys ([0-9\.]+)", rc)
     with open(file_handler.time_file, "a") as timefile:
         timefile.write(f"{ofile} {','.join(rtime)}\n")
@@ -95,6 +133,8 @@ def make_guide_tree_PRK(infile, treefile, sequencing_method, sequence, file_hand
     rtime = re.findall(r"\nreal ([0-9\.]+).*\nuser ([0-9\.]+).*\nsys ([0-9\.]+)", rc)
     with open(file_handler.time_file, "a") as timefile:
         timefile.write(f"{treefile} {','.join(rtime)}\n")
+
+    _normalize_prank_output(infile, f"hot_H{sequence.file_extensions[0]}")
 
     rmsa = sequence.reverse_sequence(f"hot_H{sequence.file_extensions[0]}", 0, file_handler)
     if debug < 3:
