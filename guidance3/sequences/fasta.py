@@ -1542,5 +1542,51 @@ def select_best_msa(config):
         log_file.write(f"select_best_msa: best MSA = {best_code} (predicted score: {best_score:.6f}), saved to {best_msa_dst}\n")
 
     shutil.rmtree(features_input_dir, ignore_errors=True)
+
+    # Generate colored HTML visualization for the Best MSA
+    _generate_best_msa_colored_html(config, best_msa_dst, alt_msas_dir)
+
     _progress_done()
     return True
+
+
+def _generate_best_msa_colored_html(config, best_msa_dst, alt_msas_dir):
+    """Score the Best MSA against the alternatives and produce a colored HTML visualization."""
+    from guidance3.constants import MSA_SET_SCORE
+    from guidance3.pipeline.scoring import convert_to_csv, print_colored_alignment_with_css
+
+    best_prefix = os.path.join(config.WorkingDir, f"{config.Output_Prefix}_BestMSA")
+    res_scr   = f"{best_prefix}_res_pair_res.scr"
+    seq_scr   = f"{best_prefix}_res_pair_seq.scr"
+    col_scr   = f"{best_prefix}_res_pair_col.scr"
+    col_csv   = f"{best_prefix}_res_pair_col.scr.csv"
+    html_out  = f"{best_prefix}_colored.html"
+
+    cmd = f"{MSA_SET_SCORE}  {best_msa_dst}  {best_prefix}  -d {alt_msas_dir}"
+    try:
+        result = subprocess.run(cmd, shell=True, timeout=300, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"[select_best_msa] msa_set_score for Best MSA failed: {result.stderr}")
+            return
+    except subprocess.TimeoutExpired:
+        print("[select_best_msa] msa_set_score for Best MSA timed out, skipping colored HTML")
+        return
+    except Exception as e:
+        print(f"[select_best_msa] msa_set_score for Best MSA error: {e}, skipping colored HTML")
+        return
+
+    if not os.path.exists(res_scr) or not os.path.exists(seq_scr):
+        print(f"[select_best_msa] Score files not produced for Best MSA, skipping colored HTML")
+        return
+
+    convert_to_csv(col_scr, col_csv)
+
+    ans = print_colored_alignment_with_css(
+        best_msa_dst, html_out, res_scr,
+        "",        # codes_file: Best MSA already has original sequence names
+        col_csv, config.PROGRAM, seq_scr
+    )
+    if ans and ans != ["OK"]:
+        print(f"[select_best_msa] colored HTML generation for Best MSA: {ans}")
+    else:
+        print(f"[select_best_msa] Best MSA colored HTML → {html_out}")
