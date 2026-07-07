@@ -603,7 +603,7 @@ def error(error_type):
 @app.route(PREFIX + '/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
-    	
+    
         new_process_id = get_new_process_id() #manager.get_new_process_id() # JS commented out
         job_logger = None
         logger.info (f'new_process_id = {new_process_id}')
@@ -745,7 +745,7 @@ def home():
         return redirect(url_for('process_state', process_id=new_process_id))
         
     else:
-        return render_template('home.html', FASTA_txt='') # JS daily_test = 'yes'
+        return render_template('home.html', FASTA_txt='', recaptcha_site_key=app.config['RECAPTCHA_SITE_KEY']) # JS daily_test = 'yes'
 
 @app.route(PREFIX + '/rerun/<process_id>/<seqFile>', methods=['GET'])
 def rerun( process_id, seqFile):
