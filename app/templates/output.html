@@ -164,7 +164,7 @@
 <ul>
     <li>
         <form enctype="multipart/form-data" action="/ConcatMSAsTopK/{{var['run_number']}}" method="post">
-            Create a <b>Top-K SuperMSA</b> using the top {{supermsa_topk_selection|safe}} alternative MSAs ranked by predicted score
+            Create a <b>Top-K SuperMSA</b> by concatenating the top {{supermsa_topk_selection|safe}} alternative MSAs ranked by predicted score
             <input type="hidden" name="run_num"     value="{{var['run_number']}}"/>
             <input type="hidden" name="dataset"     value="{{var['dataset']}}"/>
             <input type="hidden" name="msa_program" value="{{form['MSA_Program']}}"/>
@@ -184,7 +184,7 @@
 </ul>
 {% endif %}
 
-<ul>
+{# <ul>
     <li>
         <form enctype="multipart/form-data" action="/ConcatMSAs/{{var['run_number']}}" method="post">
             Create a <b>SuperMSA</b> by concatenating the
@@ -193,7 +193,7 @@
                                                                                                           value="{{var['run_number']}}"/>
             <input class="btn btn-outline-primary btn-outline-primary-small"  type="submit" value="Create SuperMSA"/></form>
     </li>
-</ul>
+</ul> #}
 
 <!-- end of SuperMSA_results_section -->
 
