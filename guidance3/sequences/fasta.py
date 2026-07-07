@@ -1328,6 +1328,63 @@ def _run_dl_prediction(features_file, is_nucleotide, predict_cmd, pred_out_dir,
     return preds
 
 
+_CODON_TO_AA = {
+    'TTT': 'F', 'TTC': 'F', 'TTA': 'L', 'TTG': 'L',
+    'CTT': 'L', 'CTC': 'L', 'CTA': 'L', 'CTG': 'L',
+    'ATT': 'I', 'ATC': 'I', 'ATA': 'I', 'ATG': 'M',
+    'GTT': 'V', 'GTC': 'V', 'GTA': 'V', 'GTG': 'V',
+    'TCT': 'S', 'TCC': 'S', 'TCA': 'S', 'TCG': 'S',
+    'CCT': 'P', 'CCC': 'P', 'CCA': 'P', 'CCG': 'P',
+    'ACT': 'T', 'ACC': 'T', 'ACA': 'T', 'ACG': 'T',
+    'GCT': 'A', 'GCC': 'A', 'GCA': 'A', 'GCG': 'A',
+    'TAT': 'Y', 'TAC': 'Y', 'TAA': '*', 'TAG': '*',
+    'CAT': 'H', 'CAC': 'H', 'CAA': 'Q', 'CAG': 'Q',
+    'AAT': 'N', 'AAC': 'N', 'AAA': 'K', 'AAG': 'K',
+    'GAT': 'D', 'GAC': 'D', 'GAA': 'E', 'GAG': 'E',
+    'TGT': 'C', 'TGC': 'C', 'TGA': '*', 'TGG': 'W',
+    'CGT': 'R', 'CGC': 'R', 'CGA': 'R', 'CGG': 'R',
+    'AGT': 'S', 'AGC': 'S', 'AGA': 'R', 'AGG': 'R',
+    'GGT': 'G', 'GGC': 'G', 'GGA': 'G', 'GGG': 'G',
+}
+
+
+def _translate_codon_msa_inplace(msa_path):
+    """Translate a codon-aligned FASTA MSA to AA in-place (3 nt chars → 1 AA per codon position)."""
+    with open(msa_path) as f:
+        raw = f.read()
+
+    out_lines = []
+    seq_chars = []
+    header = None
+
+    def _flush():
+        if header is None:
+            return
+        out_lines.append(header)
+        aa = []
+        for i in range(0, len(seq_chars), 3):
+            codon = ''.join(seq_chars[i:i+3]).upper()
+            if codon == '---':
+                aa.append('-')
+            elif '-' in codon:
+                aa.append('X')
+            else:
+                aa.append(_CODON_TO_AA.get(codon, 'X'))
+        out_lines.append(''.join(aa))
+
+    for line in raw.splitlines():
+        if line.startswith('>'):
+            _flush()
+            header = line
+            seq_chars = []
+        elif line:
+            seq_chars.extend(list(line))
+    _flush()
+
+    with open(msa_path, 'w') as f:
+        f.write('\n'.join(out_lines) + '\n')
+
+
 def select_best_msa(config):
     """Extract features from all alternative MSAs and use the pretrained DL model to select the best one."""
     import pandas as pd
@@ -1391,6 +1448,15 @@ def select_best_msa(config):
         print(f"[select_best_msa] Default MSA not found at {default_msa}, skipping best MSA selection")
         shutil.rmtree(features_input_dir, ignore_errors=True)
         return False
+
+    # For Codons, translate every MSA in all_msas_dir from codon triplets to AA so that
+    # the AA feature extractor and AA DL model see the correct representation.
+    if config.Seq_Type == "Codons":
+        print("[select_best_msa] Codons detected — translating codon MSAs to AA for feature extraction")
+        for _fname in os.listdir(all_msas_dir):
+            _fpath = os.path.join(all_msas_dir, _fname)
+            if os.path.isfile(_fpath):
+                _translate_codon_msa_inplace(_fpath)
 
     # Write config_features.json — parameters differ by sequence type
     is_nucleotide = (config.Seq_Type == "Nucleotides")
@@ -1534,6 +1600,17 @@ def select_best_msa(config):
         shutil.rmtree(features_input_dir, ignore_errors=True)
         _progress_done()
         return False
+
+    # For Codons: selection was done on AA-translated copies; save the original codon version.
+    if config.Seq_Type == "Codons":
+        codon_src = os.path.join(alt_msas_dir, best_code)
+        if not os.path.exists(codon_src):
+            # best_code was the default MSA — fall back to it directly
+            codon_src = default_msa if best_code == default_msa_basename else None
+        if codon_src and os.path.exists(codon_src):
+            best_msa_src = codon_src
+        else:
+            print(f"[select_best_msa] Codon source for '{best_code}' not found, falling back to AA version")
 
     best_msa_dst = os.path.join(config.WorkingDir, f"{config.Output_Prefix}_BestMSA.fasta")
     shutil.copy(best_msa_src, best_msa_dst)
