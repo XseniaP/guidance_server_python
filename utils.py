@@ -347,9 +347,21 @@ def print_SuperMSA_selection(AltMSA_list):
             f.close()
             return return_str
             
-    except: 
+    except:
         raise Exception (f"print_SuperMSA_selection: Can't open the list with AltMSA file: '{AltMSA_list}'", "sys")
-        
+
+
+def print_SuperMSA_topk_selection(n_alts):
+    """Return <select> HTML for Top-K SuperMSA: options 1..n_alts, default=min(20, n_alts)."""
+    default_k = min(20, n_alts)
+    s = '<select name="NumOfMSAsTopK" id="NumOfMSAsTopK">'
+    for k in range(1, n_alts + 1):
+        selected = ' selected="selected"' if k == default_k else ''
+        s += f'<option{selected} value="{k}">{k}</option> '
+    s += '</select>'
+    return s
+
+
 def file_exists_not_empty(filename):
     if not os.path.exists(filename):
         return False

@@ -35,8 +35,46 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
 
-    # New argparse interface: guidance3-concat-msa --msas-dir <dir> --n <N> --out-file <file>
-    if len(argv) > 1 and argv[1].startswith("--"):
+    # Top-K mode: --pred-csv sorts alternatives by predicted score
+    if len(argv) > 1 and '--pred-csv' in argv[1:]:
+        import pandas as pd
+        p = argparse.ArgumentParser(
+            description="Concatenate the base MSA and top-K alternatives ranked by predicted score."
+        )
+        p.add_argument("--pred-csv",    required=True,
+                       help="Predictions CSV with 'code' and 'predicted_score' columns.")
+        p.add_argument("--alts-dir",    required=True,
+                       help="Directory containing alternative MSA .fasta files (filenames match 'code').")
+        p.add_argument("--default-msa", required=True,
+                       help="Path to the default (base) MSA file — prepended as first entry.")
+        p.add_argument("--k",           required=True, type=int,
+                       help="Number of top alternatives to include (ranked by ascending predicted_score).")
+        p.add_argument("--out-dir",     required=True,
+                       help="Output directory. Writes SuperMSA_Top<K>_Alt.fas inside it.")
+        args = p.parse_args(argv[1:])
+
+        preds = pd.read_csv(args.pred_csv)
+        if "predicted_score" not in preds.columns or "code" not in preds.columns:
+            sys.exit(f"Predictions CSV missing required columns 'code'/'predicted_score': {args.pred_csv}")
+
+        # Keep only codes that exist as files in alts_dir, then sort ascending (lower score = better)
+        preds = preds[preds["code"].apply(
+            lambda c: os.path.isfile(os.path.join(args.alts_dir, c))
+        )].sort_values("predicted_score", ascending=True)
+
+        if preds.empty:
+            sys.exit(f"No valid alternative MSA files found in {args.alts_dir}")
+
+        k = min(args.k, len(preds))
+        top_files = [os.path.join(args.alts_dir, c) for c in preds["code"].head(k)]
+        msa_files = [args.default_msa] + top_files
+        out_msa = os.path.join(args.out_dir, f"SuperMSA_Top{k}_Alt.fas")
+        num_of_aln_to_concat = len(msa_files)
+        is_web_server = "NO"
+        out_html = ""
+
+    # New argparse interface: guidance3-concat-msa --msas-dir <dir> --n <N> --out-dir <dir>
+    elif len(argv) > 1 and argv[1].startswith("--"):
         p = argparse.ArgumentParser(
             description="Concatenate N randomly sampled MSAs from a folder into a super-MSA."
         )

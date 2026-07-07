@@ -1328,6 +1328,63 @@ def _run_dl_prediction(features_file, is_nucleotide, predict_cmd, pred_out_dir,
     return preds
 
 
+_CODON_TO_AA = {
+    'TTT': 'F', 'TTC': 'F', 'TTA': 'L', 'TTG': 'L',
+    'CTT': 'L', 'CTC': 'L', 'CTA': 'L', 'CTG': 'L',
+    'ATT': 'I', 'ATC': 'I', 'ATA': 'I', 'ATG': 'M',
+    'GTT': 'V', 'GTC': 'V', 'GTA': 'V', 'GTG': 'V',
+    'TCT': 'S', 'TCC': 'S', 'TCA': 'S', 'TCG': 'S',
+    'CCT': 'P', 'CCC': 'P', 'CCA': 'P', 'CCG': 'P',
+    'ACT': 'T', 'ACC': 'T', 'ACA': 'T', 'ACG': 'T',
+    'GCT': 'A', 'GCC': 'A', 'GCA': 'A', 'GCG': 'A',
+    'TAT': 'Y', 'TAC': 'Y', 'TAA': '*', 'TAG': '*',
+    'CAT': 'H', 'CAC': 'H', 'CAA': 'Q', 'CAG': 'Q',
+    'AAT': 'N', 'AAC': 'N', 'AAA': 'K', 'AAG': 'K',
+    'GAT': 'D', 'GAC': 'D', 'GAA': 'E', 'GAG': 'E',
+    'TGT': 'C', 'TGC': 'C', 'TGA': '*', 'TGG': 'W',
+    'CGT': 'R', 'CGC': 'R', 'CGA': 'R', 'CGG': 'R',
+    'AGT': 'S', 'AGC': 'S', 'AGA': 'R', 'AGG': 'R',
+    'GGT': 'G', 'GGC': 'G', 'GGA': 'G', 'GGG': 'G',
+}
+
+
+def _translate_codon_msa_inplace(msa_path):
+    """Translate a codon-aligned FASTA MSA to AA in-place (3 nt chars → 1 AA per codon position)."""
+    with open(msa_path) as f:
+        raw = f.read()
+
+    out_lines = []
+    seq_chars = []
+    header = None
+
+    def _flush():
+        if header is None:
+            return
+        out_lines.append(header)
+        aa = []
+        for i in range(0, len(seq_chars), 3):
+            codon = ''.join(seq_chars[i:i+3]).upper()
+            if codon == '---':
+                aa.append('-')
+            elif '-' in codon:
+                aa.append('X')
+            else:
+                aa.append(_CODON_TO_AA.get(codon, 'X'))
+        out_lines.append(''.join(aa))
+
+    for line in raw.splitlines():
+        if line.startswith('>'):
+            _flush()
+            header = line
+            seq_chars = []
+        elif line:
+            seq_chars.extend(list(line))
+    _flush()
+
+    with open(msa_path, 'w') as f:
+        f.write('\n'.join(out_lines) + '\n')
+
+
 def select_best_msa(config):
     """Extract features from all alternative MSAs and use the pretrained DL model to select the best one."""
     import pandas as pd
@@ -1391,6 +1448,15 @@ def select_best_msa(config):
         print(f"[select_best_msa] Default MSA not found at {default_msa}, skipping best MSA selection")
         shutil.rmtree(features_input_dir, ignore_errors=True)
         return False
+
+    # For Codons, translate every MSA in all_msas_dir from codon triplets to AA so that
+    # the AA feature extractor and AA DL model see the correct representation.
+    if config.Seq_Type == "Codons":
+        print("[select_best_msa] Codons detected — translating codon MSAs to AA for feature extraction")
+        for _fname in os.listdir(all_msas_dir):
+            _fpath = os.path.join(all_msas_dir, _fname)
+            if os.path.isfile(_fpath):
+                _translate_codon_msa_inplace(_fpath)
 
     # Write config_features.json — parameters differ by sequence type
     is_nucleotide = (config.Seq_Type == "Nucleotides")
@@ -1535,6 +1601,17 @@ def select_best_msa(config):
         _progress_done()
         return False
 
+    # For Codons: selection was done on AA-translated copies; save the original codon version.
+    if config.Seq_Type == "Codons":
+        codon_src = os.path.join(alt_msas_dir, best_code)
+        if not os.path.exists(codon_src):
+            # best_code was the default MSA — fall back to it directly
+            codon_src = default_msa if best_code == default_msa_basename else None
+        if codon_src and os.path.exists(codon_src):
+            best_msa_src = codon_src
+        else:
+            print(f"[select_best_msa] Codon source for '{best_code}' not found, falling back to AA version")
+
     best_msa_dst = os.path.join(config.WorkingDir, f"{config.Output_Prefix}_BestMSA.fasta")
     shutil.copy(best_msa_src, best_msa_dst)
     print(f"[6/7] Best MSA selected: {best_code} (predicted score: {best_score:.6f}) → {best_msa_dst}")
@@ -1542,5 +1619,51 @@ def select_best_msa(config):
         log_file.write(f"select_best_msa: best MSA = {best_code} (predicted score: {best_score:.6f}), saved to {best_msa_dst}\n")
 
     shutil.rmtree(features_input_dir, ignore_errors=True)
+
+    # Generate colored HTML visualization for the Best MSA
+    _generate_best_msa_colored_html(config, best_msa_dst, alt_msas_dir)
+
     _progress_done()
     return True
+
+
+def _generate_best_msa_colored_html(config, best_msa_dst, alt_msas_dir):
+    """Score the Best MSA against the alternatives and produce a colored HTML visualization."""
+    from guidance3.constants import MSA_SET_SCORE
+    from guidance3.pipeline.scoring import convert_to_csv, print_colored_alignment_with_css
+
+    best_prefix = os.path.join(config.WorkingDir, f"{config.Output_Prefix}_BestMSA")
+    res_scr   = f"{best_prefix}_res_pair_res.scr"
+    seq_scr   = f"{best_prefix}_res_pair_seq.scr"
+    col_scr   = f"{best_prefix}_res_pair_col.scr"
+    col_csv   = f"{best_prefix}_res_pair_col.scr.csv"
+    html_out  = f"{best_prefix}_colored.html"
+
+    cmd = f"{MSA_SET_SCORE}  {best_msa_dst}  {best_prefix}  -d {alt_msas_dir}"
+    try:
+        result = subprocess.run(cmd, shell=True, timeout=300, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"[select_best_msa] msa_set_score for Best MSA failed: {result.stderr}")
+            return
+    except subprocess.TimeoutExpired:
+        print("[select_best_msa] msa_set_score for Best MSA timed out, skipping colored HTML")
+        return
+    except Exception as e:
+        print(f"[select_best_msa] msa_set_score for Best MSA error: {e}, skipping colored HTML")
+        return
+
+    if not os.path.exists(res_scr) or not os.path.exists(seq_scr):
+        print(f"[select_best_msa] Score files not produced for Best MSA, skipping colored HTML")
+        return
+
+    convert_to_csv(col_scr, col_csv)
+
+    ans = print_colored_alignment_with_css(
+        best_msa_dst, html_out, res_scr,
+        "",        # codes_file: Best MSA already has original sequence names
+        col_csv, config.PROGRAM, seq_scr
+    )
+    if ans and ans != ["OK"]:
+        print(f"[select_best_msa] colored HTML generation for Best MSA: {ans}")
+    else:
+        print(f"[select_best_msa] Best MSA colored HTML → {html_out}")

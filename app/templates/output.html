@@ -159,7 +159,32 @@
     {% if form['PROGRAM'] == 'GUIDANCE3' %}
 
 </ul>
+
+{% if supermsa_topk_selection %}
 <ul>
+    <li>
+        <form enctype="multipart/form-data" action="/ConcatMSAsTopK/{{var['run_number']}}" method="post">
+            Create a <b>Top-K SuperMSA</b> by concatenating the top {{supermsa_topk_selection|safe}} alternative MSAs ranked by predicted score
+            <input type="hidden" name="run_num"     value="{{var['run_number']}}"/>
+            <input type="hidden" name="dataset"     value="{{var['dataset']}}"/>
+            <input type="hidden" name="msa_program" value="{{form['MSA_Program']}}"/>
+            <input class="btn btn-outline-primary btn-outline-primary-small" type="submit" value="Create Top-K SuperMSA"/>
+        </form>
+    </li>
+</ul>
+<ul>
+    {% for k in topk_msa_list %}
+    <ul>
+        <li>
+            <A HREF="{{var['run_number']}}/SuperMSA_Top{{k}}_Alt.fas" TARGET=_blank>The Top-K SuperMSA
+                composed of the base MSA and top {{k}} alternative MSAs (by predicted score)</A><br>
+        </li>
+    </ul>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{# <ul>
     <li>
         <form enctype="multipart/form-data" action="/ConcatMSAs/{{var['run_number']}}" method="post">
             Create a <b>SuperMSA</b> by concatenating the
@@ -168,7 +193,7 @@
                                                                                                           value="{{var['run_number']}}"/>
             <input class="btn btn-outline-primary btn-outline-primary-small"  type="submit" value="Create SuperMSA"/></form>
     </li>
-</ul>
+</ul> #}
 
 <!-- end of SuperMSA_results_section -->
 
@@ -196,6 +221,11 @@
 <ul>
     <li><font color=red face="Comic Sans MS">New feature </font> - <A HREF="{{var['run_number']}}/{{best_msa_file}}" TARGET=_blank><b>Best MSA</b> selected by the pretrained model (minimum predicted distance score)<br></A>
     </li>
+    {% if best_msa_colored_file %}
+    <ul>
+        <li><A HREF="{{var['run_number']}}/{{best_msa_colored_file}}" TARGET=results_Colored>Best MSA colored according to the confidence score</A><br></li>
+    </ul>
+    {% endif %}
 </ul>
 {% endif %}
 

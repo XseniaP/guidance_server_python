@@ -7,7 +7,7 @@ from GuidanceState import GuidanceState
 from SharedConsts import UI_CONSTS
 import SharedConsts as CONSTS
 import logging
-from utils import State, logger, get_job_logger, LOGGER_LEVEL_JOB_MANAGE_API, get_new_process_id #JS added
+from utils import State, logger, get_job_logger, LOGGER_LEVEL_JOB_MANAGE_API, get_new_process_id, print_SuperMSA_topk_selection #JS added
 import os, sys
 import warnings
 from time import time, sleep
@@ -137,6 +137,35 @@ def ConcatMSAs(process_id):
         except subprocess.TimeoutExpired:
             raise RuntimeError(f"Command timed out after 300s: {cmd}")
         return redirect(url_for('results', _anchor='remove_seq', process_id = process_id))
+
+@app.route(PREFIX + '/ConcatMSAsTopK/<process_id>', methods=['GET', 'POST'])
+def ConcatMSAsTopK(process_id):
+    if request.method == 'POST':
+        working_dir = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id)
+        K = int(request.form['NumOfMSAsTopK'])
+        dataset = request.form['dataset']
+        msa_program = request.form['msa_program']
+
+        pred_csv = os.path.join(working_dir, 'best_msa_pred',
+                                'prediction_pretrained_0_mode1_dseq_from_true.csv')
+        alts_dir = os.path.join(working_dir, f'{dataset}.{msa_program}.Guidance2_AlternativeMSA')
+
+        msa_list_file = os.path.join(working_dir, 'List_Of_Default_and_AltMSAs.txt')
+        with open(msa_list_file) as f:
+            default_msa = f.readline().strip()
+
+        cmd = (f"python3 {CONSTS.CONCAT_SCRIPT}"
+               f" --pred-csv {pred_csv}"
+               f" --alts-dir {alts_dir}"
+               f" --default-msa {default_msa}"
+               f" --k {K}"
+               f" --out-dir {working_dir}")
+        try:
+            subprocess.run(cmd, shell=True, timeout=300)
+        except subprocess.TimeoutExpired:
+            raise RuntimeError(f"Command timed out after 300s: {cmd}")
+        return redirect(url_for('results', _anchor='super_msa', process_id=process_id))
+
 
 @app.route(PREFIX + '/remove_seq/<process_id>', methods=['GET', 'POST'])
 def remove_seq(process_id):
@@ -452,11 +481,39 @@ def results(process_id):
 
     # best MSA selected by the pretrained DL model
     best_msa_file = ''
+    best_msa_colored_file = ''
     dataset = guidance_state.var.get('dataset', 'MSA')
     msa_program = guidance_state.form.get('MSA_Program', 'MAFFT')
     candidate_best_msa = f"{dataset}.{msa_program}.Guidance2_BestMSA.fasta"
     if os.path.exists(os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id, candidate_best_msa)):
         best_msa_file = candidate_best_msa
+        candidate_best_msa_colored = f"{dataset}.{msa_program}.Guidance2_BestMSA_colored.html"
+        if os.path.exists(os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id, candidate_best_msa_colored)):
+            best_msa_colored_file = candidate_best_msa_colored
+
+    # Top-K SuperMSA: build dropdown if DL predictions are available
+    topk_msa_list = []
+    for file in os.listdir(os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id)):
+        m = re.search(r'SuperMSA_Top(\d+)_Alt\.fas', file)
+        if m and m.group(1) not in topk_msa_list:
+            topk_msa_list.append(m.group(1))
+
+    supermsa_topk_selection = ''
+    pred_csv_path = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id, 'best_msa_pred',
+                                 'prediction_pretrained_0_mode1_dseq_from_true.csv')
+    if os.path.exists(pred_csv_path):
+        try:
+            import pandas as pd
+            preds_df = pd.read_csv(pred_csv_path)
+            alts_dir_path = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id,
+                                         f'{dataset}.{msa_program}.Guidance2_AlternativeMSA')
+            if os.path.isdir(alts_dir_path) and 'code' in preds_df.columns:
+                n_alts = sum(1 for c in preds_df['code']
+                             if os.path.isfile(os.path.join(alts_dir_path, c)))
+                if n_alts > 0:
+                    supermsa_topk_selection = print_SuperMSA_topk_selection(n_alts)
+        except Exception:
+            pass
 
     sleep(3)
 
@@ -472,7 +529,10 @@ def results(process_id):
         "remove_columns_list": sorted( remove_columns_list, reverse=True),
         "remove_sequences_list": sorted( remove_sequences_list, reverse=True),
         "super_msa_list": super_msa_list,
+        "topk_msa_list": topk_msa_list,
+        "supermsa_topk_selection": supermsa_topk_selection,
         "best_msa_file": best_msa_file,
+        "best_msa_colored_file": best_msa_colored_file,
         "errors_file_exists": os.path.exists(errors_file),
         "admin_email": CONSTS.ADMIN_EMAIL,
     }
