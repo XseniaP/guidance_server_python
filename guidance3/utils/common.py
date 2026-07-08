@@ -109,7 +109,8 @@ def send_administrator_mail_on_error(message, config):
     # send_email_dir = getattr(config, 'send_email_dir', None)
     # if not send_email_dir or not os.path.isdir(send_email_dir):
     #     return f"send_administrator_mail_on_error: send_email_dir not available ({send_email_dir!r})"
-    os.chdir(send_email_dir)
+    # os.chdir(send_email_dir)
+    os.chdir(config.send_email_dir)
     email_system_return = subprocess.getoutput(msg)
     return email_system_return
 
