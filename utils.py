@@ -69,7 +69,54 @@ def send_email ( smtp_server, sender, receiver, subject='', content=''):
     cmd = f'sendemail -f {sender} -t {receiver} -u \'{subject}\' -m \'{content}\' -s {CONSTS.SMTP_SERVER} -o tls=yes -xu {sender} -xp {CONSTS.ADMIN_PASSWORD}'
     os.system(cmd)
 
-def currentTime(): 
+def build_running_parameters_text(params):
+    """Plain-text 'Running Parameters' block for emails, mirroring the Running
+    Parameters section shown on the results page (running_base.html). `params`
+    is a dict merging VARS.json and FORM.json (form values take precedence,
+    matching RunConfig.server_input_mode_arguments)."""
+    msa_program = params.get('MSA_Program', '')
+    msa_program_display = {'MAFFT_LINSI': 'MAFFT L-INS-i'}.get(msa_program, msa_program)
+
+    lines = [
+        f"Job Title: {params.get('JOB_TITLE', '')}",
+        f"Sequences File: {params.get('usrSeq_File', '')}",
+        f"Number of sequences analyzed: {params.get('NumOfSeq', '')}",
+        f"MSA Algorithm: {msa_program_display}",
+    ]
+    if params.get('align_param'):
+        lines.append(f"Advanced Alignment Parameters: {params['align_param']}")
+
+    program = params.get('PROGRAM', '')
+    bootstraps = params.get('Bootstraps', '')
+    if program == 'GUIDANCE':
+        lines.append(f"Number of bootstrap repeats: {bootstraps}")
+    elif program in ('GUIDANCE3', 'GUIDANCE3_HOT'):
+        lines.append(f"Number of alternative guide-trees: {bootstraps}")
+        if params.get('disable_convergence'):
+            lines.append(
+                f"Convergence: disabled ({bootstraps} guide-trees x 4 = "
+                f"{int(bootstraps) * 4} alternative alignments generated)")
+        else:
+            lines.append("Convergence: enabled (stops early when scores stabilise)")
+
+    lines.append(f"Method: {program}")
+    return "\n".join(lines)
+
+def load_running_parameters_text(working_dir):
+    """Read VARS.json/FORM.json from a job's working dir (already written by
+    GuidanceState.save_state before the job is submitted) and build the Running
+    Parameters text block for the submission-confirmation email."""
+    try:
+        with open(os.path.join(working_dir, 'VARS.json'), 'r') as f:
+            params = json.load(f)
+        with open(os.path.join(working_dir, 'FORM.json'), 'r') as f:
+            params.update(json.load(f))
+        return build_running_parameters_text(params)
+    except Exception as e:
+        logger.warning(f'load_running_parameters_text: failed to build running parameters ({e})')
+        return ''
+
+def currentTime():
     now = datetime.datetime.now()
     return now.strftime("%H:%M:%S %Y-%m-%d")
 
