@@ -106,6 +106,10 @@ def send_administrator_mail_on_error(message, config):
         config.smtp_server,
         email_message
     )
+    # send_email_dir = getattr(config, 'send_email_dir', None)
+    # if not send_email_dir or not os.path.isdir(send_email_dir):
+    #     return f"send_administrator_mail_on_error: send_email_dir not available ({send_email_dir!r})"
+    # os.chdir(send_email_dir)
     os.chdir(config.send_email_dir)
     email_system_return = subprocess.getoutput(msg)
     return email_system_return
@@ -395,17 +399,38 @@ def send_finish_email_to_user(config):
     else:
         email_subject = f"Your Guidance results for run number {config.run_number} are ready"
 
+    msa_program_display = {"MAFFT_LINSI": "MAFFT L-INS-i"}.get(config.MSA_Program, config.MSA_Program)
+
+    running_params_lines = [
+        f"Job Title: {config.JOB_TITLE}",
+        f"Sequences File: {config.usrSeq_File}",
+        f"Number of sequences analyzed: {getattr(config, 'NumOfSeq', '')}",
+        f"MSA Algorithm: {msa_program_display}",
+    ]
+    if getattr(config, 'align_param', ''):
+        running_params_lines.append(f"Advanced Alignment Parameters: {config.align_param}")
+
+    if config.PROGRAM == "GUIDANCE":
+        running_params_lines.append(f"Number of bootstrap repeats: {config.Bootstraps}")
+    elif config.PROGRAM in ("GUIDANCE3", "GUIDANCE3_HOT"):
+        running_params_lines.append(f"Number of alternative guide-trees: {config.Bootstraps}")
+        if getattr(config, 'disable_convergence', False):
+            running_params_lines.append(
+                f"Convergence: disabled ({config.Bootstraps} guide-trees x 4 = "
+                f"{int(config.Bootstraps) * 4} alternative alignments generated)")
+        else:
+            running_params_lines.append("Convergence: enabled (stops early when scores stabilise)")
+
+    running_params_lines.append(f"Method: {config.PROGRAM}")
+    running_params_text = "\n".join(running_params_lines)
+
     email_message = f"""Hello,
 
 The results for your Guidance run are ready at:
 {http_path}
 
 Running Parameters:
-Job Title: {config.JOB_TITLE}
-Sequences File: {config.usrSeq_File}
-MSA Algorithm: {config.MSA_Program}
-Number of Bootstraps: {config.Bootstraps}
-Scoring Method: {config.PROGRAM}
+{running_params_text}
 
 Please note: the results will be kept on the server for three months.
 

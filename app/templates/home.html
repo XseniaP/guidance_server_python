@@ -221,7 +221,7 @@
                 
             {% endif %}
         
-            {% if daily_test is defined %}
+            {% if daily_test is defined or not recaptcha_enabled %}
                 <input type="hidden" name="no_captcha" value="no_captcha">
             {% else %}
                 <a name="recaptcha"></a>
@@ -350,7 +350,11 @@
         <div style="margin-bottom: 15px" class="d-grid gap-2 d-md-block">
             <script type="text/javascript" src="js/validation-rules.js"></script>
             <input type="hidden" id="solved" name="solved" value="false"/>
-			<div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>                                                                          
+			{% if daily_test is defined or not recaptcha_enabled %}
+			<input type="hidden" name="no_captcha" value="no_captcha">
+			{% else %}
+			<div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+			{% endif %}
             <input class="btn btn-primary" type=submit value="Submit" id="SubmitButton">
             <input class="btn btn-outline-secondary" type="reset" value="Clear Form" id="buttons">
 <!--                <a href="/Gallery/output.php">Show Example Results</a>-->
@@ -358,7 +362,9 @@
         </div>
 	</form>
 
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>                                                                                                         
+    {% if not (daily_test is defined or not recaptcha_enabled) %}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    {% endif %}
     {% if rerun_params is defined %}
     
         <script language="javascript" type="text/javascript"> 

@@ -221,12 +221,17 @@
 <ul>
     <li><font color=red face="Comic Sans MS">New feature </font> - <A HREF="{{var['run_number']}}/{{best_msa_file}}" TARGET=_blank><b>Best MSA</b> selected by the pretrained model (minimum predicted distance score)<br></A>
     </li>
-    {% if best_msa_colored_file %}
-    <ul>
-        <li><A HREF="{{var['run_number']}}/{{best_msa_colored_file}}" TARGET=results_Colored>Best MSA colored according to the confidence score</A><br></li>
-    </ul>
-    {% endif %}
 </ul>
+{% if best_msa_colored_file %}
+<ul>
+    <li><A HREF="{{var['run_number']}}/{{best_msa_colored_file}}" TARGET=results_Colored>Best MSA colored according to the confidence score</A><br></li>
+</ul>
+{% endif %}
+{% if best_msa_mean_score %}
+<ul>
+    <li>GUIDANCE alignment score of the Best MSA: {{best_msa_mean_score | float | round(3)}}<br></li>
+</ul>
+{% endif %}
 {% endif %}
 
 {% endif %}

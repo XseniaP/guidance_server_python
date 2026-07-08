@@ -42,6 +42,10 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000 * 1000 # MAX file size to up
 app.config['RECAPTCHA_SITE_KEY'] = os.getenv('RECAPTCHA_SITE_KEY')
 app.config['RECAPTCHA_SECRET_KEY'] = os.getenv('RECAPTCHA_SECRET_KEY')
 recaptcha = ReCaptcha(app) # Create a ReCaptcha object by passing in 'app' as parameter
+# Google's reCAPTCHA site key is registered for the production domain only, so the widget
+# can't validate on localhost. Set RECAPTCHA_ENABLED=false in the local .env to skip it there;
+# leave unset (defaults to enabled) on the server.
+RECAPTCHA_ENABLED = os.getenv('RECAPTCHA_ENABLED', 'true').strip().lower() not in ('0', 'false', 'no')
 process_id2update = []
 
 # DL prediction — models loaded lazily on first request, then cached
@@ -482,6 +486,7 @@ def results(process_id):
     # best MSA selected by the pretrained DL model
     best_msa_file = ''
     best_msa_colored_file = ''
+    best_msa_mean_score = ''
     dataset = guidance_state.var.get('dataset', 'MSA')
     msa_program = guidance_state.form.get('MSA_Program', 'MAFFT')
     candidate_best_msa = f"{dataset}.{msa_program}.Guidance2_BestMSA.fasta"
@@ -490,6 +495,15 @@ def results(process_id):
         candidate_best_msa_colored = f"{dataset}.{msa_program}.Guidance2_BestMSA_colored.html"
         if os.path.exists(os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id, candidate_best_msa_colored)):
             best_msa_colored_file = candidate_best_msa_colored
+        best_msa_score_file = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id,
+                                            f"{dataset}.{msa_program}.Guidance2_BestMSA_msa.scr")
+        if os.path.exists(best_msa_score_file):
+            with open(best_msa_score_file, 'r') as f:
+                for line in f:
+                    m = re.search(r'^#MEAN_RES_PAIR_SCORE ([0-9.]+)', line)
+                    if m:
+                        best_msa_mean_score = m.group(1)
+                        break
 
     # Top-K SuperMSA: build dropdown if DL predictions are available
     topk_msa_list = []
@@ -533,6 +547,7 @@ def results(process_id):
         "supermsa_topk_selection": supermsa_topk_selection,
         "best_msa_file": best_msa_file,
         "best_msa_colored_file": best_msa_colored_file,
+        "best_msa_mean_score": best_msa_mean_score,
         "errors_file_exists": os.path.exists(errors_file),
         "admin_email": CONSTS.ADMIN_EMAIL,
     }
@@ -603,7 +618,7 @@ def error(error_type):
 @app.route(PREFIX + '/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
-    
+
         new_process_id = get_new_process_id() #manager.get_new_process_id() # JS commented out
         job_logger = None
         logger.info (f'new_process_id = {new_process_id}')
@@ -622,7 +637,7 @@ def home():
             warning_messages = ''
             guidance_state = None
             
-            if 'no_captcha' not in request.form.keys(): 
+            if RECAPTCHA_ENABLED and 'no_captcha' not in request.form.keys():
                 if not recaptcha.verify():
                     raise Exception ("Run failed to pass I'm not a robot test", "user")
                 
@@ -745,7 +760,7 @@ def home():
         return redirect(url_for('process_state', process_id=new_process_id))
         
     else:
-        return render_template('home.html', FASTA_txt='', recaptcha_site_key=app.config['RECAPTCHA_SITE_KEY']) # JS daily_test = 'yes'
+        return render_template('home.html', FASTA_txt='', recaptcha_site_key=app.config['RECAPTCHA_SITE_KEY'], recaptcha_enabled=RECAPTCHA_ENABLED) # JS daily_test = 'yes'
 
 @app.route(PREFIX + '/rerun/<process_id>/<seqFile>', methods=['GET'])
 def rerun( process_id, seqFile):
@@ -780,7 +795,7 @@ def rerun( process_id, seqFile):
         logger.info(log_msg)
         job_logger.info(log_msg)
         
-        return render_template('home.html', FASTA_txt=FASTA_txt, rerun_params=rerun_params) #daily_test = 'yes'
+        return render_template('home.html', FASTA_txt=FASTA_txt, rerun_params=rerun_params, recaptcha_site_key=app.config['RECAPTCHA_SITE_KEY'], recaptcha_enabled=RECAPTCHA_ENABLED) #daily_test = 'yes'
     
     except Exception as e:
     
@@ -806,7 +821,7 @@ def run_from_mafft():
     url= f'http://mafft.cbrc.jp/alignment/server/spool/{calling_run}.pir'
     r = requests.get(url, allow_redirects=True)
     
-    return render_template('home.html', FASTA_txt = r.content.decode('ascii'), back_from_mafft = 1, calling_run = calling_run, calling_args = calling_args)
+    return render_template('home.html', FASTA_txt = r.content.decode('ascii'), back_from_mafft = 1, calling_run = calling_run, calling_args = calling_args, recaptcha_site_key=app.config['RECAPTCHA_SITE_KEY'], recaptcha_enabled=RECAPTCHA_ENABLED)
     #return render_template('home.html', FASTA_txt = 'AAAA')
 
 @app.route(PREFIX + '/index_rerun_same_seq.php', methods=['GET'])
