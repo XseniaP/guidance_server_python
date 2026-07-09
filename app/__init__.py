@@ -731,7 +731,7 @@ def home():
         if 'norun' not in request.form['JOB_TITLE']:
             #man_results = manager.add_guidance_process(new_process_id, email_address, request.form['JOB_TITLE'])
             working_dir = os.path.join ( CONSTS.WEBSERVER_RESULTS_DIR, new_process_id)
-            returnVal = GuidanceJobSubmitter.submit_job(working_dir, email_address)
+            returnVal = GuidanceJobSubmitter.submit_job(working_dir, email_address, 'daily_test' in request.form['JOB_TITLE'])
             if returnVal == 0:
             	return            
             man_results = True

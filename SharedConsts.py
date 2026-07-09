@@ -8,23 +8,25 @@ import os, sys, stat
 from utils import State
 from enum import Enum
 import platform
+from dotenv import load_dotenv
+load_dotenv()
 
 # constants to use when sending e-mails using the server admin's email address.
-ADMIN_EMAIL = ''
-DEV_EMAIL = ''
-SMTP_SERVER = ''
-ADMIN_USER_NAME = ''
-ADMIN_PASSWORD = ''
+ADMIN_EMAIL = 'evolseq@tauex.tau.ac.il'
+DEV_EMAIL = 'josefspr@gmail.com'
+SMTP_SERVER = 'mxout.tau.ac.il'
+ADMIN_USER_NAME = 'evolseq'
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
 SEND_EMAIL_DIR_IBIS = '/guidance/perl/'
 
-OWNER_EMAIL = ''
+OWNER_EMAIL = 'josefspr@gmail.com'
 
 # general variables Ksenia
 script_path = os.path.abspath(__file__)
 Bin = f"{os.path.dirname(script_path)}/script" #path to the script folder
-BIN_DIR = os.path.dirname(Bin)  #main project folder
-SERVERS_RESULTS_DIR = os.path.join(BIN_DIR, 'results')
-SERVERS_LOGS_DIR = os.path.join(BIN_DIR, 'logs')
+BIN_DIR = '/guidance/guidance_server_python' #os.path.dirname(Bin)  #main project folder
+SERVERS_RESULTS_DIR = '/guidance/results' #os.path.join(BIN_DIR, 'results')
+SERVERS_LOGS_DIR = '/guidance/results/logs' #os.path.join(BIN_DIR, 'logs')
 
 RELOAD_INTERVAL = 30
 RELOAD_TAGS = f'<META HTTP-EQUIV="REFRESH" CONTENT={RELOAD_INTERVAL}>'
@@ -47,7 +49,6 @@ WEBSERVER_TITLE = '<b>Server for a multiple sequence alignment confidence score 
 WEBSERVER_RESULTS_DIR = SERVERS_RESULTS_DIR #os.path.join(SERVERS_RESULTS_DIR, 'guidance')
 WEBSERVER_LOGS_DIR = SERVERS_LOGS_DIR #os.path.join(SERVERS_RESULTS_DIR, 'guidance', 'logs')
 WEBSERVER_HTML_DIR = f'/var/www/html/{WEBSERVER_NAME}/ver2'
-
 
 WEBSERVER_RESULTS_URL = os.path.join(WEBSERVER_URL, 'results')
 WEBSERVER_LOG_URL = os.path.join(WEBSERVER_URL, 'logs')
@@ -86,9 +87,6 @@ if platform.system()=='Darwin': # macOS platform
     SEMPHY_BBL = os.path.join(BIN_DIR, 'script/programs/semphy/semphy')
     CLUSTAL_OMEGA = os.path.join(BIN_DIR, 'script/programs/clustalo')
     IQTREE = os.path.join(BIN_DIR, 'script/programs/iqtree/bin/iqtree2')
-    FEATURES_EXTRACTION_PROG = os.path.join(SCRIPTS_DIR, 'programs', 'features_extraction', 'features_for_msas')
-    # Force arm64 slice — the webserver may run under Rosetta (x86_64), but numpy/TF are arm64-only
-    DL_MODEL_PYTHON = ['arch', '-arm64', '/Library/Frameworks/Python.framework/Versions/3.10/bin/python3']
 
 elif platform.system()=='Linux': # Linux platform
     MSA_SET_SCORE = os.path.join(SCRIPTS_DIR, 'programs', 'Linux','msa_set_score', 'msa_set_score')
@@ -98,22 +96,11 @@ elif platform.system()=='Linux': # Linux platform
     SEMPHY_BBL = os.path.join(BIN_DIR, 'script/programs/Linux/semphy/semphy')
     CLUSTAL_OMEGA = os.path.join(BIN_DIR, 'script/programs/Linux/clustalo')
     IQTREE = os.path.join(BIN_DIR, 'script/programs/Linux/iqtree/bin/iqtree2')
-    FEATURES_EXTRACTION_PROG = os.path.join(SCRIPTS_DIR, 'programs', 'Linux', 'features_extraction', 'features_for_msas')
-    DL_MODEL_PYTHON = os.environ.get('GUIDANCE_DL_PYTHON', sys.executable).split()
-
-FEATURES_EXTRACTION_MATRIX_DIR = os.path.join(SCRIPTS_DIR, 'programs', 'features_extraction', 'input_config_files')
-DL_MODEL_PREDICT_SCRIPT = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'scripts', 'predict_pretrained_main.py')
-# Amino-acid model
-DL_MODEL_PATH = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'input', 'orthomam_model2', 'regressor_model_0_mode1_dseq_from_true.keras')
-DL_MODEL_SCALER_PATH = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'input', 'orthomam_model2', 'scaler_0_mode1_dseq_from_true.pkl')
-# Nucleotide model
-DL_MODEL_NUC_PATH = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'input', 'nucleotides_model2', 'regressor_model_0_mode1_dseq_from_true.keras')
-DL_MODEL_NUC_SCALER_PATH = os.path.join(SCRIPTS_DIR, 'programs', 'dl_model', 'input', 'nucleotides_model2', 'scaler_0_mode1_dseq_from_true.pkl')
 
 MUSCLE = "muscle"
 MAFFT_GUIDANCE = "mafft"
-PRANK_LECS = os.environ.get('GUIDANCE_PRANK', 'prank')
-PRANK = PRANK_LECS
+PRANK_LECS = "prank"
+PRANK = "prank"
 PAGAN_LECS = "/share/apps/pagan-msa/bin/pagan"
 PAGAN = 'pagan'
 RUBY = 'ruby'
@@ -155,7 +142,7 @@ PROGRESS_BAR_TAG = '''<div class="progress"><div class="progress-bar progress-ba
 MODE_0755 = stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH
 
 DAILY_TEST_SEQUENCE = ">NC_001802.HXB2\nMQPIPIVAIVALVVAIIIAIVVWSIVIIEYRKILRQRKIDRLIDRLIERAEDSGNESEGEISALVEMGVEMGHHAPWDVDDL\n>EF637049.B\nMQSLQIVAIVALVVTAIIAIVVWSIVLIEYRKLLRQRKIDRLIDRIRERAEDSGNESEGDQEELAGLVERGHLAPWDVDDL\n>EF514700.B\nMQPLEILAIVALVVAIILAIVVWTIVFIEYKKILRQRKIDRLIDRIAERAEDSGNESEGDQEELSALVDMGHDAPWVVVDQ\n>DQ056417.C\nMLESIDYRLGVAALLLALIIAIIVWIIAYLEYRKLLRQRRIDKLIKRIRERAEDSGNESEGDIEELSTMVDVEHLRLLDVNNL\n>AY463217.C\nMVDLLAGVDYRVGVGALIIALIIAIIVWIWVYIEYRKLLRQRKIDWLIKRLREREEDSGNESEGDTEELATMVDMGHLRLLDDNNV\n>DQ011165.C\nMLNFLAGVDYRIGVGALIVGLIIAIVVWIIVYLEYRKLVKQRKIDWLIERIRERAEDSGNESEGDTEELATMVDMGHLRLLDAYDL\n>AB254142.C\nMINFAARVDYRVGVAAFTIALIIAIVVWIIVYLELVRQRKIDQLIIRIREREEDSGNESEGDIEELSTMVDMGQLRLLDGNGL\n>AY901969.C\nMVNLLEKVNLFEKVDYRLGVGALLIALVIAIIVWTIAYIEYRKLVRQRKIDWLVKRIRERAEDSGNESDGDTEELSTMVDLGHLRLLDVAEL\n>EU110088.A1\nMNQLQILAIXGLVVALILAIVVWTIVGIEYRKLLRQRRIDRLIKRISERAEDSGNESDGDTEELSQLVEMGNYNLGFDDNL\n>AB253428.A1\nMQLLEICAVVGLVVALIIAIVVWTIVGIEYKKLLKQRKIDRLVDRIRERAEDSGNESDGDREELSLLVDMGDYDLGDDNNL\n>AF457052.A1\nMLSALEICAIAGLVIALIIAIVVWTIVGIEYRRLLKQRKIDRLIERIRERAEDSGNESDGDTEELAALIEMGNYDLGDANDL\n>AF077336.F1\nMSYLLAIGIAALIVALIIAIVVWTIVYIEYKKLVRQRKINKLYKRIRERAEDSGNESEGDAEELAALGEMGPFIPGDINNL\n>DQ168575.G\nMKSLEISAIVGLIVAFIAAIVVWTIVLIEYRKIRKQKRIDKILDRIRERAEDSGNESEGDTEELATLVDMVDFEPWVGDNL\n>AY795907.D\nMQTLEILSIVALVIAAIIAIIVWTIVYIEYRKIRRQRKIDQLIDRIRERAEDSGNESEGDEEELSTLMEMGHAAPWNVADDL\n"
-WRITE_DAILY_TEST_SCRIPT = f"/guidance/script/write_daily_test_flask.py"
+WRITE_DAILY_TEST_SCRIPT = f"/guidance/guidance_server_python/script/write_daily_test_flask.py"
 DAILY_TEST_DIR = "/guidance/daily_tests"
 
 # from SharedConstants
@@ -215,7 +202,7 @@ SEPERATOR_FOR_MONITOR_DF = '###'
 # PATH2SAVE_MONITOR_DATA = r'/home/josefspr/results/Guidance'
 
 # KSENIA
-PATH2SAVE_MONITOR_DATA = f'{BIN_DIR}/results/Guidance'
+PATH2SAVE_MONITOR_DATA = '/guidance/results/Guidance' #f'{BIN_DIR}/results/Guidance'
 
 class UI_CONSTS:
 
