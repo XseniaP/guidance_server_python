@@ -37,6 +37,18 @@ class GuidanceJobSubmitter:
         # a simple command when using shebang header (#!) in q_submitter_power.py
         # replace by JS
         submission_cmd = f'cd {working_dir}\n python3 {CONSTS.MAIN_SCRIPT} {parameters} > {os.path.join(working_dir, "std.out")}'
+        if to_email:
+            # Send the "results ready" email as part of the submitted job itself (runs
+            # right after the pipeline, on whichever machine actually executes it) -
+            # this is the delivery path confirmed working on the server; the pipeline's
+            # own send_finish_email_to_user() call is a secondary attempt, not a
+            # replacement for it.
+            finished_content = EMAIL_CONSTS.FINISHED_CONTENT.format(results_url=CONSTS.WEBSERVER_RESULTS_URL_EXT, process_id=job_id)
+            running_params = load_running_parameters_text(working_dir)
+            if running_params:
+                finished_content += f"\n\nRunning Parameters:\n{running_params}"
+            email_cmd = f"python3 {CONSTS.EMAIL_SCRIPT} {CONSTS.SMTP_SERVER} {CONSTS.ADMIN_EMAIL} {to_email} --subject '{EMAIL_CONSTS.FINISHED_TITLE}' --content '{finished_content}'"
+            submission_cmd = f'{submission_cmd}\n{email_cmd}'
         if is_daily_test:
             write_daily_test_cmd = f"python {CONSTS.WRITE_DAILY_TEST_SCRIPT} {CONSTS.DAILY_TEST_DIR} {job_id}"
             submission_cmd = f'{submission_cmd}\n {write_daily_test_cmd}'
@@ -81,9 +93,9 @@ class GuidanceJobSubmitter:
                        content= EMAIL_CONSTS.CRASHED_CONTENT.format(results_url=CONSTS.WEBSERVER_RESULTS_URL_EXT, process_id=job_id))
             elif USE_SLURM_QUEUE and to_email:
                 # Queued asynchronously: let the user know it's been submitted, with the
-                # full running parameters. The "results are ready" email is sent
-                # separately by the pipeline itself once the job actually finishes on
-                # the compute node (guidance3.utils.common.send_finish_email_to_user).
+                # full running parameters. The "results are ready" email is the
+                # email_cmd baked into submission_cmd above, which runs once the job
+                # actually finishes on the compute node.
                 content = EMAIL_CONSTS.INIT_CONTENT.format(results_url=CONSTS.WEBSERVER_PROCESS_STATE_URL_EXT, process_id=job_id)
                 running_params = load_running_parameters_text(working_dir)
                 if running_params:
