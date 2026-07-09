@@ -41,8 +41,8 @@ FAILED_STATUS_TAG = '''<H1 align=center>Pepitope Job Status Page - <font color='
 
 WEBSERVER_NAME_CAPITAL = 'Guidance'
 WEBSERVER_NAME = 'guidance'
-WEBSERVER_URL = 'http://dev.guidance.tau.ac.il' #f'http://{WEBSERVER_NAME}.tau.ac.il'
-WEBSERVER_URL_EXT = 'http://dev.guidance.tau.ac.il'
+WEBSERVER_URL = 'http://guidance.tau.ac.il' #f'http://{WEBSERVER_NAME}.tau.ac.il'
+WEBSERVER_URL_EXT = 'http://guidance.tau.ac.il'
 WEBSERVER_OLD_URL = f'http://{WEBSERVER_NAME}-old.tau.ac.il'
 WEBSERVER_TITLE = '<b>Server for a multiple sequence alignment confidence score calculation</b>'
 
