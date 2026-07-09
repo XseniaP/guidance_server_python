@@ -18,7 +18,7 @@ if __name__ == '__main__':
                             
         args = parser.parse_args()
         
-        results_dir = os.path.join('/bioseq/data/results/Guidance', args.jobID)
+        results_dir = os.path.join('/guidance/results', args.jobID)
         endFile = os.path.join( results_dir, f'GUIDANCE_{args.jobID}.END_OK')
         if os.path.exists(endFile): 
             status = 'PASS'
