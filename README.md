@@ -282,18 +282,41 @@ GUIDANCE3 relies on the following external tools. Please cite them alongside GUI
 
 ---
 
-**`guidance3-predict`** — select the best MSA from a folder of alternatives using the bundled DL model
+**`guidance3-rank`** — rank a set of MSAs with the bundled DL model and return the best one
 
 ```bash
-guidance3-predict \
-  --msas-dir  <path/to/folder_with_alternative_msas> \
-  --seq-type  aa \
-  --out-dir   <output_dir>
+guidance3-rank --msas-dir <folder | set.zip | set.tar.gz> --out-dir <output_dir>
 ```
 
-Use `--seq-type nuc` for nucleotide sequences. The command handles everything internally: feature extraction, model loading (bundled pretrained weights), prediction, and output. The best MSA is written to `<out-dir>/best_msa.fasta`. Add `--verbose` for detailed progress.
+The DL model predicts each MSA's distance from the (unknown) true MSA; the MSA with the lowest predicted score ranks first. The MSAs must be alignments of the same sequences (checked); accepted extensions: `.fasta .fas .fa .faa .fna .aln .afa .mfa`. Outputs in `<output_dir>`:
 
-The alternative MSAs folder should contain `.fasta` files — typically the `BP/GUIDANCE3_MSA/` sub-directory produced by a `guidance3` run, or any set of MSAs you want to rank.
+- `ranking.csv` — `rank`, `code` (MSA file name) and `predicted_score`, best first
+- `best_msa.fasta` — the top-ranked MSA, unchanged
+- `features.csv` — the alignment features the model used
+
+The sequence type (amino acids or nucleotides) is detected automatically; use `--seq-type codon` for codon alignments, which are ranked on their amino-acid translation. Add `--verbose` for detailed progress. The MSAs can come from any source, e.g. different aligners or settings, or the alternative MSAs of a `guidance3` run.
+
+---
+
+**`guidance3-tree`** — the GUIDANCE3 tree and alignment-aware branch support from any set of alternative MSAs
+
+The tree step of the `guidance3` pipeline as a stand-alone command, for MSAs made elsewhere (other aligners, other settings, or the alternative MSAs of an earlier run):
+
+```bash
+# GUIDANCE3 tree (+ supports of your own tree) from a folder or .zip / .tar.gz of MSAs of the same sequences
+guidance3-tree --msas-dir <alternative_msas> --base-msa <default_msa.fasta> \
+               --user-tree <my_tree.nwk> --out-dir <output_dir> --proc-num 4
+
+# re-use trees already inferred (e.g. <prefix>_AltMSA_trees.nwk of a guidance3 run): takes seconds
+guidance3-tree --alt-trees <prefix>_AltMSA_trees.nwk --base-msa <default_msa.fasta> \
+               --user-tree <my_tree.nwk> --out-dir <output_dir>
+```
+
+- An ML tree (IQ-TREE 3, `-fast`; LG+G for proteins, GTR+G for nucleotides) is inferred from each of `--n-trees` (default 20) randomly chosen MSAs of the set.
+- **GUIDANCE3 tree**: the extended majority-rule consensus of these trees, resolved by an ML search on the base MSA constrained to it.
+- **Branch supports** (one table row per branch): alignment support (% of the trees containing the branch), aBayes and SH-aLRT (1000 replicates) on the base MSA with the topology fixed, and combined = aBayes × alignment support / 100.
+- `--base-msa` defaults to the MSA of the set that the DL model ranks best (ranking written to `<prefix>_DL_ranking.csv`). With `--alt-trees` it is required for the GUIDANCE3 tree; with `--no-consensus --user-tree` and no base MSA, only alignment support is reported (aBayes / SH-aLRT columns are `NA`).
+- Outputs (`--prefix`, default `MSA`): `<prefix>_GUIDANCE3_tree.nwk` / `_branch_support.tsv` / `.html` (interactive viewer), `<prefix>_UserTree_alignment_support.nwk` / `.tsv` / `.html`, and `<prefix>_AltMSA_trees.nwk`.
 
 ---
 

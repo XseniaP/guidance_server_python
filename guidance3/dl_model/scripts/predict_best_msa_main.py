@@ -1,42 +1,22 @@
 """
-guidance3-predict: select the best MSA from a folder of alternatives.
+guidance3-rank: rank a set of MSAs of the same sequences with the GUIDANCE3 DL model and return the best one.
 
 Usage:
-    guidance3-predict --msas-dir <dir> --seq-type {aa,nuc} --out-dir <dir>
+    guidance3-rank --msas-dir <folder | .zip | .tar.gz> --out-dir <dir> [--seq-type {aa,nuc,codon}]
 
-Steps:
-  1. Copies all .fasta files from --msas-dir into a temporary workspace.
-  2. Picks one MSA at random as the _TRUE.fas reference required by
-     features_for_msas (only a structural placeholder — not used for scoring).
-  3. Runs the bundled features_for_msas binary to extract alignment features.
-  4. Runs the bundled DL model to predict MSA quality scores.
-  5. Copies the MSA with the LOWEST predicted score (predicted distance from the true MSA) to
-     <out-dir>/best_msa.fasta and prints its name.
+The model predicts each MSA's distance from the (unknown) true MSA; the MSA with the LOWEST predicted score is
+ranked first. Writes to --out-dir:
+  ranking.csv      rank, MSA file, predicted_score (best first)
+  best_msa.fasta   the top-ranked MSA (unchanged)
+  features.csv     the alignment features the model used
 """
 from __future__ import annotations
 
 import argparse
-import glob
-import json
 import os
-import random
 import shutil
-import subprocess
 import sys
 import tempfile
-
-import pandas as pd
-
-from guidance3.constants import (
-    FEATURES_EXTRACTION_PROG,
-    FEATURES_EXTRACTION_MATRIX_DIR,
-    DL_MODEL_PYTHON,
-    DL_MODEL_PREDICT_SCRIPT,
-    DL_MODEL_PATH,
-    DL_MODEL_SCALER_PATH,
-    DL_MODEL_NUC_PATH,
-    DL_MODEL_NUC_SCALER_PATH,
-)
 
 TRUE_MSA_FILENAME = "MSA_TRUE.fas"
 
@@ -64,59 +44,63 @@ NUC_MODELS = [
 
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        description="Select the best MSA from a folder of alternatives using the GUIDANCE3 DL model."
-    )
+        prog="guidance3-rank",
+        description="Rank a set of MSAs of the same sequences with the GUIDANCE3 DL model (predicted distance "
+                    "from the true MSA; lower = better) and return the best one.")
     p.add_argument("--msas-dir", required=True,
-                   help="Directory containing alternative MSA .fasta files.")
-    p.add_argument("--seq-type", required=True, choices=["aa", "nuc"],
-                   help="Sequence type: aa (amino acid) or nuc (nucleotide).")
+                   help="Folder, or .zip / .tar.gz archive, of aligned FASTA files of the same sequences "
+                        "(extensions: .fasta .fas .fa .faa .fna .aln .afa .mfa).")
     p.add_argument("--out-dir", required=True,
-                   help="Output directory. Best MSA is written as best_msa.fasta.")
+                   help="Output directory: ranking.csv, best_msa.fasta, features.csv.")
+    p.add_argument("--seq-type", choices=["aa", "nuc", "codon"], default=None,
+                   help="Sequence type. Default: detected (aa or nuc). Use codon for codon alignments, which are "
+                        "ranked on their amino-acid translation.")
     p.add_argument("--verbose", action="store_true", default=False,
                    help="Print detailed progress to stdout.")
     return p
 
 
-def _copy_stripped(src: str, dst: str) -> None:
-    """Copy a FASTA stripping blank lines — features_for_msas crashes on empty lines."""
-    if os.path.isdir(dst):
-        dst = os.path.join(dst, os.path.basename(src))
-    with open(src) as fin, open(dst, "w") as fout:
-        for line in fin:
-            if line.strip():
-                fout.write(line)
-
-
 def main(argv=None) -> int:
-    from guidance3.sequences.msa_set import rank_msas
+    from guidance3.sequences.msa_set import MSASetError, select_best_from_msa_set
+    from guidance3.trees.alignment_trees import _is_nucleotide
 
     args = _build_parser().parse_args(argv)
-
-    msas_dir = os.path.abspath(args.msas_dir)
-    out_dir  = os.path.abspath(args.out_dir)
+    src = os.path.abspath(args.msas_dir)
+    out_dir = os.path.abspath(args.out_dir)
+    if not os.path.exists(src):
+        sys.exit(f"guidance3-rank: error: not found: {src}")
     os.makedirs(out_dir, exist_ok=True)
 
-    fasta_files = sorted(glob.glob(os.path.join(msas_dir, "*.fasta")))
-    if not fasta_files:
-        sys.exit(f"No .fasta files found in: {msas_dir}")
-    print(f"Found {len(fasta_files)} alternative MSAs in {msas_dir}")
-
-    # The model predicts each MSA's distance from the true MSA: the LOWEST predicted_score is the best MSA
-    # (as in guidance3.dl_model.evaluation.pick_best and the pipeline's select_best_msa).
+    work = tempfile.mkdtemp(prefix="guidance3_rank_", dir=out_dir)
     try:
-        preds = rank_msas(fasta_files, args.seq_type == "nuc", out_dir, verbose=args.verbose)
-    except RuntimeError as e:
-        sys.exit(str(e))
+        seq_type = args.seq_type
+        try:
+            if seq_type is None:
+                from guidance3.sequences.msa_set import collect_msa_files
+                probe = collect_msa_files(src, os.path.join(work, "probe"))
+                if not probe:
+                    raise MSASetError("no alignment files found (extensions: .fasta .fas .fa .faa .fna .aln "
+                                      ".afa .mfa).")
+                seq_type = "nuc" if _is_nucleotide(probe[0]) else "aa"
+                shutil.rmtree(os.path.join(work, "probe"), ignore_errors=True)
+                print(f"Sequence type: {seq_type} (detected; use --seq-type codon for codon alignments)")
+            best = select_best_from_msa_set(src, work, seq_type, verbose=args.verbose)
+        except MSASetError as e:
+            sys.exit(f"guidance3-rank: error: {e}")
+        except RuntimeError as e:
+            sys.exit(f"guidance3-rank: error: {e}")
 
-    best_code, best_score = preds.loc[0, "code"], preds.loc[0, "predicted_score"]
-    best_dst = os.path.join(out_dir, "best_msa.fasta")
-    shutil.copy(os.path.join(msas_dir, best_code), best_dst)
-    preds.to_csv(os.path.join(out_dir, "predictions.csv"), index=False)  # best first
+        ranking_csv = os.path.join(out_dir, "ranking.csv")
+        shutil.copyfile(os.path.join(work, "MSA_set_ranking.csv"), ranking_csv)
+        shutil.copyfile(best, os.path.join(out_dir, "best_msa.fasta"))
+        features = os.path.join(work, "MSA_set_ranking", "features.csv")
+        if os.path.exists(features):
+            shutil.copyfile(features, os.path.join(out_dir, "features.csv"))
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
 
-    print(f"Best MSA : {best_code}  (predicted distance from the true MSA: {best_score:.6f}; lower = better)")
-    print(f"Saved to : {best_dst}")
-    print(f"Features : {os.path.join(out_dir, 'features.csv')}")
-    print(f"All predictions (best first) : {os.path.join(out_dir, 'predictions.csv')}")
+    print(f"Ranking (best first): {ranking_csv}")
+    print(f"Best MSA            : {os.path.join(out_dir, 'best_msa.fasta')}")
     return 0
 
 

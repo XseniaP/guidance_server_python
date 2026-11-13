@@ -74,7 +74,7 @@ def main(argv=None):
         out_html = ""
 
     # New argparse interface: guidance3-concat-msa --msas-dir <dir> --n <N> --out-dir <dir>
-    elif len(argv) > 1 and argv[1].startswith("--"):
+    elif len(argv) < 3 or argv[1].startswith("-"):  # also: no arguments, -h, --help
         p = argparse.ArgumentParser(
             description="Concatenate N randomly sampled MSAs from a folder into a super-MSA."
         )
@@ -102,10 +102,6 @@ def main(argv=None):
     # (seeded, reproducible) order. Random alternatives give trees as accurate as selected ones, whereas the list
     # order groups near-identical Heads-or-Tails variants of the same guide tree.
     else:
-        if len(argv) < 3:
-            sys.exit("USAGE: guidance3-concat-msa --msas-dir <dir> --n <N> --out-file <file>\n"
-                     "       (legacy) <MSA_LIST> <OUT_ALN> [Num_Of_Aln] [Shuffle YES|NO]\n")
-
         msa_list = argv[1]
         out_msa = argv[2]
         num_of_aln_to_concat = int(argv[3]) if len(argv) > 3 else None
