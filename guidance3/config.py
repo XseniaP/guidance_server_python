@@ -132,7 +132,7 @@ class RunConfig:
 
     def parse_arguments(self):
         """parse arguments and fill out the relevant Variable Class properties"""
-        parser = argparse.ArgumentParser(prog="GUIDANCE.v2.02", description="Program description: NA")
+        parser = argparse.ArgumentParser(prog="guidance3", description="GUIDANCE3: confidence scores for multiple sequence alignments and alignment-aware phylogenies")
 
         # Required arguments
         parser.add_argument('--seqFile', dest='usrSeq_File', type=str, default="",

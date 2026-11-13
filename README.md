@@ -8,14 +8,21 @@
 #### Installation — CLI
 
 ```bash
-pip install git+https://github.com/XseniaP/guidance_server_python.git
+pip install guidance3
 ```
 
-All Python dependencies and bundled binaries (iqtree, msa_set_score, etc.) are installed automatically. The Command Line Interface (CLI) detects your platform and uses the correct executables.
+All Python dependencies and bundled binaries (iqtree3, msa_set_score, clustalo, etc.) are installed automatically. The Command Line Interface (CLI) detects your platform and uses the correct executables.
 
-> **Installation time:** expect **15–30 minutes** on a typical connection. TensorFlow (~500 MB) and PyTorch (~400 MB) are large downloads. The install is a one-time cost.
+**MAFFT and PRANK are not on PyPI** and must be installed separately, e.g.:
 
-> **Note:** PyPI release coming soon — `pip install guidance3` will be the install path once published.
+```bash
+conda install -c bioconda mafft prank      # or: brew install mafft / apt install mafft
+```
+
+> **Installation time:** a few minutes; TensorFlow (~500 MB) is the largest download. The install is a one-time cost.
+
+The development version can be installed directly from GitHub:
+`pip install git+https://github.com/XseniaP/guidance_server_python.git`
 
 ---
 
@@ -121,7 +128,7 @@ If you use GUIDANCE3 in your research, please cite:
 
 GUIDANCE3 relies on the following external tools. Please cite them alongside GUIDANCE3 when using this software in your research.
 
-**Bundled binaries** (will be installed automatically with `pip install guidance3` when published):
+**Bundled binaries** (installed automatically with `pip install guidance3`):
 
 - **IQ-TREE 3** — phylogenetic tree inference (bundled v3.1.4; set `GUIDANCE_IQTREE` to use another binary, otherwise `iqtree3` on the PATH is used if the bundled one cannot run)  
   Wong TKF, Ly-Trong N, Ren H, et al. (2026) IQ-TREE 3: phylogenomic inference software using complex evolutionary models. *Mol Biol Evol* 43. https://doi.org/10.1093/molbev/msag117
@@ -140,7 +147,6 @@ GUIDANCE3 relies on the following external tools. Please cite them alongside GUI
 **Key Python libraries:**
 
 - **Biopython** — Cock PJ et al. (2009) Biopython: freely available Python tools for computational molecular biology and bioinformatics. *Bioinformatics* 25:1422–1423. https://doi.org/10.1093/bioinformatics/btp163
-- **DendroPy** — Sukumaran J, Holder MT (2010) DendroPy: A Python library for phylogenetic computing. *Bioinformatics* 26:1569–1571. https://doi.org/10.1093/bioinformatics/btq228
 
 ---
 

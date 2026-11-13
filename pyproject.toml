@@ -29,27 +29,11 @@ dependencies = [
     "matplotlib>=3.8",
     "scikit-learn>=1.4",
     "joblib",
-    "tqdm",
-    "pyyaml",
-    "seaborn",
-    "pillow>=10.2",
-    "mpld3",
     # Bioinformatics
     "biopython>=1.83",
-    "dendropy>=4.6",
-    "bio>=1.6",
-    "biothings-client",
-    "gprofiler-official",
-    "mygene",
-    # Deep learning
-    "requests",
+    # Deep learning (the pretrained model that ranks MSAs)
     "tensorflow>=2.17",
     "keras>=3.5",
-    "torch",
-    "torchvision",
-    "torchtext",
-    "transformers",
-    "shap",
 ]
 
 [project.urls]
@@ -61,6 +45,14 @@ web = [
     "flask>=3.0",
     "flask-wtf>=1.2",
     "apscheduler>=3.10",
+]
+# retraining / explaining the DL model (not needed to run GUIDANCE3)
+train = [
+    "seaborn",
+    "shap",
+    "optuna",
+    "torch",
+    "transformers",
 ]
 dev = [
     "pytest>=8.0",

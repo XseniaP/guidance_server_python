@@ -3,6 +3,7 @@ import sys
 import stat
 from enum import Enum
 import platform
+import subprocess
 
 
 class State(Enum):
@@ -155,13 +156,21 @@ DL_MODEL_SCALER_PATH = os.path.join(_PACKAGE_DIR, 'dl_model', 'input', 'orthomam
 DL_MODEL_NUC_PATH = os.path.join(_PACKAGE_DIR, 'dl_model', 'input', 'nucleotides_model2', 'regressor_model_0_mode1_dseq_from_true.keras')
 DL_MODEL_NUC_SCALER_PATH = os.path.join(_PACKAGE_DIR, 'dl_model', 'input', 'nucleotides_model2', 'scaler_0_mode1_dseq_from_true.pkl')
 
-if platform.system() == 'Darwin':
-    # Force arm64 slice — the webserver may run under Rosetta (x86_64), but numpy/TF are arm64-only.
-    # Use sys.executable so venv/conda environments are respected.
-    # DL_MODEL_PYTHON = ['arch', '-arm64', sys.executable]
-    DL_MODEL_PYTHON = ['arch', '-arm64', '/Library/Frameworks/Python.framework/Versions/3.10/bin/python3']
-else:
-    DL_MODEL_PYTHON = os.environ.get('GUIDANCE_DL_PYTHON', sys.executable).split()
+def _apple_silicon():
+    """True on Apple-silicon Macs, also when this process runs under Rosetta (x86_64)."""
+    try:
+        out = subprocess.run(['sysctl', '-n', 'hw.optional.arm64'], capture_output=True, text=True, timeout=5)
+        return out.stdout.strip() == '1'
+    except Exception:
+        return False
+
+
+# Python used to run the DL model. GUIDANCE_DL_PYTHON overrides it (e.g. a separate TensorFlow environment);
+# otherwise the Python running GUIDANCE3, so pip/venv/conda installs use their own TensorFlow.
+DL_MODEL_PYTHON = os.environ.get('GUIDANCE_DL_PYTHON', sys.executable).split()
+if platform.system() == 'Darwin' and _apple_silicon() and DL_MODEL_PYTHON[0] != 'arch':
+    # Force the arm64 slice: the web server may run under Rosetta (x86_64), but TF wheels are arm64-only.
+    DL_MODEL_PYTHON = ['arch', '-arm64'] + DL_MODEL_PYTHON
 
 MUSCLE = "muscle"
 MAFFT_GUIDANCE = "mafft"
