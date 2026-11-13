@@ -97,7 +97,10 @@ def main(argv=None):
         out_html = ""
 
     # Legacy positional interface used by the web server:
-    # <MSA_LIST> <OUT_ALN> [Num_Of_Aln] [Shuffle YES|NO] [isWebServer YES|NO] [outHTML]
+    # <MSA_LIST> <OUT_ALN> [Num_Of_Aln] [Shuffle YES|NO|RANDOM_ALT] [isWebServer YES|NO] [outHTML]
+    # RANDOM_ALT keeps the first MSA of the list (the default MSA) and takes the alternatives in a random
+    # (seeded, reproducible) order. Random alternatives give trees as accurate as selected ones, whereas the list
+    # order groups near-identical Heads-or-Tails variants of the same guide tree.
     else:
         if len(argv) < 3:
             sys.exit("USAGE: guidance3-concat-msa --msas-dir <dir> --n <N> --out-file <file>\n"
@@ -115,6 +118,10 @@ def main(argv=None):
 
         if shuffle == "YES":
             random.shuffle(msa_files)
+        elif shuffle == "RANDOM_ALT":
+            rest = msa_files[1:]
+            random.Random(1).shuffle(rest)
+            msa_files = msa_files[:1] + rest
 
         if num_of_aln_to_concat is None:
             num_of_aln_to_concat = len(msa_files)
@@ -146,7 +153,7 @@ def main(argv=None):
                     num_of_alt = num_of_aln_to_concat - 1
                     _print_to_output(
                         f"<A HREF='{out_msa_no_path}' TARGET=_blank>The SuperMSA composed of the base MSA "
-                        f"and {num_of_alt} alternative MSAs</A><br>", f)
+                        f"and {num_of_alt} randomly chosen alternative MSAs</A><br>", f)
                     super_msa_section = False
                 else:
                     f.write(line)

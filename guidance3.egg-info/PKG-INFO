@@ -1,13 +1,17 @@
 Metadata-Version: 2.4
 Name: guidance3
 Version: 3.0.0
-Summary: GUIDANCE3 – confidence scoring for multiple sequence alignments
+Summary: GUIDANCE3 – confidence scoring for multiple sequence alignments (Linux and macOS only)
 Author-email: Ksenia Polonsky <ksenia.polonsky@gmail.com>
 License: MIT
+Project-URL: Homepage, https://guidance.tau.ac.il
+Project-URL: Repository, https://github.com/XseniaP/guidance_server_python
 Keywords: bioinformatics,multiple sequence alignment,confidence score,phylogenetics
 Classifier: Programming Language :: Python :: 3
 Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
 Classifier: Intended Audience :: Science/Research
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: MacOS
 Requires-Python: >=3.9
 Description-Content-Type: text/markdown
 Requires-Dist: numpy>=1.26
@@ -27,6 +31,7 @@ Requires-Dist: bio>=1.6
 Requires-Dist: biothings-client
 Requires-Dist: gprofiler-official
 Requires-Dist: mygene
+Requires-Dist: requests
 Requires-Dist: tensorflow>=2.17
 Requires-Dist: keras>=3.5
 Requires-Dist: torch
@@ -44,19 +49,26 @@ Requires-Dist: pytest-cov>=5.0; extra == "dev"
 
 ### GUIDANCE3
 
-#### Installation — CLI (recommended)
+> **Supported platforms: macOS (arm64 / Intel) and Linux (x86-64) only.**
+> Windows is not supported — no Windows wheel is published on PyPI and the bundled compiled binaries are not available for Windows.
 
-The quickest way to get the `guidance3` command available system-wide:
+---
+
+#### Installation — CLI
 
 ```bash
-git clone https://github.com/XseniaP/guidance_server_python.git
-cd guidance_server_python
-pip install -e .
+pip install git+https://github.com/XseniaP/guidance_server_python.git
 ```
 
-All Python dependencies are installed automatically. Executables for MacOS and Linux are bundled inside the package — the CLI detects your platform and uses the correct ones.
+All Python dependencies and bundled binaries (iqtree, msa_set_score, etc.) are installed automatically. The Command Line Interface (CLI) detects your platform and uses the correct executables.
 
-*Simple example* — amino-acid sequences, GUIDANCE3 algorithm, 100 bootstraps, 8 CPUs:
+> **Installation time:** expect **15–30 minutes** on a typical connection. TensorFlow (~500 MB) and PyTorch (~400 MB) are large downloads. The install is a one-time cost.
+
+> **Note:** PyPI release coming soon — `pip install guidance3` will be the install path once published.
+
+---
+
+#### Quick start
 
 ```bash
 guidance3 --seqFile <path_to_fasta> --msaProgram MAFFT --seqType aa \
@@ -64,9 +76,7 @@ guidance3 --seqFile <path_to_fasta> --msaProgram MAFFT --seqType aa \
           --bootstraps 100 --proc_num 8
 ```
 
-Use `-h` at any time to print the full option list.
-
-The `--seqType` should be changed to `nuc` for nucleotides or `codon` for codon-aware analysis.
+Use `--seqType nuc` for nucleotides or `--seqType codon` for codon-aware analysis. Run `guidance3 -h` for the full option list.
 
 ---
 
@@ -104,19 +114,17 @@ conda deactivate
 
 ---
 
-#### Platform notes
+#### Development / Contributing
 
-Executables for the following programs are bundled for both MacOS-arm64 (M1) and Ubuntu Linux:
+To work on the code itself:
 
-- msa_set_score, semphy, removeTaxa, isEqualTree, iqtree, clustalo (ClustalOmega)
+```bash
+git clone https://github.com/XseniaP/guidance_server_python.git
+cd guidance_server_python
+pip install -e .
+```
 
-Each program's source and makefile are in `./script/programs/<program>/`. If you are on a different platform, build replacements using the makefiles and update the paths in **SharedConsts.py**.
-
----
-
-#### Command-line usage
-
-All commands below become available after `pip install -e .`. Without pip install you can run the main pipeline directly from the project root:
+The `-e` (editable) flag means changes to the source are reflected immediately without reinstalling. You can also run the pipeline directly without installing:
 
 ```bash
 python3 guidance3/pipeline/main.py --seqFile <fasta> --msaProgram MAFFT --seqType aa \
@@ -124,6 +132,56 @@ python3 guidance3/pipeline/main.py --seqFile <fasta> --msaProgram MAFFT --seqTyp
 ```
 
 ---
+
+#### Platform notes
+
+Pre-compiled binaries for the following programs are bundled under `guidance3/programs/mac/` and `guidance3/programs/linux/`:
+
+- msa_set_score, removeTaxa, isEqualTree, features_for_msas, iqtree3 (IQ-TREE 3.1.4), clustalo (Clustal Omega)
+
+The CLI detects your platform at runtime and uses the correct executables automatically. If you are on an unsupported platform, you will need to obtain the binaries from the respective upstream projects and update the paths in **SharedConsts.py** and **guidance3/constants.py**.
+
+---
+
+#### Citations
+
+If you use GUIDANCE3 in your research, please cite:
+
+- **GUIDANCE2** — Sela I, Ashkenazy H, Katoh K, Pupko T (2015) GUIDANCE2: accurate detection of unreliable alignment regions accounting for the uncertainty of multiple parameters. *Nucleic Acids Res* 43:W7–W14. https://doi.org/10.1093/nar/gkv318
+- **GUIDANCE** — Penn O, Privman E, Ashkenazy H, Landan G, Graur D, Pupko T (2010) GUIDANCE: a web server for assessing alignment confidence scores. *Nucleic Acids Res* 38:W23–W28. https://doi.org/10.1093/nar/gkq443
+- **HoT** — Landan G, Graur D (2007) Heads or tails: a simple reliability measure for multiple sequence alignments. *Mol Biol Evol* 24:1380–1391. https://doi.org/10.1093/molbev/msm060 
+- **HoT** — Landan G, Graur D (2008) Local reliability measures from sets of co-optimal multiple sequence alignments. *Pac Symp Biocomput* 13:15-24. PMID: 18229673. https://pubmed.ncbi.nlm.nih.gov/18229673/ 
+
+---
+
+#### Third-party tools
+
+GUIDANCE3 relies on the following external tools. Please cite them alongside GUIDANCE3 when using this software in your research.
+
+**Bundled binaries** (will be installed automatically with `pip install guidance3` when published):
+
+- **IQ-TREE 3** — phylogenetic tree inference (bundled v3.1.4; set `GUIDANCE_IQTREE` to use another binary, otherwise `iqtree3` on the PATH is used if the bundled one cannot run)  
+  Wong TKF, Ly-Trong N, Ren H, et al. (2026) IQ-TREE 3: phylogenomic inference software using complex evolutionary models. *Mol Biol Evol* 43. https://doi.org/10.1093/molbev/msag117
+
+- **Clustal Omega** — multiple sequence alignment  
+  Sievers F, Wilm A, Dineen D, Gibson TJ, Karplus K, Li W, Lopez R, McWilliam H, Remmert M, Söding J, Thompson JD, Higgins DG (2011) Fast, scalable generation of high-quality protein multiple sequence alignments using Clustal Omega. *Mol Syst Biol* 7:539. https://doi.org/10.1038/msb.2011.75
+
+**External tools** (must be installed separately via conda or your system package manager):
+
+- **MAFFT** — multiple sequence alignment  
+  Katoh K, Standley DM (2013) MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability. *Mol Biol Evol* 30:772–780. https://doi.org/10.1093/molbev/mst010
+
+- **PRANK** — phylogeny-aware multiple sequence alignment  
+  Löytynoja A (2014) Phylogeny-aware alignment with PRANK. *Methods Mol Biol* 1079:155–170. https://doi.org/10.1007/978-1-62703-646-7_10
+
+**Key Python libraries:**
+
+- **Biopython** — Cock PJ et al. (2009) Biopython: freely available Python tools for computational molecular biology and bioinformatics. *Bioinformatics* 25:1422–1423. https://doi.org/10.1093/bioinformatics/btp163
+- **DendroPy** — Sukumaran J, Holder MT (2010) DendroPy: A Python library for phylogenetic computing. *Bioinformatics* 26:1569–1571. https://doi.org/10.1093/bioinformatics/btq228
+
+---
+
+#### Command-line reference
 
 **`guidance3`** — main pipeline
 
@@ -246,32 +304,6 @@ guidance3-predict \
 Use `--seq-type nuc` for nucleotide sequences. The command handles everything internally: feature extraction, model loading (bundled pretrained weights), prediction, and output. The best MSA is written to `<out-dir>/best_msa.fasta`. Add `--verbose` for detailed progress.
 
 The alternative MSAs folder should contain `.fasta` files — typically the `BP/GUIDANCE3_MSA/` sub-directory produced by a `guidance3` run, or any set of MSAs you want to rank.
-
----
-
-**`guidance3-remove-pos`** — filter columns below a confidence cutoff
-
-```bash
-guidance3-remove-pos \
-  --MSA        <path/to/MSA.fasta> \
-  --Scores     <path/to/MSA_res_pair_col.scr> \
-  --FilterdMSA <path/to/output_filtered.fasta> \
-  --Cutoff     0.93 \
-  --RemovedPos <path/to/removed_columns.txt>
-```
-
-**`guidance3-remove-seq`** — filter sequences below a confidence cutoff
-
-```bash
-guidance3-remove-seq \
-  --MSA        <path/to/MSA.fasta> \
-  --Scores     <path/to/MSA_res_pair_seq.scr> \
-  --FilterdSeq <path/to/output_filtered.fasta> \
-  --Cutoff     0.6 \
-  --RemovedSeq <path/to/removed_sequences.txt>
-```
-
-Score files (`_res_pair_col.scr`, `_res_pair_seq.scr`) are produced by `guidance3` in the output directory.
 
 ---
 

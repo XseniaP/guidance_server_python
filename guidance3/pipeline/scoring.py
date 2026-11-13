@@ -852,7 +852,7 @@ def calculate_sp_scores(config):
     if config.PROGRAM in ["GUIDANCE", "HoT"]:
         config.Output_Prefix = f"{config.dataset}.{config.MSA_Program}.Guidance"
     elif config.PROGRAM == "GUIDANCE3":
-        config.Output_Prefix = f"{config.dataset}.{config.MSA_Program}.Guidance2"
+        config.Output_Prefix = f"{config.dataset}.{config.MSA_Program}.Guidance3"
 
     cmd = ""
     if config.userMSA_File != "" and config.Seq_Type == "Codons":       # user gave codon alignment
@@ -1328,7 +1328,7 @@ def calculate_sp_scores_convergence(config, countTrees):
     if config.PROGRAM in ["GUIDANCE", "HoT"]:
         config.Output_Prefix = f"{config.dataset}.{config.MSA_Program}.Guidance"
     elif config.PROGRAM == "GUIDANCE3":
-        config.Output_Prefix = f"{config.dataset}.{config.MSA_Program}.Guidance2"
+        config.Output_Prefix = f"{config.dataset}.{config.MSA_Program}.Guidance3"
 
     # Determine reference MSA (codon case: translate to protein first, cached after first call)
     if config.userMSA_File != "" and config.Seq_Type == "Codons":

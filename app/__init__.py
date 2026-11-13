@@ -46,7 +46,84 @@ recaptcha = ReCaptcha(app) # Create a ReCaptcha object by passing in 'app' as pa
 # can't validate on localhost. Set RECAPTCHA_ENABLED=false in the local .env to skip it there;
 # leave unset (defaults to enabled) on the server.
 RECAPTCHA_ENABLED = os.getenv('RECAPTCHA_ENABLED', 'true').strip().lower() not in ('0', 'false', 'no')
+
+# reCAPTCHA sets third-party cookies, so the form loads it only after cookie consent (NAR web-server rules).
+# Visitors who decline submit with captcha_mode=declined and are rate-limited per IP address instead.
+# Set DECLINED_SUBMISSIONS_PER_HOUR=0 to require reCAPTCHA for every submission.
+DECLINED_SUBMISSIONS_PER_HOUR = int(os.getenv('DECLINED_SUBMISSIONS_PER_HOUR', '5'))
+DECLINED_SUBMISSIONS_PER_DAY = int(os.getenv('DECLINED_SUBMISSIONS_PER_DAY', '20'))
+# Shared by all web-server processes; holds salted hashes of IP addresses (never the addresses) and submission
+# times of the last 24 hours only.
+_DECLINED_STORE = os.path.join(CONSTS.WEBSERVER_LOGS_DIR, 'declined_submissions.json')
+# Hidden form field that people never see; automated scripts tend to fill it in.
+HONEYPOT_FIELD = 'hp_extra_info'
+
+
+def _allow_declined_submission(ip):
+    """True if this IP address may submit without reCAPTCHA now (and records the submission).
+    Limits: DECLINED_SUBMISSIONS_PER_HOUR per hour and DECLINED_SUBMISSIONS_PER_DAY per 24 hours."""
+    import fcntl
+    import hashlib
+    import json as _json
+    if DECLINED_SUBMISSIONS_PER_HOUR <= 0 or DECLINED_SUBMISSIONS_PER_DAY <= 0:
+        return False
+    key = hashlib.sha256(f"{app.config['SECRET_KEY'] or ''}|{ip}".encode()).hexdigest()[:32]
+    now = time()
+    with open(_DECLINED_STORE + '.lock', 'a') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        try:
+            with open(_DECLINED_STORE) as fh:
+                store = _json.load(fh)
+        except (OSError, ValueError):
+            store = {}
+        store = {k: [t for t in v if now - t < 86400] for k, v in store.items()}
+        store = {k: v for k, v in store.items() if v}
+        times = store.get(key, [])
+        allowed = (sum(1 for t in times if now - t < 3600) < DECLINED_SUBMISSIONS_PER_HOUR
+                   and len(times) < DECLINED_SUBMISSIONS_PER_DAY)
+        if allowed:
+            store[key] = times + [now]
+        tmp = _DECLINED_STORE + '.tmp'
+        with open(tmp, 'w') as fh:
+            _json.dump(store, fh)
+        os.replace(tmp, _DECLINED_STORE)
+    return allowed
+
+
 process_id2update = []
+
+
+# NAR web-server rules ask for sample output. GUIDANCE_EXAMPLE_DIR: a folder with the output files of a finished example
+# run (copied there by hand; served read-only at /example/<file> and explained in the gallery). Optional
+# GUIDANCE_EXAMPLE_JOB_ID: a finished job kept in the results directory, for the full interactive results page.
+EXAMPLE_JOB_ID = os.getenv('GUIDANCE_EXAMPLE_JOB_ID', '').strip()
+EXAMPLE_DIR = os.getenv('GUIDANCE_EXAMPLE_DIR', '').strip() or \
+    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'example')
+
+
+@app.context_processor
+def _inject_example_job():
+    return {"example_results_url": f"{PREFIX}/results/{EXAMPLE_JOB_ID}" if EXAMPLE_JOB_ID else "",
+            # the example job must be a default GUIDANCE3 run with MAFFT (output files named MSA.MAFFT.*)
+            "example_files_url": f"{PREFIX}/example" if EXAMPLE_DIR and os.path.isdir(EXAMPLE_DIR) else "",
+            "example_msa_program": os.getenv('GUIDANCE_EXAMPLE_MSA_PROGRAM', 'MAFFT'),
+            "declined_per_hour": DECLINED_SUBMISSIONS_PER_HOUR,
+            "declined_per_day": DECLINED_SUBMISSIONS_PER_DAY,
+            "honeypot_field": HONEYPOT_FIELD}
+
+
+def _g3_prefix(working_dir, dataset, msa_program):
+    """Output-file prefix of a GUIDANCE3 job: '<dataset>.<program>.Guidance3', or '.Guidance2' for jobs run before
+    the rename (their files keep the old name)."""
+    new = f"{dataset}.{msa_program}.Guidance3"
+    old = f"{dataset}.{msa_program}.Guidance2"
+    try:
+        names = os.listdir(working_dir)
+    except OSError:
+        return new
+    if any(n.startswith(new) for n in names):
+        return new
+    return old if any(n.startswith(old) for n in names) else new
 
 # DL prediction — models loaded lazily on first request, then cached
 _dl_models = {}
@@ -135,7 +212,8 @@ def ConcatMSAs(process_id):
         OutPath = os.path.join( working_dir, f'SuperMSA_DefaultMSA_and_{Num_of_Alt}_Alt.fas')
         OutHTML = os.path.join(working_dir, CONSTS.RESULT_WEBPAGE_NAME)
 
-        cmd = f"python3 {CONSTS.CONCAT_SCRIPT} {MSA_List} {OutPath} {str(NumOfMSAs)} NO YES {OutHTML}"
+        # default MSA + randomly chosen alternatives (random alternatives are as good as selected ones)
+        cmd = f"python3 {CONSTS.CONCAT_SCRIPT} {MSA_List} {OutPath} {str(NumOfMSAs)} RANDOM_ALT YES {OutHTML}"
         try:
             subprocess.run(cmd, shell=True, timeout=300)
         except subprocess.TimeoutExpired:
@@ -152,7 +230,7 @@ def ConcatMSAsTopK(process_id):
 
         pred_csv = os.path.join(working_dir, 'best_msa_pred',
                                 'prediction_pretrained_0_mode1_dseq_from_true.csv')
-        alts_dir = os.path.join(working_dir, f'{dataset}.{msa_program}.Guidance2_AlternativeMSA')
+        alts_dir = os.path.join(working_dir, f'{_g3_prefix(working_dir, dataset, msa_program)}_AlternativeMSA')
 
         msa_list_file = os.path.join(working_dir, 'List_Of_Default_and_AltMSAs.txt')
         with open(msa_list_file) as f:
@@ -489,14 +567,15 @@ def results(process_id):
     best_msa_mean_score = ''
     dataset = guidance_state.var.get('dataset', 'MSA')
     msa_program = guidance_state.form.get('MSA_Program', 'MAFFT')
-    candidate_best_msa = f"{dataset}.{msa_program}.Guidance2_BestMSA.fasta"
+    g3_prefix = _g3_prefix(os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id), dataset, msa_program)
+    candidate_best_msa = f"{g3_prefix}_BestMSA.fasta"
     if os.path.exists(os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id, candidate_best_msa)):
         best_msa_file = candidate_best_msa
-        candidate_best_msa_colored = f"{dataset}.{msa_program}.Guidance2_BestMSA_colored.html"
+        candidate_best_msa_colored = f"{g3_prefix}_BestMSA_colored.html"
         if os.path.exists(os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id, candidate_best_msa_colored)):
             best_msa_colored_file = candidate_best_msa_colored
         best_msa_score_file = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id,
-                                            f"{dataset}.{msa_program}.Guidance2_BestMSA_msa.scr")
+                                            f"{g3_prefix}_BestMSA_msa.scr")
         if os.path.exists(best_msa_score_file):
             with open(best_msa_score_file, 'r') as f:
                 for line in f:
@@ -520,7 +599,7 @@ def results(process_id):
             import pandas as pd
             preds_df = pd.read_csv(pred_csv_path)
             alts_dir_path = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id,
-                                         f'{dataset}.{msa_program}.Guidance2_AlternativeMSA')
+                                         f'{g3_prefix}_AlternativeMSA')
             if os.path.isdir(alts_dir_path) and 'code' in preds_df.columns:
                 n_alts = sum(1 for c in preds_df['code']
                              if os.path.isfile(os.path.join(alts_dir_path, c)))
@@ -528,6 +607,25 @@ def results(process_id):
                     supermsa_topk_selection = print_SuperMSA_topk_selection(n_alts)
         except Exception:
             pass
+
+    # phylogeny across alternative MSAs (GUIDANCE3 tree, alignment support, user tree) and MSA-set ranking
+    job_dir = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, process_id)
+    tree_files = {}
+    for key, suffix in [("tree_html", "_GUIDANCE3_tree.html"), ("tree_nwk", "_GUIDANCE3_tree.nwk"),
+                        ("tree_tsv", "_GUIDANCE3_tree_branch_support.tsv"), ("alt_trees", "_AltMSA_trees.nwk"),
+                        ("user_html", "_UserTree_alignment_support.html"),
+                        ("user_nwk", "_UserTree_alignment_support.nwk"),
+                        ("user_tsv", "_UserTree_alignment_support.tsv"), ("user_error", "_UserTree_ERROR.txt")]:
+        if os.path.exists(os.path.join(job_dir, f"{g3_prefix}{suffix}")):
+            tree_files[key] = f"{g3_prefix}{suffix}"
+    if tree_files.get("alt_trees"):
+        try:
+            with open(os.path.join(job_dir, tree_files["alt_trees"])) as fh:
+                tree_files["n_alt_trees"] = sum(1 for line in fh if line.strip())
+        except OSError:
+            pass
+    if os.path.exists(os.path.join(job_dir, "MSA_set_ranking.csv")):
+        tree_files["msa_set_ranking"] = "MSA_set_ranking.csv"
 
     sleep(3)
 
@@ -548,6 +646,7 @@ def results(process_id):
         "best_msa_file": best_msa_file,
         "best_msa_colored_file": best_msa_colored_file,
         "best_msa_mean_score": best_msa_mean_score,
+        "tree_files": tree_files,
         "errors_file_exists": os.path.exists(errors_file),
         "admin_email": CONSTS.ADMIN_EMAIL,
     }
@@ -637,8 +736,18 @@ def home():
             warning_messages = ''
             guidance_state = None
             
+            if request.form.get(HONEYPOT_FIELD):  # hidden field, filled in only by automated scripts
+                logger.warning(f'honeypot field filled in, submission rejected (process {new_process_id})')
+                raise Exception("The submission could not be accepted.", "user")
+
             if RECAPTCHA_ENABLED and 'no_captcha' not in request.form.keys():
-                if not recaptcha.verify():
+                if request.form.get('captcha_mode') == 'declined':
+                    if not _allow_declined_submission(request.remote_addr):
+                        raise Exception(f"Without reCAPTCHA, up to {DECLINED_SUBMISSIONS_PER_HOUR} jobs per hour and "
+                                        f"{DECLINED_SUBMISSIONS_PER_DAY} per day can be submitted from one network "
+                                        "address, and this limit has been reached. Please try again later, or accept "
+                                        "the reCAPTCHA cookies to submit more jobs.", "user")
+                elif not recaptcha.verify():
                     raise Exception ("Run failed to pass I'm not a robot test", "user")
                 
             # create Job Manager instance
@@ -710,11 +819,13 @@ def home():
                 if error_type == "system":
                     guidance_state.send_system_error_email()
                     
-            fail_page = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, new_process_id, f'GUIDANCE_{new_process_id}.END_FAIL')
-            open(fail_page, 'a').close()
+            # rejections before the job exists (reCAPTCHA, honeypot, submission limit) have no results folder
+            job_dir = os.path.join(CONSTS.WEBSERVER_RESULTS_DIR, new_process_id)
+            if os.path.isdir(job_dir):
+                open(os.path.join(job_dir, f'GUIDANCE_{new_process_id}.END_FAIL'), 'a').close()
 
             kwargs = {
-                "var": guidance_state.var,
+                "var": guidance_state.var if guidance_state else {},
             }
             
             return render_template('error_page.html', error_text=msg, **kwargs)
@@ -861,6 +972,22 @@ def source():
 @app.route(PREFIX + '/credits', methods=['GET'])
 def credits():
     return render_template('credits.html')
+
+@app.route(PREFIX + '/example/<path:filename>', methods=['GET'])
+def example_file(filename):
+    """Files of the example run (GUIDANCE_EXAMPLE_DIR), read-only; send_from_directory refuses paths outside it."""
+    if not EXAMPLE_DIR or not os.path.isdir(EXAMPLE_DIR):
+        return make_response("No example results are configured on this server.", 404)
+    if filename.endswith('.html'):
+        return send_from_directory(EXAMPLE_DIR, filename, mimetype='text/html')
+    if filename.endswith(('.tar.gz', '.tgz', '.zip')):
+        return send_from_directory(EXAMPLE_DIR, filename, as_attachment=True)
+    return send_from_directory(EXAMPLE_DIR, filename, mimetype='text/plain')
+
+
+@app.route(PREFIX + '/privacy', methods=['GET'])
+def privacy():
+    return render_template('privacy.html')
     
 @app.errorhandler(404)
 def page_not_found(e):

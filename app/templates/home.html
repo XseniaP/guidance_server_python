@@ -5,12 +5,18 @@
     <script language="javascript" type="text/javascript">
     
         $(document).ready( function () {
+            // show/hide the inputs that depend on the input type, also after "Clear Form" and when the browser
+            // restores the form (back button)
+            toggle_Input_Options();
+            document.Guidance_form.addEventListener('reset', function () { setTimeout(toggle_Input_Options, 0); });
+            window.addEventListener('pageshow', toggle_Input_Options);
+
             const ids = ['PROGRAM','email_add', 'JOB_TITLE', 'MSA_Program', 'MSA_Program_GUIDANCE', 'FASTA_txt', 'usrSeq_File', 'Seq_Type_aa', 'Seq_Type_nuc', 'Seq_Type_codons'];
             ids.forEach(function (item, index) {
                 const element = document.getElementById(item);
                 element.addEventListener('change', (event) => {
-                    grecaptcha.reset();
-                }); 
+                    resetCaptcha();
+                });
             });
         });
 
@@ -25,8 +31,15 @@
            form.MSA_Program.value = "MAFFT";
                form.MSA_Program.selectedIndex = 0;
            toggle_MSA_Options();
-           grecaptcha.reset();
+           resetCaptcha();
            return true;
+        }
+
+        // reCAPTCHA is loaded only after cookie consent (see base.html), so it may be absent.
+        function resetCaptcha(){
+           if (window.grecaptcha && typeof grecaptcha.reset === 'function') {
+               try { grecaptcha.reset(); } catch (e) { /* widget not rendered yet */ }
+           }
         }
 
         function ClearSequence(){
@@ -48,20 +61,6 @@
 
 {% block body %} 
 
-        <!-- GOOGLE ANALYTICS START -->
-		<script type="text/javascript">
-			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-		</script>
-		<script type="text/javascript">
-			try {
-				var pageTracker = _gat._getTracker("UA-12265767-1");
-				pageTracker._setDomainName(".tau.ac.il");
-				pageTracker._trackPageview();
-			} catch(err) {}
-		</script>
-        
-		<!-- GOOGLE ANALYTICS END -->
 		<form name="Guidance_form"
 			  id = "Guidance_form"
 		      action="/"
@@ -87,7 +86,7 @@
                     </div>
                 </div>
 
-            <div class="mb-3">
+            <div class="mb-3" id="seq_text_div">
                 <label for="FASTA_txt" class="form-label">Type your sequences <a href="http://en.wikipedia.org/wiki/FASTA_format">(FASTA format only)</a></label>
 <!--                 <p class="fs-4 text-center">Type your sequences<A href="http://en.wikipedia.org/wiki/FASTA_format">(FASTA format only)</A></p>-->
 <!--            <p><b>Type your sequences </b><A href="http://en.wikipedia.org/wiki/FASTA_format"><font size=-1>(FASTA format only)</A> * large strings should be uploaded as files </font><br>-->
@@ -109,7 +108,7 @@
 
                 </div>
             {% if back_from_mafft is not defined %}
-                <div class="mb-3">
+                <div class="mb-3" id="seq_file_div">
                     <label for="usrSeq_File" class="form-label">Or, upload your sequences file <a href="http://en.wikipedia.org/wiki/FASTA_format">(FASTA format only)</a></label>
                     <input class="form-control" type="file" name="usrSeq_File" id="usrSeq_File">
                 </div>
@@ -148,9 +147,34 @@
                         <option value="seq">Upload you unaligned (no gaps) sequences file for alignment and evaluation (default)</option>
                         <option value="re_align">Upload your MSA file for re-alignment and evaluation</option>
                         <option value="msa">Upload your MSA file for evaluation only</option>
+                        <option value="msa_set">Upload a set of MSAs: evaluate the best one</option>
 				    </select>
                 </div>
 
+                <div class="mb-3" id="msa_set_div" style="display:none">
+                    <label for="msaSet_File" class="form-label">Upload your set of MSAs as one archive file (.zip or .tar.gz)</label>
+                    <input class="form-control" type="file" name="msaSet_File" id="msaSet_File" accept=".zip,.tar,.tar.gz,.tgz">
+                    <ul class="form-text mt-2 mb-0 ps-3">
+                        <li><b>Inside the archive:</b> one FASTA file per MSA (file names ending in .fasta, .fas, .fa,
+                            .faa, .fna, .aln, .afa or .mfa; sub-folders are fine).</li>
+                        <li><b>Requirements:</b> 2 to 2,000 MSAs, all aligning the same sequences with the same names;
+                            at least 4 sequences.</li>
+                        <li><b>What happens:</b> our deep-learning model ranks the MSAs, and GUIDANCE3 evaluates the
+                            top-ranked MSA as it is (without re-aligning it). The ranking of all your MSAs is part of the
+                            results.</li>
+                    </ul>
+                </div>
+
+
+                <div class="mb-3" id="USER_TREE">
+                    <label for="userTree_File" class="form-label">Optional: upload a tree to evaluate (Newick format, with the same sequence names)</label>
+                    <input class="form-control" type="file" name="userTree_File" id="userTree_File" accept=".nwk,.newick,.tree,.tre,.treefile,.txt">
+                    <div class="form-text">
+                        GUIDANCE3 reports the support of each branch of your tree: alignment support (the % of trees
+                        inferred from 20 alternative MSAs that contain it), and aBayes and SH-aLRT on the base MSA.
+                        Works with every input type, e.g. together with "Upload your MSA file for evaluation only".
+                    </div>
+                </div>
 
                 <div class="alert-class alert alert-warning text-center" role="alert" id="msa_disclaimer_div" style="display:none">
                 	<b>Warning:</b> This option will evaluate an MSA using the algorithm chosen below. If the uploaded alignment was generated with a different method then the one chosen below, it might affect the results.
@@ -251,6 +275,22 @@
                         <span class="input-group-text">Number of alternative guide-trees</span>
                         <input type="text" name="Bootstraps" value="100" size=4 class="form-control">
                     </div>
+                    <div class="form-check mb-3" id="CONSENSUS_TREE">
+                        <input class="form-check-input" type="checkbox" name="consensus_tree" id="consensus_tree" value="1" checked>
+                        <label class="form-check-label" for="consensus_tree">
+                            Build the GUIDANCE3 tree &mdash; the consensus of maximum-likelihood trees inferred from
+                            alternative MSAs, with the alignment support of each branch (% of these trees that contain it)
+                        </label>
+                    </div>
+                    <div class="input-group mb-1" id="N_ALT_TREES">
+                        <span class="input-group-text">Number of alternative MSAs to infer trees from</span>
+                        <input type="number" name="n_alt_trees" id="n_alt_trees" value="20" min="3" max="100" step="1" class="form-control">
+                    </div>
+                    <div class="form-text mb-3" id="N_ALT_TREES_HELP">
+                        3&ndash;100 (default 20). Used for the GUIDANCE3 tree and for evaluating an uploaded tree.
+                        More trees give slightly more accurate results but take longer; it cannot exceed the number of
+                        alternative MSAs the run produces.
+                    </div>
                     <div class="form-check mb-3" id="DISABLE_CONVERGENCE">
                         <input class="form-check-input" type="checkbox" name="disable_convergence" id="disable_convergence" value="1">
                         <label class="form-check-label" for="disable_convergence">
@@ -350,20 +390,65 @@
         <div style="margin-bottom: 15px" class="d-grid gap-2 d-md-block">
             <script type="text/javascript" src="js/validation-rules.js"></script>
             <input type="hidden" id="solved" name="solved" value="false"/>
+            <!-- honeypot: hidden from people (off-screen, not focusable); automated scripts tend to fill it in -->
+            <div aria-hidden="true" style="position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden;">
+                <label for="{{ honeypot_field }}">Leave this field empty</label>
+                <input type="text" name="{{ honeypot_field }}" id="{{ honeypot_field }}" value="" tabindex="-1" autocomplete="off">
+            </div>
 			{% if daily_test is defined or not recaptcha_enabled %}
 			<input type="hidden" name="no_captcha" value="no_captcha">
 			{% else %}
-			<div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+			<!-- captcha_mode: 'recaptcha' after cookie consent, 'declined' otherwise (server applies a per-IP rate limit) -->
+			<input type="hidden" id="captcha_mode" name="captcha_mode" value="declined">
+			<div id="recaptcha-box" class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}" style="display: none;"></div>
+			<div id="recaptcha-declined-note" class="form-text mb-2">
+				{% if declined_per_hour and declined_per_hour > 0 and declined_per_day and declined_per_day > 0 %}
+				Google reCAPTCHA is off because its cookies were not accepted. You can submit up to {{ declined_per_hour }}
+				job{{ 's' if declined_per_hour != 1 }} per hour and {{ declined_per_day }} per day from your network address, or
+				<a href="#" onclick="guidanceConsent.set('accepted'); return false;">accept reCAPTCHA cookies</a> for no limit.
+				{% else %}
+				Submitting a job requires Google reCAPTCHA, which sets cookies from Google:
+				<a href="#" onclick="guidanceConsent.set('accepted'); return false;">accept reCAPTCHA cookies</a> to submit.
+				{% endif %}
+			</div>
 			{% endif %}
             <input class="btn btn-primary" type=submit value="Submit" id="SubmitButton">
             <input class="btn btn-outline-secondary" type="reset" value="Clear Form" id="buttons">
-<!--                <a href="/Gallery/output.php">Show Example Results</a>-->
+            {% if example_results_url %}
+                <a class="btn btn-outline-secondary" href="{{ example_results_url }}" target="_blank">See example results</a>
+            {% endif %}
          </div>
         </div>
 	</form>
 
     {% if not (daily_test is defined or not recaptcha_enabled) %}
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        // Load Google reCAPTCHA (third-party cookies) only after the visitor accepts cookies.
+        (function () {
+            var loaded = false;
+            function useRecaptcha() {
+                document.getElementById('captcha_mode').value = 'recaptcha';
+                document.getElementById('recaptcha-box').style.display = 'block';
+                document.getElementById('recaptcha-declined-note').style.display = 'none';
+                if (!loaded) {
+                    loaded = true;
+                    var s = document.createElement('script');
+                    s.src = 'https://www.google.com/recaptcha/api.js';
+                    s.async = true;
+                    s.defer = true;
+                    document.body.appendChild(s);
+                }
+            }
+            function useDeclined() {
+                document.getElementById('captcha_mode').value = 'declined';
+                document.getElementById('recaptcha-box').style.display = 'none';
+                document.getElementById('recaptcha-declined-note').style.display = 'block';
+            }
+            function apply(value) { if (value === 'accepted') { useRecaptcha(); } else { useDeclined(); } }
+            apply(guidanceConsent.get());
+            document.addEventListener('guidance-consent', function (e) { apply(e.detail); });
+        })();
+    </script>
     {% endif %}
     {% if rerun_params is defined %}
     

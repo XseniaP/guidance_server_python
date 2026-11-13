@@ -49,6 +49,10 @@ class RunConfig:
         self.proc_num = 2
         self.disable_convergence = False
         self.skip_dl = False
+        self.msa_set = ""
+        self.no_consensus_tree = False
+        self.n_alt_trees = 20
+        self.user_tree = ""
         self.userMSA_File = ""
         self.PROGRAM = "GUIDANCE3"
         self.Bootstraps = 100
@@ -73,6 +77,10 @@ class RunConfig:
             "  --disableConvergence                Disable convergence stopping criterion (run exact number of bootstraps)\n"
             "  --skipDL                            Skip the deep learning best-MSA selection step\n"
             "  --proc_num <int>                    Number of parallel processors. default=2\n"
+            "  --noConsensusTree                   Skip the GUIDANCE3 tree (consensus of alternative-MSA trees)\n"
+            "  --nAltTrees <int>                   Alternative MSAs used for trees / alignment support. default=20\n"
+            "  --userTree <path>                   Newick tree to evaluate: alignment support of each branch\n"
+            "  --msaSet <dir|zip|tar.gz>           Set of MSAs: the DL model picks the best, GUIDANCE3 scores it as given\n"
             "  --genCode <int>                     Genetic code table index (codon mode only). default=1\n"
             "      1=Nuclear Standard, 2=Mitochondria Vertebrate, 3=Mitochondria Yeast,\n"
             "      4=Mitochondria Protozoan, 5=Mitochondria Invertebrate, 6=Nuclear Ciliate,\n"
@@ -108,12 +116,14 @@ class RunConfig:
 
         if len(sys.argv) > 1 and sys.argv[1].startswith('-'):
             self.parse_arguments()
+            self.select_msa_from_set()
             self.check_arguments_for_errors()
             self.check_align_parameters()
             self.check_output_files()
             self.validate_sequences()
         else:
             self.server_input_mode_arguments()
+            self.server_select_msa_from_set()
         self.set_rest_of_the_variables()
         self.user_provided_MSA()
         self.convert_fasta_names_to_codes()
@@ -125,8 +135,12 @@ class RunConfig:
         parser = argparse.ArgumentParser(prog="GUIDANCE.v2.02", description="Program description: NA")
 
         # Required arguments
-        parser.add_argument('--seqFile', dest='usrSeq_File', type=str, required=True,
-                            help='Specify the sequence file (required).')
+        parser.add_argument('--seqFile', dest='usrSeq_File', type=str, default="",
+                            help='Specify the sequence file (required unless --msaSet is given).')
+        parser.add_argument('--msaSet', dest='msa_set', type=str, default="",
+                            help='A folder, or .zip / .tar.gz archive, of alternative MSAs (FASTA) of the same '
+                                 'sequences. The DL model selects the best MSA, which GUIDANCE3 then scores as given '
+                                 '(like --inputType msa). Replaces --seqFile.')
         parser.add_argument('--msaProgram', dest='MSA_Program', type=str,
                             choices=['MAFFT', 'MAFFT_LINSI', 'PRANK', 'CLUSTALO'], required=True, default="",
                             help='Specify the MSA program (Required). <MAFFT|MAFFT_LINSI|PRANK|CLUSTALO>. Default=""')
@@ -193,6 +207,17 @@ class RunConfig:
         parser.add_argument('--proc_num', dest='proc_num', type=int, default=2,
                             help='Specify num of processors to use. Default=2.')
 
+        # Phylogenetic inference from the alternative MSAs (GUIDANCE3 only)
+        parser.add_argument('--noConsensusTree', dest='no_consensus_tree', action='store_true', default=False,
+                            help='Do not build the GUIDANCE3 tree (extended majority-rule consensus of trees inferred '
+                                 'from the alternative MSAs, resolved on the reference MSA) with alignment support.')
+        parser.add_argument('--nAltTrees', dest='n_alt_trees', type=int, default=20,
+                            help='Number of alternative MSAs to infer trees from for the GUIDANCE3 tree and alignment '
+                                 'support. Default=20.')
+        parser.add_argument('--userTree', dest='user_tree', type=str, default="",
+                            help='Newick tree with the input sequence names; GUIDANCE3 reports the alignment support '
+                                 '(%% of alternative-MSA trees containing it) of each of its branches.')
+
         ### EXPERIMENTAL FEATURES.... MOST ACTIVE ONLY LOCAL
         parser.add_argument('--RootingType', dest='rooting_type', choices=['BioPerl', 'MidPoint'],
                             default='BioPerl', type=str,
@@ -211,6 +236,57 @@ class RunConfig:
             setattr(self, arg_name, arg_value)
         return args
 
+    def select_msa_from_set(self):
+        """--msaSet: rank the user's MSAs with the DL model and continue with the best one as a user MSA that is
+        scored without re-alignment (--inputType msa)."""
+        if not self.msa_set:
+            return
+        from guidance3.sequences.msa_set import MSASetError, select_best_from_msa_set
+        if self.usrSeq_File or self.userMSA_File:
+            raise ValueError("ERROR: give either --msaSet or --seqFile/--msaFile, not both\n")
+        if self.PROGRAM != "GUIDANCE3":
+            raise ValueError("ERROR: --msaSet requires --program GUIDANCE3\n")
+        src = os.path.abspath(self.msa_set)
+        if not os.path.exists(src):
+            raise ValueError(f"ERROR: --msaSet not found: {src}\n")
+        os.makedirs(self.outDir, exist_ok=True)
+        try:
+            best = select_best_from_msa_set(src, os.path.abspath(self.outDir), self.Seq_Type, verbose=self.verbose)
+        except MSASetError as e:
+            raise ValueError(f"ERROR: {e}\n")
+        self.msa_set = src
+        self.usrSeq_File = best
+        self.userMSA_File = best
+        self.input_type = "msa"
+
+    def server_select_msa_from_set(self):
+        """Web-server job with input_type 'msa_set': the web side validated the uploaded set and put its first MSA
+        in place; rank the set with the DL model, replace that MSA with the best one (validated the same way) and
+        continue as an MSA evaluated without re-alignment."""
+        if getattr(self, "input_type", "") != "msa_set":
+            return
+        from guidance3.sequences.msa_set import MSASetError, select_best_from_msa_set
+        from InputValidator import InputValidator as _InputValidator  # web-server module (repository root)
+        validator = _InputValidator()
+        seq_type = {"AminoAcids": "aa", "Nucleotides": "nuc", "Codons": "codon"}.get(self.Seq_Type, "aa")
+        try:
+            best = select_best_from_msa_set(self.msa_set, self.WorkingDir, seq_type, verbose=self.verbose)
+        except (MSASetError, RuntimeError) as e:
+            exit_on_error("user_error" if isinstance(e, MSASetError) else "sys_error", f"MSA set: {e}", self)
+        user_msa = self.userMSA_File  # e.g. MSA.aln, the name the web side validated
+        shutil.copyfile(best, os.path.join(self.WorkingDir, user_msa))
+        if self.Seq_Type == "Codons":
+            ans = validator.validate_Seqs(self.WorkingDir, user_msa, self.Seq_Type, True, self.CodonTable)
+        else:
+            ans = validator.validate_Seqs(self.WorkingDir, user_msa, self.Seq_Type, True)
+        if ans[0] != "OK":
+            exit_on_error("sys_error" if ans[0] == "sys_error" else "user_error",
+                          f"MSA set: the selected MSA {os.path.basename(best)} failed validation: {ans}", self)
+        self.Alignment_File = ans[2]
+        with open(self.OutLogFile, "a") as log:
+            log.write(f"msa_set: best MSA {os.path.basename(best)} -> {self.Alignment_File}\n")
+        self.input_type = "msa"
+
     def check_arguments_for_errors(self):
 
         if self.BBL.upper() == "YES":
@@ -223,10 +299,20 @@ class RunConfig:
             raise ValueError("ERROR: No path for output\n")
 
         if self.usrSeq_File is None or self.usrSeq_File == "":
-            raise ValueError("ERROR: seqFile is required\n")
+            raise ValueError("ERROR: --seqFile (or --msaSet) is required\n")
 
         if self.proc_num < 1:
             raise ValueError("ERROR: Number of processors must be >= 1\n")
+
+        if self.n_alt_trees < 3:
+            raise ValueError("ERROR: --nAltTrees must be >= 3\n")
+
+        if self.user_tree:
+            self.user_tree = os.path.abspath(self.user_tree)
+            if not os.path.isfile(self.user_tree):
+                raise ValueError(f"ERROR: --userTree file not found: {self.user_tree}\n")
+            if self.PROGRAM != "GUIDANCE3":
+                raise ValueError("ERROR: --userTree requires --program GUIDANCE3\n")
 
         if self.MSA_Program == "PAGAN":
             print("WARNING: PAGAN requires that MAFFT is also installed on your system. Otherwise GUIDANCE will fail\n")

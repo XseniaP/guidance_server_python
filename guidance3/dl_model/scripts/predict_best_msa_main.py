@@ -10,7 +10,8 @@ Steps:
      features_for_msas (only a structural placeholder — not used for scoring).
   3. Runs the bundled features_for_msas binary to extract alignment features.
   4. Runs the bundled DL model to predict MSA quality scores.
-  5. Copies the top-scoring MSA to <out-dir>/best_msa.fasta and prints its name.
+  5. Copies the MSA with the LOWEST predicted score (predicted distance from the true MSA) to
+     <out-dir>/best_msa.fasta and prints its name.
 """
 from __future__ import annotations
 
@@ -87,6 +88,8 @@ def _copy_stripped(src: str, dst: str) -> None:
 
 
 def main(argv=None) -> int:
+    from guidance3.sequences.msa_set import rank_msas
+
     args = _build_parser().parse_args(argv)
 
     msas_dir = os.path.abspath(args.msas_dir)
@@ -98,137 +101,22 @@ def main(argv=None) -> int:
         sys.exit(f"No .fasta files found in: {msas_dir}")
     print(f"Found {len(fasta_files)} alternative MSAs in {msas_dir}")
 
-    is_nuc = (args.seq_type == "nuc")
-    models_list  = NUC_MODELS  if is_nuc else AA_MODELS
-    k_values     = [8, 16, 32] if is_nuc else [5, 10, 20]
-    stats_output = ["ALL"]     if is_nuc else ["ALL_NO_SUBS_MATRIX"]
-    model_path   = DL_MODEL_NUC_PATH    if is_nuc else DL_MODEL_PATH
-    scaler_path  = DL_MODEL_NUC_SCALER_PATH if is_nuc else DL_MODEL_SCALER_PATH
-
-    work_dir = tempfile.mkdtemp(prefix="guidance3_predict_")
+    # The model predicts each MSA's distance from the true MSA: the LOWEST predicted_score is the best MSA
+    # (as in guidance3.dl_model.evaluation.pick_best and the pipeline's select_best_msa).
     try:
-        # features_for_msas expects: input_files_dir_path/<subfolder>/*.fasta
-        # The subfolder name is arbitrary; we mirror what select_best_msa uses.
-        features_input_dir = os.path.join(work_dir, "features_input")
-        all_msas_dir = os.path.join(features_input_dir, "all_msas")
-        os.makedirs(all_msas_dir)
+        preds = rank_msas(fasta_files, args.seq_type == "nuc", out_dir, verbose=args.verbose)
+    except RuntimeError as e:
+        sys.exit(str(e))
 
-        for f in fasta_files:
-            _copy_stripped(f, all_msas_dir)
+    best_code, best_score = preds.loc[0, "code"], preds.loc[0, "predicted_score"]
+    best_dst = os.path.join(out_dir, "best_msa.fasta")
+    shutil.copy(os.path.join(msas_dir, best_code), best_dst)
+    preds.to_csv(os.path.join(out_dir, "predictions.csv"), index=False)  # best first
 
-        # Pick any MSA as the reference placeholder required by features_for_msas.
-        # The TRUE label is not used during inference — only needed structurally.
-        ref_msa = random.choice(fasta_files)
-        _copy_stripped(ref_msa, os.path.join(all_msas_dir, TRUE_MSA_FILENAME))
-        if args.verbose:
-            print(f"Reference placeholder: {os.path.basename(ref_msa)} → {TRUE_MSA_FILENAME}")
-
-        features_cfg = {
-            "models_list": models_list,
-            "sop_calc_type": 1,
-            "additional_weights": [
-                "HENIKOFF_WG", "HENIKOFF_WOG",
-                "CLUSTAL_MID_ROOT", "CLUSTAL_DIFFERENTIAL_SUM",
-            ],
-            "k_values": k_values,
-            "stats_output": stats_output,
-            "input_files_dir_path": features_input_dir,  # parent of all_msas/
-            "output_file_dir_path": work_dir,
-            "is_unified_file": True,
-            "matrix_dir_path": FEATURES_EXTRACTION_MATRIX_DIR,
-        }
-        config_path = os.path.join(work_dir, "config_features.json")
-        with open(config_path, "w") as f:
-            json.dump(features_cfg, f, indent=4)
-
-        # Step 1: feature extraction
-        print("Extracting MSA features...")
-        features_cmd = [FEATURES_EXTRACTION_PROG, config_path]
-        if args.verbose:
-            print(f"  {' '.join(features_cmd)}")
-        result = subprocess.run(features_cmd, capture_output=True, text=True, timeout=600)
-        if result.returncode != 0:
-            sys.exit(f"Feature extraction failed (rc={result.returncode}):\n{result.stderr}")
-        if args.verbose and result.stdout:
-            print(result.stdout)
-
-        features_file = os.path.join(work_dir, "unified_stats_all_msas.csv")
-        if not os.path.exists(features_file):
-            sys.exit(f"Features file not produced: {features_file}")
-
-        df = pd.read_csv(features_file)
-        run_id = os.path.basename(msas_dir)
-        df.insert(1, "code1", run_id)
-        df.dropna(axis=1, how="all", inplace=True)
-        df.to_csv(features_file, index=False)
-
-        # Save features to out_dir: drop label columns and non-candidate rows.
-        label_cols = [c for c in df.columns
-                      if c.startswith("dseq") or c.startswith("dpos") or c == "ssp_from_true"]
-        features_out = df.drop(columns=label_cols, errors="ignore")
-        features_out = features_out[
-            ~features_out["code"].isin([TRUE_MSA_FILENAME, "all_msas"])
-        ]
-        features_out.to_csv(os.path.join(out_dir, "features.csv"), index=False)
-
-        # Step 2: DL model prediction
-        print("Running DL model...")
-        pred_out_dir = os.path.join(work_dir, "pred")
-        os.makedirs(pred_out_dir, exist_ok=True)
-        predict_cmd = DL_MODEL_PYTHON + [
-            DL_MODEL_PREDICT_SCRIPT,
-            "--features-file", features_file,
-            "--model-path",    model_path,
-            "--scaler-path",   scaler_path,
-            "--scaler-type-features", "rank",
-            "--scaler-type-labels",   "rank",
-            "--out-dir",  pred_out_dir,
-            "--no-metrics",
-        ]
-        if args.verbose:
-            print(f"  {' '.join(predict_cmd)}")
-        result = subprocess.run(predict_cmd, capture_output=True, text=True, timeout=600)
-        if result.returncode != 0:
-            sys.exit(f"DL model failed (rc={result.returncode}):\n{result.stderr}")
-        if args.verbose:
-            print(result.stdout)
-
-        pred_file = os.path.join(pred_out_dir, "prediction_pretrained_0_mode1_dseq_from_true.csv")
-        if not os.path.exists(pred_file):
-            sys.exit(f"Prediction file not produced: {pred_file}")
-
-        preds = pd.read_csv(pred_file)
-        if "code" not in preds.columns or "predicted_score" not in preds.columns:
-            sys.exit("Prediction CSV is missing expected columns (code, predicted_score)")
-
-        candidates = preds[preds["code"] != TRUE_MSA_FILENAME].copy()
-        if candidates.empty:
-            sys.exit("No candidate predictions found (all rows were the reference placeholder)")
-
-        best_row   = candidates.loc[candidates["predicted_score"].idxmax()]
-        best_code  = best_row["code"]
-        best_score = best_row["predicted_score"]
-
-        best_src = os.path.join(all_msas_dir, best_code)
-        if not os.path.exists(best_src):
-            sys.exit(f"Best MSA file not found in input dir: {best_code}")
-
-        best_dst = os.path.join(out_dir, "best_msa.fasta")
-        shutil.copy(best_src, best_dst)
-
-        # Save predictions (all candidates, sorted best-first) to out_dir.
-        preds_out = preds[preds["code"] != TRUE_MSA_FILENAME].copy()
-        preds_out = preds_out.sort_values("predicted_score", ascending=False)
-        preds_out.to_csv(os.path.join(out_dir, "predictions.csv"), index=False)
-
-        print(f"Best MSA : {best_code}  (predicted score: {best_score:.6f})")
-        print(f"Saved to : {best_dst}")
-        print(f"Features : {os.path.join(out_dir, 'features.csv')}")
-        print(f"All predictions : {os.path.join(out_dir, 'predictions.csv')}")
-
-    finally:
-        shutil.rmtree(work_dir, ignore_errors=True)
-
+    print(f"Best MSA : {best_code}  (predicted distance from the true MSA: {best_score:.6f}; lower = better)")
+    print(f"Saved to : {best_dst}")
+    print(f"Features : {os.path.join(out_dir, 'features.csv')}")
+    print(f"All predictions (best first) : {os.path.join(out_dir, 'predictions.csv')}")
     return 0
 
 

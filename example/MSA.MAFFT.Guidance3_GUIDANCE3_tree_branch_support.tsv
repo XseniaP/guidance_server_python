@@ -1,0 +1,15 @@
+# alignment_support: % of the 20 trees inferred from alternative MSAs that contain the branch
+# abayes, sh_alrt: aBayes and SH-aLRT (1000 replicates) on the base MSA, topology fixed (IQ-TREE)
+# combined: abayes x alignment_support / 100 (in our simulations it identified incorrect branches better than either measure alone)
+branch	alignment_support	abayes	sh_alrt	combined	n_taxa_smaller_side	taxa_smaller_side
+1	50	0.566	74.4	0.283	2	EF514700.B,NC_001802.HXB2
+2	55	0.634	41.2	0.349	3	AY795907.D,EF514700.B,NC_001802.HXB2
+3	65	0.595	74.8	0.387	4	AY795907.D,EF514700.B,EF637049.B,NC_001802.HXB2
+4	60	0.873	58.8	0.524	4	AB253428.A1,AF457052.A1,DQ168575.G,EU110088.A1
+5	100	1.000	90.9	1.000	3	AB253428.A1,AF457052.A1,EU110088.A1
+6	80	0.575	74.4	0.460	2	AB253428.A1,EU110088.A1
+7	90	0.988	89.9	0.889	6	AB254142.C,AF077336.F1,AY463217.C,AY901969.C,DQ011165.C,DQ056417.C
+8	100	1.000	97.6	1.000	5	AB254142.C,AY463217.C,AY901969.C,DQ011165.C,DQ056417.C
+9	45	0.406	65.6	0.183	4	AB254142.C,AY463217.C,AY901969.C,DQ056417.C
+10	85	0.999	92.9	0.849	2	AY901969.C,DQ056417.C
+11	80	0.604	26.8	0.483	2	AB254142.C,AY463217.C

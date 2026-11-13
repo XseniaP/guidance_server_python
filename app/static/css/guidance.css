@@ -377,6 +377,10 @@ nav[data-toggle="toc"] .nav-link.active:hover {
 	background-color: #0f3349;
 	color: #d6eef5;
 }
+/* help text inside the dark Advanced Options panel (Bootstrap's grey .form-text is for light backgrounds) */
+.accordion-body .form-text {
+	color: #b7d6e2;
+}
 
 /* ── Primary / secondary buttons ─────────────────────────────── */
 .btn-primary {

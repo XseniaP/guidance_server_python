@@ -88,6 +88,23 @@ function toggle_Algorithm_Options(){
 		show_MSA_programs_GUIDANCE2_HOT.style.display = 'block';
 		show_MSA_programs_GUIDANCE.style.display='none';
 	}
+	// GUIDANCE3-only options: tree evaluation, GUIDANCE3 tree, set of MSAs as input
+	var is_g3 = (chosen_algorithm == 'GUIDANCE3');
+	['USER_TREE', 'CONSENSUS_TREE', 'N_ALT_TREES', 'N_ALT_TREES_HELP'].forEach(function (id) {
+		var el = document.getElementById(id);
+		if (el) { el.style.display = is_g3 ? 'block' : 'none'; }
+	});
+	var input_sel = window.document.Guidance_form.input_type;
+	if (input_sel) {
+		for (var i = 0; i < input_sel.options.length; i++) {
+			if (input_sel.options[i].value == 'msa_set') { input_sel.options[i].disabled = !is_g3; }
+		}
+		if (!is_g3 && input_sel.value == 'msa_set') { input_sel.value = 'seq'; toggle_Input_Options(); }
+	}
+	if (!is_g3) {
+		var tree_in = document.getElementById('userTree_File');
+		if (tree_in) { tree_in.value = ''; }
+	}
 	//	show_MSA_programs.style.display = 'block';
 }
 //------------------------------------
@@ -121,9 +138,17 @@ function toggle_MSA_Options(){
 //------------------------------------
 
 function toggle_Input_Options(){
-	var input_type = window.document.Guidance_form.Input_type.value;
+	var input_type = window.document.Guidance_form.input_type.value;
     div = getElement('msa_disclaimer_div');
-    if (input_type == 'msa') {
+    var set_div = document.getElementById('msa_set_div');
+    if (set_div) { set_div.style.display = (input_type == 'msa_set') ? 'block' : 'none'; }
+    // with a set of MSAs the sequences come from the MSAs: hide the sequence inputs (their content is kept
+    // if the user switches back, and emptied only when the form is submitted with a set of MSAs)
+    ['seq_text_div', 'seq_file_div'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) { el.style.display = (input_type == 'msa_set') ? 'none' : 'block'; }
+    });
+    if (input_type == 'msa' || input_type == 'msa_set') {
        msa_disclaimer_div.style.display = 'block';
     }
     else {

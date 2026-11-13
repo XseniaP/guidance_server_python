@@ -31,6 +31,18 @@ Use `--seqType nuc` for nucleotides or `--seqType codon` for codon-aware analysi
 
 ---
 
+#### Container (Docker / Podman)
+
+```bash
+docker build --platform linux/amd64 -t guidance3 .
+docker run --rm -v "$PWD":/data guidance3 --seqFile /data/seqs.fasta --msaProgram MAFFT --seqType aa \
+           --outDir /data/guidance3_out --proc_num 4
+```
+
+The image includes MAFFT and PRANK; nothing else needs to be installed.
+
+---
+
 #### Installation — Web server / full conda environment
 
 Required if you want to run the web server, or need GPU/CUDA support for the DL model.
@@ -88,7 +100,7 @@ python3 guidance3/pipeline/main.py --seqFile <fasta> --msaProgram MAFFT --seqTyp
 
 Pre-compiled binaries for the following programs are bundled under `guidance3/programs/mac/` and `guidance3/programs/linux/`:
 
-- msa_set_score, removeTaxa, isEqualTree, features_for_msas, iqtree (IQ-TREE 2), clustalo (Clustal Omega)
+- msa_set_score, removeTaxa, isEqualTree, features_for_msas, iqtree3 (IQ-TREE 3.1.4), clustalo (Clustal Omega)
 
 The CLI detects your platform at runtime and uses the correct executables automatically. If you are on an unsupported platform, you will need to obtain the binaries from the respective upstream projects and update the paths in **SharedConsts.py** and **guidance3/constants.py**.
 
@@ -111,8 +123,8 @@ GUIDANCE3 relies on the following external tools. Please cite them alongside GUI
 
 **Bundled binaries** (will be installed automatically with `pip install guidance3` when published):
 
-- **IQ-TREE 2** — phylogenetic tree inference  
-  Minh BQ, Schmidt HA, Chernomor O, Schrempf D, Woodhams MD, von Haeseler A, Lanfear R (2020) IQ-TREE 2: New Models and Methods for Phylogenetic Inference. *Mol Biol Evol* 37:1530–1534. https://doi.org/10.1093/molbev/msaa015
+- **IQ-TREE 3** — phylogenetic tree inference (bundled v3.1.4; set `GUIDANCE_IQTREE` to use another binary, otherwise `iqtree3` on the PATH is used if the bundled one cannot run)  
+  Wong TKF, Ly-Trong N, Ren H, et al. (2026) IQ-TREE 3: phylogenomic inference software using complex evolutionary models. *Mol Biol Evol* 43. https://doi.org/10.1093/molbev/msag117
 
 - **Clustal Omega** — multiple sequence alignment  
   Sievers F, Wilm A, Dineen D, Gibson TJ, Karplus K, Li W, Lopez R, McWilliam H, Remmert M, Söding J, Thompson JD, Higgins DG (2011) Fast, scalable generation of high-quality protein multiple sequence alignments using Clustal Omega. *Mol Syst Biol* 7:539. https://doi.org/10.1038/msb.2011.75
@@ -168,6 +180,27 @@ GUIDANCE3 relies on the following external tools. Please cite them alongside GUI
                         --bootstraps rather than stopping early when scores stabilise. Useful for reproducibility or debugging.
 
   --proc_num PROC_NUM   Number of processors to use. Default=2.
+
+**Phylogeny across alternative MSAs:**
+
+  --noConsensusTree     Do not build the GUIDANCE3 tree. By default GUIDANCE3 infers a maximum-likelihood tree
+                        (IQ-TREE 3, -fast; LG+G for proteins, GTR+G for nucleotides) from each of --nAltTrees random
+                        alternative MSAs, builds their extended majority-rule consensus and resolves it by a
+                        constrained search on the base MSA. Each branch gets an alignment support value: the % of
+                        the alternative-MSA trees that contain it.
+
+  --nAltTrees N_ALT_TREES
+                        Number of alternative MSAs used for the trees. Default is 20.
+
+  --userTree USER_TREE  A Newick tree with the input sequence names; GUIDANCE3 reports the alignment support of
+                        each of its branches.
+
+**Set of MSAs as input:**
+
+  --msaSet MSA_SET      A folder, or .zip / .tar.gz archive, of aligned FASTA files of the same sequences (same
+                        names; 2 to 2000 MSAs and at least 4 sequences). The deep-learning model ranks them by predicted
+                        distance from the true MSA, and GUIDANCE3 evaluates the best one without re-alignment
+                        (as --inputType msa). Use instead of --seqFile. The ranking is written to MSA_set_ranking.csv.
 
 **Filtering thresholds:**
 
@@ -267,3 +300,14 @@ guidance3-concat-msa --msas-dir <path/to/alternative_msas> --n 20 --out-dir <out
 Writes the result to `<output_dir>/concatenated_msa.fasta`.
 
 Picks `--n` MSAs at random from the folder and concatenates them column-wise. All MSAs must contain the same set of sequences.
+
+---
+
+#### Licence
+
+Copyright (C) 2026 Tal Pupko. This program is free software: you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the
+License, or (at your option) any later version. This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
+The full text is in [LICENSE](LICENSE).
