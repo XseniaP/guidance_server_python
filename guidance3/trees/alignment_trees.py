@@ -273,44 +273,72 @@ def run_alignment_trees(config):
     if len(alts) < 3:
         print(f"[alignment_trees] only {len(alts)} alternative MSAs found in {alt_dir}, skipping")
         return False
-    k = min(int(getattr(config, "n_alt_trees", DEFAULT_N_ALT_TREES) or DEFAULT_N_ALT_TREES), len(alts))
-    chosen = sorted(random.Random(_SEED).sample(alts, k))
-
+    n_trees = int(getattr(config, "n_alt_trees", DEFAULT_N_ALT_TREES) or DEFAULT_N_ALT_TREES)
     tmp = os.path.join(work, "alignment_trees")
+    try:
+        return build_alignment_trees(
+            [os.path.join(alt_dir, a) for a in alts], os.path.join(work, config.Alignment_File),
+            _read_codes(os.path.join(work, config.code_fileName)), prefix, tmp, config.iqtree_prog,
+            config.proc_num, log_file, n_trees=n_trees, want_consensus=want_consensus, user_tree_file=user_tree_file)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def sample_alternatives(alt_files, n_trees):
+    """The k = min(n_trees, available) alternatives used for the trees: a seeded random sample, sorted."""
+    k = min(n_trees, len(alt_files))
+    return sorted(random.Random(_SEED).sample(sorted(alt_files), k))
+
+
+def build_alignment_trees(alt_files, reference, codes, prefix, tmp, iqtree, proc_num, log_file,
+                          n_trees=DEFAULT_N_ALT_TREES, want_consensus=True, user_tree_file="", alt_trees=None):
+    """Core of the tree step, shared by the pipeline and the guidance3-tree command.
+    alt_files: alternative MSA paths (sequence names = codes); a seeded sample of n_trees of them is used.
+    alt_trees: instead of alt_files, already inferred trees (Bio.Phylo trees, leaves = codes).
+    reference: base MSA (names = codes) for resolving the consensus and for aBayes / SH-aLRT; may be None when
+    only a user tree is evaluated (the aBayes / SH-aLRT columns are then NA).
+    codes: {code: original name}. Writes <prefix>_* files. Returns True on success."""
     os.makedirs(tmp, exist_ok=True)
-    reference = os.path.join(work, config.Alignment_File)
-    model = _model(os.path.join(alt_dir, chosen[0]))
-    if _is_nucleotide(reference) != (model == "GTR+G"):
+    if alt_trees is None:
+        chosen = sample_alternatives(alt_files, n_trees)
+        k = len(chosen)
+        model = _model(chosen[0])
+    else:
+        k = len(alt_trees)
+        model = _model(reference) if reference else None
+    if reference and model and _is_nucleotide(reference) != (model == "GTR+G"):
         # codon runs: alternatives are amino-acid alignments; translate a copy of the codon reference to match
         from guidance3.sequences.fasta import _translate_codon_msa_inplace
         ref_copy = os.path.join(tmp, "reference.fasta")
         shutil.copy(reference, ref_copy)
         _translate_codon_msa_inplace(ref_copy)
         reference = ref_copy
-    codes = _read_codes(os.path.join(work, config.code_fileName))
 
-    print(f"[alignment_trees] inferring {k} trees from alternative MSAs (IQ-TREE {model}, -fast)...")
-    iqtree = config.iqtree_prog
+    if alt_trees is None:
+        print(f"[alignment_trees] inferring {k} trees from alternative MSAs (IQ-TREE {model}, -fast)...")
 
-    def one(i_name):
-        i, name = i_name
-        return _infer(iqtree, os.path.join(alt_dir, name), os.path.join(tmp, f"alt{i:03d}"), model, log_file)
+        def one(i_path):
+            i, path = i_path
+            return _infer(iqtree, path, os.path.join(tmp, f"alt{i:03d}"), model, log_file)
 
-    with ThreadPoolExecutor(max_workers=max(1, int(config.proc_num))) as pool:
-        trees = list(pool.map(one, enumerate(chosen)))
+        with ThreadPoolExecutor(max_workers=max(1, int(proc_num))) as pool:
+            trees = list(pool.map(one, enumerate(chosen)))
+    else:
+        trees = alt_trees
 
     leaves = leaf_names(trees[0])
     split_sets = [tree_splits(t, leaves) for t in trees]
     keep, counts = extended_majority_splits(split_sets)
 
-    # the k trees, with original names
-    with open(f"{prefix}_AltMSA_trees.nwk", "w") as fh:
-        for t in trees:
-            for leaf in t.get_terminals():
-                leaf.name = codes.get(leaf.name, leaf.name)
-            buf = io.StringIO()
-            Phylo.write(t, buf, "newick")
-            fh.write(buf.getvalue())
+    if alt_trees is None:
+        # the k trees, with original names
+        with open(f"{prefix}_AltMSA_trees.nwk", "w") as fh:
+            for t in trees:
+                for leaf in t.get_terminals():
+                    leaf.name = codes.get(leaf.name, leaf.name)
+                buf = io.StringIO()
+                Phylo.write(t, buf, "newick")
+                fh.write(buf.getvalue())
 
     ok = True
     if want_consensus:
@@ -328,10 +356,9 @@ def run_alignment_trees(config):
         print(f"[alignment_trees] GUIDANCE3 tree -> {prefix}_GUIDANCE3_tree.nwk")
 
     if user_tree_file:
+        support_args = (iqtree, reference, model, os.path.join(tmp, "user_tree_support")) if reference else None
         ok = evaluate_user_tree(user_tree_file, counts, k, codes, leaves, prefix, log_file,
-                                support_args=(iqtree, reference, model, os.path.join(tmp, "user_tree_support"))) and ok
-
-    shutil.rmtree(tmp, ignore_errors=True)
+                                support_args=support_args) and ok
     return ok
 
 
