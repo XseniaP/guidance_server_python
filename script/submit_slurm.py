@@ -22,6 +22,8 @@ def submit_job_to_Q(wd, cmd):
     jobName = f'guidance_{jobID}'
     payload = {
         "script": f"""module load mamba/mamba-2.1.1
+module load iqtree/iqtree-3.0.1
+export GUIDANCE_IQTREE=$(command -v iqtree3)
 mamba activate /guidance/guidance_server_python/guidance_env
 {cmd}
 """,

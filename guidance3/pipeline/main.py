@@ -19,6 +19,7 @@ from guidance3.sequences.fasta import (
     create_tar_archives,
     select_best_msa,
 )
+from guidance3.trees.alignment_trees import run_alignment_trees
 from guidance3.utils.common import (
     flag_that_finished_ok,
     print_initial_running_progress,
@@ -81,6 +82,9 @@ def _run(config):
     remove_sequences_sp_score(config)
     remove_sequences_sp_and_z_score(config)
     make_jalview(config)
+    if config.PROGRAM == "GUIDANCE3":
+        # before create_tar_archives, which removes the alternative-MSA directory
+        _run_alignment_trees_step(config)
     create_tar_archives(config)
     dl_ok = True
     if config.PROGRAM == "GUIDANCE3" and not getattr(config, 'skip_dl', False):
@@ -98,6 +102,19 @@ def _run(config):
 
     if os.path.exists(os.path.join(RESULTS, "timestamps.txt")):
         shutil.move(os.path.join(RESULTS, "timestamps.txt"), os.path.join(config.WorkingDir, "timestamps.txt"))
+
+
+def _run_alignment_trees_step(config):
+    """GUIDANCE3 tree + alignment support (+ user tree). A failure here is reported but does not fail the job."""
+    if getattr(config, "no_consensus_tree", False) and not getattr(config, "user_tree", ""):
+        return
+    try:
+        run_alignment_trees(config)
+    except Exception as e:
+        import traceback
+        print(f"[alignment_trees] step failed, continuing without the GUIDANCE3 tree: {e}")
+        with open(config.OutLogFile, "a") as lf:
+            lf.write(f"\nalignment_trees failed:\n{traceback.format_exc()}\n")
 
 
 if __name__ == "__main__":

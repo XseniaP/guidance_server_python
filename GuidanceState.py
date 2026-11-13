@@ -51,8 +51,8 @@ class GuidanceState:
                 if dict_key_defined_not_empty('BACK_FROM_MAFFT', form):
                     var['Alignment_File'] = 'UserMSA'
                 # else:
-                elif form['input_type'] == 'msa':
-                    # assign alignment file if uploaded msa
+                elif form['input_type'] in ('msa', 'msa_set'):
+                    # assign alignment file if uploaded msa (msa_set: the job replaces it with the best MSA of the set)
                     var['Alignment_File'] = f"{var['dataset']}.aln"
                 else:
                     var['Alignment_File'] = f"{var['dataset']}.{form['MSA_Program']}.aln"
@@ -77,7 +77,7 @@ class GuidanceState:
                 else:
                     self.form['Redirect_From_MAFFT'] = '0'
 
-                if self.form['input_type'] == 'msa':
+                if self.form['input_type'] in ('msa', 'msa_set'):
                     self.form['userMSA_File'] = var['Alignment_File']
 
                 if self.form['GENCODE'] != "":
@@ -182,6 +182,15 @@ class GuidanceState:
 
             # Checkbox: only present in form when checked; default False when absent
             form['disable_convergence'] = dict_key_defined_not_empty('disable_convergence', cgi_form)
+
+            # GUIDANCE3 tree (checked by default on the form), user tree, MSA set -> RunConfig attributes in the job
+            form['no_consensus_tree'] = not dict_key_defined_not_empty('consensus_tree', cgi_form)
+            try:
+                form['n_alt_trees'] = min(100, max(3, int(cgi_form.get('n_alt_trees', 20))))
+            except (TypeError, ValueError):
+                form['n_alt_trees'] = 20
+            form['user_tree'] = os.path.join(var['WorkingDir'], var['user_tree_file']) if var.get('user_tree_file') else ''
+            form['msa_set'] = os.path.join(var['WorkingDir'], var['msa_set_upload']) if var.get('msa_set_upload') else ''
                 
             if dict_key_defined_not_empty('RERUN_SAME_SEQ', cgi_form):
                 form['RERUN_SEQ_ONLY'] = cgi_form['RERUN_SAME_SEQ']
@@ -318,6 +327,39 @@ class GuidanceState:
                     error= f'GuidanceState.upload_files: uploading file {uploading_file} failed.'
                     raise Exception(error, "system")
 
+            # set of alternative MSAs: keep the archive for the job (which ranks the MSAs with the DL model and
+            # continues with the best one), check it now, and put its first MSA in place so the usual MSA
+            # validation (sequence limits, names) runs on the web side
+            if form['input_type'] == 'msa_set':
+                from guidance3.sequences.msa_set import MSASetError, collect_msa_files, validate_msa_set
+                upload = files.get('msaSet_File') if hasattr(files, 'get') else None
+                if upload is None or not upload.filename:
+                    raise Exception("Please upload a .zip or .tar.gz archive with your set of MSAs.", "user")
+                fname = upload.filename.lower()
+                ext = '.zip' if fname.endswith('.zip') else '.tar.gz'
+                var['msa_set_upload'] = f'MSA_set_upload{ext}'
+                save_file_to_disk(var['WorkingDir'], job_logger, upload, var['msa_set_upload'])
+                try:
+                    msa_files = collect_msa_files(os.path.join(var['WorkingDir'], var['msa_set_upload']),
+                                                  os.path.join(var['WorkingDir'], 'MSA_set'))
+                    validate_msa_set(msa_files)
+                except MSASetError as e:
+                    raise Exception(f"MSA set: {e}", "user")
+                var['msa_set_count'] = len(msa_files)
+                shutil.copyfile(msa_files[0], os.path.join(var['WorkingDir'], var['Alignment_File']))
+                uploading_file = os.path.join(var['WorkingDir'], var['Alignment_File'])
+
+            # optional user tree: alignment support of each of its branches
+            tree_upload = files.get('userTree_File') if hasattr(files, 'get') else None
+            if tree_upload is not None and tree_upload.filename:
+                save_file_to_disk(var['WorkingDir'], job_logger, tree_upload, 'UserTree.nwk')
+                try:
+                    from Bio import Phylo
+                    Phylo.read(os.path.join(var['WorkingDir'], 'UserTree.nwk'), 'newick')
+                except Exception as e:
+                    raise Exception(f"The uploaded tree could not be read as a Newick tree: {e}", "user")
+                var['user_tree_file'] = 'UserTree.nwk'
+
             # if Input_type is re-align remove gaps from uploaded file
             if form['input_type'] == 're_align':
 
@@ -331,7 +373,7 @@ class GuidanceState:
                     f.close()
 
             # rename to codons file
-            if form['Seq_Type'] == 'Codons' and form['input_type']!='msa': # and ('userMSA_File','') in form.items():
+            if form['Seq_Type'] == 'Codons' and form['input_type'] not in ('msa', 'msa_set'): # and ('userMSA_File','') in form.items():
                 if os.path.exists(seqsFile):
                     shutil.move(seqsFile, os.path.join( var['WorkingDir'], var['SeqsFile_Codons']))
                 else:
@@ -505,6 +547,11 @@ class GuidanceState:
                     # var['sequences_link'] = f"MSA File = <A HREF='{results_url}/UserMSA.FIXED.ORIG' TARGET=_blank>{form['userMSA_File']}</A><br>"
                     var[
                         'sequences_link'] = f"MSA File = <A HREF='{results_url}/{form['userMSA_File']}.FIXED.ORIG' TARGET=_blank>{form['userMSA_File']}</A><br>"
+                    if form['input_type'] == 'msa_set':
+                        var['sequences_link'] = (f"MSA set = {var.get('msa_set_count', '')} uploaded MSAs; the one ranked best by "
+                                                 f"the deep-learning model was evaluated: <A HREF='{results_url}/{form['userMSA_File']}.FIXED.ORIG' "
+                                                 f"TARGET=_blank>selected MSA</A> (<A HREF='{results_url}/MSA_set_ranking.csv' "
+                                                 f"TARGET=_blank>ranking of all uploaded MSAs</A>)<br>")
             else:
                 if form['Seq_Type'] == 'Codons':
                     if dict_file_defined_not_empty('usrSeq_File', files):
@@ -532,7 +579,7 @@ class GuidanceState:
             if form['PROGRAM'] == "GUIDANCE" or form['PROGRAM'] == "HoT":
                 var['Output_Prefix']=f"{var['dataset']}.{form['MSA_Program']}.Guidance"
             elif form['PROGRAM'] == "GUIDANCE3":
-                var['Output_Prefix']=f"{var['dataset']}.{form['MSA_Program']}.Guidance2"
+                var['Output_Prefix']=f"{var['dataset']}.{form['MSA_Program']}.Guidance3"
             var['Seq_Scores']= f"{var['run_number']}/{var['Output_Prefix']}_res_pair_seq.scr_with_Names"
         
             if form['Seq_Type'] == 'AminoAcids' or form['Seq_Type'] == 'Codons':
@@ -548,7 +595,7 @@ class GuidanceState:
                 'Alignment_File_without_low_SP_Col_with_Names'] = f"{var['Alignment_File_without_low_SP_Col']}.With_Names"
             var['removed_low_SP_SITE'] = f"{var['SeqsFile']}.{var['dataset']}.{form['MSA_Program']}.Removed_Col"
 
-            if form['input_type'] != 'msa':
+            if form['input_type'] not in ('msa', 'msa_set'):
                 var['Seq_File_without_low_SP_SEQ'] = f"{var['SeqsFile']}.Without_low_SP_Seq"
                 var['removed_low_SP_SEQ'] = f"{var['SeqsFile']}.Removed_Seq"
                 var['Seq_File_without_low_SP_SEQ_with_Names'] = f"{var['Seq_File_without_low_SP_SEQ']}.With_Names"

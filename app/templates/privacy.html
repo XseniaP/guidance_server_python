@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<title>Privacy &amp; cookies</title>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2 main-form overview-container">
+            <div class="display-5" style="text-align: left;">Privacy &amp; cookies</div>
+            <br>
+
+            <h2 style="font-size: 20px"><b>Your data</b></h2>
+            <p>
+                GUIDANCE3 is free and open to all users, and no login or registration is required.
+                Each job's input and results are available only through the job's unique results link.
+                Only you and anyone you share that link with can see them. Your email address is optional
+                and is used only to tell you when your job has finished.
+            </p>
+
+            <h2 style="font-size: 20px"><b>Cookies</b></h2>
+            <p>
+                GUIDANCE3 does not use analytics, advertising or tracking cookies.
+            </p>
+            <ul>
+                <li><b>Session cookie (strictly necessary).</b> The server may set a session cookie that is deleted
+                    when you close your browser. It is not used to track you.</li>
+                <li><b>Google reCAPTCHA (optional, third-party).</b> To block automated job submissions, the
+                    submission form can use Google reCAPTCHA, which sets cookies from Google. reCAPTCHA is loaded
+                    <b>only if you click "Accept reCAPTCHA cookies"</b>; until then, no request is sent to Google.
+                    {% if declined_per_hour and declined_per_hour > 0 and declined_per_day and declined_per_day > 0 %}
+                    If you decline, everything else works as usual (browsing, viewing and downloading results), and
+                    you can submit up to {{ declined_per_hour }} job{{ 's' if declined_per_hour != 1 }} per hour and
+                    {{ declined_per_day }} per day
+                    from your network address.
+                    {% else %}
+                    If you decline, everything else works as usual (browsing, viewing and downloading results), but
+                    submitting a job requires reCAPTCHA.
+                    {% endif %}
+                    See Google's <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">privacy
+                    policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">terms
+                    of service</a>.</li>
+                <li><b>Submission limit without reCAPTCHA.</b> To apply this limit, the server keeps a one-way
+                    (salted) hash of your network address and the times of your submissions for 24 hours. The address
+                    itself is not stored.</li>
+                <li><b>Your cookie choice.</b> Your accept or decline choice is stored in your browser's local
+                    storage, so the banner is not shown again; after 12 months you are asked again. It is not sent to our
+                    server.</li>
+            </ul>
+            <p>
+                <a href="#" onclick="guidanceConsent.reopen(); return false;">Change your cookie choice</a>
+            </p>
+
+            <h2 id="licence" style="font-size: 20px"><b>Licence</b></h2>
+            <p>
+                Copyright &copy; 2026 Tal Pupko. This program is free software: you can redistribute it and/or modify
+                it under the terms of the GNU General Public License as published by the Free Software Foundation,
+                either version 2 of the License, or (at your option) any later version. This program is distributed
+                in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+                MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+                details: <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"
+                rel="license">https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html</a>.
+            </p>
+            <p>
+                The source code is available on
+                <a href="https://github.com/XseniaP/guidance_server_python" target="_blank" rel="noopener">GitHub</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

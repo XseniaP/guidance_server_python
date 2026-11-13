@@ -160,18 +160,21 @@
 
 </ul>
 
-{% if supermsa_topk_selection %}
+{% if var['SuperMSA_selection'] %}
 <ul>
     <li>
-        <form enctype="multipart/form-data" action="/ConcatMSAsTopK/{{var['run_number']}}" method="post">
-            Create a <b>Top-K SuperMSA</b> by concatenating the top {{supermsa_topk_selection|safe}} alternative MSAs ranked by predicted score
-            <input type="hidden" name="run_num"     value="{{var['run_number']}}"/>
-            <input type="hidden" name="dataset"     value="{{var['dataset']}}"/>
-            <input type="hidden" name="msa_program" value="{{form['MSA_Program']}}"/>
-            <input class="btn btn-outline-primary btn-outline-primary-small" type="submit" value="Create Top-K SuperMSA"/>
+        <form enctype="multipart/form-data" action="/ConcatMSAs/{{var['run_number']}}" method="post">
+            Create a <b>SuperMSA</b> by concatenating the base MSA and {{var['SuperMSA_selection']|safe}}
+            randomly chosen alternative MSAs computed by GUIDANCE3
+            <input type="hidden" name="run_num" value="{{var['run_number']}}"/>
+            <input class="btn btn-outline-primary btn-outline-primary-small" type="submit" value="Create SuperMSA"/>
         </form>
+        <font size=-1>Trees inferred from a concatenation of about 20 randomly chosen alternative MSAs are more
+        accurate than trees inferred from a single MSA. In our simulations, choosing the alternatives by predicted
+        accuracy did not improve on random alternatives.</font>
     </li>
 </ul>
+{% endif %}
 <ul>
     {% for k in topk_msa_list %}
     <ul>
@@ -182,18 +185,6 @@
     </ul>
     {% endfor %}
 </ul>
-{% endif %}
-
-{# <ul>
-    <li>
-        <form enctype="multipart/form-data" action="/ConcatMSAs/{{var['run_number']}}" method="post">
-            Create a <b>SuperMSA</b> by concatenating the
-            base MSA and {{var['SuperMSA_selection']|safe}} alternative MSAs computed by GUIDANCE3 <input type="hidden"
-                                                                                                          name="run_num"
-                                                                                                          value="{{var['run_number']}}"/>
-            <input class="btn btn-outline-primary btn-outline-primary-small"  type="submit" value="Create SuperMSA"/></form>
-    </li>
-</ul> #}
 
 <!-- end of SuperMSA_results_section -->
 
@@ -204,7 +195,7 @@
     <ul>
         <li>
             <A HREF="{{var['run_number']}}/SuperMSA_DefaultMSA_and_{{num_msa}}_Alt.fas" TARGET=_blank>The SuperMSA
-                composed of the base MSA and {{num_msa}} alternative MSAs</A><br>
+                composed of the base MSA and {{num_msa}} randomly chosen alternative MSAs</A><br>
         </li>
     </ul>
     {% endfor %}
@@ -213,13 +204,13 @@
 
 <ul>
 
-    <li><A HREF="{{var['run_number']}}/{{var['dataset']}}.{{form['MSA_Program']}}.Guidance2_AlternativeMSA.tar.gz"> The set of alternative MSAs<br></A>
+    <li><A HREF="{{var['run_number']}}/{{var['Output_Prefix']}}_AlternativeMSA.tar.gz"> The set of alternative MSAs<br></A>
     </li>
 </ul>
 
 {% if best_msa_file %}
 <ul>
-    <li><font color=red face="Comic Sans MS">New feature </font> - <A HREF="{{var['run_number']}}/{{best_msa_file}}" TARGET=_blank><b>Best MSA</b> selected by the pretrained model (minimum predicted distance score)<br></A>
+    <li><font color=red face="Comic Sans MS">New feature </font> - <A HREF="{{var['run_number']}}/{{best_msa_file}}" TARGET=_blank><b>Best MSA</b> among the GUIDANCE3 alternative MSAs, selected by the pretrained model (minimum predicted distance from the true MSA)<br></A>
     </li>
 </ul>
 {% if best_msa_colored_file %}
@@ -234,6 +225,46 @@
 {% endif %}
 {% endif %}
 
+{% endif %}
+
+{% if tree_files %}
+<a name="alignment_trees"></a>
+<h2><b>Phylogeny across alternative MSAs:</b></h2>
+{% if tree_files.msa_set_ranking %}
+<ul>
+    <li><A HREF="{{var['run_number']}}/{{tree_files.msa_set_ranking}}" TARGET=_blank>Ranking of your uploaded MSAs</A>
+        by the deep-learning model (lowest predicted distance from the true MSA first); the top-ranked MSA was evaluated.</li>
+</ul>
+{% endif %}
+{% if tree_files.tree_nwk %}
+<ul>
+    <li>{% if tree_files.tree_html %}<A HREF="{{var['run_number']}}/{{tree_files.tree_html}}" TARGET=_blank><b>GUIDANCE3 tree</b>
+        &mdash; interactive view, branches coloured by alignment support</A>{% else %}<b>GUIDANCE3 tree</b>{% endif %}
+        (<A HREF="{{var['run_number']}}/{{tree_files.tree_nwk}}" TARGET=_blank>Newick</A>{% if tree_files.tree_tsv %},
+        <A HREF="{{var['run_number']}}/{{tree_files.tree_tsv}}" TARGET=_blank>support of each branch</A>{% endif %})<br>
+        <font size=-1>The extended majority-rule consensus of maximum-likelihood trees inferred from {{ tree_files.n_alt_trees or 20 }} alternative MSAs,
+        resolved by a constrained search on the base MSA. Alignment support = % of these trees that contain the branch;
+        a branch with low alignment support depends on how the sequences were aligned.</font></li>
+</ul>
+{% endif %}
+{% if tree_files.user_nwk %}
+<ul>
+    <li>{% if tree_files.user_html %}<A HREF="{{var['run_number']}}/{{tree_files.user_html}}" TARGET=_blank><b>Your tree</b>
+        with the alignment support of each branch</A>{% else %}<b>Your tree</b>{% endif %}
+        (<A HREF="{{var['run_number']}}/{{tree_files.user_nwk}}" TARGET=_blank>Newick</A>{% if tree_files.user_tsv %},
+        <A HREF="{{var['run_number']}}/{{tree_files.user_tsv}}" TARGET=_blank>table</A>{% endif %})</li>
+</ul>
+{% elif tree_files.user_error %}
+<ul>
+    <li><font color=red>Your tree could not be evaluated</font> &mdash;
+        <A HREF="{{var['run_number']}}/{{tree_files.user_error}}" TARGET=_blank>see why</A></li>
+</ul>
+{% endif %}
+{% if tree_files.alt_trees %}
+<ul>
+    <li><A HREF="{{var['run_number']}}/{{tree_files.alt_trees}}" TARGET=_blank>The {{ tree_files.n_alt_trees }} maximum-likelihood trees inferred from {{ tree_files.n_alt_trees }} randomly chosen alternative MSAs</A> (Newick, one tree per line)</li>
+</ul>
+{% endif %}
 {% endif %}
 
 {% if form['Seq_Type'] == 'Codons' %}

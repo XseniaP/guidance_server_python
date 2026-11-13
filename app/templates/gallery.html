@@ -19,7 +19,8 @@
                 here</b></a> to view an example output page for an alignment of Vpu proteins.</b></p>
 
             <h1><p><br>Color coding scheme of GUIDANCE</p><br>
-                <p align="center"><img src="{{url_for('static',filename='images/scale.png')}}" width="400"></p><br></h1>
+                <p align="center"><img src="{{url_for('static',filename='images/scale.png')}}" alt="GUIDANCE colour scale"
+                    style="width: 400px; max-width: 100%; height: auto"></p><br></h1>
             <p class="overview-text"> Vpu is an accessory viral protein present in human immunodeficiency virus 1
                 (HIV-1) and simian immunodeficiency viruses (SIVs) infecting chimpanzees and other primate species, yet
                 absent in HIV-2. The protein contains ~80 amino-acids and has two known major functions, which are
@@ -43,8 +44,142 @@
             </p>
 
             <h1><p><br>GUIDANCE Application Example</p><br></h1>
-            <img src="{{url_for('static',filename='images/vpu.gif')}}" width="930" style="border-radius: 10px">
+            <img src="{{url_for('static',filename='images/vpu.gif')}}" alt="GUIDANCE results for the Vpu alignment"
+                 style="display: block; max-width: 100%; height: auto; border-radius: 10px">
 
+
+            {% if example_files_url %}
+            {% set ex = example_files_url %}
+            {% set job = example_results_url %}
+            {% set px = 'MSA.' ~ example_msa_program %}
+            {% set g3 = px ~ '.Guidance3' %}
+            <h1><p><br>Tour of the example results</p><br></h1>
+            <p class="overview-text">
+                These are the results of a complete GUIDANCE3 run on the Vpu sequences of the "Load an example"
+                button ({{ example_msa_program }}, default parameters, with a tree to evaluate).
+                {% if job %}The <a href="{{ job }}" target="_blank">example results page</a> works exactly like the
+                page of your own job.{% endif %}
+                Each part of the results is explained below, with a link to it in the example.
+            </p>
+            <ul class="list-group mb-4">
+                <li class="list-group-item">
+                    <b>Base MSA and its confidence scores.</b> The MSA computed by the alignment program
+                    (<a href="{{ ex }}/{{ px }}.aln.With_Names" target="_blank">base MSA</a>), coloured by
+                    confidence (<a href="{{ ex }}/{{ px }}.Guidance_res_pair_res.html" target="_blank">coloured MSA</a>;
+                    from dark red, reliable, to cyan, unreliable). The scores are also given as tables: per column
+                    (<a href="{{ ex }}/{{ g3 }}_res_pair_col.scr" target="_blank">column scores</a>), per sequence
+                    (<a href="{{ ex }}/{{ g3 }}_res_pair_seq.scr_with_Names" target="_blank">sequence scores</a>) and
+                    per residue (<a href="{{ ex }}/{{ g3 }}_res_pair_res.scr" target="_blank">residue scores</a>).
+                    Each score is the fraction of alternative MSAs that reproduce the column, or align the residue
+                    pairs, in the same way.
+                </li>
+                <li class="list-group-item">
+                    <b>Removing unreliable columns and sequences.</b> The base MSA without the columns that score below
+                    the cutoff (<a href="{{ ex }}/{{ px }}.Without_low_SP_Col.With_Names" target="_blank">filtered MSA</a>,
+                    default cutoff 0.93), and the input sequences without the unreliable sequences
+                    (<a href="{{ ex }}/Seqs.Orig.fas.FIXED.Without_low_SP_Seq.With_Names" target="_blank">filtered
+                    sequences</a>, default cutoff 0.6). Other cutoffs can be chosen on the results page{% if job %}
+                    (<a href="{{ job }}#remove_pos" target="_blank">columns</a>,
+                    <a href="{{ job }}#remove_seq" target="_blank">sequences</a>){% endif %}. Note that in our
+                    simulations, removing columns made the inferred trees less accurate.
+                </li>
+                <li class="list-group-item">
+                    <b>Masking unreliable residues.</b> Residues below a chosen cutoff are replaced by a mask character
+                    while the rest of the MSA is kept{% if job %} (<a href="{{ job }}#masks" target="_blank">masking on
+                    the results page</a>){% else %}; the cutoff is chosen on the results page{% endif %}.
+                </li>
+                <li class="list-group-item">
+                    <b>Alternative MSAs and the SuperMSA.</b> All the alternative MSAs computed by GUIDANCE3
+                    (<a href="{{ ex }}/{{ g3 }}_AlternativeMSA.tar.gz">archive</a>). The
+                    {% if job %}<a href="{{ job }}#super_msa" target="_blank">SuperMSA</a>{% else %}SuperMSA, created
+                    on the results page,{% endif %} concatenates the base MSA with randomly chosen alternatives; trees
+                    inferred from such a concatenation of about 20 alternatives were more accurate than trees inferred
+                    from a single MSA.
+                </li>
+                <li class="list-group-item">
+                    <b>Best MSA.</b> The alternative MSA with the lowest distance from the true MSA predicted by our
+                    deep-learning model (<a href="{{ ex }}/{{ g3 }}_BestMSA.fasta" target="_blank">best MSA</a>,
+                    <a href="{{ ex }}/{{ g3 }}_BestMSA_colored.html" target="_blank">coloured by confidence</a>).
+                </li>
+                <li class="list-group-item">
+                    <b>GUIDANCE3 tree and alignment support.</b> The consensus of maximum-likelihood trees inferred
+                    from alternative MSAs, with each branch coloured by its alignment support
+                    (<a href="{{ ex }}/{{ g3 }}_GUIDANCE3_tree.html" target="_blank">interactive tree</a>,
+                    <a href="{{ ex }}/{{ g3 }}_GUIDANCE3_tree.nwk" target="_blank">Newick</a>). The
+                    <a href="{{ ex }}/{{ g3 }}_GUIDANCE3_tree_branch_support.tsv" target="_blank">branch table</a>
+                    gives, for each branch, alignment support, aBayes and SH-aLRT on the base MSA, and aBayes &times;
+                    alignment support, which identified incorrect branches best in our simulations. The
+                    <a href="{{ ex }}/{{ g3 }}_AltMSA_trees.nwk" target="_blank">trees of the individual alternative
+                    MSAs</a> are also provided.
+                </li>
+                <li class="list-group-item">
+                    <b>Evaluating your own tree.</b> If you upload a tree, each of its branches gets the same support
+                    values (<a href="{{ ex }}/{{ g3 }}_UserTree_alignment_support.html" target="_blank">interactive
+                    tree</a>, <a href="{{ ex }}/{{ g3 }}_UserTree_alignment_support.tsv" target="_blank">table</a>).
+                </li>
+            </ul>
+            {% endif %}
+
+            <h1><p><br>Phylogeny across alternative MSAs (new in GUIDANCE3)</p><br></h1>
+            <p class="overview-text">
+                GUIDANCE3 also uses the alternative MSAs for tree inference. It infers a maximum-likelihood tree from
+                each of 20 randomly chosen alternative MSAs and summarizes them in the <b>GUIDANCE3 tree</b>, an
+                extended majority-rule consensus resolved on the base MSA. Each branch is coloured by its
+                <b>alignment support</b>: the percentage of the 20 trees that contain it. A branch with low alignment
+                support depends on how the sequences were aligned, even when standard support measures computed on a
+                single MSA are high.
+                <br><br>
+                The example below is the result for the 14 HIV-1 group M Vpu sequences (subtypes A1, B, C, D, F1 and G)
+                of the "Load an example" button on the home page, run with default parameters. The subtype C and A1
+                clades are robust to alignment uncertainty (100% alignment support, aBayes &asymp; 1). In contrast, the
+                deeper branches that group subtypes B, D and G appear in only 45&ndash;55% of the trees, and one branch
+                within subtype C has SH-aLRT 67 on the base MSA but only 40% alignment support. Hover over a branch to
+                see its alignment support, aBayes and SH-aLRT.
+            </p>
+            <iframe src="{{url_for('static',filename='gallery/vpu_GUIDANCE3_tree.html')}}" title="GUIDANCE3 tree of the Vpu example"
+                    style="width: 100%; height: 640px; border: 1px solid #1e5a78; border-radius: 10px; background: #ffffff;"
+                    loading="lazy"></iframe>
+            <p class="overview-text">
+                Files: <a href="{{url_for('static',filename='gallery/vpu_GUIDANCE3_tree.nwk')}}" target="_blank">GUIDANCE3 tree (Newick)</a>
+                &middot; <a href="{{url_for('static',filename='gallery/vpu_GUIDANCE3_tree_branch_support.tsv')}}" target="_blank">support of each branch</a>
+                &middot; <a href="{{url_for('static',filename='gallery/vpu_GUIDANCE3_tree.html')}}" target="_blank">open the interactive tree in a new tab</a>
+                &middot; <a href="{{url_for('static',filename='gallery/vpu_GUIDANCE3_tree.png')}}" target="_blank">static image (PNG)</a>
+            </p>
+
+            <h1><p><br>Is the GUIDANCE3 tree more accurate? A mammalian example with a known tree</p><br></h1>
+            <p class="overview-text">
+                To check a tree against the truth, the true tree must be known. In this example, protein sequences were
+                simulated along the tree of a mammalian gene from the OrthoMaM database (40 species; substitution and
+                indel parameters estimated from the real gene), so the true tree is known exactly. GUIDANCE3 was run
+                on the unaligned simulated sequences with default parameters (MAFFT). The figure compares (a) the true
+                tree with (b) the maximum-likelihood tree inferred from the default MAFFT alignment and (c) the
+                GUIDANCE3 tree. Branches that are not in the true tree are dashed and marked with a cross; all trees are
+                rooted on the echidna, as in OrthoMaM.
+                <br><br>
+                The tree from the default MSA has 13 wrong branches out of 37, the GUIDANCE3 tree 6 (an ML tree
+                inferred from the true alignment, which is never known in practice, has 7). Alignment support also
+                flags the remaining doubtful branches: most wrong branches have low alignment support (in the default
+                tree, 11 of the 13 are supported by 30% of the alternative-MSA trees or fewer), while its correct
+                branches have a median alignment support of 80%.
+                <br><br>
+                The 20 alternative MSAs are chosen at random, so results vary slightly between runs: with five
+                different random sets of 20, the GUIDANCE3 tree had 6&ndash;9 wrong branches (always fewer than the 13
+                of the default tree). With 100 alternative MSAs (an option under Advanced Options), every random set
+                gave 6.
+                <br><br>
+                This is one illustrative dataset. Over 340 simulated datasets based on OrthoMaM genes, the GUIDANCE3
+                tree was closer to the true tree than the tree from the default MAFFT alignment in 259 datasets, equal
+                in 15 and further in 66 (mean normalized Robinson&ndash;Foulds distance 0.328 vs 0.363).
+            </p>
+            <a href="{{url_for('static',filename='gallery/tree_example_1519.png')}}" target="_blank">
+                <img src="{{url_for('static',filename='gallery/tree_example_1519.png')}}"
+                     alt="True tree, tree from the default MAFFT MSA, and GUIDANCE3 tree for a simulated mammalian gene"
+                     style="display: block; max-width: 100%; height: auto; border-radius: 10px; background: #ffffff;">
+            </a>
+            <p class="overview-text">
+                Click the figure to enlarge it, or open the
+                <a href="{{url_for('static',filename='gallery/tree_example_1519.svg')}}" target="_blank">vector version (SVG)</a>.
+            </p>
             <br>
             <br>
             <ul class="list-group">

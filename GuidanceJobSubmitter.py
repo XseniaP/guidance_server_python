@@ -116,6 +116,9 @@ class GuidanceJobSubmitter:
         required_modules_as_str = ' '.join(CONSTS.REQUIRED_MODULES)
         with open(cmds_file, 'w') as f:
             f.write(f'module load {required_modules_as_str};')
+            # IQ-TREE 3 from the cluster module (same version as the GUIDANCE3 paper analyses)
+            f.write('module load iqtree/iqtree-3.0.1;')
+            f.write('export GUIDANCE_IQTREE=$(command -v iqtree3);')
             f.write('bash activate /guidance/guidance_server_python/guidance_env;')
             f.write(f'cd {working_dir};')
             f.write(new_line_delimiter)

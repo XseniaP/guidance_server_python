@@ -107,6 +107,14 @@
             <!--    <blockquote>-->
 
             <p><font face=Verdana size=2>
+                {% if job_state == 'FINISHED' %}
+                Your job has finished; the results are below.
+                <br><br>
+                To view these results again later without recalculating them, bookmark this page.
+                The results are kept on the server for one month.
+                {% elif job_state in ('FAILED', 'ERROR') %}
+                Your job could not be completed; see the details below.
+                {% else %}
                 GUIDANCE is now processing your request.<br>
 
                 <br>This page will be automatically updated every 30 seconds. You can also reload it manually.<br>
@@ -114,7 +122,7 @@
                 <br><br>
                 If you wish to view these results at a later time without recalculating
                 them, please bookmark this page. The results will be kept in the server for one month.
-
+                {% endif %}
             </font></p>
 
             <h4>Running Parameters</h4>

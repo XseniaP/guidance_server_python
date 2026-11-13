@@ -114,7 +114,36 @@ isEqualTopologyProg = os.path.join(_PROGS_DIR, 'isEqualTree')
 SEMPHY = os.path.join(_PROGS_DIR, 'semphy')
 SEMPHY_BBL = SEMPHY
 CLUSTAL_OMEGA = os.path.join(_PROGS_DIR, 'clustalo')
-IQTREE = os.path.join(_PROGS_DIR, 'iqtree', 'bin', 'iqtree2')
+def _iqtree_runs(path):
+    """True if `path --version` runs (catches a binary built for another CPU architecture)."""
+    import subprocess
+    try:
+        return subprocess.run([path, '--version'], capture_output=True, timeout=20).returncode == 0
+    except (OSError, subprocess.SubprocessError):
+        return False
+
+
+def _find_iqtree():
+    """IQ-TREE 3 executable: $GUIDANCE_IQTREE (set by the web-server job script after
+    `module load iqtree/iqtree-3.0.1`), else the bundled binary if it runs on this machine,
+    else `iqtree3` on PATH."""
+    import shutil
+    env = os.environ.get('GUIDANCE_IQTREE', '').strip()
+    if env:
+        return env
+    bundled = os.path.join(_PROGS_DIR, 'iqtree', 'bin', 'iqtree3')
+    if os.path.isfile(bundled):
+        if not os.access(bundled, os.X_OK):  # a wheel/zip install can drop the executable bit
+            try:
+                os.chmod(bundled, os.stat(bundled).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+            except OSError:
+                pass
+        if _iqtree_runs(bundled):
+            return bundled
+    return shutil.which('iqtree3') or bundled
+
+
+IQTREE = _find_iqtree()
 FEATURES_EXTRACTION_PROG = os.path.join(_PROGS_DIR, 'features_for_msas')
 
 # DL model — inside the guidance3 package

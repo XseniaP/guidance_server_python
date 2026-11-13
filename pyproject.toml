@@ -8,13 +8,14 @@ version = "3.0.0"
 description = "GUIDANCE3 – confidence scoring for multiple sequence alignments (Linux and macOS only)"
 readme = "README.md"
 requires-python = ">=3.9"
-license = { text = "MIT" }
+license = { text = "GPL-2.0-or-later" }
 authors = [
     { name = "Ksenia Polonsky", email = "ksenia.polonsky@gmail.com" },
 ]
 keywords = ["bioinformatics", "multiple sequence alignment", "confidence score", "phylogenetics"]
 classifiers = [
     "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Intended Audience :: Science/Research",
     "Operating System :: POSIX :: Linux",
@@ -81,6 +82,9 @@ include = ["guidance3*"]
 
 [tool.setuptools.package-data]
 "guidance3" = ["data/**/*", "programs/**/*"]
+
+[tool.setuptools.exclude-package-data]
+"*" = [".DS_Store"]
 "guidance3.dl_model" = ["input/**/*", "environment_uni.yml"]
 
 [tool.pytest.ini_options]

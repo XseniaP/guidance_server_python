@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"/>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap-toc-1.0.1.min.css')}}"/>
 
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
@@ -16,9 +16,9 @@
     <!--                src="{{url_for('static',filename='js/javascript_functions.js')}}"></script>-->
     <!-- google fonts -->
     <link rel="stylesheet" type="text/css"
-          href="http://fonts.googleapis.com/css?family=Abril+Fatface">
+          href="https://fonts.googleapis.com/css?family=Abril+Fatface">
     <link rel="stylesheet" type="text/css"
-          href="http://fonts.googleapis.com/css?family=Playfair+Display">
+          href="https://fonts.googleapis.com/css?family=Playfair+Display">
     <!-- google fonts -->
 
 
@@ -29,39 +29,7 @@
     <META NAME="description" CONTENT="GUIDANCE: a web server for assessing alignment confidence score">
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
 
-    <!-- Analytics Start -->
-    <script>
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r;
-            i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date();
-            a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0];
-            a.async = 1;
-            a.src = g;
-            m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
-        ga('create', 'UA-54580028-1', 'auto');
-        ga('send', 'pageview');
-    </script>
-    <!-- Analytics End -->
-
-    <!-- GOOGLE ANALYTICS START -->
-    <script type="text/javascript">
-        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-    <script type="text/javascript">
-        try {
-            var pageTracker = _gat._getTracker("UA-12265767-1");
-            pageTracker._setDomainName(".tau.ac.il");
-            pageTracker._trackPageview();
-        } catch (err) {
-        }
-    </script>
-    <!-- GOOGLE ANALYTICS END -->
+    <!-- No analytics or tracking scripts: NAR web-server rules forbid tracking and third-party cookies by default. -->
 
     <link rel="stylesheet" href="{{url_for('static',filename='css/guidance.css')}}"/>
     <link rel="stylesheet" href="{{url_for('static',filename='css/stylesheet.css')}}"/>
@@ -73,7 +41,44 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
-    <script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+    <script src="{{url_for('static',filename='js/bootstrap-toc-1.0.1.min.js')}}"></script>
+    <!-- Cookie-consent state; defined in <head> so page scripts can read it (banner markup is at the end of <body>). -->
+    <script>
+    window.guidanceConsent = (function () {
+        var KEY = 'guidance_cookie_consent';
+        var MAX_AGE_MS = 365 * 24 * 3600 * 1000;  // ask again after 12 months
+        function read() {
+            try {
+                var rec = JSON.parse(window.localStorage.getItem(KEY));
+                if (rec && (rec.v === 'accepted' || rec.v === 'declined') && Date.now() - rec.t < MAX_AGE_MS) {
+                    return rec.v;
+                }
+            } catch (e) { /* missing, old format or storage blocked */ }
+            return null;
+        }
+        function banner(show) {
+            var el = document.getElementById('cookie-consent');
+            if (el) { el.style.display = show ? 'block' : 'none'; }
+        }
+        var api = {
+            get: function () { return read(); },
+            set: function (value) {
+                try { window.localStorage.setItem(KEY, JSON.stringify({v: value, t: Date.now()})); }
+                catch (e) { /* storage blocked: keep for this page only */ }
+                api._value = value;
+                banner(false);
+                document.dispatchEvent(new CustomEvent('guidance-consent', {detail: value}));
+            },
+            reopen: function () { banner(true); },
+            _value: null
+        };
+        api._value = read();
+        document.addEventListener('DOMContentLoaded', function () {
+            if (api._value !== 'accepted' && api._value !== 'declined') { banner(true); }
+        });
+        return api;
+    })();
+</script>
     {% block head %} {% endblock %}
 </head>
 
@@ -127,5 +132,67 @@
 </div>
 <!--<blockquote>-->
     {% block body %} {% endblock %}
+
+<footer class="text-center small py-3 mt-4 px-3" style="color: #c9dde6; border-top: 1px solid rgba(214, 238, 245, 0.25);">
+    GUIDANCE3 is free and open to all users; no login is required.
+    Copyright &copy; 2026 Tal Pupko. Free software under the
+    <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html" rel="license">GNU General Public License, version 2 or later</a>
+    (<a href="/privacy#licence">licence notice</a>).
+    &middot; <a href="/privacy">Privacy &amp; cookies</a>
+    &middot; <a href="#" onclick="guidanceConsent.reopen(); return false;">Cookie settings</a>
+</footer>
+
+<!-- Cookie consent. GUIDANCE itself sets no tracking or permanent cookies. Google reCAPTCHA (third-party
+     cookies) is loaded only after the visitor accepts here; the choice is kept in this browser's localStorage. -->
+<style>
+    #cookie-consent {
+        display: none; position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 2000;
+        max-width: 1100px; margin: 0 auto; padding: 18px 22px;
+        background: rgba(13, 37, 53, 0.78);
+        -webkit-backdrop-filter: blur(10px) saturate(140%); backdrop-filter: blur(10px) saturate(140%);
+        color: #eef8fb; font-size: 14px; line-height: 1.5;
+        border: 1px solid rgba(16, 200, 209, 0.35); border-top: 3px solid #10C8D1; border-radius: 14px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+        animation: cookie-consent-in 0.35s ease-out;
+    }
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+        #cookie-consent { background: rgba(13, 37, 53, 0.94); }
+    }
+    @keyframes cookie-consent-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { #cookie-consent { animation: none; } }
+    #cookie-consent .cc-title { font-weight: 600; font-size: 15px; color: #ffffff; margin-bottom: 4px; }
+    #cookie-consent a { color: #5fe3ea; }
+    #cookie-consent .cc-btn { border-radius: 999px; padding: 7px 18px; font-weight: 600; font-size: 13px;
+        letter-spacing: 0.02em; white-space: nowrap; }
+    #cookie-consent .cc-decline { background: transparent; color: #eef8fb; border: 1px solid rgba(238, 248, 251, 0.6); }
+    #cookie-consent .cc-decline:hover { background: rgba(255, 255, 255, 0.12); }
+    #cookie-consent .cc-accept { background: #10C8D1; color: #0d2535; border: 1px solid #10C8D1; }
+    #cookie-consent .cc-accept:hover { background: #3fdbe2; }
+    #cookie-consent .cc-btn:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
+</style>
+<div id="cookie-consent" role="dialog" aria-live="polite" aria-label="Cookie consent">
+    <div class="d-flex flex-column flex-md-row align-items-md-center gap-3">
+        <div class="flex-grow-1">
+            <div class="cc-title">Your privacy</div>
+            GUIDANCE does not use tracking or analytics cookies. To block automated job submissions, the
+            submission form uses Google reCAPTCHA, which sets cookies from Google; it is loaded only if you accept.
+            {% if declined_per_hour and declined_per_hour > 0 and declined_per_day and declined_per_day > 0 %}
+            If you decline, you can still use the whole site and view and download results, and you can submit
+            up to {{ declined_per_hour }} job{{ 's' if declined_per_hour != 1 }} per hour and {{ declined_per_day }} per day from your network address.
+            {% else %}
+            If you decline, you can still use the whole site and view and download results, but submitting a job
+            requires reCAPTCHA.
+            {% endif %}
+            You can change your choice at any time (Cookie settings, at the bottom of every page).
+            <a href="/privacy">Details</a>
+        </div>
+        <div class="d-flex gap-2 flex-shrink-0">
+            <button type="button" class="btn cc-btn cc-decline" onclick="guidanceConsent.set('declined')">Decline</button>
+            <button type="button" class="btn cc-btn cc-accept"
+                    onclick="guidanceConsent.set('accepted')">Accept reCAPTCHA cookies</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
