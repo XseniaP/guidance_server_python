@@ -39,3 +39,6 @@ collect_benchmark_results.py
 run_auc_analysis.py
 run_benchmark_all.py
 run_convergence_benchmark.py
+*.egg-info/
+dist/
+build/
