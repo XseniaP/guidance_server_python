@@ -96,7 +96,7 @@
 
             <div class="container text-center">
                 <div class="row justify-content-end">
-                    <div class="btn-group col-4" role="group" aria-label="Basic outlined example">
+                    <div class="btn-group col-auto" role="group" aria-label="Sequence actions">
                         <button type="button" class="btn btn-outline-primary btn-outline-primary-small" onclick="ClearSequence()">Clear sequences</button>
                         <button type="button" class="btn btn-outline-primary btn-outline-primary-small" onclick="LoadExample()">Load an example</button>
                     </div>
@@ -283,11 +283,12 @@
                         </label>
                     </div>
                     <div class="input-group mb-1" id="N_ALT_TREES">
-                        <span class="input-group-text">Number of alternative MSAs to infer trees from</span>
+                        <span class="input-group-text">Number of trees for the GUIDANCE3 tree</span>
                         <input type="number" name="n_alt_trees" id="n_alt_trees" value="20" min="3" max="100" step="1" class="form-control">
                     </div>
                     <div class="form-text mb-3" id="N_ALT_TREES_HELP">
-                        3&ndash;100 (default 20). Used for the GUIDANCE3 tree and for evaluating an uploaded tree.
+                        3&ndash;100 (default 20): the number of alternative MSAs, chosen at random, from which a
+                        maximum-likelihood tree is inferred. Used for the GUIDANCE3 tree and for evaluating an uploaded tree.
                         More trees give slightly more accurate results but take longer; it cannot exceed the number of
                         alternative MSAs the run produces.
                     </div>

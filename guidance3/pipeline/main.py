@@ -98,7 +98,10 @@ def _run(config):
         print(config)
     if config.isServer == 1:
         prepare_rerun_parameters(config)
-        send_finish_email_to_user(config)
+        try:
+            send_finish_email_to_user(config)
+        except Exception as e:  # the results are complete; a failed email must not fail the job
+            print(f"[email] results email not sent: {e}")
 
     if os.path.exists(os.path.join(RESULTS, "timestamps.txt")):
         shutil.move(os.path.join(RESULTS, "timestamps.txt"), os.path.join(config.WorkingDir, "timestamps.txt"))

@@ -37,6 +37,7 @@ class GuidanceJobSubmitter:
         # a simple command when using shebang header (#!) in q_submitter_power.py
         # replace by JS
         submission_cmd = f'cd {working_dir}\n python3 {CONSTS.MAIN_SCRIPT} {parameters} > {os.path.join(working_dir, "std.out")}'
+        pipeline_cmd = submission_cmd  # the job itself, without the follow-up email / daily-test commands
         if to_email:
             # Send the "results ready" email as part of the submitted job itself (runs
             # right after the pipeline, on whichever machine actually executes it) -
@@ -68,10 +69,16 @@ class GuidanceJobSubmitter:
                         job_logger.info(f'submit_job_to_Q failed: {e}')
             else:
                 # No queue locally: run the pipeline synchronously (blocks until it's
-                # done) and use the exit code as the success/failure signal, matching
-                # the truthy job-id / falsy '' contract submit_job_to_Q returns.
-                result = subprocess.run(submission_cmd, shell=True)
+                # done) and use ITS exit code as the success/failure signal, matching
+                # the truthy job-id / falsy '' contract submit_job_to_Q returns. The
+                # follow-up commands (results email, daily-test record) run afterwards and
+                # cannot fail a finished job: a local machine usually cannot reach the
+                # TAU mail server.
+                result = subprocess.run(pipeline_cmd, shell=True)
                 job_run_output = job_id if result.returncode == 0 else ''
+                follow_up = submission_cmd[len(pipeline_cmd):].strip()
+                if follow_up and job_run_output:
+                    subprocess.run(f'cd {working_dir}\n{follow_up}', shell=True)
 
             if job_logger:
                 job_logger.info(f'process id ={job_run_output}')

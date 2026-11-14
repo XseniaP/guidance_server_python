@@ -406,3 +406,11 @@ nav[data-toggle="toc"] .nav-link.active:hover {
 }
 
 /*</STYLE>*/
+
+/* Phones: no sideways scrolling */
+/* long URLs shown as link text wrap instead of widening the page */
+p a, li a, td a, dd a, .form-text a { overflow-wrap: anywhere; }
+@media (max-width: 575.98px) {
+	/* .row's negative gutters pushed the form 12px past the screen edge */
+	.main-form { margin-left: 0; margin-right: 0; }
+}
