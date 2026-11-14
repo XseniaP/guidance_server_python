@@ -11,11 +11,6 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends mafft prank \
  && rm -rf /var/lib/apt/lists/*
 
-# PyTorch is only needed for model training; install the CPU build so pip does not pull the CUDA wheels.
-RUN pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cpu \
-        torch==2.3.0+cpu torchvision==0.18.0+cpu \
- && pip install --no-cache-dir torchtext==0.18.0
-
 WORKDIR /opt/guidance3
 COPY pyproject.toml README.md ./
 COPY guidance3 ./guidance3

@@ -46,7 +46,13 @@ docker run --rm -v "$PWD":/data guidance3 --seqFile /data/seqs.fasta --msaProgra
            --outDir /data/guidance3_out --proc_num 4
 ```
 
-The image includes MAFFT and PRANK; nothing else needs to be installed.
+The image includes MAFFT and PRANK; nothing else needs to be installed. The other commands run in the same image through `--entrypoint`, for example:
+
+```bash
+docker run --rm -v "$PWD":/data --entrypoint guidance3-rank guidance3 --msas-dir /data/msas --out-dir /data/ranking
+```
+
+The image is built for x86-64 Linux. On Apple-silicon Macs, enable *Settings → General → Use Rosetta for x86_64/amd64 emulation* in Docker Desktop; under the default QEMU emulation, IQ-TREE can stall. Alternatively, use the pip installation, which includes native macOS binaries.
 
 ---
 
