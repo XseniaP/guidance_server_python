@@ -72,11 +72,11 @@ where = ["."]
 include = ["guidance3*"]
 
 [tool.setuptools.package-data]
-"guidance3" = ["data/**/*", "programs/**/*"]
+"guidance3" = ["data/**/*", "programs/**/*", "dl_model/input/**/*"]
 
 [tool.setuptools.exclude-package-data]
 "*" = [".DS_Store"]
-"guidance3.dl_model" = ["input/**/*", "environment_uni.yml"]
+"guidance3.dl_model" = ["environment_uni.yml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -40,19 +40,23 @@ Use `--seqType nuc` for nucleotides or `--seqType codon` for codon-aware analysi
 
 #### Container (Docker / Podman)
 
+Works on Linux, macOS (Intel and Apple silicon) and Windows with [Docker](https://docs.docker.com/get-docker/) or Podman; nothing else needs to be installed.
+
 ```bash
-docker build --platform linux/amd64 -t guidance3 .
+git clone https://github.com/XseniaP/guidance_server_python.git
+cd guidance_server_python
+docker build -t guidance3 .
 docker run --rm -v "$PWD":/data guidance3 --seqFile /data/seqs.fasta --msaProgram MAFFT --seqType aa \
            --outDir /data/guidance3_out --proc_num 4
 ```
 
-The image includes MAFFT and PRANK; nothing else needs to be installed. The other commands run in the same image through `--entrypoint`, for example:
+`-v "$PWD":/data` makes the current folder visible inside the container as `/data`, so input and output paths start with `/data/`. On Windows PowerShell use `-v "${PWD}:/data"`.
+
+The image is built natively for your machine (x86-64 or ARM64) and includes MAFFT, PRANK and IQ-TREE 3. The other commands run in the same image through `--entrypoint`, for example:
 
 ```bash
 docker run --rm -v "$PWD":/data --entrypoint guidance3-rank guidance3 --msas-dir /data/msas --out-dir /data/ranking
 ```
-
-The image is built for x86-64 Linux. On Apple-silicon Macs, enable *Settings → General → Use Rosetta for x86_64/amd64 emulation* in Docker Desktop; under the default QEMU emulation, IQ-TREE can stall. Alternatively, use the pip installation, which includes native macOS binaries.
 
 ---
 
