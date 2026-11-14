@@ -92,7 +92,8 @@ function toggle_Algorithm_Options(){
 	var is_g3 = (chosen_algorithm == 'GUIDANCE3');
 	['USER_TREE', 'CONSENSUS_TREE', 'N_ALT_TREES', 'N_ALT_TREES_HELP'].forEach(function (id) {
 		var el = document.getElementById(id);
-		if (el) { el.style.display = is_g3 ? 'block' : 'none'; }
+		// '' restores the element's own display (N_ALT_TREES is a flex input-group; 'block' breaks its layout)
+		if (el) { el.style.display = is_g3 ? '' : 'none'; }
 	});
 	var input_sel = window.document.Guidance_form.input_type;
 	if (input_sel) {
