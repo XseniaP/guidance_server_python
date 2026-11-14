@@ -38,7 +38,7 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://guidance.tau.ac.il"
-Repository = "https://github.com/XseniaP/guidance_server_python"
+Repository = "https://github.com/XseniaP/guidance3"
 
 [project.optional-dependencies]
 web = [

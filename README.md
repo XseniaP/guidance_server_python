@@ -22,7 +22,7 @@ conda install -c bioconda mafft prank      # or: brew install mafft / apt instal
 > **Installation time:** a few minutes; TensorFlow (~500 MB) is the largest download. The install is a one-time cost.
 
 The development version can be installed directly from GitHub:
-`pip install git+https://github.com/XseniaP/guidance_server_python.git`
+`pip install git+https://github.com/XseniaP/guidance3.git`
 
 ---
 
@@ -43,8 +43,8 @@ Use `--seqType nuc` for nucleotides or `--seqType codon` for codon-aware analysi
 Works on Linux, macOS (Intel and Apple silicon) and Windows with [Docker](https://docs.docker.com/get-docker/) or Podman; nothing else needs to be installed.
 
 ```bash
-git clone https://github.com/XseniaP/guidance_server_python.git
-cd guidance_server_python
+git clone https://github.com/XseniaP/guidance3.git
+cd guidance3
 docker build -t guidance3 .
 docker run --rm -v "$PWD":/data guidance3 --seqFile /data/seqs.fasta --msaProgram MAFFT --seqType aa \
            --outDir /data/guidance3_out --proc_num 4
@@ -65,8 +65,8 @@ docker run --rm -v "$PWD":/data --entrypoint guidance3-rank guidance3 --msas-dir
 Required if you want to run the web server, or need GPU/CUDA support for the DL model.
 
 ```bash
-git clone https://github.com/XseniaP/guidance_server_python.git
-cd guidance_server_python
+git clone https://github.com/XseniaP/guidance3.git
+cd guidance3
 conda config --add channels conda-forge
 conda config --add channels bioconda
 conda config --add channels defaults
@@ -99,8 +99,8 @@ conda deactivate
 To work on the code itself:
 
 ```bash
-git clone https://github.com/XseniaP/guidance_server_python.git
-cd guidance_server_python
+git clone https://github.com/XseniaP/guidance3.git
+cd guidance3
 pip install -e .
 ```
 
